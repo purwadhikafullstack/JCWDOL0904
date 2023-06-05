@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // ===========================
 // NOTE : Add your routes here
-const { userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter, productRouters } = require("../routers");
+const {authRouter, userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter, productRouters } = require("../routers");
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);

@@ -14,7 +14,7 @@ export const Navbar = () => {
   return (
     <Disclosure
       as="nav"
-      className="bg-white shadow"
+      className="bg-white shadow z-50"
       style={{position: "fixed", width: "100%"}}>
       {({open}) => (
         <>
