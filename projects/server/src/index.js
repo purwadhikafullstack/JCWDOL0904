@@ -4,8 +4,7 @@ const cors = require("cors");
 const { join } = require("path");
 const dotenv = require("dotenv").config({ override: true });
 const db = require("../models");
-const bodyParser = require('body-parser');
-const validator = require("../middleware/validator")
+const bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -23,7 +22,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static('public/images'))
+app.use(express.static("public/images"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -33,8 +32,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // NOTE : Add your routes here
 const { userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter, productRouters } = require("../routers");
 
-app.use(validator)
 app.use("/api/user", userRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/upload", TestingMulterRouter);
 app.use("/api/addresses", addressRouter);
 app.use("/api/warehouses", warehouseRouter);
