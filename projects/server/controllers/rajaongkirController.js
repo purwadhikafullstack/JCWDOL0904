@@ -11,12 +11,12 @@ module.exports = {
             })
             // console.log(data)
             res.status(200).send({
-                isError: false,
                 message: 'Get Province Success',
                 data: data.data.rajaongkir.results
 
             })
         } catch (error) {
+            console.log(error);
             res.status(400).send({
                 message: error.message,
             })
