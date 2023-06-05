@@ -5,6 +5,7 @@ const warehouseController = require("./warehouseController.js")
 const nearestWarehouseController = require("./nearestWarehouseController.js")
 const productControllers = require("./productControllers.js")
 const authController = require("./authController.js");
+const rajaongkirController = require("./rajaongkirController.js")
 
 
 module.exports = {
@@ -15,4 +16,5 @@ module.exports = {
     nearestWarehouseController,
     productControllers,
     authController,
+    rajaongkirController
 };
