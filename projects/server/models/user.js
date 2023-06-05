@@ -53,13 +53,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       is_verified: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
         defaultValue: false,
       },
       user_image: {
         type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: null,
+        allowNull:true,
+        defaultValue: "avatar_default.jpg",
       },
       role: {
         type: DataTypes.ENUM,

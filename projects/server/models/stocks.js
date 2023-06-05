@@ -32,10 +32,6 @@ module.exports = (sequelize, DataTypes) => {
     stock: {
       type: DataTypes.INTEGER,
       allowNull: false
-    },
-    reference: {
-      type: DataTypes.STRING,
-      allowNull: false
     }
   }, {
     sequelize,

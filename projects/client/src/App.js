@@ -10,6 +10,8 @@ import Sidebar from "./components/admin/Sidebar";
 import {Cek} from "./components/admin/Cek";
 import {useEffect, useState} from "react";
 import Homepage from "./pages/Homepage";
+import ProductDetail from "./pages/ProductDetail";
+import Test from "./pages/Test";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -34,6 +36,10 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/home" element={<Homepage />} />
             <Route path="/image" element={<TestImage />} />
+            <Route path="/detail" element={<ProductDetail />} />
+            <Route path="/test" element={<Test />} />
+
+
           </Routes>
           <Footer />
         </div>
