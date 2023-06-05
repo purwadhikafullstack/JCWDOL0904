@@ -1,4 +1,6 @@
 const access = process.env.KEY_ACCESS
+const dotenv = require("dotenv")
+dotenv.config()
 
 module.exports = (req, res, next) => {
   console.log("aaaa", req.headers.key);
