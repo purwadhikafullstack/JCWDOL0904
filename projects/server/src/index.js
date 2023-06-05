@@ -9,14 +9,14 @@ const validator = require("../middleware/validator")
 
 const PORT = process.env.PORT || 8000;
 const app = express();
-app.use(
-  cors({
-    origin: [
-      process.env.WHITELISTED_DOMAIN &&
-      process.env.WHITELISTED_DOMAIN.split(","),
-    ],
-  })
-);
+// app.use(
+//   cors({
+//     origin: [
+//       process.env.WHITELISTED_DOMAIN &&
+//       process.env.WHITELISTED_DOMAIN.split(","),
+//     ],
+//   })
+// );
 
 app.use(express.json());
 app.use(cors());
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // ===========================
 // NOTE : Add your routes here
-const { userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter } = require("../routers");
+const { userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter, rajaongkirRouter } = require("../routers");
 
 app.use(validator)
 app.use("/api/user", userRouter);
@@ -36,6 +36,7 @@ app.use("/api/upload", TestingMulterRouter);
 app.use("/api/addresses", addressRouter);
 app.use("/api/warehouses", warehouseRouter);
 app.use("/api/nearest-warehouse", nearestWarehouseRouter);
+app.use("/api/rajaongkir", rajaongkirRouter)
 
 // app.get("/api", (req, res) => {
 //   res.send(`Hello, this is my API`);
