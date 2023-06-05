@@ -21,7 +21,6 @@ const app = express();
 
 // console.log(process.env.WHITELISTED_DOMAIN);
 
-app.use(authorize)
 app.use(express.json());
 app.use(cors());
 app.use(express.static("public/images"));
@@ -34,6 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // NOTE : Add your routes here
 const { authRouter, userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter, productRouters, rajaongkirRouter } = require("../routers");
 
+app.use(authorize)
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/upload", TestingMulterRouter);
