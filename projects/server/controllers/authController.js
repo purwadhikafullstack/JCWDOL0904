@@ -13,7 +13,7 @@ module.exports = {
         throw "Please input your email and password!";
       }
 
-      const userExist = await User.findONe({
+      const userExist = await User.findOne({
         where: { email, password },
       });
 
@@ -21,16 +21,32 @@ module.exports = {
         throw { message: "Email not found, please register!" };
       }
 
-      const isValid = await bcrypt.compare(password, userExist.password);
+      // const isValid = await bcrypt.compare(password, userExist.password);
 
-      if (!isValid) {
-        throw { message: "wrong email address or password!" };
+      // if (!isValid) {
+      //   throw { message: "wrong email address or password!" };
+      // }
+
+      const payload = {
+        id: userExist.id,
+        is_verified: userExist.is_verified,
+      };
+
+      const token = jwt.sign(payload, "galaxy", { expiresIn: "9999 years" });
+
+      const userVerified = jwt.verify(token, "galaxy");
+      console.log(userVerified);
+
+      if (!userVerified.is_verified) {
+        res.status(400).send({
+          message: "Please verify your account!",
+        });
+      } else {
+        res.status(200).send({
+          message: "Login Success",
+          result: userExist,
+        });
       }
-
-      res.status(200).send({
-        message: "Login Success",
-        result: userExist,
-      });
     } catch (err) {
       console.log(err);
     }
