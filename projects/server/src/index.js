@@ -5,6 +5,7 @@ const { join } = require("path");
 const dotenv = require("dotenv").config({ override: true });
 const db = require("../models");
 const bodyParser = require("body-parser");
+const { authorize } = require("../middleware/validator");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -12,16 +13,15 @@ const app = express();
 //   cors({
 //     origin: [
 //       process.env.WHITELISTED_DOMAIN &&
-//       process.env.WHITELISTED_DOMAIN.split(","),
+//         process.env.WHITELISTED_DOMAIN.split(","),
 //     ],
 //   })
 // );
-// app.use(cors())
 
 // console.log(process.env.WHITELISTED_DOMAIN);
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 app.use(express.static("public/images"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,8 +30,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // ===========================
 // NOTE : Add your routes here
-const {authRouter, userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter, productRouters } = require("../routers");
+const {
+  authRouter,
+  userRouter,
+  TestingMulterRouter,
+  addressRouter,
+  warehouseRouter,
+  nearestWarehouseRouter,
+  productRouters,
+} = require("../routers");
 
+app.use(authorize);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/upload", TestingMulterRouter);
