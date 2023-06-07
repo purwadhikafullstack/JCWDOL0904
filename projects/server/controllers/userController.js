@@ -48,7 +48,7 @@ module.exports = {
         html: `
         <div>
         <p>Thank you for registering, you need to activate your account,</p>
-        <a href="http://localhost:8000/api/auth/verification/${token}">Click Here</a>
+        <a href="http://localhost:3000/verification/${token}">Click Here</a>
         <span>to activate</span>
         </div>
         `,

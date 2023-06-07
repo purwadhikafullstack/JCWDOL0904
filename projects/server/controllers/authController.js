@@ -10,15 +10,18 @@ module.exports = {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        throw "Please input your email and password!";
+        res.status(401).send({
+          message: "Please input your email and password!",
+        });
       }
-
       const userExist = await User.findOne({
         where: { email, password },
       });
 
       if (!userExist) {
-        throw { message: "Email not found, please register!" };
+        res.status(400).send({
+          message: "Email not found, please register!",
+        });
       }
 
       // const isValid = await bcrypt.compare(password, userExist.password);
@@ -54,7 +57,9 @@ module.exports = {
 
   userVerification: async (req, res) => {
     try {
+      // console.log(req.headers);
       const { password } = req.body;
+      console.log(req.body);
 
       if (!password) {
         throw Error("Please complete your data");
@@ -72,6 +77,7 @@ module.exports = {
       let token = req.headers.authorization;
       token = token.split(" ")[1];
       const data = jwt.verify(token, "galaxy");
+      console.log(data);
 
       const userPassword = await User.update(
         { is_verified: true, password: hashPass },
