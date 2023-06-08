@@ -38,19 +38,45 @@
 }
 
 
-.pagination {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 5rem;
-  font-size: 1.2rem;
-  gap: 5px;
+
+
+
+
+
+
+
+
+
+/* @media (max-width: 390px) {
+  .cards-con {
+    width: 400px;
+    background-color: #61dafb;
+    display: flex;
+    justify-content: center;
+  }
 }
 
-.pagination .page-num {
-  padding: 8px 15px;
-  cursor: pointer;
-  border-radius: 3px;
-  font-weight: 400;
+.cards {
+  width: 200px;
+  margin: 20px;
+  height: 360px;
+
 }
+
+@media (max-width: 390px) {
+  .cards {
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    height: 400px;
+
+  }
+} */
+
+/* @media (max-width: 390px) {
+  .home-image  {
+    width: 200px;
+  }
+} */
+
+
