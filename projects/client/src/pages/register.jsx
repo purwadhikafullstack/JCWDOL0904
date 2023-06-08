@@ -1,6 +1,6 @@
-import { React, useState, useRef } from "react";
+import { React, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import Swal from "sweetalert2";
 import { api } from "../API/api";
 import { Button } from "@chakra-ui/react";
 
@@ -13,19 +13,21 @@ export const Register = () => {
 
   const registerAccount = async () => {
     try {
-      if (!email.current.value) throw { message: "Please input your data!" };
-      if (
-        !email.current.value.includes("@") ||
-        !email.current.value.includes(".com")
-      )
-        throw { message: "Please input a valid email!" };
-
       let result = await api.post(url, { email: email.current.value });
 
-      alert("Register Success, please check your email");
+      Swal.fire({
+        title: "Success",
+        text: result.data.message,
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
     } catch (err) {
-      alert(err.message);
-      return { result: err.response.data.message };
+      Swal.fire({
+        title: "Error!",
+        text: err.response.data.message,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     }
   };
 
