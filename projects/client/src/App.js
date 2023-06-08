@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import "./App.css";
 import {useSelector} from "react-redux";
 import {Navbar} from "./components/Navbar";
@@ -38,8 +38,6 @@ function App() {
             <Route path="/image" element={<TestImage />} />
             <Route path="/detail" element={<ProductDetail />} />
             <Route path="/test" element={<Test />} />
-
-
           </Routes>
           <Footer />
         </div>
