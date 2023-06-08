@@ -5,7 +5,7 @@ const { join } = require("path");
 const dotenv = require("dotenv").config({ override: true });
 const db = require("../models");
 const bodyParser = require("body-parser");
-const validator = require("../middleware/validator")
+const { authorize } = require("../middleware/validator");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -40,7 +40,7 @@ const {
   productRouters,
 } = require("../routers");
 
-app.use(validator)
+app.use(authorize);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/upload", TestingMulterRouter);
