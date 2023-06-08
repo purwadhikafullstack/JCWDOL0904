@@ -12,7 +12,8 @@ import { useEffect, useState } from "react";
 import Homepage from "./pages/Homepage";
 import ProductDetail from "./pages/ProductDetail";
 import Test from "./pages/Test";
-import { Verification } from "./pages/register";
+import { Verification } from "./pages/verification";
+import { Register } from "./pages/register";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -34,9 +35,10 @@ function App() {
         <div className="App">
           <Navbar />
           <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/verification/:token" element={<Verification />} />
             <Route path="/home" element={<Homepage />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/verification/:token" element={<Verification />} />
+            <Route path="/" element={<Login />} />
             <Route path="/image" element={<TestImage />} />
             <Route path="/detail" element={<ProductDetail />} />
             <Route path="/test" element={<Test />} />
