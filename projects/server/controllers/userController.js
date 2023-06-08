@@ -3,6 +3,9 @@ const { Op } = require("sequelize");
 const User = db.User;
 const jwt = require("jsonwebtoken");
 const nodemailer = require("../helpers/nodemailer");
+const fs = require("fs");
+const handlebars = require("handlebars");
+const { error } = require("console");
 
 module.exports = {
   userRegister: async (req, res) => {
@@ -11,9 +14,7 @@ module.exports = {
       console.log(req.body);
 
       const userAlreadyExist = await User.findOne({
-        where: {
-          [Op.or]: [{ email }],
-        },
+        where: { email },
       });
 
       if (userAlreadyExist) {
@@ -28,9 +29,7 @@ module.exports = {
       });
 
       let payload = { id: result.id };
-      let token = jwt.sign(payload, "galaxy", {
-        expiresIn: "9999 years",
-      });
+      let token = jwt.sign(payload, "galaxy");
 
       await User.update(
         { verify_token: token },
@@ -41,17 +40,19 @@ module.exports = {
         }
       );
 
+      const verificationLink = `http://localhost:3000/verification/${token}`;
+      const tempEmail = fs.readFileSync(
+        require.resolve("../templates/verification.html"),
+        { encoding: "utf8" }
+      );
+      const tempCompile = handlebars.compile(tempEmail);
+      const tempResult = tempCompile({ verificationLink });
+
       let mail = {
         from: `Admin <galaxy@gmail.com>`,
         to: `${email}`,
         subject: `Verify your account`,
-        html: `
-        <div>
-        <p>Thank you for registering, you need to activate your account,</p>
-        <a href="http://localhost:3000/verification/${token}">Click Here</a>
-        <span>to activate</span>
-        </div>
-        `,
+        html: tempResult,
       };
       let response = await nodemailer.sendMail(mail);
       console.log(response);
@@ -61,7 +62,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      console.log(err);
+      res.status(400).send({ message: error.message });
     }
   },
 };
