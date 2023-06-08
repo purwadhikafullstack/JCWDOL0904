@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 
 module.exports = {
   userVerification: async (req, res) => {
-    // const roll = await sequelize.transaction();
+    const roll = await sequelize.transaction();
     try {
       const { password } = req.body;
 
@@ -39,13 +39,13 @@ module.exports = {
         { is_verified: true, password: hashPass },
         { where: { id: data.id } }
       );
-      // await roll.commit();
+      await roll.commit();
       res.send({
         message: "Verification success",
         data: userPassword,
       });
     } catch (err) {
-      // await roll.rollback();
+      await roll.rollback();
       console.log(err);
       res.status(400).send({
         message: "Server Error!",
