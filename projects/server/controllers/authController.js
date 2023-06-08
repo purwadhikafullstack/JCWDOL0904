@@ -7,22 +7,24 @@ const bcrypt = require("bcrypt");
 
 module.exports = {
   userVerification: async (req, res) => {
-    const t = await sequelize.transaction();
+    const roll = await sequelize.transaction();
     try {
       const { password } = req.body;
 
       if (!password) {
-        throw "Please complete your data";
+        return res.status(400).send({
+          message: "Please complete your data",
+        });
       }
 
       const passwordRegex =
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
 
       if (!passwordRegex.test(password)) {
-        throw {
+        return res.status(400).send({
           message:
             "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number",
-        };
+        });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -37,16 +39,16 @@ module.exports = {
         { is_verified: true, password: hashPass },
         { where: { id: data.id } }
       );
-      await t.commit();
-      res.status(200).send({
+      await roll.commit();
+      res.send({
         message: "Verification success",
         data: userPassword,
       });
     } catch (err) {
-      await t.rollback();
+      await roll.rollback();
+      console.log(err);
       res.status(400).send({
-        message:
-          "Verification failed, Password must contain at least 8 characters including an uppercase letter, a symbol, and a number",
+        message: "Server Error!",
       });
     }
   },
@@ -56,31 +58,31 @@ module.exports = {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        res.status(401).send({
-          message: "Please input your email and password!",
+        return res.status(400).send({
+          message: "Please input your email and password",
         });
       }
+
       const userExist = await User.findOne({
         where: { email },
       });
 
       if (!userExist) {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Email not found, please register!",
         });
       }
 
-      // const isValid = await bcrypt.compare(
-      //   password,
-      //   userExist.dataValues.password
-      // );
-      // console.log(isValid);
-      // if (!isValid) {
-      //   res.status(400).send({
-      //     message: "wrong email address or password!",
-      //   });
-      // }
-
+      const isValid = await bcrypt.compare(
+        password,
+        userExist.dataValues.password
+      );
+      console.log(isValid);
+      if (!isValid) {
+        return res.status(400).send({
+          message: "wrong email address or password!",
+        });
+      }
       {
         res.status(200).send({
           message: "Login Success",
@@ -89,7 +91,7 @@ module.exports = {
       }
     } catch (err) {
       console.log(err);
-      res.status(404).send({ message: err.message, data: null });
+      res.status(400).send({ message: "Server error" });
     }
   },
 };

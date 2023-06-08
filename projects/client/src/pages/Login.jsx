@@ -1,7 +1,8 @@
-import { React, useState, useRef } from "react";
+import { React, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { api } from "../API/api";
+import Swal from "sweetalert2";
+
 import { Button } from "@chakra-ui/react";
 
 const url = "/auth/login";
@@ -18,13 +19,18 @@ export const Login = () => {
         email: inputEmail,
         password: inputPassword,
       });
-      console.log(response);
+
       if ((response.status = 200)) {
         localStorage.setItem("idUser", JSON.stringify(response.data.result.id));
         navigate("/home");
       }
-    } catch (error) {
-      return { response: error.response.data.message };
+    } catch (err) {
+      Swal.fire({
+        title: "Error!",
+        text: err.response.data.message,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     }
   };
 
