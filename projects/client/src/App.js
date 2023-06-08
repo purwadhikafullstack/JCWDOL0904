@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import "./App.css";
 import { useSelector } from "react-redux";
 import { Navbar } from "./components/Navbar";
