@@ -11,7 +11,7 @@ module.exports = {
             const filepath = file ? "/" + file.filename : null
 
             const result = await fakeuser.create({
-                profile_image: filepath,
+                profile_image: process.env.IMAGE_URL + filepath,
             });
             res.status(200).send({
                 message: "Register fakeuser Success",

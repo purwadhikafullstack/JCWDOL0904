@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // ===========================
 // NOTE : Add your routes here
-const { authRouter, userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter, productRouters, rajaongkirRouter } = require("../routers");
+const { authRouter, userRouter, TestingMulterRouter, addressRouter, warehouseRouter, nearestWarehouseRouter, productRouters, rajaongkirRouter, cartRouter, ekpedisiRouter } = require("../routers");
 
 app.use(authorize)
 app.use("/api/user", userRouter);
@@ -41,7 +41,9 @@ app.use("/api/addresses", addressRouter);
 app.use("/api/warehouses", warehouseRouter);
 app.use("/api/nearest-warehouse", nearestWarehouseRouter);
 app.use("/api/product", productRouters);
-app.use("api/rajaongkir", rajaongkirRouter)
+app.use("/api/rajaongkir", rajaongkirRouter)
+app.use("/api/cart", cartRouter)
+app.use("/api/ekspedisi", ekpedisiRouter)
 
 // app.get("/api", (req, res) => {
 //   res.send(`Hello, this is my API`);

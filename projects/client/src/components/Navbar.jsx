@@ -6,11 +6,14 @@ import {
   XMarkIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
+import {Link} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export const Navbar = () => {
+  const {cart} = useSelector((state) => state.cartSlice.value);
   return (
     <Disclosure
       as="nav"
@@ -67,11 +70,13 @@ export const Navbar = () => {
                     className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     <span className="sr-only">View notifications</span>
                     <div className="flex">
-                      <ShoppingCartIcon
-                        className="h-6 w-6"
-                        aria-hidden="true"
-                      />{" "}
-                      <p>1</p>
+                      <Link to="/cart">
+                        <ShoppingCartIcon
+                          className="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      </Link>
+                      <p>{cart.length}</p>
                     </div>
                   </button>
 

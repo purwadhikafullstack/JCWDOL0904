@@ -12,6 +12,12 @@ import {useEffect, useState} from "react";
 import Homepage from "./pages/Homepage";
 import ProductDetail from "./pages/ProductDetail";
 import Test from "./pages/Test";
+import Cart from "./pages/Cart";
+import Cart2 from "./pages/Cart2";
+import Checkout from "./pages/Checkout";
+import Example from "./pages/Check";
+import {AddAddressModal} from "./components/AddAddressModal";
+import {Ekspedisi} from "./components/Ekspedisi";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -38,10 +44,14 @@ function App() {
             <Route path="/image" element={<TestImage />} />
             <Route path="/detail" element={<ProductDetail />} />
             <Route path="/test" element={<Test />} />
-
-
+            <Route path="/cart2" element={<Cart />} />
+            <Route path="/cart" element={<Cart2 />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/check" element={<Example />} />
+            <Route path="/eks" element={<Ekspedisi />} />
+            {/* <Route path="/add" element={<AddAddressModal />} /> */}
           </Routes>
-          <Footer />
+          {/* <Footer /> */}
         </div>
       ) : (
         <div className="App">

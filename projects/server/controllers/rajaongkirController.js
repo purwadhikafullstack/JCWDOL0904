@@ -22,28 +22,25 @@ module.exports = {
             })
         }
     },
-    getCities: async (req, res) => {
+    getCity: async (req, res) => {
         try {
+            let { province_id } = req.query
             let { keyy } = req.headers
 
-            const { id_province } = req.query;
-
-            const data = await axios.get('https://api.rajaongkir.com/starter/city', {
+            let data = await axios.get(`https://api.rajaongkir.com/starter/city?province=${province_id}`, {
                 headers: {
                     "key": keyy
                 },
-                params: {
-                    id_province
-                }
-            });
-            // console.log(data)
+            })
+            // console.log(data);
+
             res.status(200).send({
-                isError: false,
-                message: 'Get Province Success',
-                data: data.data.rajaongkir.results
+                message: 'Get City Success!',
+                data: data.data.rajaongkir
             })
         } catch (error) {
-            res.status(400).send({
+            console.log(error)
+            res.status(500).send({
                 message: error.message,
             })
         }
@@ -52,6 +49,8 @@ module.exports = {
         try {
             let { origin, destination, weight, courier } = req.body
             let { keyy } = req.headers
+            console.log(keyy);
+
             let data = await axios.post(`https://api.rajaongkir.com/starter/cost`, { origin, destination, weight, courier }, {
                 headers: {
                     "key": keyy
@@ -67,5 +66,5 @@ module.exports = {
                 message: error.message,
             })
         }
-    }
+    },
 }

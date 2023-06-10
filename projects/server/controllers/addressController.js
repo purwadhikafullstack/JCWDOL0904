@@ -7,11 +7,11 @@ const OpenCageGeocoder = require("opencage-api-client")
 module.exports = {
     getAllAddresses: async (req, res) => {
         try {
-            const addresses = await address.findAll();
-            res.json(addresses);
+            const userId = req.params.userId;
+            const addresses = await address.findAll({ where: { id_user: userId } });
+            res.status(200).send(addresses);
         } catch (error) {
             console.error(error);
-            res.status(500).json({ error: 'Internal server error' });
         }
     },
 
@@ -43,6 +43,7 @@ module.exports = {
                 city,
                 subdistrict,
                 zip,
+                userId
             } = req.body;
 
             const query = `${subdistrict}%20${city}%20${province}%20${zip}`;
@@ -55,13 +56,14 @@ module.exports = {
                 const newAddress = await address.create({
                     recipient_name,
                     phone_number,
-                    is_default,
+                    is_default: false,
                     province,
                     city,
                     subdistrict,
                     zip,
                     latitude,
                     longitude,
+                    id_user: userId,
                 });
 
                 res.status(200).send({
