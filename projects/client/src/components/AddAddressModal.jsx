@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import {apiro} from "../API/apiro";
 import {api} from "../API/api";
 import {XMarkIcon} from "@heroicons/react/24/outline";
+import Swal from "sweetalert2";
 
 export const AddAddressModal = ({closeAddressModal}) => {
   const [provinces, setProvinces] = useState([]);
@@ -19,6 +20,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
   console.log(recipientName);
   console.log(city.type + " " + city.city);
   console.log(provinces);
+  console.log(parseInt(city.id));
 
   const fetchAddressesProvince = async () => {
     try {
@@ -54,16 +56,38 @@ export const AddAddressModal = ({closeAddressModal}) => {
         userId: 2,
       });
       console.log(response);
+      Swal.fire({
+        title: "Success",
+        text: response.data.message,
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
+      setRecipientName("");
+      setPhoneNumber("");
+      setProvincess([]);
+      setCity([]);
+      setSubdistrict("");
+      setZip("");
     } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: error.response.data.message,
+        icon: "warning",
+        confirmButtonText: "Ok",
+      });
       console.log(error);
     }
   };
 
   useEffect(() => {
     fetchAddressesProvince();
-    fetchAddressesCity();
-  }, [provincess]);
+  }, []);
 
+  useEffect(() => {
+    if (provincess.id) {
+      fetchAddressesCity();
+    }
+  }, [provinces, provincess]);
   const handleClose = () => {
     closeAddressModal();
   };
@@ -94,6 +118,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                   id="recipient-name"
                   name="recipient-name"
                   autoComplete="given-name"
+                  value={recipientName}
                   className="block w-full h-7 border border-gray-300 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
                   onChange={(e) => setRecipientName(e.target.value)}
                 />
@@ -111,6 +136,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                   type="text"
                   id="phone"
                   name="phone"
+                  value={phoneNumber}
                   autoComplete="family-name"
                   className="block w-full border border-gray-300 text-center h-7 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => setPhoneNumber(e.target.value)}
@@ -128,6 +154,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                 <select
                   id="province"
                   name="province"
+                  value={provincess}
                   autoComplete="province"
                   className="block w-full border border-gray-300 h-7 pl-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => {
@@ -162,6 +189,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                 <select
                   id="province"
                   name="province"
+                  value={city}
                   autoComplete="province"
                   className="block w-full pl-2 h-7 border border-gray-300 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => {
@@ -196,6 +224,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                 <input
                   type="text"
                   name="subdistrict"
+                  value={subdistrict}
                   id="subdistrict"
                   autoComplete="subdistrict"
                   className="block w-full border border-gray-300 text-center h-7 text-gray-500 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -214,6 +243,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
               <input
                 type="text"
                 name="postal-code"
+                value={zip}
                 id="postal-code"
                 autoComplete="postal-code"
                 className="block w-full border border-gray-300 h-7 rounded-md text-center border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -224,7 +254,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
           <button
             type="submit"
             className="mt-6 w-full rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
-            Submit
+            Submits
           </button>
         </form>
       </div>

@@ -49,7 +49,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/check" element={<Example />} />
             <Route path="/eks" element={<Ekspedisi />} />
-            {/* <Route path="/add" element={<AddAddressModal />} /> */}
+            <Route path="/add" element={<AddAddressModal />} />
           </Routes>
           {/* <Footer /> */}
         </div>

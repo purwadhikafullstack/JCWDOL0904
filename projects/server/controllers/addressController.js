@@ -38,13 +38,17 @@ module.exports = {
             const {
                 recipient_name,
                 phone_number,
-                is_default,
                 province,
                 city,
+                address_city_id,
                 subdistrict,
                 zip,
                 userId
             } = req.body;
+
+            if (!recipient_name || !phone_number || !province || !city || !subdistrict || !zip) {
+                return res.status(400).send({ message: "Please complete your data" })
+            }
 
             const query = `${subdistrict}%20${city}%20${province}%20${zip}`;
             const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${query}&key=e115d475b4d64403bef4b85a159facaf`);
@@ -59,6 +63,7 @@ module.exports = {
                     is_default: false,
                     province,
                     city,
+                    address_city_id,
                     subdistrict,
                     zip,
                     latitude,
@@ -67,8 +72,7 @@ module.exports = {
                 });
 
                 res.status(200).send({
-                    isError: false,
-                    message: "Post Address Success",
+                    message: "New address created successfully",
                     newAddress
                 });
             } else {

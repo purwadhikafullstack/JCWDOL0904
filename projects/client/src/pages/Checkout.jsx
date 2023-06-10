@@ -5,6 +5,7 @@ import AddressModal from "../components/AddressModal";
 import {AddAddressModal} from "../components/AddAddressModal";
 import {Ekspedisi} from "../components/Ekspedisi";
 import {apiro} from "../API/apiro";
+import {useNavigate} from "react-router-dom";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -23,6 +24,8 @@ export default function Checkout() {
   console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
   console.log("ini address city id", selectedAddress?.address_city_id);
   console.log("destination", selectedAddress);
+
+  const navigate = useNavigate();
 
   const openAddressModal = () => {
     setAddressModalOpen(true);
@@ -48,74 +51,77 @@ export default function Checkout() {
   const addressId = selectedAddress?.id;
   console.log("ini idaddress", addressId);
 
-  const fetchCartItems = async () => {
-    try {
-      const response = await api.get(`/cart?userId=1`);
-      setCartItems(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchShippingAddress = async () => {
-    try {
-      // const storedAddress = localStorage.getItem("selectedAddress");
-      // console.log(storedAddress);
-      if (selectedAddress) {
-        // setSelectedAddress(JSON.parse(storedAddress));
-        setSelectedAddress(selectedAddress);
-      } else {
-        const response = await api.get(`/addresses/2`);
-        const addresses = response.data;
-        if (addresses.length > 0) {
-          setSelectedAddress(addresses[0]); // Set the first address as the selected address
-        } else {
-          setSelectedAddress(null);
+  useEffect(() => {
+    const fetchOngkir = async () => {
+      try {
+        if (warehouseOrigin && selectedAddress) {
+          const response = await apiro.post("rajaongkir/ongkir", {
+            origin: warehouseOrigin.warehouse_city_id,
+            destination: selectedAddress.address_city_id,
+            weight: 1000,
+            courier: selectedDeliveryMethod,
+          });
+          const ongkirValue =
+            response.data.data.results[0].costs[1].cost[0].value;
+          setOngkir(ongkirValue);
+          console.log(response.data.data.results[0].costs[1].cost[0].value);
+          console.log(response);
         }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    };
 
-  const fetchNearestWarehouse = async () => {
-    try {
-      let response = await api.get(`nearest-warehouse/${addressId}`);
-      setWarehouseOrigin(response.data);
-
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const fetchOngkir = async () => {
-    try {
-      let response = await apiro.post("rajaongkir/ongkir", {
-        origin: warehouseOrigin.warehouse_city_id,
-        destination: selectedAddress.address_city_id,
-        weight: 1000,
-        courier: selectedDeliveryMethod,
-      });
-      const ongkirValue = response.data.data.results[0].costs[1].cost[0].value;
-      setOngkir(ongkirValue);
-      console.log(response.data.data.results[0].costs[1].cost[0].value);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    fetchOngkir();
+  }, [selectedAddress, warehouseOrigin, selectedDeliveryMethod]);
 
   const handleSelectDeliveryMethod = async (method) => {
     setSelectedDeliveryMethod(method);
-    await fetchOngkir();
   };
 
   useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await api.get(`/cart?userId=1`);
+        setCartItems(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchShippingAddress = async () => {
+      try {
+        if (selectedAddress) {
+          setSelectedAddress(selectedAddress);
+        } else {
+          const response = await api.get(`/addresses/2`);
+          const addresses = response.data;
+          if (addresses.length > 0) {
+            setSelectedAddress(addresses[0]); // Set the first address as the selected address
+          } else {
+            setSelectedAddress(null);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchNearestWarehouse = async () => {
+      try {
+        let response = await api.get(`nearest-warehouse/${addressId}`);
+        setWarehouseOrigin(response.data);
+
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     fetchShippingAddress();
     fetchNearestWarehouse();
     fetchCartItems();
-  }, [addressId]);
+  }, [selectedAddress, addressId]);
 
   return (
     <div className="bg-white">
@@ -247,8 +253,14 @@ export default function Checkout() {
 
               <button
                 type="submit"
-                className="mt-6 w-full rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                Continue
+                className="mt-6 w-full rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Checkout
+              </button>
+              <button
+                type="submit"
+                onClick={() => navigate("/home")}
+                className="mt-6 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm ">
+                Continue Shooping
               </button>
             </form>
             {isAddAddressModalOpen && (

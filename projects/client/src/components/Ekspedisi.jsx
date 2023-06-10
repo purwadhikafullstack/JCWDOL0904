@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {RadioGroup} from "@headlessui/react";
 import {TruckIcon, CheckCircleIcon} from "@heroicons/react/20/solid";
 import {api} from "../API/api";
