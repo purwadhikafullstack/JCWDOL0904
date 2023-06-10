@@ -1,29 +1,34 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {api} from "../API/api";
-import {useEffect} from "react";
 import AddressModal from "../components/AddressModal";
 import {AddAddressModal} from "../components/AddAddressModal";
 import {Ekspedisi} from "../components/Ekspedisi";
 import {apiro} from "../API/apiro";
 import {useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [totalAmount, setTotalAmount] = useState(0); // Total jumlah pembelian
+  const [subTotal, setSubtotal] = useState(0); // Total jumlah subTotal
+  // const {subtotal} = useSelector((state) => state.cartSlice.value);
+  // console.log(subtotal);
 
   // const {cart} = useSelector((state) => state.cartSlice.value);
   const [warehouseOrigin, setWarehouseOrigin] = useState("");
   const [ongkir, setOngkir] = useState(0);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("");
-  console.log(ongkir);
-  console.log("ini ekspedisi", selectedDeliveryMethod);
-
-  console.log("warehouseOrigin", warehouseOrigin);
-  console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
-  console.log("ini address city id", selectedAddress?.address_city_id);
-  console.log("destination", selectedAddress);
+  // console.log(ongkir);
+  // console.log("ini ekspedisi", selectedDeliveryMethod);
+  // console.log(cartItems);
+  // console.log("Total amount", totalAmount);
+  // console.log("warehouseOrigin", warehouseOrigin);
+  // console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
+  // console.log("ini address city id", selectedAddress?.address_city_id);
+  // console.log("destination", selectedAddress);
 
   const navigate = useNavigate();
 
@@ -39,12 +44,10 @@ export default function Checkout() {
   const closeAddAddressModal = () => {
     setAddAddressModalOpen(false);
   };
-
   const handleSelectAddress = (address) => {
     setSelectedAddress(address);
     setAddressModalOpen(false);
-    // Store the selected address in localStorage
-    setSelectedAddress(address);
+
     localStorage.setItem("selectedAddress", JSON.stringify(address));
   };
 
@@ -80,19 +83,11 @@ export default function Checkout() {
   };
 
   useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await api.get(`/cart?userId=1`);
-        setCartItems(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     const fetchShippingAddress = async () => {
       try {
-        if (selectedAddress) {
-          setSelectedAddress(selectedAddress);
+        const storedSelectedAddress = localStorage.getItem("selectedAddress");
+        if (storedSelectedAddress) {
+          setSelectedAddress(JSON.parse(storedSelectedAddress));
         } else {
           const response = await api.get(`/addresses/2`);
           const addresses = response.data;
@@ -106,7 +101,19 @@ export default function Checkout() {
         console.error(error);
       }
     };
+    fetchShippingAddress();
+  }, []);
 
+  useEffect(() => {
+    const fetchLocalStorageCartItems = () => {
+      const storedCartItems = localStorage.getItem("cartItems");
+      if (storedCartItems) {
+        setCartItems(JSON.parse(storedCartItems));
+      }
+    };
+
+    const subTotal = JSON.parse(localStorage.getItem("subTotal"));
+    setSubtotal(subTotal);
     const fetchNearestWarehouse = async () => {
       try {
         let response = await api.get(`nearest-warehouse/${addressId}`);
@@ -118,10 +125,22 @@ export default function Checkout() {
       }
     };
 
-    fetchShippingAddress();
     fetchNearestWarehouse();
-    fetchCartItems();
+    fetchLocalStorageCartItems();
   }, [selectedAddress, addressId]);
+
+  useEffect(() => {
+    // Menghitung total jumlah pembelian
+    const calculateTotalAmount = () => {
+      let subtotal = 0;
+      for (const item of cartItems) {
+        subtotal += item.Product.price;
+      }
+      setTotalAmount(subtotal + ongkir);
+    };
+
+    calculateTotalAmount();
+  }, [cartItems, ongkir]);
 
   return (
     <div className="bg-white">
@@ -239,15 +258,24 @@ export default function Checkout() {
               <dl className="mt-10 space-y-6 text-sm font-medium text-gray-500">
                 <div className="flex justify-between">
                   <dt>Subtotal</dt>
-                  <dd className="text-gray-900">00</dd>
+                  <dd className="text-gray-900">
+                    Rp. {subTotal.toLocaleString("id-ID")}
+                  </dd>
                 </div>
                 <div className="flex justify-between">
                   <dt>Shipping</dt>
-                  <dd className="text-gray-900">{ongkir ? ongkir : 0}</dd>
+                  <dd className="text-gray-900">
+                    Rp. {ongkir ? ongkir.toLocaleString("id-ID") : 0}
+                  </dd>
                 </div>
                 <div className="flex justify-between border-t border-gray-200 pt-6 text-gray-900">
                   <dt className="text-base">Total</dt>
-                  <dd className="text-base">32</dd>
+                  <dd className="text-base">
+                    Rp.{" "}
+                    {ongkir
+                      ? totalAmount.toLocaleString("id-ID")
+                      : subTotal.toLocaleString("id-ID")}
+                  </dd>
                 </div>
               </dl>
 

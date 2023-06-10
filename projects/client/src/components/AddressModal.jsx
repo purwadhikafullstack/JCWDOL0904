@@ -26,8 +26,8 @@ function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg">
+    <div className="fixed inset-0 pt-20 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="bg-white w-80 pb-4 rounded-lg shadow-lg max-h-[450px] overflow-y-auto">
         <h2 className="py-7 px-16 text-lg font-medium text-gray-700 text-center border-b">
           Select Address
         </h2>

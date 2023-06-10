@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Fragment} from "react";
 import {Disclosure, Menu, Transition} from "@headlessui/react";
 import {
@@ -8,12 +8,39 @@ import {
 } from "@heroicons/react/24/outline";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {updateCart} from "../features/cartSlice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+
 export const Navbar = () => {
+  const [cartLength, setCartLength] = useState(0);
   const {cart} = useSelector((state) => state.cartSlice.value);
+  useEffect(() => {
+    setCartLength(cart.length);
+  }, [cart]);
+
+  // Dispatch the Redux action to update the cart
+  const dispatch = useDispatch();
+  const updateCartData = (cart) => {
+    dispatch(updateCart({cart}));
+  };
+
+  // Retrieve the cart data from local storage on page load
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      updateCartData(JSON.parse(storedCart));
+    }
+  }, []);
+
+  // Update the cart data in local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
   return (
     <Disclosure
       as="nav"
@@ -50,7 +77,7 @@ export const Navbar = () => {
                 <div className="hidden md:ml-6 md:flex md:space-x-8">
                   {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
                   <a
-                    href="#"
+                    href="/home"
                     className="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900">
                     Dashboard
                   </a>

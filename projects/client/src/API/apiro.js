@@ -4,6 +4,6 @@ export const apiro = axios.create({
     baseURL: `${process.env.REACT_APP_API_BASE_URL}`,
     headers: {
         key: "sgfjkfnrissvsdn",
-        keyy: "2b312c76d4f8e33b82e4d6644ed24831"
+        keyy: "f31c92175c1d66a21b70b35b03ba4fce"
     }
 })

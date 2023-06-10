@@ -3,8 +3,9 @@ import {useState, useEffect} from "react";
 import {api} from "../API/api";
 import Swal from "sweetalert2";
 import {useDispatch} from "react-redux";
-import {cart} from "../features/cartSlice";
+import {cart, subtotal} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
+import {SunDim} from "phosphor-react";
 
 const Cart2 = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -12,8 +13,8 @@ const Cart2 = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
+
   const fetchCartItems = async () => {
     try {
       const response = await api.get(`/cart?userId=1`);
@@ -29,6 +30,15 @@ const Cart2 = () => {
           cart: response.data,
         })
       );
+
+      dispatch(
+        subtotal({
+          subtotal: sum,
+        })
+      );
+
+      localStorage.setItem("cartItems", JSON.stringify(response.data));
+      localStorage.setItem("subTotal", JSON.stringify(sum));
     } catch (error) {
       console.error(error);
     }

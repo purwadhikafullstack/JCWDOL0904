@@ -36,13 +36,12 @@ const ProductDetail = () => {
   let addToCart = async (e) => {
     e.preventDefault();
     try {
-      let response = await api.post(`/cart/add`, {
+      await api.post(`/cart/add`, {
         userId: 1,
         productId,
         quantity: 1,
       });
       navigation("/cart");
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }

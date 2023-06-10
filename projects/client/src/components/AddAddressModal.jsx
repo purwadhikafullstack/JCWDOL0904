@@ -35,7 +35,6 @@ export const AddAddressModal = ({closeAddressModal}) => {
       const response = await apiro.get(
         `rajaongkir/city?province_id=${provincess.id}`
       );
-      //   console.log(response.data.data);
       setCities(response.data.data.results);
     } catch (error) {
       console.error(error);
