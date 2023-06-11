@@ -1,6 +1,5 @@
 import React from "react";
 import {useState, useEffect} from "react";
-import {CheckIcon} from "@heroicons/react/20/solid";
 import {useNavigate} from "react-router-dom";
 import {api} from "../API/api";
 import {Button, Image, Stack} from "@chakra-ui/react";
