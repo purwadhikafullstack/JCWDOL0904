@@ -1,7 +1,8 @@
-import { React, useState, useRef } from "react";
+import { React, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { api } from "../API/api";
+import Swal from "sweetalert2";
+
 import { Button } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { login } from "../features/userSlice";
@@ -29,8 +30,13 @@ export const Login = () => {
         // console.log(response.data.result);
         // navigate("/home");
       }
-    } catch (error) {
-      return { response: error.response.data.message };
+    } catch (err) {
+      Swal.fire({
+        title: "Error!",
+        text: err.response.data.message,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     }
   };
 

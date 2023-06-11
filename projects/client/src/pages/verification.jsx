@@ -1,7 +1,7 @@
-import { React, useRef, useEffect } from "react";
+import { React, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { api } from "../API/api";
+import Swal from "sweetalert2";
 
 const url = "/auth/verification";
 
@@ -20,7 +20,7 @@ export const Verification = () => {
   const TokenVerification = async () => {
     try {
       if (token) {
-        console.log(passwordOne.current.value);
+        // console.log(passwordOne.current.value);
         let response = await api.post(
           url,
           { password: passwordOne.current.value },
@@ -30,11 +30,21 @@ export const Verification = () => {
             },
           }
         );
+        Swal.fire({
+          title: "Success",
+          text: response.data.message,
+          icon: "success",
+          confirmButtonText: "Ok",
+        });
       }
-      alert("Verification Success");
       navigate("/");
-    } catch (error) {
-      alert(error.response.data.message);
+    } catch (err) {
+      Swal.fire({
+        title: "error",
+        text: err.response.data.message,
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
     }
   };
 

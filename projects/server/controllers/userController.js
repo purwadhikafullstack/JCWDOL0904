@@ -11,18 +11,28 @@ module.exports = {
   userRegister: async (req, res) => {
     try {
       const { email } = req.body;
-      console.log(req.body);
+
+      if (!email) {
+        return res.status(400).send({
+          message: "Please input your email address",
+        });
+      }
+
+      if (!email.includes("@") || !email.endsWith(".com")) {
+        return res.status(400).send({
+          message: "Please enter a valid email address",
+        });
+      }
 
       const userAlreadyExist = await User.findOne({
         where: { email },
       });
 
-      if (userAlreadyExist) {
+      if (userAlreadyExist)
         res.status(400).send({
           message:
             "Your email address already exist, please verify your email!",
         });
-      }
 
       let result = await User.create({
         email,
@@ -58,11 +68,12 @@ module.exports = {
       console.log(response);
 
       res.status(200).send({
-        message: "Register Success",
+        message: "Register success, please check your email",
         result,
       });
     } catch (err) {
-      res.status(400).send({ message: error.message });
+      console.log(err);
+      res.status(400).send({ message: "Server error" });
     }
   },
   getUserData: async (req, res) => {

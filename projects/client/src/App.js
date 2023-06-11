@@ -1,4 +1,3 @@
-// import axios from "axios";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Navbar } from "./components/Navbar";
@@ -8,10 +7,14 @@ import { Routes, Route } from "react-router-dom";
 import { TestImage } from "./pages/TestImage";
 import Sidebar from "./components/admin/Sidebar";
 import { Cek } from "./components/admin/Cek";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Homepage from "./pages/Homepage";
 import ProductDetail from "./pages/ProductDetail";
 import Test from "./pages/Test";
+import Cart from "./pages/Cart";
+import Cart2 from "./pages/Cart2";
+import Checkout from "./pages/Checkout";
+import { Ekspedisi } from "./components/Ekspedisi";
 import { Verification } from "./pages/verification";
 import { Register } from "./pages/register";
 import routes from "./routes/routes";
@@ -64,9 +67,13 @@ function App() {
             <Route path="/image" element={<TestImage />} />
             <Route path="/detail" element={<ProductDetail />} />
             <Route path="/test" element={<Test />} />
-          </Routes>
+            <Route path="/cart2" element={<Cart />} />
+            <Route path="/cart" element={<Cart2 />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/eks" element={<Ekspedisi />} />
+          </Routes >
           <Footer />
-        </div>
+        </div >
       ) : (
         <div className="App">
           <Sidebar />
@@ -74,7 +81,8 @@ function App() {
             <Route path="/cek" element={<Cek />} />
           </Routes>
         </div>
-      )} */}
+      )
+      } */}
       <Routes>{routes.map((route) => route)}</Routes>
     </>
   );
