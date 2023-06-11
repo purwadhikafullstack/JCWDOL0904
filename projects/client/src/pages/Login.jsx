@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { api } from "../API/api";
 import { Button } from "@chakra-ui/react";
+import { useDispatch } from "react-redux";
+import { login } from "../features/userSlice";
 
 const url = "/auth/login";
 
 export const Login = () => {
   let navigate = useNavigate();
+  let dispatch = useDispatch();
 
   let email = useRef();
   let password = useRef();
@@ -19,9 +22,12 @@ export const Login = () => {
         password: inputPassword,
       });
       console.log(response);
-      if ((response.status = 200)) {
-        localStorage.setItem("idUser", JSON.stringify(response.data.result.id));
-        navigate("/home");
+      if (response.status == 200) {
+        // alert("asd");
+        localStorage.setItem("auth", JSON.stringify(response.data.result.id));
+        dispatch(login(response.data.result));
+        // console.log(response.data.result);
+        // navigate("/home");
       }
     } catch (error) {
       return { response: error.response.data.message };

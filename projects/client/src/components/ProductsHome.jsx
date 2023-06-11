@@ -1,5 +1,5 @@
-import { Card, CardBody, Divider, Text, Heading, Stack, Image, Flex} from '@chakra-ui/react'
-import React from 'react'
+import { Card, CardBody, Divider, Text, Heading, Stack, Image, Flex, Grid, GridItem} from '@chakra-ui/react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import "../pages/style/Homepage.css"
 
@@ -12,27 +12,31 @@ const ProductsHome = ({ products}) => {
         navigation("/detail")
     }
 
+    
+
     return (
         <div style={{display:'flex', flexDirection:'column', alignItems:"center"}}>
-            <Flex wrap="wrap" display="flex" justifyContent="center">
+            {/* <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}> */}
+            <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}>
+
                 {products?.map((el) => {
                     return (
-                        <div key={el.id} onClick={() => handleToDetail(el.id)} className='con-cards'>
-                            <Card cursor="pointer" width="200px" height="300px">
+                        <GridItem key={el.id} onClick={() => handleToDetail(el.id)} className='con-cards'>
+                            <Card cursor="pointer" width="200px" height="330px">
                                 <CardBody >
                                     <Image
                                         src={`${el.product_image}`}
-                                        alt='Green double couch with wooden legs'
+                                        alt={`${el.product_name}`}
                                         borderRadius='lg'
                                         width='150px'
                                         height='150px'
                                     />
                                     <Stack mt='6' spacing='3'>
-                                        <Heading fontSize="10px">{el.product_name}</Heading>
+                                        <Heading fontSize="12px">{el.product_name}</Heading>
                                         <Text noOfLines={2}
                                             overflow="hidden"
                                             textOverflow="ellipsis"
-                                            fontSize="10px"
+                                            fontSize="12px"
                                         >
                                             {el.description}
                                         </Text>
@@ -41,13 +45,12 @@ const ProductsHome = ({ products}) => {
                                         </Text>
                                     </Stack>
                                 </CardBody>
-                                <Divider />
                             </Card>
-                        </div>
+                        </GridItem>
                     )
                 })}
 
-            </Flex>
+            </Grid>
             
         </div>
     )

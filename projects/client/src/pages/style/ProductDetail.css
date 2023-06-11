@@ -5,7 +5,7 @@
     display: flex;
     align-items: center;
     padding-top: 60px;
-    justify-content: center;
+    /* justify-content: center; */
 
 }
 
@@ -32,7 +32,7 @@
 
 .num-price-detail {
     margin-top: 4px;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .con-desc-text {
@@ -54,7 +54,12 @@
     width: 400px;
 }
 
-@media (max-width: 412px) {
+
+.con-table-info {
+    width: 800px;
+}
+
+@media (max-width: 800px) {
     .wrap-product-detail {
         display: flex;
         flex-direction: column-reverse;
@@ -70,5 +75,10 @@
 
     .button-add {
         width: 300px;
+    }
+
+    .con-table-info {
+        width: 350px;
+        font-size: 12px;
     }
 }
