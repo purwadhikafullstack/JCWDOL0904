@@ -1,11 +1,11 @@
-import {useState, useEffect} from "react";
-import {api} from "../API/api";
+import { useState, useEffect } from "react";
+import { api } from "../API/api";
 import AddressModal from "../components/AddressModal";
-import {AddAddressModal} from "../components/AddAddressModal";
-import {Ekspedisi} from "../components/Ekspedisi";
-import {apiro} from "../API/apiro";
-import {useNavigate} from "react-router-dom";
-import {useSelector} from "react-redux";
+import { AddAddressModal } from "../components/AddAddressModal";
+import { Ekspedisi } from "../components/Ekspedisi";
+import { apiro } from "../API/apiro";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -21,14 +21,14 @@ export default function Checkout() {
   const [warehouseOrigin, setWarehouseOrigin] = useState("");
   const [ongkir, setOngkir] = useState(0);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("");
-  console.log(ongkir);
-  console.log("ini ekspedisi", selectedDeliveryMethod);
-  console.log(cartItems);
-  console.log("Total amount", totalAmount);
-  console.log("warehouseOrigin", warehouseOrigin);
-  console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
-  console.log("ini address city id", selectedAddress?.address_city_id);
-  console.log("destination", selectedAddress);
+  // console.log(ongkir);
+  // console.log("ini ekspedisi", selectedDeliveryMethod);
+  // console.log(cartItems);
+  // console.log("Total amount", totalAmount);
+  // console.log("warehouseOrigin", warehouseOrigin);
+  // console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
+  // console.log("ini address city id", selectedAddress?.address_city_id);
+  // console.log("destination", selectedAddress);
 
   const navigate = useNavigate();
 
@@ -134,7 +134,7 @@ export default function Checkout() {
     const calculateTotalAmount = () => {
       let subtotal = 0;
       for (const item of cartItems) {
-        subtotal += item.Product.price;
+        subtotal += item.Product.price * item.quantity;
       }
       setTotalAmount(subtotal + ongkir);
       console.log(ongkir);
@@ -154,7 +154,8 @@ export default function Checkout() {
                 <h2 className="sr-only">Order summary</h2>
                 <ul
                   role="list"
-                  className="divide-y divide-gray-200 border-t border-b border-gray-200">
+                  className="divide-y divide-gray-200 border-t border-b border-gray-200"
+                >
                   <li key={item.Product.id} className="flex py-6 sm:py-10">
                     <img
                       src={item.Product.product_image}
@@ -167,7 +168,12 @@ export default function Checkout() {
                           <h3 className="text-gray-900">
                             <a>{item.Product.product_name}</a>
                           </h3>
-                          <p className="text-gray-900">{item.Product.price}</p>
+                          <p className="text-gray-900">
+                            <p>
+                              Rp.{item.Product.price.toLocaleString("id-ID")}
+                            </p>{" "}
+                            <p className="font-normal">({item.quantity})</p>
+                          </p>
 
                           <p className="hidden text-gray-500 sm:block text-sm font-thin">
                             {item.Product.description}
@@ -186,7 +192,8 @@ export default function Checkout() {
               <button
                 type="button"
                 disabled
-                className="w-full cursor-auto py-4 text-left text-lg font-medium text-gray-500">
+                className="w-full cursor-auto py-4 text-left text-lg font-medium text-gray-500"
+              >
                 Shipping address
               </button>
             </div>
@@ -227,14 +234,16 @@ export default function Checkout() {
             <button
               type="button"
               onClick={openAddressModal}
-              className="mt-1 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium text-indigo-600 hover:text-indigo-800  shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              className="mt-1 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium text-indigo-600 hover:text-indigo-800  shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
               Change address
             </button>
 
             <button
               type="button"
               onClick={openAddAddressModal}
-              className="mt-2 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium text-indigo-600 hover:text-indigo-800  shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+              className="mt-2 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium text-indigo-600 hover:text-indigo-800  shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
               Add Address
             </button>
 
@@ -243,7 +252,8 @@ export default function Checkout() {
             <div className="relative mt-8">
               <div
                 className="absolute inset-0 flex items-center"
-                aria-hidden="true">
+                aria-hidden="true"
+              >
                 <div className="w-full border-t border-gray-200" />
               </div>
               <div className="relative flex justify-center">
@@ -280,13 +290,15 @@ export default function Checkout() {
 
               <button
                 type="submit"
-                className="mt-6 w-full rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                className="mt-6 w-full rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
                 Checkout
               </button>
               <button
                 type="submit"
                 onClick={() => navigate("/home")}
-                className="mt-6 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm ">
+                className="mt-6 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm "
+              >
                 Continue Shooping
               </button>
             </form>

@@ -28,9 +28,9 @@ const ProductDetail = () => {
       getOneProduct(JSON.parse(idProduct));
       window.scrollTo(0, 0);
     } else {
-      navigation("/home");
+      navigation("/");
     }
-    const id = JSON.parse(localStorage.getItem("idUser"));
+    const id = JSON.parse(localStorage.getItem("auth"));
     if (!id || id < 1) SetIsLogin(false);
     else if (id) SetIsLogin(true);
   }, []);
@@ -38,6 +38,7 @@ const ProductDetail = () => {
   const getOneProduct = async (idP) => {
     try {
       const result = await api.post("/product/detail", { idP });
+      console.log(result.data);
       setStock(result.data.stock);
       setProduct(result.data.productById);
       console.log(result);
@@ -81,7 +82,7 @@ const ProductDetail = () => {
                   fontWeight: "bold",
                 }}
               >
-                {product.name}
+                {product.product_name}
               </h1>
             </div>
             <section aria-labelledby="information-heading">
@@ -118,9 +119,20 @@ const ProductDetail = () => {
                   spinner={<BeatLoader size={8} color="black" />}
                 ></Button>
               )}
+              {/* <button
+                onClick={(e) => addToCart(e)}
+                type="submit"
+                className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+              >
+                Add to cart
+              </button> */}
             </div>
           </div>
-          <Image src={product.imageSrc} alt={product.imageAlt} className="" />
+          <Image
+            src={product.product_image}
+            alt={product.product_image}
+            className=""
+          />
         </div>
         <div>
           <TableContainer

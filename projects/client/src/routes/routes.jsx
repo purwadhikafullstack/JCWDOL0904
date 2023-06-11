@@ -12,13 +12,32 @@ import ProductDetail from "../pages/ProductDetail";
 
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
+import Cart2 from "../pages/Cart2";
+import Checkout from "../pages/Checkout";
 
 const routes = [
+  //home
   <Route
     path="/"
     element={
       <ProtectedPage guestOnly={true}>
         <Homepage />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    path="/cart"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <Cart2 />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    path="/checkout"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <Checkout />
       </ProtectedPage>
     }
   />,
@@ -42,6 +61,7 @@ const routes = [
       </ProtectedPage>
     }
   />,
+  // admin
   <Route
     path="/test"
     element={

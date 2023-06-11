@@ -23,7 +23,10 @@ export const Verification = () => {
         // console.log(passwordOne.current.value);
         let response = await api.post(
           url,
-          { password: passwordOne.current.value },
+          {
+            password: passwordOne.current.value,
+            confirmPassword: confirmPassword.current.value,
+          },
           {
             headers: {
               authorization: `Bearer ${token}`,
@@ -35,6 +38,7 @@ export const Verification = () => {
           text: response.data.message,
           icon: "success",
           confirmButtonText: "Ok",
+          confirmButtonColor: "black",
         });
       }
       navigate("/");
@@ -44,6 +48,7 @@ export const Verification = () => {
         text: err.response.data.message,
         icon: "error",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
     }
   };
