@@ -115,7 +115,7 @@ const Cart2 = () => {
                   <li key={item.id} className="flex py-6 sm:py-10">
                     <div className="flex-shrink-0">
                       <img
-                        src={`http://localhost:8000/${item.Product.product_image}`}
+                        src={item.Product.product_image}
                         alt={item.name}
                         className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
                       />

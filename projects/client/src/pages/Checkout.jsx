@@ -21,14 +21,14 @@ export default function Checkout() {
   const [warehouseOrigin, setWarehouseOrigin] = useState("");
   const [ongkir, setOngkir] = useState(0);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("");
-  // console.log(ongkir);
-  // console.log("ini ekspedisi", selectedDeliveryMethod);
-  // console.log(cartItems);
-  // console.log("Total amount", totalAmount);
-  // console.log("warehouseOrigin", warehouseOrigin);
-  // console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
-  // console.log("ini address city id", selectedAddress?.address_city_id);
-  // console.log("destination", selectedAddress);
+  console.log(ongkir);
+  console.log("ini ekspedisi", selectedDeliveryMethod);
+  console.log(cartItems);
+  console.log("Total amount", totalAmount);
+  console.log("warehouseOrigin", warehouseOrigin);
+  console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
+  console.log("ini address city id", selectedAddress?.address_city_id);
+  console.log("destination", selectedAddress);
 
   const navigate = useNavigate();
 
@@ -137,6 +137,7 @@ export default function Checkout() {
         subtotal += item.Product.price;
       }
       setTotalAmount(subtotal + ongkir);
+      console.log(ongkir);
     };
 
     calculateTotalAmount();
@@ -156,9 +157,7 @@ export default function Checkout() {
                   className="divide-y divide-gray-200 border-t border-b border-gray-200">
                   <li key={item.Product.id} className="flex py-6 sm:py-10">
                     <img
-                      src={
-                        `http://localhost:8000/` + item.Product.product_image
-                      }
+                      src={item.Product.product_image}
                       alt={item.Product.product_name}
                       className="h-24 w-24 flex-none rounded-md bg-gray-100 object-cover object-center"
                     />
