@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Fragment} from "react";
 import {Disclosure, Menu, Transition} from "@headlessui/react";
 import {
@@ -6,11 +6,41 @@ import {
   XMarkIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
+import {Link} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {updateCart} from "../features/cartSlice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+
 export const Navbar = () => {
+  const [cartLength, setCartLength] = useState(0);
+  const {cart} = useSelector((state) => state.cartSlice.value);
+  useEffect(() => {
+    setCartLength(cart.length);
+  }, [cart]);
+
+  // Dispatch the Redux action to update the cart
+  const dispatch = useDispatch();
+  const updateCartData = (cart) => {
+    dispatch(updateCart({cart}));
+  };
+
+  // Retrieve the cart data from local storage on page load
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      updateCartData(JSON.parse(storedCart));
+    }
+  }, []);
+
+  // Update the cart data in local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
   return (
     <Disclosure
       as="nav"
@@ -67,11 +97,13 @@ export const Navbar = () => {
                     className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     <span className="sr-only">View notifications</span>
                     <div className="flex">
-                      <ShoppingCartIcon
-                        className="h-6 w-6"
-                        aria-hidden="true"
-                      />{" "}
-                      <p>1</p>
+                      <Link to="/cart">
+                        <ShoppingCartIcon
+                          className="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      </Link>
+                      <p>{cart.length}</p>
                     </div>
                   </button>
 

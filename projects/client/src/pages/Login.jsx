@@ -1,9 +1,9 @@
-import { React, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../API/api";
+import {React, useRef} from "react";
+import {useNavigate} from "react-router-dom";
+import {api} from "../API/api";
 import Swal from "sweetalert2";
 
-import { Button } from "@chakra-ui/react";
+import {Button} from "@chakra-ui/react";
 
 const url = "/auth/login";
 
@@ -39,8 +39,7 @@ export const Login = () => {
       <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
           href="#"
-          class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-        >
+          class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
           <img
             class="w-8 h-8 mr-2"
             src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
@@ -56,8 +55,7 @@ export const Login = () => {
             <div>
               <label
                 for="email"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Your email
               </label>
               <input
@@ -73,8 +71,7 @@ export const Login = () => {
             <div>
               <label
                 for="email"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Password
               </label>
               <input
@@ -93,16 +90,14 @@ export const Login = () => {
               class="w-full text-black bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               onClick={() =>
                 loginAccount(email.current.value, password.current.value)
-              }
-            >
+              }>
               Log in
             </button>
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">
               Dont have an account?{" "}
               <Button
                 onClick={() => navigate("/register")}
-                class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-              >
+                class="font-medium text-primary-600 hover:underline dark:text-primary-500">
                 Register here
               </Button>
             </p>
