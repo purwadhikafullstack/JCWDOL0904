@@ -1,32 +1,57 @@
-import React, {useState} from "react";
-import {Fragment} from "react";
-import {Disclosure, Menu, Transition} from "@headlessui/react";
+import React, { useEffect, useState } from "react";
+import { Fragment } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
   XMarkIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
-import {Link} from "react-router-dom";
-import {useSelector} from "react-redux";
-import {useEffect} from "react";
-import {useDispatch} from "react-redux";
-import {updateCart} from "../features/cartSlice";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { updateCart } from "../features/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { login } from "../features/userSlice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export const Navbar = () => {
+  const navigation = useNavigate();
+  const dispatch = useDispatch();
+  const [isLogin, SetIsLogin] = useState(false);
+
+  useEffect(() => {
+    // const id = JSON.parse(localStorage.getItem("idUser"));
+    if (!localStorage.getItem("auth")) SetIsLogin(false);
+    else if (localStorage.getItem("auth")) SetIsLogin(true);
+  }, [localStorage.getItem("auth")]);
+
+  const handleLogOut = () => {
+    localStorage.removeItem("auth");
+    dispatch(
+      login({
+        id: 0,
+        fullname: "",
+        username: "",
+        is_verified: "",
+        user_image: "",
+        role: "",
+      })
+    );
+    // navigation("/home");
+  };
+
   const [cartLength, setCartLength] = useState(0);
-  const {cart} = useSelector((state) => state.cartSlice.value);
+  const { cart } = useSelector((state) => state.cartSlice.value);
   useEffect(() => {
     setCartLength(cart.length);
   }, [cart]);
 
   // Dispatch the Redux action to update the cart
-  const dispatch = useDispatch();
   const updateCartData = (cart) => {
-    dispatch(updateCart({cart}));
+    dispatch(updateCart({ cart }));
   };
 
   // Retrieve the cart data from local storage on page load
@@ -45,8 +70,9 @@ export const Navbar = () => {
     <Disclosure
       as="nav"
       className="bg-white shadow z-50"
-      style={{position: "fixed", width: "100%"}}>
-      {({open}) => (
+      style={{ position: "fixed", width: "100%" }}
+    >
+      {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
@@ -62,7 +88,10 @@ export const Navbar = () => {
                     )}
                   </Disclosure.Button>
                 </div>
-                <div className="flex flex-shrink-0 items-center">
+                <div
+                  className="flex flex-shrink-0 items-center cursor-pointer"
+                  onClick={() => navigation("/")}
+                >
                   <img
                     className="block h-8 w-auto lg:hidden"
                     src="http://localhost:8000/logo_galaxy.png"
@@ -85,16 +114,21 @@ export const Navbar = () => {
               </div>
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <button
-                    type="button"
-                    className="relative inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    <span>Login</span>
-                  </button>
+                  {isLogin ? null : (
+                    <button
+                      type="button"
+                      className="relative inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      onClick={() => navigation("/login")}
+                    >
+                      <span>Login</span>
+                    </button>
+                  )}
                 </div>
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
                   <button
                     type="button"
-                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
                     <span className="sr-only">View notifications</span>
                     <div className="flex">
                       <Link to="/cart">
@@ -108,77 +142,84 @@ export const Navbar = () => {
                   </button>
 
                   {/* Profile dropdown */}
-                  <Menu as="div" className="relative ml-3">
-                    <div>
-                      <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          alt=""
-                        />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-200"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95">
-                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
-                          {({active}) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm"
-                              )}>
-                              Your Profile
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({active}) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm"
-                              )}>
-                              Register
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({active}) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}>
-                              Settings
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({active}) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}>
-                              Sign out
-                            </a>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
+                  {isLogin ? (
+                    <Menu as="div" className="relative ml-3">
+                      <div>
+                        <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                          <span className="sr-only">Open user menu</span>
+                          <img
+                            className="h-8 w-8 rounded-full"
+                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            alt=""
+                          />
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-200"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm"
+                                )}
+                              >
+                                Your Profile
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm"
+                                )}
+                              >
+                                Register
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700"
+                                )}
+                              >
+                                Settings
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
+                                )}
+                                onClick={() => handleLogOut()}
+                              >
+                                Sign out
+                              </a>
+                            )}
+                          </Menu.Item>
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -189,7 +230,8 @@ export const Navbar = () => {
               <Disclosure.Button
                 as="a"
                 href="#"
-                className="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6">
+                className="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6"
+              >
                 Dashboard
               </Disclosure.Button>
             </div>
@@ -212,7 +254,8 @@ export const Navbar = () => {
                 </div>
                 <button
                   type="button"
-                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
                   <span className="sr-only">View notifications</span>
                   <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
@@ -221,19 +264,22 @@ export const Navbar = () => {
                 <Disclosure.Button
                   as="a"
                   href="#"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                >
                   Your Profile
                 </Disclosure.Button>
                 <Disclosure.Button
                   as="a"
                   href="#"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                >
                   Settings
                 </Disclosure.Button>
                 <Disclosure.Button
                   as="a"
                   href="#"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                >
                   Sign out
                 </Disclosure.Button>
               </div>

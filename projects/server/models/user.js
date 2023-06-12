@@ -58,12 +58,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       user_image: {
         type: DataTypes.STRING,
-        allowNull:true,
+        allowNull: true,
         defaultValue: "avatar_default.jpg",
       },
       role: {
         type: DataTypes.ENUM,
         values: ["user", "admin", "adminWarehouse"],
+        defaultValue: "user",
       },
       verify_token: {
         type: DataTypes.STRING,
