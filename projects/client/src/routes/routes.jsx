@@ -14,6 +14,7 @@ import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
 import Cart2 from "../pages/Cart2";
 import Checkout from "../pages/Checkout";
+import ManageWarehouse from "../pages/admin/ManageWarehouse";
 
 const routes = [
   //home
@@ -30,7 +31,7 @@ const routes = [
     key="cart"
     path="/cart"
     element={
-      <ProtectedPage needLogin={true} adminOnly={true}>
+      <ProtectedPage needLogin={true}>
         <Cart2 />
       </ProtectedPage>
     }
@@ -77,6 +78,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <Test />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="test"
+    path="/manage-warehouse"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageWarehouse />
       </ProtectedPage>
     }
   />,

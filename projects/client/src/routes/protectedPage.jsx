@@ -16,17 +16,26 @@ export default function ProtectedPage({
   const nav = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
-
+  console.log(needLogin);
   useEffect(() => {
     if (needLogin && !user.id) {
+      console.log("coba");
+
       nav("/login");
     } else if (guestOnly && user.id) {
-      if (user.role == "admin") nav("/test");
-      else nav("/");
-    } else if (needLogin && user.role != "admin" && adminOnly) {
+      if (user.role == "admin" || user.role === "adminWarehouse") {
+        console.log("masuk");
+        nav("/test");
+      } else {
+        nav("/");
+      }
+    } else if (
+      needLogin &&
+      user.role !== "admin" &&
+      user.role !== "adminWarehouse" &&
+      adminOnly
+    ) {
       nav("/login");
-    } else if (needLogin && user.role === "admin" && adminOnly) {
-      nav("/test");
     }
 
     setTimeout(() => {
@@ -37,10 +46,8 @@ export default function ProtectedPage({
 
   return isLoading ? (
     <Spinner />
-  ) : user.role == "admin" ? (
-    <>
-      <Sidebar></Sidebar> {children}
-    </>
+  ) : user.role == "admin" || user.role === "adminWarehouse" ? (
+    <>{children}</>
   ) : (
     <>
       <Navbar /> {children} <Footer />
