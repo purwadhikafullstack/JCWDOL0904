@@ -47,8 +47,8 @@ import {
 } from "@heroicons/react/20/solid";
 
 const navigation = [
-  { name: "Home", href: "#", icon: HomeIcon, current: true },
-  { name: "History", href: "#", icon: ClockIcon, current: false },
+  { name: "Home", href: "/", icon: HomeIcon, current: true },
+  { name: "History", href: "/login", icon: ClockIcon, current: false },
   { name: "Balances", href: "#", icon: ScaleIcon, current: false },
   { name: "Cards", href: "#", icon: CreditCardIcon, current: false },
   { name: "Recipients", href: "#", icon: UserGroupIcon, current: false },
@@ -165,7 +165,7 @@ export default function Example() {
                   >
                     <div className="space-y-1 px-2">
                       {navigation.map((item) => (
-                        <a
+                        <button
                           key={item.name}
                           href={item.href}
                           className={classNames(
@@ -181,13 +181,13 @@ export default function Example() {
                             aria-hidden="true"
                           />
                           {item.name}
-                        </a>
+                        </button>
                       ))}
                     </div>
                     <div className="mt-6 pt-6">
                       <div className="space-y-1 px-2">
                         {secondaryNavigation.map((item) => (
-                          <a
+                          <button
                             key={item.name}
                             href={item.href}
                             className="group flex items-center rounded-md px-2 py-2 text-base font-medium text-cyan-100 hover:bg-cyan-600 hover:text-white"
@@ -197,7 +197,7 @@ export default function Example() {
                               aria-hidden="true"
                             />
                             {item.name}
-                          </a>
+                          </button>
                         ))}
                       </div>
                     </div>

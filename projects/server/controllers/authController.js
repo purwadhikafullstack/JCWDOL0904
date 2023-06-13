@@ -9,17 +9,11 @@ module.exports = {
   userVerification: async (req, res) => {
     const roll = await sequelize.transaction();
     try {
-      const { password, confirmPassword } = req.body;
+      const { password } = req.body;
 
       if (!password) {
         return res.status(400).send({
           message: "Please complete your data",
-        });
-      }
-
-      if (password !== confirmPassword) {
-        return res.status(400).send({
-          message: "Your password doesn't match!",
         });
       }
 
@@ -33,13 +27,21 @@ module.exports = {
         });
       }
 
-      const salt = await bcrypt.genSalt(10);
-      const hashPass = await bcrypt.hash(password, salt);
-
       let token = req.headers.authorization;
       token = token.split(" ")[1];
       const data = jwt.verify(token, "galaxy");
       console.log(data);
+
+      const user = await User.findOne({ where: { id: data.id } });
+
+      if (user.is_verified) {
+        return res.status(400).send({
+          message: "Your account has already been verified",
+        });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashPass = await bcrypt.hash(password, salt);
 
       const userPassword = await User.update(
         { is_verified: true, password: hashPass },
@@ -123,16 +125,16 @@ module.exports = {
         });
       }
 
+      let token = req.headers.authorization;
+      token = token.split(" ")[1];
+      const data = jwt.verify(token, "galaxy");
+      console.log(data);
+
       const salt = await bcrypt.genSalt(10);
       const hashPass = await bcrypt.hash(password, salt);
 
-      let token = req.headers.authorization;
-      token = token.split(" ")[1];
-      const data = jwt.verify(token, "resetpassword");
-      console.log(data);
-
       const userPassword = await User.update(
-        { is_verified: true, password: hashPass, reset_token: null },
+        { is_verified: true, password: hashPass },
         { where: { id: data.id } }
       );
       // await roll.commit();

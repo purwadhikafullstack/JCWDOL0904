@@ -28,11 +28,18 @@ module.exports = {
         where: { email },
       });
 
-      if (userAlreadyExist)
-        res.status(400).send({
-          message:
-            "Your email address already exist, please verify your email!",
-        });
+      if (userAlreadyExist) {
+        if (userAlreadyExist.is_verified) {
+          return res.status(400).send({
+            message: "Your email address is already verified, please login",
+          });
+        } else {
+          return res.status(400).send({
+            message:
+              "Your email address already exists, but it is not verified. Please verify your email!",
+          });
+        }
+      }
 
       let result = await User.create({
         email,
@@ -73,47 +80,43 @@ module.exports = {
       });
     } catch (err) {
       console.log(err);
-      res.status(400).send({ message: "Server error" });
     }
   },
+
   getUserData: async (req, res) => {
     try {
-      
-      const {id} = req.body;
+      const { id } = req.body;
 
       const result = await User.findOne({
-        where:{
-          id
-        }
-      })
+        where: {
+          id,
+        },
+      });
 
       res.status(200).send({
-        result
-      })
-
+        result,
+      });
     } catch (error) {
-      res.status(400).send(error)
+      res.status(400).send(error);
     }
   },
   getUserById: async (req, res) => {
     try {
-      
-      const {id} = req.params;
+      const { id } = req.params;
 
       const user = await User.findOne({
-        where:{
-          id
-        }
-      })
+        where: {
+          id,
+        },
+      });
 
       res.status(200).send({
-        user
-      })
-
+        user,
+      });
     } catch (error) {
-      res.status(400).send(error)
+      res.status(400).send(error);
     }
-  }
+  },
 
   userRequest: async (req, res) => {
     try {
@@ -134,7 +137,9 @@ module.exports = {
       let user = await User.findOne({ where: { email } });
 
       let payload = { id: user.id };
-      let token = jwt.sign(payload, "resetpassword");
+      let token = jwt.sign(payload, "galaxy", {
+        expiresIn: "3m",
+      });
 
       await User.update(
         { reset_token: token },

@@ -41,6 +41,7 @@ const {
   rajaongkirRouter,
   cartRouter,
   ekpedisiRouter,
+  tokenValidatorRouter,
 } = require("../routers");
 
 app.use(authorize);
@@ -54,6 +55,7 @@ app.use("/api/product", productRouters);
 app.use("/api/rajaongkir", rajaongkirRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/ekspedisi", ekpedisiRouter);
+app.use("/api/auth", tokenValidatorRouter);
 
 // app.get("/api", (req, res) => {
 //   res.send(`Hello, this is my API`);

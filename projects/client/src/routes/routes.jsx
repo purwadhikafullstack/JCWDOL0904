@@ -1,19 +1,18 @@
 import { Route } from "react-router-dom";
 import Homepage from "../pages/Homepage";
 import { Register } from "../pages/register";
-
 import { Verification } from "../pages/verification";
-
 import { Login } from "../pages/Login";
-
+import { ResetPassword } from "../pages/resetPassword";
+import { InputPassword } from "../pages/inputPassword";
 import { TestImage } from "../pages/TestImage";
-
 import ProductDetail from "../pages/ProductDetail";
-
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
 import Cart2 from "../pages/Cart2";
 import Checkout from "../pages/Checkout";
+import Example from "../pages/Example";
+import Error from "../pages/Error";
 
 const routes = [
   //home
@@ -61,6 +60,47 @@ const routes = [
       </ProtectedPage>
     }
   />,
+  <Route
+    path="/detail"
+    element={
+      <ProtectedPage>
+        <ProductDetail />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    path="/request"
+    element={
+      <ProtectedPage>
+        <ResetPassword />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    path="/inputpassword/:token"
+    element={
+      <ProtectedPage>
+        <InputPassword />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    path="/example"
+    element={
+      <ProtectedPage>
+        <Example />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    path="/404"
+    element={
+      <ProtectedPage>
+        <Error />
+      </ProtectedPage>
+    }
+  />,
+
   // admin
   <Route
     path="/test"

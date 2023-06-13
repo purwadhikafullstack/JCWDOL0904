@@ -1,4 +1,4 @@
-import { React, useRef } from "react";
+import { React, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../API/api";
 import Swal from "sweetalert2";
@@ -6,14 +6,23 @@ import { Field, ErrorMessage, Formik, Form } from "formik";
 import * as Yup from "yup";
 
 const url = "/auth/resetpassword";
+const urlToken = "/auth/tokencheck";
 
 export const InputPassword = () => {
   let navigate = useNavigate();
-
-  // let passwordOne = useRef();
-  // let confirmPassword = useRef();
-
   let { token } = useParams();
+
+  const tokenVerify = async () => {
+    try {
+      await api.get(urlToken, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      navigate("/404");
+    }
+  };
 
   const resetSchema = Yup.object().shape({
     password: Yup.string()
@@ -53,7 +62,9 @@ export const InputPassword = () => {
       });
     }
   };
-
+  useEffect(() => {
+    tokenVerify();
+  });
   return (
     <section class="bg-gray-50 dark:bg-gray-900">
       <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
