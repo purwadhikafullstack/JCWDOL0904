@@ -57,7 +57,8 @@ module.exports = {
         fullname: "Admin Warehouse 1",
         username: "adminW1",
         email: "adminW1@gmail.com",
-        password: "123",
+        password:
+          "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
         user_image: null,
         role: "adminWarehouse",
@@ -69,7 +70,8 @@ module.exports = {
         fullname: "Admin Warehouse 2",
         username: "adminW2",
         email: "adminW2@gmail.com",
-        password: "123",
+        password:
+          "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
         user_image: null,
         role: "adminWarehouse",
