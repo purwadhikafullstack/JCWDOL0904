@@ -1,6 +1,5 @@
-// import axios from "axios";
 import "./App.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { Login } from "./pages/Login";
@@ -8,21 +7,47 @@ import { Routes, Route } from "react-router-dom";
 import { TestImage } from "./pages/TestImage";
 import Sidebar from "./components/admin/Sidebar";
 import { Cek } from "./components/admin/Cek";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Homepage from "./pages/Homepage";
 import ProductDetail from "./pages/ProductDetail";
 import Test from "./pages/Test";
+import Cart from "./pages/Cart";
+import Cart2 from "./pages/Cart2";
+import Checkout from "./pages/Checkout";
+import { Ekspedisi } from "./components/Ekspedisi";
 import { Verification } from "./pages/verification";
 import { Register } from "./pages/register";
 import { ResetPassword } from "./pages/resetPassword";
 import { InputPassword } from "./pages/inputPassword";
 import Example from "./pages/Example";
+import routes from "./routes/routes";
+import { api } from "./API/api";
+import { login } from "./features/userSlice";
 
 function App() {
   const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
 
-  const { role } = useSelector((state) => state.userSlice.value);
-  console.log(role);
+  async function getUser(id) {
+    await api
+      .get("/user/auth/" + id)
+      .then((res) => dispatch(login(res.data.user)));
+  }
+
+  //app js > useEffect => localstorage => api request user by id => dispatch => globalstate => routes => protectedPage => cek redux => kalau sesaui return login
+
+  useEffect(() => {
+    const userid = localStorage.getItem("auth"); //token
+
+    if (userid) {
+      getUser(userid);
+    }
+  }, []);
+
+  // const
+  // const { role } = useSelector((state) => state.userSlice.value);
+  // console.log(role);
+  const role = "";
 
   // useEffect(() => {
   //   (async () => {
@@ -34,7 +59,7 @@ function App() {
   // }, []);
   return (
     <>
-      {role == "user" ? (
+      {/* {role == "user" ? (
         <div className="App">
           <Navbar />
           <Routes>
@@ -47,10 +72,13 @@ function App() {
             <Route path="/image" element={<TestImage />} />
             <Route path="/detail" element={<ProductDetail />} />
             <Route path="/test" element={<Test />} />
-            <Route path="/example" element={<Example />} />
-          </Routes>
+            <Route path="/cart2" element={<Cart />} />
+            <Route path="/cart" element={<Cart2 />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/eks" element={<Ekspedisi />} />
+          </Routes >
           <Footer />
-        </div>
+        </div >
       ) : (
         <div className="App">
           <Sidebar />
@@ -58,7 +86,9 @@ function App() {
             <Route path="/cek" element={<Cek />} />
           </Routes>
         </div>
-      )}
+      )
+      } */}
+      <Routes>{routes.map((route) => route)}</Routes>
     </>
   );
 }

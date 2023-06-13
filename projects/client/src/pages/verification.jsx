@@ -45,6 +45,7 @@ export const Verification = () => {
           text: response.data.message,
           icon: "success",
           confirmButtonText: "Ok",
+          confirmButtonColor: "black",
         });
       }
       navigate("/");
@@ -54,6 +55,7 @@ export const Verification = () => {
         text: err.response.data.message,
         icon: "error",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
     }
   };

@@ -6,11 +6,14 @@ import { Field, ErrorMessage, Formik, Form } from "formik";
 import * as Yup from "yup";
 
 import { Button } from "@chakra-ui/react";
+import { useDispatch } from "react-redux";
+import { login } from "../features/userSlice";
 
 const url = "/auth/login";
 
 export const Login = () => {
   let navigate = useNavigate();
+  let dispatch = useDispatch();
 
   const loginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -25,10 +28,13 @@ export const Login = () => {
         email: inputEmail,
         password: inputPassword,
       });
-
-      if ((response.status = 200)) {
-        localStorage.setItem("idUser", JSON.stringify(response.data.result.id));
-        navigate("/home");
+      console.log(response);
+      if (response.status == 200) {
+        // alert("asd");
+        localStorage.setItem("auth", JSON.stringify(response.data.result.id));
+        dispatch(login(response.data.result));
+        // console.log(response.data.result);
+        // navigate("/home");
       }
     } catch (err) {
       Swal.fire({

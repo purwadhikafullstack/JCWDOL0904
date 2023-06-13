@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { api } from "../API/api";
+import React, {useState} from "react";
+import {api} from "../API/api";
 
 export const TestImage = () => {
   const [file, setFile] = useState("");
@@ -20,7 +20,7 @@ export const TestImage = () => {
     preview.src = URL.createObjectURL(e.target.files[0]);
   };
   return (
-    <div style={{ height: "900vh", paddingTop: "80px" }}>
+    <div style={{height: "900vh", paddingTop: "80px"}}>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos
         molestias placeat libero ad corporis. Doloremque quam aliquam provident

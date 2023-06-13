@@ -64,6 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       role: {
         type: DataTypes.ENUM,
         values: ["user", "admin", "adminWarehouse"],
+        defaultValue: "user",
       },
       verify_token: {
         type: DataTypes.STRING,
