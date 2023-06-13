@@ -64,7 +64,7 @@ module.exports = {
         subject: `Verify your account`,
         html: tempResult,
       };
-      let response = await nodemailer.sendMail(mail);
+      let response = nodemailer.sendMail(mail);
       console.log(response);
 
       res.status(200).send({
@@ -74,6 +74,63 @@ module.exports = {
     } catch (err) {
       console.log(err);
       res.status(400).send({ message: "Server error" });
+    }
+  },
+
+  userRequest: async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).send({
+          message: "Please input your email address",
+        });
+      }
+
+      if (!email.includes("@") || !email.endsWith(".com")) {
+        return res.status(400).send({
+          message: "Please enter a valid email address",
+        });
+      }
+
+      let user = await User.findOne({ where: { email } });
+
+      let payload = { id: user.id };
+      let token = jwt.sign(payload, "resetpassword");
+
+      await User.update(
+        { reset_token: token },
+        {
+          where: {
+            id: user.id,
+          },
+        }
+      );
+
+      const resetLink = `http://localhost:3000/inputpassword/${token}`;
+      const tempEmail = fs.readFileSync(
+        require.resolve("../templates/reset.html"),
+        { encoding: "utf8" }
+      );
+      const tempCompile = handlebars.compile(tempEmail);
+      const tempResult = tempCompile({ resetLink });
+
+      let mail = {
+        from: `Admin <galaxy@gmail.com>`,
+        to: `${email}`,
+        subject: `Reset Password`,
+        html: tempResult,
+      };
+
+      let response = nodemailer.sendMail(mail);
+      console.log(response);
+
+      res.status(200).send({
+        message: "Please check your email",
+        user,
+      });
+    } catch (err) {
+      console.log(err);
     }
   },
 };

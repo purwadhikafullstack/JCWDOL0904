@@ -56,6 +56,7 @@ module.exports = {
   userLogin: async (req, res) => {
     try {
       const { email, password } = req.body;
+      console.log(email, password);
 
       if (!email || !password) {
         return res.status(400).send({
@@ -92,6 +93,53 @@ module.exports = {
     } catch (err) {
       console.log(err);
       res.status(400).send({ message: "Server error" });
+    }
+  },
+
+  requestReset: async (req, res) => {
+    // const roll = await sequelize.transaction();
+    try {
+      const { password } = req.body;
+
+      if (!password) {
+        return res.status(400).send({
+          message: "Please complete your data",
+        });
+      }
+
+      const passwordRegex =
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
+
+      if (!passwordRegex.test(password)) {
+        return res.status(400).send({
+          message:
+            "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number",
+        });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashPass = await bcrypt.hash(password, salt);
+
+      let token = req.headers.authorization;
+      token = token.split(" ")[1];
+      const data = jwt.verify(token, "resetpassword");
+      console.log(data);
+
+      const userPassword = await User.update(
+        { is_verified: true, password: hashPass, reset_token: null },
+        { where: { id: data.id } }
+      );
+      // await roll.commit();
+      res.send({
+        message: "Reset Password Success",
+        data: userPassword,
+      });
+    } catch (err) {
+      // await roll.rollback();
+      console.log(err);
+      res.status(400).send({
+        message: "Server Error!",
+      });
     }
   },
 };

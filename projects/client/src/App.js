@@ -14,6 +14,9 @@ import ProductDetail from "./pages/ProductDetail";
 import Test from "./pages/Test";
 import { Verification } from "./pages/verification";
 import { Register } from "./pages/register";
+import { ResetPassword } from "./pages/resetPassword";
+import { InputPassword } from "./pages/inputPassword";
+import Example from "./pages/Example";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -38,10 +41,13 @@ function App() {
             <Route path="/home" element={<Homepage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verification/:token" element={<Verification />} />
+            <Route path="/request" element={<ResetPassword />} />
+            <Route path="/inputpassword/:token" element={<InputPassword />} />
             <Route path="/" element={<Login />} />
             <Route path="/image" element={<TestImage />} />
             <Route path="/detail" element={<ProductDetail />} />
             <Route path="/test" element={<Test />} />
+            <Route path="/example" element={<Example />} />
           </Routes>
           <Footer />
         </div>

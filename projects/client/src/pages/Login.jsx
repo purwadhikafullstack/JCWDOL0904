@@ -1,7 +1,9 @@
-import { React, useRef } from "react";
+import { React } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../API/api";
 import Swal from "sweetalert2";
+import { Field, ErrorMessage, Formik, Form } from "formik";
+import * as Yup from "yup";
 
 import { Button } from "@chakra-ui/react";
 
@@ -10,8 +12,12 @@ const url = "/auth/login";
 export const Login = () => {
   let navigate = useNavigate();
 
-  let email = useRef();
-  let password = useRef();
+  const loginSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    password: Yup.string()
+      .min(8, "Password must contain at least 8 characters")
+      .required("Please input your password"),
+  });
 
   const loginAccount = async (inputEmail, inputPassword) => {
     try {
@@ -53,50 +59,84 @@ export const Login = () => {
             <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Login
             </h1>
-            <div>
-              <label
-                for="email"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Your email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Email"
-                required=""
-                ref={email}
-              />
-            </div>
-            <div>
-              <label
-                for="email"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Password"
-                required=""
-                ref={password}
-              />
-            </div>
-            <div class="flex items-start"></div>
-            <button
-              type="submit"
-              class="w-full text-black bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              onClick={() =>
-                loginAccount(email.current.value, password.current.value)
-              }
+            <Formik
+              initialValues={{
+                email: "",
+                password: "",
+              }}
+              validationSchema={loginSchema}
+              onSubmit={(values) => {
+                loginAccount(values.email, values.password);
+              }}
+              // loginAccount(values.email, values.password);
+              //formik => form
+              //form => validation
+              //validation akan jalan pada saat schema tidak terpenuhi
+              // untuk cek dipenuhi/tidak lewat sebuah function onSubmit
+              // untuk fomrik yang bukan HOOKS
+              // semua button di dalam content component FORMIK akan dianggap onsubmit apabila type nya adalah submit
             >
-              Log in
-            </button>
+              {(props) => (
+                <Form>
+                  <div>
+                    <label
+                      for="email"
+                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Your email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Email"
+                      required=""
+                      onChange={props.handleChange} //setstate
+                      value={props.values.email} //manggil state
+                      as={Field}
+                    />
+                    <ErrorMessage name="email" component="div" />
+                  </div>
+                  <div>
+                    <label
+                      for="email"
+                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Password"
+                      required=""
+                      as={Field}
+                      onChange={props.handleChange} //setstate
+                      value={props.values.password} //manggil state
+                    />
+                  </div>
+                  <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                    Forgotten password?{" "}
+                    <Button
+                      onClick={() => navigate("/request")}
+                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    >
+                      Click here
+                    </Button>
+                  </p>
+                  <div class="flex items-start"></div>
+                  <button
+                    type="submit"
+                    class="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                  >
+                    Log in
+                  </button>
+                  <ErrorMessage name="password" component="div" />
+                </Form>
+              )}
+            </Formik>
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">
               Dont have an account?{" "}
               <Button

@@ -21,6 +21,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
     "dotenv": "^16.1.4",
+    "formik": "^2.4.1",
     "framer-motion": "^10.12.16",
     "phosphor": "^0.7.1",
     "phosphor-icons": "^1.4.2",
@@ -34,7 +35,8 @@
     "react-slick": "^0.29.0",
     "redux": "^4.2.1",
     "sweetalert2": "^11.7.11",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.2.0"
   },
   "eslintConfig": {
     "extends": [
