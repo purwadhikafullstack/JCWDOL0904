@@ -46,12 +46,15 @@ const ProductsHome = ({ products }) => {
                     height="150px"
                   />
                   <Stack mt="6" spacing="3" alignItems="center">
-                    <Heading fontSize="12px">{el.product_name}</Heading>
+                    <Heading fontSize="12px" className="text-center">
+                      {el.product_name}
+                    </Heading>
                     <Text
                       noOfLines={2}
                       overflow="hidden"
                       textOverflow="ellipsis"
                       fontSize="12px"
+                      className="text-center"
                     >
                       {el.description}
                     </Text>

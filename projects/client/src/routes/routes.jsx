@@ -18,6 +18,7 @@ import Checkout from "../pages/Checkout";
 const routes = [
   //home
   <Route
+    key="home"
     path="/"
     element={
       <ProtectedPage guestOnly={true}>
@@ -26,6 +27,7 @@ const routes = [
     }
   />,
   <Route
+    key="cart"
     path="/cart"
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
@@ -34,6 +36,7 @@ const routes = [
     }
   />,
   <Route
+    key="checkout"
     path="/checkout"
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
@@ -41,10 +44,15 @@ const routes = [
       </ProtectedPage>
     }
   />,
-  <Route path="/register" element={<Register />} />,
-  <Route path="/verification/:token" element={<Verification />} />,
+  <Route key="register" path="/register" element={<Register />} />,
+  <Route
+    key="verification"
+    path="/verification/:token"
+    element={<Verification />}
+  />,
 
   <Route
+    key="login"
     path="/login"
     element={
       <ProtectedPage guestOnly={true}>
@@ -52,8 +60,9 @@ const routes = [
       </ProtectedPage>
     }
   />,
-  <Route path="/image" element={<TestImage />} />,
+  <Route key="image" path="/image" element={<TestImage />} />,
   <Route
+    key="detail"
     path="/detail"
     element={
       <ProtectedPage>
@@ -63,6 +72,7 @@ const routes = [
   />,
   // admin
   <Route
+    key="test"
     path="/test"
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
