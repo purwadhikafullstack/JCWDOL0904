@@ -17,7 +17,7 @@ const Cart2 = () => {
 
   const fetchCartItems = async () => {
     try {
-      const response = await api.get(`/cart?userId=1`);
+      const response = await api.get(`/cart?userId=2`);
       setCartItems(response.data);
       console.log(response.data);
 
@@ -83,6 +83,7 @@ const Cart2 = () => {
       confirmButtonText: "Delete",
       cancelButtonText: "Cancel",
       reverseButtons: true,
+      confirmButtonColor: "black",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {

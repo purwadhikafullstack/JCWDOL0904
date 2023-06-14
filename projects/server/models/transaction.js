@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     /**
@@ -29,26 +30,41 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TransactionItem, {
         foreignKey: {
           name: "id_transaction",
+          onDelete: 'CASCADE',
         },
       });
     }
   }
   Transaction.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     total_price: {
       type: DataTypes.INTEGER,
+    },
+    invoice_number: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+    },
+    payment_proof: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     transaction_date: {
       type: DataTypes.DATE,
     },
-    courier: {
-      type: DataTypes.STRING,
-    },
     status: {
-      type: DataTypes.ENUM('Waiting For Payment', 'Waiting For Payment Confirmation', 'On Proses', 'Shipped', 'Order Confirmed', 'rejected'),
+      type: DataTypes.ENUM('Waiting For Payment', 'Waiting For Payment Confirmation', 'On Proses', 'Shipped', 'Order Confirmed', 'rejected', 'Canceled'),
     },
   }, {
     sequelize,
     modelName: 'Transaction',
   });
+  Transaction.beforeCreate((transaction) => {
+    transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field
+  });
+
   return Transaction;
 };

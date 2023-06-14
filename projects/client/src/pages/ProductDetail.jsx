@@ -45,7 +45,7 @@ const ProductDetail = () => {
     e.preventDefault();
     try {
       await api.post(`/cart/add`, {
-        userId: 1,
+        userId: 2,
         productId,
         quantity: 1,
       });

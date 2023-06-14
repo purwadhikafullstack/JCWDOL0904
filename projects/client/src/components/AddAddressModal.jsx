@@ -20,6 +20,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
   console.log(recipientName);
   console.log(city.type + " " + city.city);
   console.log(provinces);
+  console.log(provincess);
   console.log(parseInt(city.id));
 
   const fetchAddressesProvince = async () => {
@@ -153,15 +154,16 @@ export const AddAddressModal = ({closeAddressModal}) => {
                 <select
                   id="province"
                   name="province"
-                  value={provincess}
-                  autoComplete="province"
+                  value={provincess.province}
                   className="block w-full border border-gray-300 h-7 pl-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => {
                     console.log(JSON.parse(e.target.value));
                     setProvincess(JSON.parse(e.target.value));
                   }}>
-                  <option className="text-gray-800 font-medium">
-                    Select a province
+                  <option
+                    value={provincess.province}
+                    className="text-gray-800 font-medium">
+                    {provincess ? provincess.province : "Select a province"}
                   </option>
                   {provinces.map((province) => (
                     <option
@@ -188,13 +190,14 @@ export const AddAddressModal = ({closeAddressModal}) => {
                 <select
                   id="province"
                   name="province"
-                  value={city}
                   autoComplete="province"
                   className="block w-full pl-2 h-7 border border-gray-300 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => {
                     setCity(JSON.parse(e.target.value));
                   }}>
-                  <option value="">Select a City</option>
+                  <option value={city}>
+                    {city ? city.city : "Select a City"}
+                  </option>
                   {cities.map((city) => (
                     <option
                       className="text-gray-500"

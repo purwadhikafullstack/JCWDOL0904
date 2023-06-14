@@ -6,6 +6,9 @@ import {Ekspedisi} from "../components/Ekspedisi";
 import {apiro} from "../API/apiro";
 import {useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
+import Swal from "sweetalert2";
+import {updateCart} from "../features/cartSlice";
+import {useDispatch} from "react-redux";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -21,14 +24,15 @@ export default function Checkout() {
   const [warehouseOrigin, setWarehouseOrigin] = useState("");
   const [ongkir, setOngkir] = useState(0);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("");
-  console.log(ongkir);
+  // console.log(ongkir);
   console.log("ini ekspedisi", selectedDeliveryMethod);
   console.log(cartItems);
-  console.log("Total amount", totalAmount);
-  console.log("warehouseOrigin", warehouseOrigin);
-  console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
-  console.log("ini address city id", selectedAddress?.address_city_id);
-  console.log("destination", selectedAddress);
+  // console.log("Total amount", totalAmount);
+  // console.log("warehouseOrigin", warehouseOrigin);
+  // console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
+  // console.log("ini address city id", selectedAddress?.address_city_id);
+  // console.log("destination", selectedAddress);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -62,7 +66,7 @@ export default function Checkout() {
             origin: warehouseOrigin.warehouse_city_id,
             destination: selectedAddress.address_city_id,
             weight: 1000,
-            courier: selectedDeliveryMethod,
+            courier: selectedDeliveryMethod.name,
           });
           const ongkirValue =
             response.data.data.results[0].costs[1].cost[0].value;
@@ -129,15 +133,46 @@ export default function Checkout() {
     fetchLocalStorageCartItems();
   }, [selectedAddress, addressId]);
 
+  const handleCheckout = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await api.post("/order", {
+        cartItems: cartItems,
+        productQty: cartItems.quantity,
+        addressId: selectedAddress.id,
+        userId: 2, // Masih hardcode
+        totalAmount: totalAmount,
+        ekspedisiId: selectedDeliveryMethod.id,
+      });
+
+      // Handle the successful checkout response here
+      console.log("Order created successfully:", response);
+
+      setCartItems([]);
+      dispatch(updateCart({cart: []}));
+      localStorage.removeItem("cartItems");
+      navigate("/trans");
+    } catch (error) {
+      Swal.fire({
+        title: "Failed!",
+        text: error.response.data.error,
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
+      console.log("Error creating order:", error);
+    }
+  };
+
   useEffect(() => {
     // Menghitung total jumlah pembelian
     const calculateTotalAmount = () => {
       let subtotal = 0;
       for (const item of cartItems) {
-        subtotal += item.Product.price;
+        subtotal += item.Product.price * item.quantity;
       }
       setTotalAmount(subtotal + ongkir);
-      console.log(ongkir);
     };
 
     calculateTotalAmount();
@@ -167,7 +202,12 @@ export default function Checkout() {
                           <h3 className="text-gray-900">
                             <a>{item.Product.product_name}</a>
                           </h3>
-                          <p className="text-gray-900">{item.Product.price}</p>
+                          <p className="text-gray-900">
+                            <p>
+                              Rp.{item.Product.price.toLocaleString("id-ID")}
+                            </p>{" "}
+                            <p className="font-normal">({item.quantity})</p>
+                          </p>
 
                           <p className="hidden text-gray-500 sm:block text-sm font-thin">
                             {item.Product.description}
@@ -253,7 +293,7 @@ export default function Checkout() {
               </div>
             </div>
 
-            <form className="mt-6">
+            <form className="mt-6" onSubmit={handleCheckout}>
               <dl className="mt-10 space-y-6 text-sm font-medium text-gray-500">
                 <div className="flex justify-between">
                   <dt>Subtotal</dt>

@@ -8,6 +8,7 @@ const authController = require("./authController.js");
 const rajaongkirController = require("./rajaongkirController.js")
 const cartController = require("./cartController.js")
 const expedisiController = require("./ekspedisiController.js")
+const orderController = require("./orderController.js")
 
 
 module.exports = {
@@ -20,5 +21,6 @@ module.exports = {
     authController,
     rajaongkirController,
     cartController,
-    expedisiController
+    expedisiController,
+    orderController
 };
