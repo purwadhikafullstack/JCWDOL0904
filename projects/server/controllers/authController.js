@@ -9,11 +9,17 @@ module.exports = {
   userVerification: async (req, res) => {
     const roll = await sequelize.transaction();
     try {
-      const { password } = req.body;
+      const { password, confirmPassword } = req.body;
 
       if (!password) {
         return res.status(400).send({
           message: "Please complete your data",
+        });
+      }
+
+      if (password !== confirmPassword) {
+        return res.status(400).send({
+          message: "Your password doesn't match!",
         });
       }
 

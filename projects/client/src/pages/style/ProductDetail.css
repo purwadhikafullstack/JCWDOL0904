@@ -1,74 +1,81 @@
 /* product details */
 .con-product-detail {
-
-    min-height: 94.4vh;
-    display: flex;
-    align-items: center;
-    padding-top: 60px;
-    justify-content: center;
-
+  min-height: 94.4vh;
+  display: flex;
+  align-items: center;
+  padding-top: 60px;
+  justify-content: center;
 }
 
 .wrap-product-detail {
-    height: 350px;
-    width: 800px;
-    border-radius: 20px;
-    padding: 50px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    justify-content: center;
+  height: 350px;
+  width: 800px;
+  border-radius: 20px;
+  padding: 50px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  justify-content: center;
 }
 
 .con-info {
-    width: 500px;
-    padding-right: 50px;
+  width: 500px;
+  padding-right: 50px;
 }
 
 .price-detail {
-    font-weight: bold;
-    margin-right: 10px;
+  font-weight: bold;
+  margin-right: 10px;
 }
 
 .num-price-detail {
-    margin-top: 4px;
-    font-size: 12px;
+  margin-top: 4px;
+  font-size: 15px;
 }
 
 .con-desc-text {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .desc-text {
-    font-size: 12px;
-    padding: 10px;
-    color: #3d3d3d;
+  font-size: 12px;
+  padding: 10px;
+  color: #3d3d3d;
 }
 
 .con-button-add {
-    margin-top: 50px;
+  margin-top: 50px;
 }
 
 .button-add {
-    width: 400px;
+  width: 400px;
 }
 
-@media (max-width: 412px) {
-    .wrap-product-detail {
-        display: flex;
-        flex-direction: column-reverse;
-        width: 350px;
-        height: 600px;
-    }
+.con-table-info {
+  width: 800px;
+}
 
-    .con-info {
-        width: 300px;
-        margin-top: 10px;
-        padding-right: 0px;
-    }
+@media (max-width: 800px) {
+  .wrap-product-detail {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 350px;
+    height: 600px;
+  }
 
-    .button-add {
-        width: 300px;
-    }
+  .con-info {
+    width: 300px;
+    margin-top: 10px;
+    padding-right: 0px;
+  }
+
+  .button-add {
+    width: 300px;
+  }
+
+  .con-table-info {
+    width: 350px;
+    font-size: 12px;
+  }
 }

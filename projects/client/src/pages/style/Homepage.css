@@ -29,6 +29,11 @@
     border-radius: 20px;
   }
 
+  .custom-button:hover {
+    cursor: default;
+    background-color: white;
+  }
+
   @media (max-width: 414px) {
     .tab-list-home {
       padding-top: 80px;

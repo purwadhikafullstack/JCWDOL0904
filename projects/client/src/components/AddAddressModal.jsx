@@ -119,7 +119,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                   name="recipient-name"
                   autoComplete="given-name"
                   value={recipientName}
-                  className="block w-full h-7 border border-gray-300 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
+                  className="block w-full h-7 border rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm text-center"
                   onChange={(e) => setRecipientName(e.target.value)}
                 />
               </div>
@@ -138,7 +138,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                   name="phone"
                   value={phoneNumber}
                   autoComplete="family-name"
-                  className="block w-full border border-gray-300 text-center h-7 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block w-full border text-center h-7 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
               </div>
@@ -191,7 +191,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                   id="province"
                   name="province"
                   autoComplete="province"
-                  className="block w-full pl-2 h-7 border border-gray-300 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block w-full pl-2 h-7 border rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => {
                     setCity(JSON.parse(e.target.value));
                   }}>
@@ -229,7 +229,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                   value={subdistrict}
                   id="subdistrict"
                   autoComplete="subdistrict"
-                  className="block w-full border border-gray-300 text-center h-7 text-gray-500 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="block w-full border text-center h-7 text-gray-500 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => setSubdistrict(e.target.value)}
                 />
               </div>
@@ -248,7 +248,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
                 value={zip}
                 id="postal-code"
                 autoComplete="postal-code"
-                className="block w-full border border-gray-300 h-7 rounded-md text-center border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="block w-full border h-7 rounded-md text-center border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 onChange={(e) => setZip(e.target.value)}
               />
             </div>

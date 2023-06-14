@@ -76,4 +76,42 @@ module.exports = {
       res.status(400).send({ message: "Server error" });
     }
   },
+  getUserData: async (req, res) => {
+    try {
+      
+      const {id} = req.body;
+
+      const result = await User.findOne({
+        where:{
+          id
+        }
+      })
+
+      res.status(200).send({
+        result
+      })
+
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  },
+  getUserById: async (req, res) => {
+    try {
+      
+      const {id} = req.params;
+
+      const user = await User.findOne({
+        where:{
+          id
+        }
+      })
+
+      res.status(200).send({
+        user
+      })
+
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  }
 };
