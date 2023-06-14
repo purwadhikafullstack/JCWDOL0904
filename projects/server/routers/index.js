@@ -8,6 +8,7 @@ const authRouter = require("./authRouter");
 const rajaongkirRouter = require("./rajaongkirRouter");
 const cartRouter = require("./cartRouter");
 const ekpedisiRouter = require("./ekspedisiRouter");
+const promotionRouter = require("./promotionRouter");
 const tokenValidatorRouter = require("./tokenValidatorRouter");
 
 module.exports = {
@@ -21,5 +22,6 @@ module.exports = {
   rajaongkirRouter,
   cartRouter,
   ekpedisiRouter,
+  promotionRouter,
   tokenValidatorRouter,
 };

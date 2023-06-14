@@ -22,6 +22,7 @@ import Carousel from "../components/Carousel";
 import "./style/Homepage.css";
 import { api } from "../API/api";
 import UserIsNotLogin from "../components/UserIsNotLogin";
+import Swal from "sweetalert2";
 
 const Homepage = () => {
   const [page, setPage] = useState(0);
@@ -30,7 +31,7 @@ const Homepage = () => {
   const [category, setCategory] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState("product_name");
-  const [isLogin, SetIsLogin] = useState(false);
+  // const [isLogin, SetIsLogin] = useState(false);
 
   const [products, setProducts] = useState([]);
 
@@ -100,20 +101,13 @@ const Homepage = () => {
     // getUserData();
     fetchProducts(category);
     // console.log(isLogin);
-  }, [page, search, sort, order, isLogin]);
+  }, [page, search, sort, order]);
 
   return (
     <div style={{ minHeight: "150vh" }}>
-      <Box
-        paddingLeft="200px"
-        paddingRight="200px"
-        backgroundColor="black"
-        maxW="100%"
-      >
+      <Box backgroundColor="black" maxW="100%">
         <Carousel />
-        {/* <Image src="https://images.samsung.com/is/image/samsung/assets/id/homepage/main-homepage/2023/web-01-hd01-DM-Series-kv-pc-1440x640.jpg?imwidth=1366" /> */}
       </Box>
-      {isLogin ? null : <UserIsNotLogin />}
       <Tabs colorScheme="black">
         <TabList justifyContent="center" className="tab-list-home">
           <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
@@ -132,7 +126,6 @@ const Homepage = () => {
             alignItems="center"
             className="con-category"
           >
-            {/* <Input placeholder='Search here.....' value={search} onChange={(e) => setSearch(e.target.value)} /> */}
             <InputGroup>
               <InputRightElement
                 pointerEvents="none"
