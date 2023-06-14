@@ -12,27 +12,32 @@
   }
   ```
 */
-import { Fragment } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/20/solid'
+import { Fragment } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon, FunnelIcon } from "@heroicons/react/20/solid";
+import Sidebar from "../components/admin/Sidebar";
 
 const sortOptions = [
-  { name: 'Most Popular', href: '#', current: true },
-  { name: 'Best Rating', href: '#', current: false },
-  { name: 'Newest', href: '#', current: false },
-]
+  { name: "Most Popular", href: "#", current: true },
+  { name: "Best Rating", href: "#", current: false },
+  { name: "Newest", href: "#", current: false },
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Test() {
   return (
-    <div className="bg-white" style={{paddingTop:"80px"}}>
-      
+    <div className="bg-white" style={{ paddingTop: "80px" }}>
+      <Sidebar />
 
       {/* Filters */}
-      <Disclosure as="section" aria-labelledby="filter-heading" className="grid items-center border-t border-b border-gray-200">
+      <Disclosure
+        as="section"
+        aria-labelledby="filter-heading"
+        className="grid items-center border-t border-b border-gray-200"
+      >
         <div className="col-start-1 row-start-1 py-4">
           <div className="mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-8">
             <Menu as="div" className="relative inline-block">
@@ -63,9 +68,11 @@ export default function Test() {
                           <a
                             href={option.href}
                             className={classNames(
-                              option.current ? 'font-medium text-gray-900' : 'text-gray-500',
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm'
+                              option.current
+                                ? "font-medium text-gray-900"
+                                : "text-gray-500",
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm"
                             )}
                           >
                             {option.name}
@@ -81,5 +88,5 @@ export default function Test() {
         </div>
       </Disclosure>
     </div>
-  )
+  );
 }

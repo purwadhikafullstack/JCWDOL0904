@@ -14,6 +14,7 @@ import {
 import { BeatLoader } from "react-spinners";
 import "./style/ProductDetail.css";
 import UserIsNotLogin from "../components/UserIsNotLogin";
+import Swal from "sweetalert2";
 
 const ProductDetail = () => {
   const navigation = useNavigate();
@@ -28,11 +29,8 @@ const ProductDetail = () => {
       getOneProduct(JSON.parse(idProduct));
       window.scrollTo(0, 0);
     } else {
-      navigation("/");
+      navigation("/home");
     }
-    const id = JSON.parse(localStorage.getItem("auth"));
-    if (!id || id < 1) SetIsLogin(false);
-    else if (id) SetIsLogin(true);
   }, []);
 
   const getOneProduct = async (idP) => {
@@ -53,28 +51,37 @@ const ProductDetail = () => {
   // Add to cart
   let addToCart = async (e) => {
     e.preventDefault();
-    try {
-      await api.post(`/cart/add`, {
-        userId: 1,
-        productId,
-        quantity: 1,
+    if (!localStorage.getItem("auth")) {
+      Swal.fire({
+        title: "Attention!",
+        text: "you are not logged in yet, please login to do transactions and edit your profile",
+        icon: "info",
+        confirmButtonText: "Ok",
       });
-      navigation("/cart");
-    } catch (error) {
-      console.log(error);
+      navigation("/login");
+    } else {
+      try {
+        await api.post(`/cart/add`, {
+          userId: 1,
+          productId,
+          quantity: 1,
+        });
+        navigation("/cart");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   return (
     <div style={{ paddingTop: "68px" }}>
-      {isLogin ? null : <UserIsNotLogin />}
       <div
         className="con-product-detail"
         style={{ display: "flex", flexDirection: "column" }}
       >
         <div className="wrap-product-detail">
           <div className="con-info">
-            <div>
+            <div className="flex w-full items-center justify-center p-2">
               <h1
                 style={{
                   padding: "10px",
@@ -91,24 +98,24 @@ const ProductDetail = () => {
                 <p className="num-price-detail">Rp.{product.price}</p>
               </div>
 
-              <div className="con-desc-text">
-                <p className="desc-text">
+              <div className="flex w-full items-center justify-center p-2">
+                <p className=" text-xs lg:text-12 text-center">
                   {product.description} ankdawfbalwbfl
                   balwblabwflbawflaawfabnlwfnalfwbalwbfa fkwa f awbfoabfoia fa
                   wfoa foa o
                 </p>
               </div>
 
-              <div className="">
+              <div className="flex w-full items-center justify-center">
                 <p className="">Product stock is {stock} piece</p>
               </div>
             </section>
             <div className="con-button-add">
-              {isLogin ? (
+              {stock !== 0 ? (
                 <button
                   onClick={(e) => addToCart(e)}
                   type="submit"
-                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-black py-3 px-8 text-base font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
                   Add to cart
                 </button>
@@ -119,13 +126,6 @@ const ProductDetail = () => {
                   spinner={<BeatLoader size={8} color="black" />}
                 ></Button>
               )}
-              {/* <button
-                onClick={(e) => addToCart(e)}
-                type="submit"
-                className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-              >
-                Add to cart
-              </button> */}
             </div>
           </div>
           <Image

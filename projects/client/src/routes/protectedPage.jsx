@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/admin/Sidebar";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { useSelector } from "react-redux";
+import { Spinner } from "@chakra-ui/react";
 
 export default function ProtectedPage({
   needLogin = false,
@@ -14,24 +15,39 @@ export default function ProtectedPage({
   const user = useSelector((state) => state.userSlice);
   const nav = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(true);
+  console.log(needLogin);
   useEffect(() => {
     if (needLogin && !user.id) {
+      console.log("coba");
+
       nav("/login");
     } else if (guestOnly && user.id) {
-      if (user.role == "admin") nav("/test");
-      else nav("/");
-    } else if (needLogin && user.role != "admin" && adminOnly) {
+      if (user.role == "admin" || user.role === "adminWarehouse") {
+        console.log("masuk");
+        nav("/test");
+      } else {
+        nav("/");
+      }
+    } else if (
+      needLogin &&
+      user.role !== "admin" &&
+      user.role !== "adminWarehouse" &&
+      adminOnly
+    ) {
       nav("/login");
-    } else if (needLogin && user.role === "admin" && adminOnly) {
-      nav("/test");
     }
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
     // login => role="user" => routes khusus admin =>
   }, [user]);
 
-  return user.role == "admin" ? (
-    <>
-      <Sidebar></Sidebar> {children}
-    </>
+  return isLoading ? (
+    <Spinner />
+  ) : user.role == "admin" || user.role === "adminWarehouse" ? (
+    <>{children}</>
   ) : (
     <>
       <Navbar /> {children} <Footer />

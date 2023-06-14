@@ -163,7 +163,7 @@ export default function Checkout() {
                       className="h-24 w-24 flex-none rounded-md bg-gray-100 object-cover object-center"
                     />
                     <div className="flex-auto">
-                      <div className="space-y-1 sm:flex sm:items-start items-center sm:justify-between sm:space-x-6">
+                      <div className="space-y-1 sm:flex sm:items-start text-center sm:justify-between sm:space-x-6">
                         <div className="flex-auto space-y-1 text-sm font-medium">
                           <h3 className="text-gray-900">
                             <a>{item.Product.product_name}</a>
