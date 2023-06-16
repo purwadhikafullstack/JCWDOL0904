@@ -30,14 +30,24 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
   {
-    name: "Manage Product",
+    name: "Dashboard",
     href: "/manage-warehouse",
+    icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: "User",
+    href: "/test",
     icon: UsersIcon,
     current: false,
   },
-  { name: "Projects", href: "/cek", icon: FolderIcon, current: false },
+  {
+    name: "Projects",
+    href: "/manage-mutation",
+    icon: FolderIcon,
+    current: false,
+  },
   { name: "Calendar", href: "/", icon: CalendarIcon, current: false },
   { name: "Documents", href: "/", icon: InboxIcon, current: false },
   { name: "Reports", href: "/", icon: ChartBarIcon, current: false },
@@ -136,6 +146,7 @@ export default function Sidebar() {
                           _hover={{ backgroundColor: "#4A5568" }}
                           color="white"
                           width="300px"
+                          // href={item.href}
                           onClick={() => navigator(item.href)}
                           // className={classNames(
                           //   item.current
@@ -188,6 +199,8 @@ export default function Sidebar() {
                     _hover={{ backgroundColor: "#4A5568" }}
                     color="white"
                     width="230px"
+                    justifyContent="left"
+                    // href={item.href}
                     onClick={() => navigator(item.href)}
                     // className={classNames(
                     //   item.current
