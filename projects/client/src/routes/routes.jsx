@@ -15,6 +15,8 @@ import ProtectedPage from "./protectedPage";
 import Cart2 from "../pages/Cart2";
 import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
+import ManageMutation from "../pages/admin/ManageMutation";
+import SendRequestMutation from "../pages/admin/SendRequestMutation";
 
 const routes = [
   //home
@@ -82,11 +84,38 @@ const routes = [
     }
   />,
   <Route
-    key="test"
+    key="manage-warehouse"
     path="/manage-warehouse"
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <ManageWarehouse />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-mutation"
+    path="/manage-mutation"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageMutation />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="send-request-mutation"
+    path="/send-request-mutation"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <SendRequestMutation />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="cek"
+    path="/cek"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <TestImage />
       </ProtectedPage>
     }
   />,
