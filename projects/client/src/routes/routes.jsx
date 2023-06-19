@@ -20,6 +20,8 @@ import ManageWarehouse from "../pages/admin/ManageWarehouse";
 import Example from "../pages/admin/OrderList";
 import ManageMutation from "../pages/admin/ManageMutation";
 import SendRequestMutation from "../pages/admin/SendRequestMutation";
+import ManageMutation from "../pages/admin/ManageMutation";
+import SendRequestMutation from "../pages/admin/SendRequestMutation";
 
 const routes = [
   //home
@@ -105,15 +107,6 @@ const routes = [
     }
   />,
   <Route
-    key="order"
-    path="/order"
-    element={
-      <ProtectedPage needLogin={true} adminOnly={true}>
-        <Example />
-      </ProtectedPage>
-    }
-  />,
-  <Route
     key="manage-mutation"
     path="/manage-mutation"
     element={
@@ -137,6 +130,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <TestImage />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="order"
+    path="/order"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <Example />
       </ProtectedPage>
     }
   />,

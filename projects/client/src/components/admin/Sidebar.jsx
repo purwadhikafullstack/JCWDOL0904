@@ -32,7 +32,14 @@ import {Button} from "@chakra-ui/react";
 const navigation = [
   {
     name: "Dashboard",
+    name: "Dashboard",
     href: "/manage-warehouse",
+    icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: "User",
+    href: "/test",
     icon: HomeIcon,
     current: true,
   },
@@ -42,13 +49,7 @@ const navigation = [
     icon: UsersIcon,
     current: false,
   },
-  {
-    name: "Projects",
-    href: "/manage-mutation",
-    icon: FolderIcon,
-    current: false,
-  },
-  {name: "order", href: "/order", icon: CalendarIcon, current: false},
+  {name: "Projects", href: "/cek", icon: FolderIcon, current: false},
   {name: "Calendar", href: "/", icon: CalendarIcon, current: false},
   {name: "Documents", href: "/", icon: InboxIcon, current: false},
   {name: "Reports", href: "/", icon: ChartBarIcon, current: false},
