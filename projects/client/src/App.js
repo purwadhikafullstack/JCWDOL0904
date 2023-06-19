@@ -26,10 +26,13 @@ import { Register } from "./pages/register";
 import routes from "./routes/routes";
 import { api } from "./API/api";
 import { login } from "./features/userSlice";
+import { data } from "./features/warehouseSlice";
+import { Spinner } from "@chakra-ui/react";
 
 function App() {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
 
   async function getUser(id) {
     await api
@@ -37,14 +40,20 @@ function App() {
       .then((res) => dispatch(login(res.data.user)));
   }
 
+  async function getWarehouse() {
+    await api.get("/warehouses/data").then((res) => dispatch(data(res.data)));
+  }
   //app js > useEffect => localstorage => api request user by id => dispatch => globalstate => routes => protectedPage => cek redux => kalau sesaui return login
 
   useEffect(() => {
     const userid = localStorage.getItem("auth"); //token
-
+    getWarehouse();
     if (userid) {
       getUser(userid);
     }
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   }, []);
 
   // const
@@ -82,15 +91,19 @@ function App() {
           {/* <Footer /> */}
       {/* </div >
       ) : (
-    <div className="App">
-      <Sidebar />
-      <Routes>
-        <Route path="/cek" element={<Cek />} />
-      </Routes>
-    </div>
-  )
-} */}
-      < Routes > {routes.map((route) => route)}</ Routes>
+        <div className="App">
+          <Sidebar />
+          <Routes>
+            <Route path="/cek" element={<Cek />} />
+          </Routes>
+        </div>
+      )
+      } */}
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Routes>{routes.map((route) => route)}</Routes>
+      )}
     </>
   );
 }
