@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       TransactionItem.belongsTo(models.Transaction, {
         foreignKey: {
           name: "id_transaction",
+          onDelete: 'CASCADE',
         },
       });
       TransactionItem.belongsTo(models.Products, {

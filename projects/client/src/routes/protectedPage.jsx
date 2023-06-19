@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import "../App.css";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import Sidebar from "../components/admin/Sidebar";
-import { Navbar } from "../components/Navbar";
-import { Footer } from "../components/Footer";
-import { useSelector } from "react-redux";
-import { Spinner } from "@chakra-ui/react";
+import {Navbar} from "../components/Navbar";
+import {Footer} from "../components/Footer";
+import {useSelector} from "react-redux";
+import {Spinner} from "@chakra-ui/react";
 
 export default function ProtectedPage({
   needLogin = false,
@@ -43,7 +44,7 @@ export default function ProtectedPage({
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 500);
     // login => role="user" => routes khusus admin =>
   }, [user]);
 
@@ -55,8 +56,8 @@ export default function ProtectedPage({
       {children}
     </>
   ) : (
-    <>
+    <div className="App">
       <Navbar /> {children} <Footer />
-    </>
+    </div>
   );
 }

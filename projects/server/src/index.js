@@ -40,7 +40,7 @@ const {
   productRouters,
   rajaongkirRouter,
   cartRouter,
-  ekpedisiRouter,
+  ekpedisiRouter, orderRouter,
   promotionRouter,
 } = require("../routers");
 
@@ -56,6 +56,7 @@ app.use("/api/rajaongkir", rajaongkirRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/ekspedisi", ekpedisiRouter);
 app.use("/api/promotion", promotionRouter);
+app.use("/api/order", orderRouter)
 
 // app.get("/api", (req, res) => {
 //   res.send(`Hello, this is my API`);

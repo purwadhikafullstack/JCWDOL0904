@@ -1,22 +1,25 @@
-import { Route } from "react-router-dom";
+import {Route} from "react-router-dom";
 import Homepage from "../pages/Homepage";
-import { Register } from "../pages/register";
+import {Register} from "../pages/register";
 
-import { Verification } from "../pages/verification";
+import {Verification} from "../pages/verification";
 
-import { Login } from "../pages/Login";
+import {Login} from "../pages/Login";
 
-import { TestImage } from "../pages/TestImage";
+import {TestImage} from "../pages/TestImage";
 
 import ProductDetail from "../pages/ProductDetail";
+
+import {Transaction} from "../pages/Transactions";
 
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
 import Cart2 from "../pages/Cart2";
 import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
-import ManageMutation from "../pages/admin/ManageMutation";
+import Example from "../pages/admin/OrderList";
 import SendRequestMutation from "../pages/admin/SendRequestMutation";
+import ManageMutation from "../pages/admin/ManageMutation";
 
 const routes = [
   //home
@@ -73,6 +76,15 @@ const routes = [
       </ProtectedPage>
     }
   />,
+  <Route
+    key="trans"
+    path="/trans"
+    element={
+      <ProtectedPage>
+        <Transaction />
+      </ProtectedPage>
+    }
+  />,
   // admin
   <Route
     key="test"
@@ -116,6 +128,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <TestImage />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="order"
+    path="/order"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <Example />
       </ProtectedPage>
     }
   />,
