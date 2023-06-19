@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Warehouse extends Model {
     /**
@@ -33,42 +31,46 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  Warehouse.init({
-    warehouse: {
-      type: DataTypes.STRING,
-      allowNull: false
+  Warehouse.init(
+    {
+      warehouse: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      province: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      city: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      warehouse_city_id: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      subdistrict: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      zip: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      latitude: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      longitude: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
-    province: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    city: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    warehouse_city_id: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    subdistrict: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    zip: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    latitude: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    longitude: {
-      type: DataTypes.STRING,
-      allowNull: false
+    {
+      sequelize,
+      modelName: "Warehouse",
+      paranoid: true,
     }
-  }, {
-    sequelize,
-    modelName: 'Warehouse',
-  });
+  );
   return Warehouse;
 };

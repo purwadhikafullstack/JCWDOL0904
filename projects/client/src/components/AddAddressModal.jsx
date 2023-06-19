@@ -49,7 +49,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
         recipient_name: recipientName,
         phone_number: parseInt(phoneNumber),
         province: provincess.province,
-        city: city.type + " " + city.city,
+        city: city.city,
         address_city_id: parseInt(city.id),
         subdistrict,
         zip: parseInt(zip),

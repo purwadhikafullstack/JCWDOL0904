@@ -15,6 +15,7 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon, FunnelIcon } from "@heroicons/react/20/solid";
+import { Text } from "@chakra-ui/react";
 import Sidebar from "../components/admin/Sidebar";
 
 const sortOptions = [
@@ -29,9 +30,7 @@ function classNames(...classes) {
 
 export default function Test() {
   return (
-    <div className="bg-white" style={{ paddingTop: "80px" }}>
-      <Sidebar />
-
+    <div className="bg-white">
       {/* Filters */}
       <Disclosure
         as="section"
@@ -39,6 +38,11 @@ export default function Test() {
         className="grid items-center border-t border-b border-gray-200"
       >
         <div className="col-start-1 row-start-1 py-4">
+          <Text>
+            ini
+            testttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt
+          </Text>
+
           <div className="mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-8">
             <Menu as="div" className="relative inline-block">
               <div className="flex">
