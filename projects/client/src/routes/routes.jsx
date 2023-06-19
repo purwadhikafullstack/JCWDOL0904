@@ -18,10 +18,8 @@ import Cart2 from "../pages/Cart2";
 import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
 import Example from "../pages/admin/OrderList";
-import ManageMutation from "../pages/admin/ManageMutation";
 import SendRequestMutation from "../pages/admin/SendRequestMutation";
 import ManageMutation from "../pages/admin/ManageMutation";
-import SendRequestMutation from "../pages/admin/SendRequestMutation";
 
 const routes = [
   //home
