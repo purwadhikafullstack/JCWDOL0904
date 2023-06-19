@@ -1,14 +1,7 @@
 import "./App.css";
-import { useSelector } from "react-redux";
-import { Navbar } from "./components/Navbar";
-import { Footer } from "./components/Footer";
-import { Login } from "./pages/Login";
-import { Routes, Route } from "react-router-dom";
-import { TestImage } from "./pages/TestImage";
 import { useDispatch, useSelector } from "react-redux";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
-import { Login } from "./pages/Login";
 import { Routes, Route } from "react-router-dom";
 import { TestImage } from "./pages/TestImage";
 import Sidebar from "./components/admin/Sidebar";

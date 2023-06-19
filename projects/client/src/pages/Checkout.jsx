@@ -28,7 +28,7 @@ export default function Checkout() {
   console.log("ini ekspedisi", selectedDeliveryMethod);
   console.log(cartItems);
   // console.log("Total amount", totalAmount);
-  // console.log("warehouseOrigin", warehouseOrigin);
+  console.log("warehouseOrigin", warehouseOrigin);
   // console.log("ini warehouse city id", warehouseOrigin.warehouse_city_id);
   // console.log("ini address city id", selectedAddress?.address_city_id);
   // console.log("destination", selectedAddress);
@@ -321,12 +321,12 @@ export default function Checkout() {
 
               <button
                 type="submit"
-                className="mt-6 w-full rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                className="mt-6 w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Checkout
               </button>
               <button
                 type="submit"
-                onClick={() => navigate("/home")}
+                onClick={() => navigate("/")}
                 className="mt-6 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm ">
                 Continue Shooping
               </button>

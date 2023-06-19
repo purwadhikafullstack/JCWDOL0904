@@ -2,73 +2,6 @@ const { Transaction, Warehouse, Products, Stocks, TransactionItem, Address, sequ
 const { Op } = require('sequelize');
 
 module.exports = {
-    // createOrder: async (req, res) => {
-    //     try {
-    //         const { productId, addressId, userId, totalAmount, ekspedisiId, productQty } = req.body;
-
-    //         // Find the product and address
-    //         const product = await Products.findByPk(productId);
-    //         const address = await Address.findByPk(addressId);
-    //         console.log(address);
-
-    //         console.log(product);
-
-    //         if (!product || !address) {
-    //             return res.status(404).json({ error: 'Product or address not found' });
-    //         }
-
-    //         // Find the nearest warehouse using the Haversine formula
-    //         const nearestWarehouse = await Warehouse.findOne({
-    //             order: [
-    //                 [
-    //                     sequelize.literal(`ST_Distance_Sphere(
-    //                         POINT(${address.longitude}, ${address.latitude}),
-    //                         POINT(Warehouse.longitude, Warehouse.latitude)
-    //                     )`)
-    //                 ]
-    //             ],
-    //             limit: 1
-    //         });
-    //         if (!nearestWarehouse) {
-    //             return res.status(404).json({ error: 'Nearest warehouse not found' });
-    //         }
-
-    //         console.log(nearestWarehouse);
-
-    //         // Check stock availability in all warehouses
-    //         const totalStock = await Stocks.sum('stock', {
-    //             where: { id_product: productId },
-    //         });
-
-    //         if (totalStock <= 0) {
-    //             return res.status(400).json({ error: 'Product out of stock' });
-    //         }
-
-    //         // Create the transaction (order)
-    //         const transaction = await Transaction.create({
-    //             total_price: totalAmount,
-    //             transaction_date: new Date(),
-    //             status: 'Waiting For Payment',
-    //             id_address: addressId,
-    //             id_ekspedisi: ekspedisiId,
-    //             id_user: userId,
-    //         });
-
-    //         // Create the transactionItem for the ordered product
-    //         await TransactionItem.create({
-    //             quantity: productQty,
-    //             price: product.price,
-    //             id_product: product.id,
-    //             id_transaction: transaction.id,
-    //         });
-
-    //         return res.status(201).send({ transaction });
-    //     } catch (error) {
-    //         console.error(error);
-    //         return res.status(500).send({ error: 'Internal server error' });
-    //     }
-    // },
-
     createOrder: async (req, res) => {
         try {
             const { cartItems, addressId, userId, ekspedisiId, totalAmount } = req.body;
@@ -112,6 +45,7 @@ module.exports = {
                 id_address: addressId,
                 id_ekspedisi: ekspedisiId,
                 id_user: userId,
+                id_warehouse: nearestWarehouse.id,
             });
 
             // Create the transactionItems for the ordered products
@@ -186,6 +120,7 @@ module.exports = {
                         model: Ekspedisi,
                     },
                 ],
+                order: [['createdAt', 'DESC']],
             });
 
             res.status(200).send({ orders });
@@ -208,7 +143,7 @@ module.exports = {
                 { where: { id: transactionId } }
             );
 
-            res.status(200).json({ message: 'Payment proof uploaded successfully' });
+            res.status(200).send({ message: 'Payment proof uploaded successfully' });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error uploading payment proof' });
@@ -240,25 +175,31 @@ module.exports = {
             res.status(500).json({ message: 'Error canceling transaction' });
         }
     },
-    cancelPendingOrders: async () => {
+    getOrdersByWarehouse: async (req, res) => {
         try {
-            const pendingOrders = await Transaction.findAll({
-                where: {
-                    status: 'Waiting For Payment',
-                    createdAt: {
-                        [Op.lt]: sequelize.literal('NOW() - INTERVAL 1 MINUTE') // Set the payment deadline here (2 minutes)
-                    }
-                }
+            const { warehouseId } = req.params;
+
+            const orders = await Transaction.findAll({
+                include: [
+                    {
+                        model: TransactionItem,
+                        include: [Products],
+                    },
+                    {
+                        model: Address,
+                    },
+                    {
+                        model: Ekspedisi,
+                    },
+                ],
+                where: { id_warehouse: warehouseId }, // Filter orders by warehouse ID
+                order: [['createdAt', 'DESC']],
             });
 
-            // Cancel the pending orders
-            await Promise.all(pendingOrders.map(async (order) => {
-                await order.update({ status: 'Canceled' });
-            }));
-
-            console.log('Automatic order cancellation completed');
+            res.status(200).send({ orders });
         } catch (error) {
-            console.error('Error canceling pending orders:', error);
+            console.error(error);
+            res.status(500).send({ error: 'Internal server error' });
         }
-    }
+    },
 };

@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_ekspedisi",
         },
       });
+      Transaction.belongsTo(models.Warehouse, {
+        foreignKey: {
+          name: "id_warehouse",
+        },
+      });
       Transaction.hasMany(models.TransactionItem, {
         foreignKey: {
           name: "id_transaction",

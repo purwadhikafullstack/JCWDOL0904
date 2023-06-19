@@ -96,7 +96,7 @@ const Cart2 = () => {
     });
   };
   return (
-    <div className="bg-white pt-10">
+    <div className="bg-white min-h-[700px] pt-10">
       <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Shopping Cart
@@ -231,7 +231,7 @@ const Cart2 = () => {
               <button
                 onClick={() => navigate("/checkout")}
                 type="submit"
-                className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                className="w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Continue to Checkout
               </button>
             </div>

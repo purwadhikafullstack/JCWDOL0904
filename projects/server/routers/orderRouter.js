@@ -4,8 +4,8 @@ const upload = require("../middleware/multer")
 
 router.post("/", orderController.createOrder)
 router.get("/", orderController.getAllOrders)
+router.get("/:warehouseId", orderController.getOrdersByWarehouse);
 router.patch("/upload-payment-proof/:id", upload.single("file"), orderController.uploadPaymentProof)
 router.patch("/cancel/:id", orderController.cancelOrder)
-router.post("/cancel-pending", orderController.cancelPendingOrders);
 
 module.exports = router
