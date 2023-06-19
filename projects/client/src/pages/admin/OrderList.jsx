@@ -30,7 +30,7 @@ export default function Example() {
 
   const fetchWarehouses = async () => {
     try {
-      const response = await api.get("/warehouses");
+      const response = await api.get("/warehouses/data");
       setWarehouses(response.data);
       console.log(response);
     } catch (error) {
@@ -50,7 +50,7 @@ export default function Example() {
 
   return (
     <>
-      <Sidebar />
+      {/* <Sidebar /> */}
       <div className="mt-5">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="sm:flex sm:items-center">
