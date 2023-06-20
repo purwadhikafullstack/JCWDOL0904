@@ -16,15 +16,12 @@ export default function ProtectedPage({
   const nav = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
-  console.log(needLogin);
+
   useEffect(() => {
     if (needLogin && !user.id) {
-      console.log("coba");
-
       nav("/login");
     } else if (guestOnly && user.id) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
-        console.log("masuk");
         nav("/test");
       } else {
         nav("/");

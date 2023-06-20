@@ -52,7 +52,7 @@ export const AddAddressModal = ({ closeAddressModal }) => {
         address_city_id: parseInt(city.id),
         subdistrict,
         zip: parseInt(zip),
-        userId: 2,
+        userId: 9,
       });
       console.log(response);
       Swal.fire({

@@ -100,6 +100,7 @@ module.exports = {
       res.status(400).send(error);
     }
   },
+
   getUserById: async (req, res) => {
     try {
       const { id } = req.params;
@@ -138,7 +139,7 @@ module.exports = {
 
       let payload = { id: user.id };
       let token = jwt.sign(payload, "galaxy", {
-        expiresIn: "3m",
+        expiresIn: "1m",
       });
 
       await User.update(

@@ -9,11 +9,17 @@ module.exports = {
   userVerification: async (req, res) => {
     const roll = await sequelize.transaction();
     try {
-      const { password } = req.body;
-
-      if (!password) {
+      const { fullname, username, password, confirmPassword } = req.body;
+      console.log(fullname);
+      if (!fullname || !username || !password || !confirmPassword) {
         return res.status(400).send({
           message: "Please complete your data",
+        });
+      }
+
+      if (password !== confirmPassword) {
+        return res.status(400).send({
+          message: "Passwords does not match",
         });
       }
 
@@ -44,7 +50,7 @@ module.exports = {
       const hashPass = await bcrypt.hash(password, salt);
 
       const userPassword = await User.update(
-        { is_verified: true, password: hashPass },
+        { is_verified: true, fullname, username, password: hashPass },
         { where: { id: data.id } }
       );
       await roll.commit();
@@ -55,9 +61,9 @@ module.exports = {
     } catch (err) {
       await roll.rollback();
       console.log(err);
-      res.status(400).send({
-        message: "Server Error!",
-      });
+      // res.status(400).send({
+      //   message: "Server Error!",
+      // });
     }
   },
 
@@ -107,11 +113,17 @@ module.exports = {
   requestReset: async (req, res) => {
     // const roll = await sequelize.transaction();
     try {
-      const { password } = req.body;
+      const { password, confirmPassword } = req.body;
 
-      if (!password) {
+      if (!password || !confirmPassword) {
         return res.status(400).send({
           message: "Please complete your data",
+        });
+      }
+
+      if (password !== confirmPassword) {
+        return res.status(400).send({
+          message: "Passwords does not match",
         });
       }
 
@@ -134,7 +146,7 @@ module.exports = {
       const hashPass = await bcrypt.hash(password, salt);
 
       const userPassword = await User.update(
-        { is_verified: true, password: hashPass },
+        { password: hashPass },
         { where: { id: data.id } }
       );
       // await roll.commit();
@@ -144,6 +156,67 @@ module.exports = {
       });
     } catch (err) {
       // await roll.rollback();
+      console.log(err);
+      res.status(400).send({
+        message: "Server Error!",
+      });
+    }
+  },
+  updatePassword: async (req, res) => {
+    try {
+      const { id, password, newPassword, confirmPassword } = req.body;
+
+      const userExist = await User.findOne({
+        where: { id },
+      });
+
+      const isValid = await bcrypt.compare(
+        password,
+        userExist.dataValues.password
+      );
+
+      if (!isValid) {
+        return res.status(400).send({
+          message: "Your password does not match!",
+        });
+      }
+
+      if (!newPassword || !confirmPassword) {
+        return res.status(400).send({
+          message: "Please input your new password and confirm password",
+        });
+      }
+
+      if (newPassword !== confirmPassword) {
+        return res.status(400).send({
+          message: "New password and confirm password do not match",
+        });
+      }
+
+      const passwordRegex =
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
+
+      if (!passwordRegex.test(newPassword, confirmPassword)) {
+        return res.status(400).send({
+          message:
+            "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number",
+        });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashPass = await bcrypt.hash(newPassword, salt);
+
+      const userPassword = await User.update(
+        { password: hashPass },
+        { where: { id: userExist.dataValues.id } }
+      );
+      // await roll.commit();
+      res.send({
+        message: "Change Password Success",
+        data: userPassword,
+      });
+    } catch (err) {
+      await roll.rollback();
       console.log(err);
       res.status(400).send({
         message: "Server Error!",

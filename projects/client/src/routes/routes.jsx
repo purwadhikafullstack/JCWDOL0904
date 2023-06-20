@@ -12,7 +12,7 @@ import ProtectedPage from "./protectedPage";
 import Cart2 from "../pages/Cart2";
 import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
-import Example from "../pages/Example";
+import Profile from "../pages/Profile";
 import Error from "../pages/Error";
 
 const routes = [
@@ -87,10 +87,10 @@ const routes = [
     }
   />,
   <Route
-    path="/example"
+    path="/profile"
     element={
       <ProtectedPage>
-        <Example />
+        <Profile />
       </ProtectedPage>
     }
   />,

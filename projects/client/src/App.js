@@ -19,7 +19,7 @@ import { Verification } from "./pages/verification";
 import { Register } from "./pages/register";
 import { ResetPassword } from "./pages/resetPassword";
 import { InputPassword } from "./pages/inputPassword";
-import Example from "./pages/Example";
+import Profile from "./pages/Profile";
 import routes from "./routes/routes";
 import { api } from "./API/api";
 import { login } from "./features/userSlice";

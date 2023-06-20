@@ -10,6 +10,7 @@ const cartController = require("./cartController.js");
 const expedisiController = require("./ekspedisiController.js");
 const promotionControllers = require("./promotionControllers.js");
 const tokenValidatorController = require("./tokenValidatorController.js");
+const uploadProfileController = require("./uploadProfileController.js");
 
 module.exports = {
   userController,
@@ -24,4 +25,5 @@ module.exports = {
   expedisiController,
   promotionControllers,
   tokenValidatorController,
+  uploadProfileController,
 };

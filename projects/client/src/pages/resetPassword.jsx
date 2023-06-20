@@ -11,8 +11,6 @@ const url = "/user/reset-password";
 export const ResetPassword = () => {
   let navigate = useNavigate();
 
-  let email = useRef();
-
   const resetPasswordSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
   });

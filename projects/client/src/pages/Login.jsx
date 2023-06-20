@@ -1,4 +1,4 @@
-import { React } from "react";
+import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../API/api";
 import Swal from "sweetalert2";
@@ -22,6 +22,12 @@ export const Login = () => {
       .required("Please input your password"),
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   const loginAccount = async (inputEmail, inputPassword) => {
     try {
       let response = await api.post(url, {
@@ -30,11 +36,8 @@ export const Login = () => {
       });
       console.log(response);
       if (response.status == 200) {
-        // alert("asd");
         localStorage.setItem("auth", JSON.stringify(response.data.result.id));
         dispatch(login(response.data.result));
-        // console.log(response.data.result);
-        // navigate("/home");
       }
     } catch (err) {
       Swal.fire({
@@ -55,7 +58,7 @@ export const Login = () => {
         >
           <img
             class="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
+            src="http://localhost:8000/logo_galaxy_2.png"
             alt="logo"
           />
           Galaxy
@@ -74,13 +77,6 @@ export const Login = () => {
               onSubmit={(values) => {
                 loginAccount(values.email, values.password);
               }}
-              // loginAccount(values.email, values.password);
-              //formik => form
-              //form => validation
-              //validation akan jalan pada saat schema tidak terpenuhi
-              // untuk cek dipenuhi/tidak lewat sebuah function onSubmit
-              // untuk fomrik yang bukan HOOKS
-              // semua button di dalam content component FORMIK akan dianggap onsubmit apabila type nya adalah submit
             >
               {(props) => (
                 <Form>
@@ -111,20 +107,65 @@ export const Login = () => {
                     >
                       Password
                     </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Password"
-                      required=""
-                      as={Field}
-                      onChange={props.handleChange} //setstate
-                      value={props.values.password} //manggil state
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        id="password"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Password"
+                        required=""
+                        as={Field}
+                        onChange={props.handleChange} //setstate
+                        value={props.values.password} //manggil state
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-3 flex items-center"
+                      >
+                        {showPassword ? (
+                          <svg
+                            className="w-4 h-4 text-gray-500 dark:text-gray-300 cursor-pointer"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path
+                              d="M15.5 9A3.5 3.5 0 1 1 12 5.5v0a3.5 3.5 0 0 1 3.5 3.5z"
+                              fill="none"
+                            />
+                            <path
+                              d="M12 18.5v.5m0 0v-.5m0 .5h6m0-9h-9m0 0H7m0 0H6.5"
+                              fill="none"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="w-4 h-4 text-gray-500 dark:text-gray-300 cursor-pointer"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path
+                              d="M12 18.5v.5m0 0v-.5m0 .5h6m0-9h-6m0 0H5.5a1.5 1.5 0 0 0 0 3H12m0 0a1.5 1.5 0 0 0 0-3h-2.5a1.5 1.5 0 0 0 0 3H12m0 0a1.5 1.5 0 0 0 0-3h2.5a1.5 1.5 0 0 0 0 3H12z"
+                              fill="none"
+                            />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
                   <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                    Forgotten password?{" "}
+                    Forgot password?{" "}
                     <Button
                       onClick={() => navigate("/request")}
                       class="font-medium text-primary-600 hover:underline dark:text-primary-500"
