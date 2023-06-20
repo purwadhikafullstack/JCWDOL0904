@@ -10,7 +10,7 @@ function classNames(...classes) {
 export const Ekspedisi = ({onSelectDeliveryMethod}) => {
   const [ekspedisi, setEkspedisi] = useState([]);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState([]);
-  // console.log(selectedDeliveryMethod.name);
+  // console.log(selectedDeliveryMethod);
 
   const fetchEkspedisi = async () => {
     try {
@@ -39,7 +39,7 @@ export const Ekspedisi = ({onSelectDeliveryMethod}) => {
               <RadioGroup.Option
                 key={deliveryMethod.id}
                 value={deliveryMethod}
-                onFocus={() => onSelectDeliveryMethod(deliveryMethod.name)}
+                onFocus={() => onSelectDeliveryMethod(deliveryMethod)}
                 className={({checked, active}) =>
                   classNames(
                     checked ? "border-transparent" : "border-gray-300",

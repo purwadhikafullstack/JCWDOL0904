@@ -7,11 +7,17 @@ import { ResetPassword } from "../pages/resetPassword";
 import { InputPassword } from "../pages/inputPassword";
 import { TestImage } from "../pages/TestImage";
 import ProductDetail from "../pages/ProductDetail";
+
+import { Transaction } from "../pages/Transactions";
+
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
 import Cart2 from "../pages/Cart2";
 import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
+import Example from "../pages/admin/OrderList";
+import SendRequestMutation from "../pages/admin/SendRequestMutation";
+import ManageMutation from "../pages/admin/ManageMutation";
 import Profile from "../pages/Profile";
 import Error from "../pages/Error";
 
@@ -71,6 +77,15 @@ const routes = [
     }
   />,
   <Route
+    key="trans"
+    path="/trans"
+    element={
+      <ProtectedPage>
+        <Transaction />
+      </ProtectedPage>
+    }
+  />,
+  <Route
     path="/request"
     element={
       <ProtectedPage>
@@ -114,11 +129,47 @@ const routes = [
     }
   />,
   <Route
-    key="test"
+    key="manage-warehouse"
     path="/manage-warehouse"
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <ManageWarehouse />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-mutation"
+    path="/manage-mutation"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageMutation />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="send-request-mutation"
+    path="/send-request-mutation"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <SendRequestMutation />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="cek"
+    path="/cek"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <TestImage />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="order"
+    path="/order"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <Example />
       </ProtectedPage>
     }
   />,

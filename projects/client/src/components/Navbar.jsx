@@ -57,7 +57,7 @@ export const Navbar = () => {
     dispatch(updateCart({ cart }));
   };
 
-  // Retrieve the cart data from local storage on page load
+  // update kembalo cartdata ketika load page
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -65,7 +65,7 @@ export const Navbar = () => {
     }
   }, []);
 
-  // Update the cart data in local storage whenever it changes
+  // update cart di local storage setiap cart ada perubahan
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
@@ -175,7 +175,6 @@ export const Navbar = () => {
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm"
                                 )}
-                                onClick={() => navigation("/profile")}
                               >
                                 Your Profile
                               </a>

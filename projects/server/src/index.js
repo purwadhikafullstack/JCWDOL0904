@@ -41,6 +41,7 @@ const {
   rajaongkirRouter,
   cartRouter,
   ekpedisiRouter,
+  orderRouter,
   promotionRouter,
   tokenValidatorRouter,
   uploadProfileRouter,
@@ -58,6 +59,7 @@ app.use("/api/rajaongkir", rajaongkirRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/ekspedisi", ekpedisiRouter);
 app.use("/api/promotion", promotionRouter);
+app.use("/api/order", orderRouter);
 app.use("/api/auth", tokenValidatorRouter);
 app.use("/api/upload", uploadProfileRouter);
 

@@ -1,3 +1,4 @@
+import "../App.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/admin/Sidebar";
@@ -18,6 +19,9 @@ export default function ProtectedPage({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log(user);
+    //needlogin true
+    //adminonly true
     if (needLogin && !user.id) {
       nav("/login");
     } else if (guestOnly && user.id) {
@@ -37,17 +41,20 @@ export default function ProtectedPage({
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 500);
     // login => role="user" => routes khusus admin =>
   }, [user]);
 
   return isLoading ? (
     <Spinner />
   ) : user.role == "admin" || user.role === "adminWarehouse" ? (
-    <>{children}</>
-  ) : (
     <>
-      <Navbar /> {children} <Footer />
+      <Sidebar />
+      {children}
     </>
+  ) : (
+    <div className="App">
+      <Navbar /> {children} <Footer />
+    </div>
   );
 }
