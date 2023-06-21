@@ -19,7 +19,7 @@ export default function ProtectedPage({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log(user);
+    // console.log(user);
     //needlogin true
     //adminonly true
     if (needLogin && !user.id) {

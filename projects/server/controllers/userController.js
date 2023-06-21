@@ -8,6 +8,7 @@ const handlebars = require("handlebars");
 const { error } = require("console");
 
 module.exports = {
+  // user register
   userRegister: async (req, res) => {
     try {
       const { email } = req.body;
@@ -83,6 +84,7 @@ module.exports = {
     }
   },
 
+  // get user data
   getUserData: async (req, res) => {
     try {
       const { id } = req.body;
@@ -101,9 +103,11 @@ module.exports = {
     }
   },
 
+  // get user by id
   getUserById: async (req, res) => {
     try {
       const { id } = req.params;
+      console.log(id);
 
       const user = await User.findOne({
         where: {
@@ -119,6 +123,7 @@ module.exports = {
     }
   },
 
+  // user forgot password request
   userRequest: async (req, res) => {
     try {
       const { email } = req.body;

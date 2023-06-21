@@ -46,7 +46,7 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 import { api } from "../API/api";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AddAddressModal } from "../components/AddAddressModal";
@@ -54,6 +54,8 @@ import AddressModal from "../components/AddressModal";
 import axios from "axios";
 import { Button } from "@chakra-ui/react";
 import { PasswordChangeModal } from "../components/PasswordChange";
+import userSlice, { login } from "../features/userSlice";
+import DeleteAddressModal from "../components/DeleteAddressModal";
 
 // const navigation = [
 //   { name: "Home", href: "/", icon: HomeIcon, current: true },
@@ -102,11 +104,14 @@ export default function Profile() {
     useState(false);
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isSelectedDeleteAddress, setSelectedDeletedAddress] = useState(null);
+  const [isDeleteAddressModalOpen, setDeleteAddressModalOpen] = useState(false);
   const inputFileRef = useRef("");
+  const dispatch = useDispatch();
 
   const handleSubmitProfile = async (e) => {
     const id = JSON.parse(localStorage.getItem("auth"));
-    console.log(JSON.parse(localStorage.getItem("auth")));
+    // console.log(JSON.parse(localStorage.getItem("auth")));
     const formData = new FormData();
     formData.append("id", id);
     formData.append("user_image", e.target.files[0]);
@@ -117,9 +122,19 @@ export default function Profile() {
           "Content-Type": "multipart/form-data",
         },
       });
-      // window.location.reload();
+      userData();
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const userData = async () => {
+    try {
+      const id = JSON.parse(localStorage.getItem("auth"));
+      const response = await api.get(`/user/auth/${id})`);
+      dispatch(login(response.data.user));
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -143,10 +158,23 @@ export default function Profile() {
   const closeAddressModal = () => {
     setAddressModalOpen(false);
   };
+  const openDeleteAddressModal = () => {
+    setDeleteAddressModalOpen(true);
+  };
+  const closeDeleteAdressModal = () => {
+    setDeleteAddressModalOpen(false);
+  };
+
   const handleSelectAddress = (address) => {
     setSelectedAddress(address);
     setAddressModalOpen(false);
-
+    // console.log("test");
+    localStorage.setItem("selectedAddress", JSON.stringify(address));
+  };
+  const handleSelectDeleteAddress = (address) => {
+    setSelectedDeletedAddress(address);
+    setDeleteAddressModalOpen(false);
+    // console.log("test");
     localStorage.setItem("selectedAddress", JSON.stringify(address));
   };
 
@@ -168,6 +196,7 @@ export default function Profile() {
 
     fetchAddresses();
   }, []);
+  // console.log(addressList);
   return (
     <>
       {/*
@@ -185,7 +214,6 @@ export default function Profile() {
             <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
               <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
                 <div className="min-w-0 flex-1">
-                  Profile
                   <div className="flex items-center">
                     <img
                       className="hidden h-16 w-16 rounded-full sm:block"
@@ -218,7 +246,7 @@ export default function Profile() {
                             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                             aria-hidden="true"
                           />
-                          {addressList}
+                          {isSelectedDeleteAddress.city}
                         </dd>
                       </dl>
                     </div>
@@ -228,16 +256,23 @@ export default function Profile() {
                   <button
                     className="inline-flex items-center rounded-md border border-gray-300 bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
                     type="button"
-                    onClick={openAddressModal}
-                  >
-                    Select Address
-                  </button>
-                  <button
-                    className="inline-flex items-center rounded-md border border-gray-300 bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
-                    type="button"
                     onClick={openAddAddressModal}
                   >
                     Add Address
+                  </button>
+                  {/* <button
+                    className="inline-flex items-center rounded-md border border-gray-300 bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
+                    type="button"
+                    onClick={openAddressModal}
+                  >
+                    Select Address
+                  </button> */}
+                  <button
+                    className="inline-flex items-center rounded-md border border-gray-300 bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
+                    type="button"
+                    onClick={openDeleteAddressModal}
+                  >
+                    Address
                   </button>
                   <button
                     className="inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
@@ -380,6 +415,15 @@ export default function Profile() {
                         selectedAddress={selectedAddress}
                         onSelectAddress={handleSelectAddress}
                         closeModal={closeAddressModal}
+                      />
+                    )}
+                  </div>
+                  <div className="shadow-lg">
+                    {isDeleteAddressModalOpen && (
+                      <DeleteAddressModal
+                        selectedAddress={isSelectedDeleteAddress}
+                        onSelectAddress={handleSelectDeleteAddress}
+                        closeModal={closeDeleteAdressModal}
                       />
                     )}
                   </div>

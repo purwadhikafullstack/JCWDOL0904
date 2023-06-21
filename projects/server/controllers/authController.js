@@ -6,6 +6,7 @@ const nodemailer = require("../helpers/nodemailer.js");
 const bcrypt = require("bcrypt");
 
 module.exports = {
+  // user verification
   userVerification: async (req, res) => {
     const roll = await sequelize.transaction();
     try {
@@ -66,7 +67,7 @@ module.exports = {
       // });
     }
   },
-
+  // user login
   userLogin: async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -109,9 +110,9 @@ module.exports = {
       res.status(400).send({ message: "Server error" });
     }
   },
-
+  // user forgot password
   requestReset: async (req, res) => {
-    // const roll = await sequelize.transaction();
+    const roll = await sequelize.transaction();
     try {
       const { password, confirmPassword } = req.body;
 
@@ -149,19 +150,21 @@ module.exports = {
         { password: hashPass },
         { where: { id: data.id } }
       );
-      // await roll.commit();
+      await roll.commit();
       res.send({
         message: "Reset Password Success",
         data: userPassword,
       });
     } catch (err) {
-      // await roll.rollback();
+      await roll.rollback();
       console.log(err);
       res.status(400).send({
         message: "Server Error!",
       });
     }
   },
+
+  // user update password
   updatePassword: async (req, res) => {
     try {
       const { id, password, newPassword, confirmPassword } = req.body;
