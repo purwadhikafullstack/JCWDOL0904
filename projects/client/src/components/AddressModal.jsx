@@ -1,13 +1,14 @@
-import React, {useState, useEffect} from "react";
-import {api} from "../API/api";
+import React, { useState, useEffect } from "react";
+import { api } from "../API/api";
 
-function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
+function AddressModal({ selectedAddress, onSelectAddress, closeModal }) {
   const [addressList, setAddressList] = useState([]);
 
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const response = await api.get("addresses/2");
+        const id = JSON.parse(localStorage.getItem("auth"));
+        const response = await api.get(`addresses/${id}`);
         setAddressList(response.data);
       } catch (error) {
         console.error(error);
@@ -36,7 +37,8 @@ function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
             <li
               key={address.id}
               className="p-4 cursor-pointer hover:bg-gray-100"
-              onClick={() => handleSelect(address)}>
+              onClick={() => handleSelect(address)}
+            >
               <p className="text-lg font-semibold text-gray-800">
                 {address.province}
               </p>
@@ -49,7 +51,8 @@ function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
         <div className="flex justify-center p-4">
           <button
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleClose}>
+            onClick={handleClose}
+          >
             Close
           </button>
         </div>

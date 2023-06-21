@@ -1,11 +1,11 @@
 import "../App.css";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/admin/Sidebar";
-import {Navbar} from "../components/Navbar";
-import {Footer} from "../components/Footer";
-import {useSelector} from "react-redux";
-import {Spinner} from "@chakra-ui/react";
+import { Navbar } from "../components/Navbar";
+import { Footer } from "../components/Footer";
+import { useSelector } from "react-redux";
+import { Spinner } from "@chakra-ui/react";
 
 export default function ProtectedPage({
   needLogin = false,
@@ -17,18 +17,15 @@ export default function ProtectedPage({
   const nav = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
-  console.log(needLogin);
+
   useEffect(() => {
-    console.log(user);
+    // console.log(user);
     //needlogin true
     //adminonly true
     if (needLogin && !user.id) {
-      // console.log("coba");
-
       nav("/login");
     } else if (guestOnly && user.id) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
-        // console.log("masuk");
         nav("/test");
       } else {
         nav("/");

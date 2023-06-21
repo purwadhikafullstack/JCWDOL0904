@@ -16,6 +16,9 @@ import Checkout from "./pages/Checkout";
 import { Ekspedisi } from "./components/Ekspedisi";
 import { Verification } from "./pages/verification";
 import { Register } from "./pages/register";
+import { ResetPassword } from "./pages/resetPassword";
+import { InputPassword } from "./pages/inputPassword";
+import Profile from "./pages/Profile";
 import routes from "./routes/routes";
 import { api } from "./API/api";
 import { login } from "./features/userSlice";
@@ -71,6 +74,8 @@ function App() {
             <Route path="/home" element={<Homepage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verification/:token" element={<Verification />} />
+            <Route path="/request" element={<ResetPassword />} />
+            <Route path="/inputpassword/:token" element={<InputPassword />} />
             <Route path="/" element={<Login />} />
             <Route path="/image" element={<TestImage />} />
             <Route path="/detail" element={<ProductDetail />} />

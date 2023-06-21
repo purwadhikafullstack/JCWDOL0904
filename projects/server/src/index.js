@@ -40,14 +40,17 @@ const {
   productRouters,
   rajaongkirRouter,
   cartRouter,
-  ekpedisiRouter, orderRouter,
+  ekpedisiRouter,
+  orderRouter,
   promotionRouter,
+  tokenValidatorRouter,
+  uploadProfileRouter,
 } = require("../routers");
 
 app.use(authorize);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/upload", TestingMulterRouter);
+// app.use("/api/upload", TestingMulterRouter);
 app.use("/api/addresses", addressRouter);
 app.use("/api/warehouses", warehouseRouter);
 app.use("/api/nearest-warehouse", nearestWarehouseRouter);
@@ -56,7 +59,9 @@ app.use("/api/rajaongkir", rajaongkirRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/ekspedisi", ekpedisiRouter);
 app.use("/api/promotion", promotionRouter);
-app.use("/api/order", orderRouter)
+app.use("/api/order", orderRouter);
+app.use("/api/auth", tokenValidatorRouter);
+app.use("/api/upload", uploadProfileRouter);
 
 // app.get("/api", (req, res) => {
 //   res.send(`Hello, this is my API`);

@@ -1,10 +1,10 @@
-import React, {useState, useEffect} from "react";
-import {apiro} from "../API/apiro";
-import {api} from "../API/api";
-import {XMarkIcon} from "@heroicons/react/24/outline";
+import React, { useState, useEffect } from "react";
+import { apiro } from "../API/apiro";
+import { api } from "../API/api";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import Swal from "sweetalert2";
 
-export const AddAddressModal = ({closeAddressModal}) => {
+export const AddAddressModal = ({ closeAddressModal }) => {
   const [provinces, setProvinces] = useState([]);
   const [provincess, setProvincess] = useState([]);
   const [cities, setCities] = useState([]);
@@ -45,6 +45,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const id = JSON.parse(localStorage.getItem("auth"));
       let response = await api.post("addresses", {
         recipient_name: recipientName,
         phone_number: parseInt(phoneNumber),
@@ -53,7 +54,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
         address_city_id: parseInt(city.id),
         subdistrict,
         zip: parseInt(zip),
-        userId: 2,
+        userId: id,
       });
       console.log(response);
       Swal.fire({
@@ -109,7 +110,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
             <div>
               <label
                 htmlFor="recipient-name"
-                className="block text-sm font-medium text-gray-500 text-center">
+                className="block text-sm font-medium text-gray-500 text-center"
+              >
                 Recipient Name
               </label>
               <div className="mt-1">
@@ -128,7 +130,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
             <div>
               <label
                 htmlFor="phone"
-                className="block text-sm font-medium text-gray-500">
+                className="block text-sm font-medium text-gray-500"
+              >
                 Phone Number
               </label>
               <div className="mt-1">
@@ -147,7 +150,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
             <div>
               <label
                 htmlFor="province"
-                className="block text-sm font-medium text-gray-500">
+                className="block text-sm font-medium text-gray-500"
+              >
                 Province
               </label>
               <div className="mt-1">
@@ -159,10 +163,12 @@ export const AddAddressModal = ({closeAddressModal}) => {
                   onChange={(e) => {
                     console.log(JSON.parse(e.target.value));
                     setProvincess(JSON.parse(e.target.value));
-                  }}>
+                  }}
+                >
                   <option
                     value={provincess.province}
-                    className="text-gray-800 font-medium">
+                    className="text-gray-800 font-medium"
+                  >
                     {provincess ? provincess.province : "Select a province"}
                   </option>
                   {provinces.map((province) => (
@@ -172,7 +178,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
                       value={JSON.stringify({
                         id: province.province_id,
                         province: province.province,
-                      })}>
+                      })}
+                    >
                       {province.province}
                     </option>
                   ))}
@@ -183,7 +190,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
             <div>
               <label
                 htmlFor="province"
-                className="block text-sm font-medium text-gray-500">
+                className="block text-sm font-medium text-gray-500"
+              >
                 City
               </label>
               <div className="mt-1">
@@ -194,7 +202,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
                   className="block w-full pl-2 h-7 border rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => {
                     setCity(JSON.parse(e.target.value));
-                  }}>
+                  }}
+                >
                   <option value={city}>
                     {city ? city.city : "Select a City"}
                   </option>
@@ -206,7 +215,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
                         city: city.city_name,
                         id: city.city_id,
                         type: city.type,
-                      })}>
+                      })}
+                    >
                       <p>{city.type}</p>
                       <span> </span>
                       <p>{city.city_name}</p>
@@ -219,7 +229,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
             <div className="sm:col-span-2">
               <label
                 htmlFor="subdistrict"
-                className="block text-sm font-medium text-gray-500">
+                className="block text-sm font-medium text-gray-500"
+              >
                 Subdistrict
               </label>
               <div className="mt-1">
@@ -238,7 +249,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
           <div className="flex flex-col items-center justify-center mt-5">
             <label
               htmlFor="postal-code"
-              className="block text-sm font-medium text-gray-500">
+              className="block text-sm font-medium text-gray-500"
+            >
               Postal code
             </label>
             <div className="mt-1">
@@ -255,7 +267,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
           </div>
           <button
             type="submit"
-            className="mt-6 w-full rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+            className="mt-6 w-full rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+          >
             Submits
           </button>
         </form>
