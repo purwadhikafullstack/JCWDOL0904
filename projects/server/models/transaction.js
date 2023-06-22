@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     /**
@@ -31,24 +29,39 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_transaction",
         },
       });
+      Transaction.belongsTo(models.Warehouse, {
+        foreignKey: {
+          name: "id_warehouse",
+        },
+      });
     }
   }
-  Transaction.init({
-    total_price: {
-      type: DataTypes.INTEGER,
+  Transaction.init(
+    {
+      total_price: {
+        type: DataTypes.INTEGER,
+      },
+      transaction_date: {
+        type: DataTypes.DATE,
+      },
+      courier: {
+        type: DataTypes.STRING,
+      },
+      status: {
+        type: DataTypes.ENUM(
+          "Waiting For Payment",
+          "Waiting For Payment Confirmation",
+          "On Proses",
+          "Shipped",
+          "Order Confirmed",
+          "rejected"
+        ),
+      },
     },
-    transaction_date: {
-      type: DataTypes.DATE,
-    },
-    courier: {
-      type: DataTypes.STRING,
-    },
-    status: {
-      type: DataTypes.ENUM('Waiting For Payment', 'Waiting For Payment Confirmation', 'On Proses', 'Shipped', 'Order Confirmed', 'rejected'),
-    },
-  }, {
-    sequelize,
-    modelName: 'Transaction',
-  });
+    {
+      sequelize,
+      modelName: "Transaction",
+    }
+  );
   return Transaction;
 };

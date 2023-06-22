@@ -9,6 +9,8 @@ const rajaongkirController = require("./rajaongkirController.js");
 const cartController = require("./cartController.js");
 const expedisiController = require("./ekspedisiController.js");
 const promotionControllers = require("./promotionControllers.js");
+const mutationAutomaticController = require("./mutationAutomaticController.js");
+const mutationControllers = require("./mutationControllers.js");
 
 module.exports = {
   userController,
@@ -22,4 +24,6 @@ module.exports = {
   cartController,
   expedisiController,
   promotionControllers,
+  mutationAutomaticController,
+  mutationControllers,
 };

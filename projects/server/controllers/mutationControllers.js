@@ -10,71 +10,124 @@ const warehouse = db.Warehouse;
 const user = db.User;
 
 module.exports = {
-  getAllProduct: async (req, res) => {
-    let page = parseInt(req.query.page);
-    const search = req.query.search || "";
-    const order = req.query.order;
-    const sort = req.query.sort;
-    const category = req.query.category || 1;
-    const limit = 9;
-    const where = {
-      product_name: {
-        [db.Sequelize.Op.like]: `%${search}%`,
-      },
-      id_category: category,
-    };
-
-    const SORT = [[order, sort]];
-    console.log(SORT);
-
-    if (search) page = 0;
-
-    let result;
-    const { count: allCount, rows: allSort } = await product.findAndCountAll({
-      where,
-    });
-
-    const totalPage = Math.ceil(allCount / limit);
-
-    if (page > totalPage - 1) {
-      page = 0;
-    }
-
-    const { count: updatedCount, rows: updatedRows } =
-      await product.findAndCountAll({
-        where,
-        order: SORT,
-        limit: limit,
-        offset: page * limit,
-      });
-
-    console.log(page);
-    result = { data: updatedRows, totalProduct: updatedCount, totalPage };
-    res.send({ message: "success", ...result });
-  },
-
-  getOneProduct: async (req, res) => {
+  rejectMutation: async (req, res) => {
     try {
-      const { idP } = req.body;
+      const { id } = req.body;
 
-      const productById = await product.findOne({
+      const getStockmovementData = await stockmovement.findOne({
         where: {
-          id: idP,
+          id,
         },
-        include: [stocks],
       });
 
-      const stock = productById.Stocks.reduce((acc, curr) => {
-        return acc + curr.stock;
-      }, 0);
+      if (getStockmovementData.status !== "pending") {
+        return res.status(400).send({
+          message: "action already run!",
+          title: "Error!",
+          icon: "error",
+        });
+      }
+
+      const result = await stockmovement.update(
+        {
+          status: "rejected",
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
 
       res.status(200).send({
-        message: "success",
-        productById,
-        stock,
+        result,
       });
     } catch (error) {
-      res.status(400).send(error);
+      console.log(error);
+      // res.status(400).send({
+      //   message: error.message,
+      // });
+    }
+  },
+  proceedMutation: async (req, res) => {
+    try {
+      const { id, warehouse_sender_id, warehouse_receive_id, qty, id_product } =
+        req.body;
+
+      const getStockmovementData = await stockmovement.findOne({
+        where: {
+          id,
+        },
+      });
+
+      if (getStockmovementData.status !== "pending") {
+        throw new Error("action already run!");
+      }
+
+      const WarehouseSender = await stocks.findOne({
+        where: {
+          id_warehouse: warehouse_sender_id,
+          id_product,
+        },
+      });
+      const WarehouseReceive = await stocks.findOne({
+        where: {
+          id_warehouse: warehouse_receive_id,
+          id_product,
+        },
+      });
+
+      if (WarehouseSender.stock < qty) {
+        throw new Error("stock is unavailable");
+      }
+
+      const stockInWarehouseSender = WarehouseSender.stock - qty;
+      const stockInWarehouseReceive = WarehouseReceive.stock + qty;
+
+      const stockInWarehouseSenderUpdate = await stocks.update(
+        {
+          stock: stockInWarehouseSender,
+        },
+        {
+          where: {
+            id_warehouse: warehouse_sender_id,
+            id_product,
+          },
+        }
+      );
+      const stockInWarehouseReceiveUpdate = await stocks.update(
+        {
+          stock: stockInWarehouseReceive,
+        },
+        {
+          where: {
+            id_warehouse: warehouse_receive_id,
+            id_product,
+          },
+        }
+      );
+      const updateStockMovement = await stockmovement.update(
+        {
+          status: "approved",
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+
+      res.status(200).send({
+        stockInWarehouseSenderUpdate,
+        stockInWarehouseReceiveUpdate,
+        updateStockMovement,
+        getStockmovementData,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   manualMutation: async (req, res) => {
@@ -128,6 +181,7 @@ module.exports = {
   getAllMutation: async (req, res) => {
     try {
       let { sort, role, idUser } = req.query;
+      console.log(sort, role, idUser);
       let dataUser = [];
       let idWarehouse = null;
       console.log(req.query);

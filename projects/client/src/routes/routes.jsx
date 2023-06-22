@@ -17,6 +17,8 @@ import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
 import ManageMutation from "../pages/admin/ManageMutation";
 import SendRequestMutation from "../pages/admin/SendRequestMutation";
+import ManageCategory from "../pages/admin/ManageCategory";
+import MutationList from "../pages/admin/MutationList";
 
 const routes = [
   //home
@@ -111,11 +113,29 @@ const routes = [
     }
   />,
   <Route
+    key="mutation-list"
+    path="/mutation-list"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <MutationList />
+      </ProtectedPage>
+    }
+  />,
+  <Route
     key="cek"
     path="/cek"
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <TestImage />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-category"
+    path="/manage-category"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageCategory />
       </ProtectedPage>
     }
   />,
