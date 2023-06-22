@@ -7,7 +7,8 @@ function AddressModal({ selectedAddress, onSelectAddress, closeModal }) {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const response = await api.get("addresses/1");
+        const id = JSON.parse(localStorage.getItem("auth"));
+        const response = await api.get(`addresses/${id}`);
         setAddressList(response.data);
       } catch (error) {
         console.error(error);

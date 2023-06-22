@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { api } from "../API/api";
 import { Button } from "@chakra-ui/react";
+import { Field, ErrorMessage, Formik, Form } from "formik";
+import * as Yup from "yup";
 
 const url = "/user/register";
 
@@ -11,9 +13,18 @@ export const Register = () => {
 
   let email = useRef();
 
-  const registerAccount = async () => {
+  const registerSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Email is required"),
+  });
+  //email is reuquired keluar karena email kosong
+  //karena button berdiri sendiri tanpa perlu validasi dari formik
+  //button apa yang perlu validasi dari formik? button yang menggunakan type submit
+
+  const registerAccount = async (values) => {
     try {
-      let result = await api.post(url, { email: email.current.value });
+      console.log(values);
+      let result = await api.post(url, { email: values.email });
+      console.log(result);
 
       Swal.fire({
         title: "Success",
@@ -46,24 +57,39 @@ export const Register = () => {
               >
                 Create your galaxy ID
               </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Email"
-                required=""
-                ref={email}
-              />
+              <Formik
+                initialValues={{
+                  email: "", // apayang lu input dibawah tidak merubah isi formik
+                }}
+                validationSchema={registerSchema}
+                onSubmit={(values) => registerAccount(values)}
+              >
+                {(props) => (
+                  <Form>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Email"
+                      required=""
+                      onChange={props.handleChange}
+                      value={props.values.email}
+                      as={Field}
+                    />
+                    <div class="flex items-start"></div>
+                    <button
+                      type="submit"
+                      class="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                      onClick={() => registerAccount(email.current.value)}
+                    >
+                      Register
+                    </button>
+                    <ErrorMessage name="email" component="div" />
+                  </Form>
+                )}
+              </Formik>
             </div>
-            <div class="flex items-start"></div>
-            <button
-              type="submit"
-              class="w-full text-black bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              onClick={() => registerAccount(email.current.value)}
-            >
-              Register
-            </button>
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">
               Already have an account?{" "}
               <Button

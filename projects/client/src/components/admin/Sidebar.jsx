@@ -12,8 +12,8 @@
   }
   ```
 */
-import { Fragment, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
+import {Fragment, useState} from "react";
+import {Dialog, Menu, Transition} from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
   BellIcon,
@@ -25,14 +25,21 @@ import {
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@chakra-ui/react";
+import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
+import {useNavigate} from "react-router-dom";
+import {Button} from "@chakra-ui/react";
 
 const navigation = [
   {
     name: "Dashboard",
+    name: "Dashboard",
     href: "/manage-warehouse",
+    icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: "User",
+    href: "/test",
     icon: HomeIcon,
     current: true,
   },
@@ -58,9 +65,9 @@ const navigation = [
   { name: "Reports", href: "/", icon: ChartBarIcon, current: false },
 ];
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  {name: "Your Profile", href: "#"},
+  {name: "Settings", href: "#"},
+  {name: "Sign out", href: "#"},
 ];
 
 function classNames(...classes) {
@@ -86,8 +93,7 @@ export default function Sidebar() {
           <Dialog
             as="div"
             className="relative z-40 md:hidden"
-            onClose={setSidebarOpen}
-          >
+            onClose={setSidebarOpen}>
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -95,8 +101,7 @@ export default function Sidebar() {
               enterTo="opacity-100"
               leave="transition-opacity ease-linear duration-300"
               leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
+              leaveTo="opacity-0">
               <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
             </Transition.Child>
 
@@ -108,8 +113,7 @@ export default function Sidebar() {
                 enterTo="translate-x-0"
                 leave="transition ease-in-out duration-300 transform"
                 leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full"
-              >
+                leaveTo="-translate-x-full">
                 <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-black pt-5 pb-4">
                   <Transition.Child
                     as={Fragment}
@@ -118,14 +122,12 @@ export default function Sidebar() {
                     enterTo="opacity-100"
                     leave="ease-in-out duration-300"
                     leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
+                    leaveTo="opacity-0">
                     <div className="absolute top-0 right-0 -mr-12 pt-2">
                       <button
                         type="button"
                         className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                        onClick={() => setSidebarOpen(false)}
-                      >
+                        onClick={() => setSidebarOpen(false)}>
                         <span className="sr-only">Close sidebar</span>
                         <XMarkIcon
                           className="h-6 w-6 text-white"
@@ -148,7 +150,7 @@ export default function Sidebar() {
                           key={item.name}
                           // href={item.href}
                           backgroundColor="black"
-                          _hover={{ backgroundColor: "#4A5568" }}
+                          _hover={{backgroundColor: "#4A5568"}}
                           color="white"
                           width="300px"
                           // href={item.href}
@@ -201,7 +203,7 @@ export default function Sidebar() {
                     key={item.name}
                     // href={item.href}
                     backgroundColor="black"
-                    _hover={{ backgroundColor: "#4A5568" }}
+                    _hover={{backgroundColor: "#4A5568"}}
                     color="white"
                     width="230px"
                     justifyContent="left"
@@ -235,8 +237,7 @@ export default function Sidebar() {
             <button
               type="button"
               className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
+              onClick={() => setSidebarOpen(true)}>
               <span className="sr-only">Open sidebar</span>
               <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
             </button>
@@ -266,8 +267,7 @@ export default function Sidebar() {
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
-                  className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
+                  className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
@@ -291,9 +291,8 @@ export default function Sidebar() {
                     enterTo="transform opacity-100 scale-100"
                     leave="transition ease-in duration-75"
                     leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    leaveTo="transform opacity-0 scale-95">
+                    {/* <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (

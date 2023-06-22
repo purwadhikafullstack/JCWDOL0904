@@ -6,7 +6,7 @@ import {
   XMarkIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { updateCart } from "../features/cartSlice";
@@ -57,7 +57,7 @@ export const Navbar = () => {
     dispatch(updateCart({ cart }));
   };
 
-  // Retrieve the cart data from local storage on page load
+  // update kembalo cartdata ketika load page
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -65,7 +65,7 @@ export const Navbar = () => {
     }
   }, []);
 
-  // Update the cart data in local storage whenever it changes
+  // update cart di local storage setiap cart ada perubahan
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
@@ -152,7 +152,7 @@ export const Navbar = () => {
                           <span className="sr-only">Open user menu</span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src={`http://localhost:8000/${user_image}`}
+                            src={user_image}
                             alt=""
                           />
                         </Menu.Button>
@@ -175,6 +175,7 @@ export const Navbar = () => {
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm"
                                 )}
+                                onClick={() => navigation("/profile")}
                               >
                                 Your Profile
                               </a>

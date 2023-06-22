@@ -2,7 +2,6 @@ import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
-import { Login } from "./pages/Login";
 import { Routes, Route } from "react-router-dom";
 import { TestImage } from "./pages/TestImage";
 import Sidebar from "./components/admin/Sidebar";
@@ -17,6 +16,9 @@ import Checkout from "./pages/Checkout";
 import { Ekspedisi } from "./components/Ekspedisi";
 import { Verification } from "./pages/verification";
 import { Register } from "./pages/register";
+import { ResetPassword } from "./pages/resetPassword";
+import { InputPassword } from "./pages/inputPassword";
+import Profile from "./pages/Profile";
 import routes from "./routes/routes";
 import { api } from "./API/api";
 import { login } from "./features/userSlice";
@@ -72,6 +74,8 @@ function App() {
             <Route path="/home" element={<Homepage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/verification/:token" element={<Verification />} />
+            <Route path="/request" element={<ResetPassword />} />
+            <Route path="/inputpassword/:token" element={<InputPassword />} />
             <Route path="/" element={<Login />} />
             <Route path="/image" element={<TestImage />} />
             <Route path="/detail" element={<ProductDetail />} />
@@ -79,10 +83,11 @@ function App() {
             <Route path="/cart2" element={<Cart />} />
             <Route path="/cart" element={<Cart2 />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/eks" element={<Ekspedisi />} />
-          </Routes >
-          <Footer />
-        </div >
+            <Route path="/tr" element={<Example />} />
+            <Route path="/trans" element={<Transaction />} />
+          </Routes>
+          {/* <Footer /> */}
+      {/* </div >
       ) : (
         <div className="App">
           <Sidebar />

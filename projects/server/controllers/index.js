@@ -9,6 +9,10 @@ const rajaongkirController = require("./rajaongkirController.js");
 const cartController = require("./cartController.js");
 const expedisiController = require("./ekspedisiController.js");
 const promotionControllers = require("./promotionControllers.js");
+const orderController = require("./orderController.js");
+
+const tokenValidatorController = require("./tokenValidatorController.js");
+const uploadProfileController = require("./uploadProfileController.js");
 const mutationAutomaticController = require("./mutationAutomaticController.js");
 const mutationControllers = require("./mutationControllers.js");
 
@@ -24,6 +28,9 @@ module.exports = {
   cartController,
   expedisiController,
   promotionControllers,
+  orderController,
+  tokenValidatorController,
+  uploadProfileController,
   mutationAutomaticController,
   mutationControllers,
 };

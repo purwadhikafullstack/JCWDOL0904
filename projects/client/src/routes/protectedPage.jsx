@@ -1,3 +1,4 @@
+import "../App.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/admin/Sidebar";
@@ -16,18 +17,15 @@ export default function ProtectedPage({
   const nav = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
-  console.log(needLogin);
+
   useEffect(() => {
-    console.log(user);
+    // console.log(user);
     //needlogin true
     //adminonly true
     if (needLogin && !user.id) {
-      // console.log("coba");
-
       nav("/login");
     } else if (guestOnly && user.id) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
-        // console.log("masuk");
         nav("/test");
       } else {
         nav("/");
@@ -43,7 +41,7 @@ export default function ProtectedPage({
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 500);
     // login => role="user" => routes khusus admin =>
   }, [user]);
 
@@ -55,8 +53,8 @@ export default function ProtectedPage({
       {children}
     </>
   ) : (
-    <>
+    <div className="App">
       <Navbar /> {children} <Footer />
-    </>
+    </div>
   );
 }
