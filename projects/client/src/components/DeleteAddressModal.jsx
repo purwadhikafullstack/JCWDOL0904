@@ -11,14 +11,11 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
   const [addressList, setAddressList] = useState([]);
   const dispatch = useDispatch();
 
-  const allAddress = useSelector((state) => state.addressSlice.value);
-  // console.log(allAddress);
   const fetchAddresses = async () => {
     try {
       const id = JSON.parse(localStorage.getItem("auth"));
       const response = await api.get(`addresses/${id}`);
       setAddressList(response.data);
-      dispatch(addressData(response.data));
     } catch (error) {
       console.error(error);
     }
@@ -26,9 +23,6 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
   useEffect(() => {
     fetchAddresses();
   }, []);
-  useEffect(() => {
-    console.log(allAddress);
-  }, [allAddress]);
 
   const handleDelete = async (id) => {
     Swal.fire({
@@ -54,7 +48,6 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
 
   const handleSelect = (address) => {
     onSelectAddress(address);
-    // console.log("test");
   };
 
   const handleClose = () => {
@@ -65,10 +58,10 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
     <div className="fixed inset-0 pt-20 flex items-center justify-center bg-gray-800 bg-opacity-50">
       <div className="bg-white w-80 pb-4 rounded-lg shadow-lg max-h-[450px] overflow-y-auto">
         <h2 className="py-7 px-16 text-lg font-medium text-gray-700 text-center border-b">
-          Delete Address
+          Select Address
         </h2>
         <ul className="divide-y">
-          {allAddress.map((address) => (
+          {addressList.map((address) => (
             <li
               key={address.id}
               className="p-4 cursor-pointer hover:bg-gray-100 flex justify-center items-center"

@@ -32,6 +32,7 @@ export const Navbar = () => {
   }, [localStorage.getItem("auth")]);
 
   const handleLogOut = () => {
+    localStorage.removeItem("selectedAddress");
     localStorage.removeItem("auth");
     dispatch(
       login({

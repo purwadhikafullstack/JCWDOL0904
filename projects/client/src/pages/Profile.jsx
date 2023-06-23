@@ -105,6 +105,7 @@ export default function Profile() {
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isSelectedDeleteAddress, setSelectedDeletedAddress] = useState(null);
+  console.log(isSelectedDeleteAddress);
   const [isDeleteAddressModalOpen, setDeleteAddressModalOpen] = useState(false);
   const inputFileRef = useRef("");
   const dispatch = useDispatch();
@@ -152,12 +153,7 @@ export default function Profile() {
   const closePasswordChangeModal = () => {
     setPasswordChangeModalOpen(false);
   };
-  const openAddressModal = () => {
-    setAddressModalOpen(true);
-  };
-  const closeAddressModal = () => {
-    setAddressModalOpen(false);
-  };
+
   const openDeleteAddressModal = () => {
     setDeleteAddressModalOpen(true);
   };
@@ -165,16 +161,10 @@ export default function Profile() {
     setDeleteAddressModalOpen(false);
   };
 
-  const handleSelectAddress = (address) => {
-    setSelectedAddress(address);
-    setAddressModalOpen(false);
-    // console.log("test");
-    localStorage.setItem("selectedAddress", JSON.stringify(address));
-  };
   const handleSelectDeleteAddress = (address) => {
     setSelectedDeletedAddress(address);
     setDeleteAddressModalOpen(false);
-    // console.log("test");
+    // console.log(address);
     localStorage.setItem("selectedAddress", JSON.stringify(address));
   };
 
@@ -187,8 +177,20 @@ export default function Profile() {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const response = await api.get(`addresses/${getUser}`);
-        setAddressList(response.data[0].city);
+        const storedSelectedAddress = localStorage.getItem("selectedAddress");
+        // console.log(storedSelectedAddress);
+        if (storedSelectedAddress) {
+          setSelectedDeletedAddress(JSON.parse(storedSelectedAddress));
+        } else {
+          const response = await api.get(`addresses/${getUser}`);
+          const addresses = response.data;
+          if (addresses.length > 0) {
+            setSelectedDeletedAddress(addresses[0]); // Set the first address as the selected address
+          } else {
+            setSelectedDeletedAddress(null);
+          }
+          // setAddressList(response.data[0].city);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -246,7 +248,59 @@ export default function Profile() {
                             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                             aria-hidden="true"
                           />
-                          {isSelectedDeleteAddress.city}
+                          {/* {addressList} */}
+                          {/* {isSelectedDeleteAddress?.city} */}
+                          {isSelectedDeleteAddress ? (
+                            <div className="mt-4 text-sm text-gray-600">
+                              <div
+                                key={isSelectedDeleteAddress.id}
+                                className="mb-4"
+                              >
+                                <div className="flex gap-2">
+                                  <span className="font-semibold">
+                                    Recipient Name:
+                                  </span>
+                                  <span>
+                                    {isSelectedDeleteAddress.recipient_name}
+                                  </span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="font-semibold">
+                                    Phone Number:
+                                  </span>
+                                  <span>
+                                    {isSelectedDeleteAddress.phone_number}
+                                  </span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="font-semibold">
+                                    Province:
+                                  </span>
+                                  <span>
+                                    {isSelectedDeleteAddress.province}
+                                  </span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="font-semibold">City:</span>
+                                  <span>{isSelectedDeleteAddress.city}</span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="font-semibold">
+                                    Subdistrict:
+                                  </span>
+                                  <span>
+                                    {isSelectedDeleteAddress.subdistrict}
+                                  </span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="font-semibold">ZIP:</span>
+                                  <span>{isSelectedDeleteAddress.zip}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div>No shipping addresses found.</div>
+                          )}
                         </dd>
                       </dl>
                     </div>
@@ -260,19 +314,12 @@ export default function Profile() {
                   >
                     Add Address
                   </button>
-                  {/* <button
-                    className="inline-flex items-center rounded-md border border-gray-300 bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
-                    type="button"
-                    onClick={openAddressModal}
-                  >
-                    Select Address
-                  </button> */}
                   <button
                     className="inline-flex items-center rounded-md border border-gray-300 bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
                     type="button"
                     onClick={openDeleteAddressModal}
                   >
-                    Address
+                    Your Address
                   </button>
                   <button
                     className="inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
@@ -409,15 +456,6 @@ export default function Profile() {
                       />
                     </div>
                   )}
-                  <div className="shadow-lg">
-                    {isAddressModalOpen && (
-                      <AddressModal
-                        selectedAddress={selectedAddress}
-                        onSelectAddress={handleSelectAddress}
-                        closeModal={closeAddressModal}
-                      />
-                    )}
-                  </div>
                   <div className="shadow-lg">
                     {isDeleteAddressModalOpen && (
                       <DeleteAddressModal

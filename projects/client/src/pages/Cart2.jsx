@@ -1,11 +1,11 @@
-import {XMarkIcon, CreditCardIcon} from "@heroicons/react/20/solid";
-import {useState, useEffect} from "react";
-import {api} from "../API/api";
+import { XMarkIcon, CreditCardIcon } from "@heroicons/react/20/solid";
+import { useState, useEffect } from "react";
+import { api } from "../API/api";
 import Swal from "sweetalert2";
-import {useDispatch} from "react-redux";
-import {cart, subtotal} from "../features/cartSlice";
-import {useNavigate} from "react-router-dom";
-import {SunDim} from "phosphor-react";
+import { useDispatch } from "react-redux";
+import { cart, subtotal } from "../features/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { SunDim } from "phosphor-react";
 
 const Cart2 = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -17,7 +17,10 @@ const Cart2 = () => {
 
   const fetchCartItems = async () => {
     try {
-      const response = await api.get(`/cart?userId=2`);
+      const id = JSON.parse(localStorage.getItem("auth"));
+      console.log(id);
+      const response = await api.get(`/cart?userId=${id}`);
+      console.log(response);
       setCartItems(response.data);
       console.log(response.data);
 
@@ -109,7 +112,8 @@ const Cart2 = () => {
 
             <ul
               role="list"
-              className="divide-y divide-gray-200 border-t border-b border-gray-200">
+              className="divide-y divide-gray-200 border-t border-b border-gray-200"
+            >
               {cartItems.map((item) => {
                 const subtotal = item.quantity * item.Product.price;
                 return (
@@ -129,7 +133,8 @@ const Cart2 = () => {
                             <h3 className="text-sm">
                               <a
                                 href={item.href}
-                                className="font-medium text-gray-700 hover:text-gray-800">
+                                className="font-medium text-gray-700 hover:text-gray-800"
+                              >
                                 {item.Product.product_name}
                               </a>
                             </h3>
@@ -155,7 +160,8 @@ const Cart2 = () => {
                               className="px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none"
                               onClick={() =>
                                 updateCartProduct(item.id, "decrease")
-                              }>
+                              }
+                            >
                               -
                             </button>
                             <input
@@ -171,7 +177,8 @@ const Cart2 = () => {
                               className="px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none"
                               onClick={() =>
                                 updateCartProduct(item.id, "increase")
-                              }>
+                              }
+                            >
                               +
                             </button>
                           </div>
@@ -180,7 +187,8 @@ const Cart2 = () => {
                             <button
                               type="button"
                               className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
-                              onClick={() => deleteCartItem(item.id)}>
+                              onClick={() => deleteCartItem(item.id)}
+                            >
                               <span className="sr-only">Remove</span>
                               <XMarkIcon
                                 className="h-5 w-5"
@@ -209,10 +217,12 @@ const Cart2 = () => {
 
           <section
             aria-labelledby="summary-heading"
-            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
+            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
+          >
             <h2
               id="summary-heading"
-              className="text-lg font-medium text-gray-900">
+              className="text-lg font-medium text-gray-900"
+            >
               Order summary
             </h2>
 
@@ -231,7 +241,8 @@ const Cart2 = () => {
               <button
                 onClick={() => navigate("/checkout")}
                 type="submit"
-                className="w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                className="w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
                 Continue to Checkout
               </button>
             </div>
