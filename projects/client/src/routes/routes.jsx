@@ -20,6 +20,8 @@ import SendRequestMutation from "../pages/admin/SendRequestMutation";
 import ManageMutation from "../pages/admin/ManageMutation";
 import Profile from "../pages/Profile";
 import Error from "../pages/Error";
+import ManageCategory from "../pages/admin/ManageCategory";
+import MutationList from "../pages/admin/MutationList";
 
 const routes = [
   //home
@@ -156,6 +158,15 @@ const routes = [
     }
   />,
   <Route
+    key="mutation-list"
+    path="/mutation-list"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <MutationList />
+      </ProtectedPage>
+    }
+  />,
+  <Route
     key="cek"
     path="/cek"
     element={
@@ -170,6 +181,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <Example />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-category"
+    path="/manage-category"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageCategory />
       </ProtectedPage>
     }
   />,

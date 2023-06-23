@@ -29,6 +29,7 @@ const EditeWarehouse = (props) => {
   const [warehouse, setWarehouse] = useState("");
   const [subdistrict, setSubsdistrict] = useState("");
   const [zip, setZip] = useState("");
+  const [isLoad, setLoad] = useState(false);
 
   const getAllProvince = async () => {
     try {
@@ -54,6 +55,7 @@ const EditeWarehouse = (props) => {
   const handleSubmit = async () => {
     // console.log(props.wId);
     try {
+      setLoad(true);
       let response = await api.post("/warehouses/update", {
         warehouse,
         province: provincess.province,
@@ -63,6 +65,8 @@ const EditeWarehouse = (props) => {
         zip: parseInt(zip),
         id: props.wId,
       });
+      onClose();
+      setLoad(false);
       console.log(response);
       props.runFunction();
       Swal.fire({
@@ -76,6 +80,8 @@ const EditeWarehouse = (props) => {
       setSubsdistrict("");
       setZip("");
     } catch (error) {
+      onClose();
+      setLoad(false);
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
@@ -100,11 +106,11 @@ const EditeWarehouse = (props) => {
   }, [provincess, city]);
 
   return (
-    <div>
+    <div className="flex align-middle">
       {/* <Button leftIcon={<AddIcon />} onClick={onOpen}>
         Add Warehouse
       </Button> */}
-      <Button onClick={onOpen} variant="link" color="blue">
+      <Button onClick={onOpen} variant="link" color="black">
         <SettingsIcon />
       </Button>
 
@@ -198,13 +204,20 @@ const EditeWarehouse = (props) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              variant="ghost"
-              leftIcon={<EditIcon />}
-              onClick={() => handleSubmit()}
-            >
-              Edit
-            </Button>
+            {isLoad ? (
+              <Button variant="ghost" isLoading></Button>
+            ) : (
+              <Button
+                variant="ghost"
+                // leftIcon={<EditIcon />}
+                backgroundColor="black"
+                color="white"
+                _hover={{ backgroundColor: "#3c3c3c" }}
+                onClick={() => handleSubmit()}
+              >
+                Edit
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

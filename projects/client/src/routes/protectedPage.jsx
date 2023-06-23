@@ -26,7 +26,7 @@ export default function ProtectedPage({
       nav("/login");
     } else if (guestOnly && user.id) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
-        nav("/test");
+        nav("/order");
       } else {
         nav("/");
       }

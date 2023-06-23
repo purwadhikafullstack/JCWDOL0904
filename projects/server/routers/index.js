@@ -13,7 +13,7 @@ const orderRouter = require("./orderRouter");
 
 const tokenValidatorRouter = require("./tokenValidatorRouter");
 const uploadProfileRouter = require("./uploadProfileRouter");
-
+const mutationRouter = require("./mutationRouters");
 module.exports = {
   userRouter,
   authRouter,
@@ -29,4 +29,5 @@ module.exports = {
   orderRouter,
   tokenValidatorRouter,
   uploadProfileRouter,
+  mutationRouter,
 };

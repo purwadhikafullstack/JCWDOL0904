@@ -13,11 +13,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: {
           name: "warehouse_sender_id",
         },
+        as: "senderWarehouse",
       });
       Warehouse.hasMany(models.StockMovement, {
         foreignKey: {
           name: "warehouse_receive_id",
         },
+        as: "receiverWarehouse",
       });
       Warehouse.hasMany(models.Stocks, {
         foreignKey: {
