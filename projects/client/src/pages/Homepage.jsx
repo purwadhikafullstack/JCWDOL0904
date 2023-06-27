@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
   Tabs,
   TabList,
@@ -15,12 +15,12 @@ import {
   InputRightElement,
   Box,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import {SearchIcon} from "@chakra-ui/icons";
 import ProductsHome from "../components/ProductsHome";
 import ReactPaginate from "react-paginate";
 import Carousel from "../components/Carousel";
 import "./style/Homepage.css";
-import { api } from "../API/api";
+import {api} from "../API/api";
 import UserIsNotLogin from "../components/UserIsNotLogin";
 import Swal from "sweetalert2";
 
@@ -104,7 +104,7 @@ const Homepage = () => {
   }, [page, search, sort, order]);
 
   return (
-    <div style={{ minHeight: "150vh" }}>
+    <div style={{minHeight: "150vh"}}>
       <Box backgroundColor="black" maxW="100%">
         <Carousel />
       </Box>
@@ -119,13 +119,11 @@ const Homepage = () => {
             display: "flex",
             justifyContent: "center",
             marginTop: "10px",
-          }}
-        >
+          }}>
           <Stack
             flexDirection="column"
             alignItems="center"
-            className="con-category"
-          >
+            className="con-category">
             <InputGroup>
               <InputRightElement
                 pointerEvents="none"
@@ -143,8 +141,7 @@ const Homepage = () => {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-              }}
-            >
+              }}>
               <Text fontSize="12px" width="50px">
                 Sort By:
               </Text>
@@ -154,16 +151,15 @@ const Homepage = () => {
                 display="flex"
                 justifyContent="center"
                 borderRadius="50px"
-                style={{ fontSize: "11px" }}
-                onChange={(e) => handleSorting(e.target.value)}
-              >
-                <option value="1" style={{ fontSize: "10px", borderRadius: 0 }}>
+                style={{fontSize: "11px"}}
+                onChange={(e) => handleSorting(e.target.value)}>
+                <option value="1" style={{fontSize: "10px", borderRadius: 0}}>
                   By name Z~A
                 </option>
-                <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
+                <option value="2" style={{fontSize: "10px", borderRadius: 0}}>
                   By price low~high
                 </option>
-                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
+                <option value="3" style={{fontSize: "10px", borderRadius: 0}}>
                   By price high~low
                 </option>
               </Select>
@@ -173,30 +169,26 @@ const Homepage = () => {
 
         <TabPanels
           className="card-con"
-          style={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
+          style={{display: "flex", justifyContent: "center", width: "100%"}}>
           <TabPanel
             display="flex"
             flexDirection="column"
             justifyContent="center"
-            maxWidth="100%"
-          >
+            maxWidth="100%">
             <ProductsHome products={products} category={1} />
           </TabPanel>
           <TabPanel
             display="flex"
             flexDirection="row"
             justifyContent="center"
-            maxWidth="100%"
-          >
+            maxWidth="100%">
             <ProductsHome products={products} category={2} />
           </TabPanel>
           <TabPanel
             display="flex"
             flexDirection="row"
             justifyContent="center"
-            maxWidth="100%"
-          >
+            maxWidth="100%">
             <ProductsHome products={products} category={3} />
           </TabPanel>
         </TabPanels>

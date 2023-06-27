@@ -22,6 +22,7 @@
     "axios": "^0.27.2",
     "dotenv": "^16.1.4",
     "framer-motion": "^10.12.16",
+    "moment": "^2.29.4",
     "phosphor": "^0.7.1",
     "phosphor-icons": "^1.4.2",
     "phosphor-react": "^1.4.1",
@@ -36,6 +37,7 @@
     "react-spinners": "^0.13.8",
     "redux": "^4.2.1",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.0",
     "sweetalert2": "^11.7.11",
     "web-vitals": "^2.1.4"
   },

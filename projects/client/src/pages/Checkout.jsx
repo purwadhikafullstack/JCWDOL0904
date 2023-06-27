@@ -9,6 +9,7 @@ import {useSelector} from "react-redux";
 import Swal from "sweetalert2";
 import {updateCart} from "../features/cartSlice";
 import {useDispatch} from "react-redux";
+import io from "socket.io-client";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -19,7 +20,6 @@ export default function Checkout() {
   const [subTotal, setSubtotal] = useState(0); // Total jumlah subTotal
   // const {subtotal} = useSelector((state) => state.cartSlice.value);
   // console.log(subtotal);
-
   // const {cart} = useSelector((state) => state.cartSlice.value);
   const [warehouseOrigin, setWarehouseOrigin] = useState("");
   const [ongkir, setOngkir] = useState(0);
@@ -33,8 +33,11 @@ export default function Checkout() {
   // console.log("ini address city id", selectedAddress?.address_city_id);
   // console.log("destination", selectedAddress);
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
+
+  const socket = io();
+
+  const [status, setStatus] = useState("");
 
   const openAddressModal = () => {
     setAddressModalOpen(true);
@@ -90,6 +93,7 @@ export default function Checkout() {
     const fetchShippingAddress = async () => {
       try {
         const storedSelectedAddress = localStorage.getItem("selectedAddress");
+        console.log(storedSelectedAddress);
         if (storedSelectedAddress) {
           setSelectedAddress(JSON.parse(storedSelectedAddress));
         } else {
@@ -148,6 +152,10 @@ export default function Checkout() {
 
       // Handle the successful checkout response here
       console.log("Order created successfully:", response);
+      socket.emit("statusUpdated", {
+        transactionId: response.data.transaction.id,
+        newStatus: "Waiting For Payment",
+      });
 
       setCartItems([]);
       dispatch(updateCart({cart: []}));
@@ -325,7 +333,7 @@ export default function Checkout() {
                 Checkout
               </button>
               <button
-                type="submit"
+                // type="submit"
                 onClick={() => navigate("/")}
                 className="mt-6 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm ">
                 Continue Shooping

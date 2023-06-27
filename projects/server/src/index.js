@@ -5,10 +5,22 @@ const { join } = require("path");
 const dotenv = require("dotenv").config({ override: true });
 const db = require("../models");
 const bodyParser = require("body-parser");
+
 const { authorize } = require("../middleware/validator");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
+
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server, {
+  cors: { origin: '*' },
+});
+global.io = io;
+
+module.exports = { io };
+
 // app.use(
 //   cors({
 //     origin: [
@@ -20,11 +32,14 @@ const app = express();
 
 // console.log(process.env.WHITELISTED_DOMAIN);
 
+
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public/images"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //#region API ROUTES
 
@@ -102,7 +117,21 @@ app.get("*", (req, res) => {
 
 //#endregion
 
-app.listen(PORT, (err) => {
+io.on('connection', (socket) => {
+  console.log('A client connected');
+
+  // Handle client disconnection
+  socket.on('disconnect', () => {
+    console.log('A client disconnected');
+  });
+
+  // Listen for transaction updates
+  socket.on('transaction-update', (updatedTransaction) => {
+    console.log('Received transaction update:', updatedTransaction);
+  });
+});
+
+server.listen(PORT, (err) => {
   if (err) {
     console.log(`ERROR: ${err}`);
   } else {

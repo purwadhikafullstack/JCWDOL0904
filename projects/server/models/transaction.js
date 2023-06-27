@@ -60,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
     transaction_date: {
       type: DataTypes.DATE,
     },
+    expired: {
+      type: DataTypes.DATE,
+    },
     status: {
       type: DataTypes.ENUM('Waiting For Payment', 'Waiting For Payment Confirmation', 'On Proses', 'Shipped', 'Order Confirmed', 'rejected', 'Canceled'),
     },

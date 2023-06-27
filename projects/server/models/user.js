@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_user",
         },
       });
+      User.belongsTo(models.Warehouse, {
+        foreignKey: {
+          name: "id_warehouse",
+        },
+      });
     }
   }
   User.init(

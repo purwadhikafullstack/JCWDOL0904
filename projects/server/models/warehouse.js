@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_warehouse",
         },
       });
+      Warehouse.hasMany(models.User, {
+        foreignKey: {
+          name: "id_warehouse",
+        },
+      });
     }
   }
   Warehouse.init(

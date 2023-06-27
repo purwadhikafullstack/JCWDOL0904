@@ -17,9 +17,11 @@ import ProtectedPage from "./protectedPage";
 import Cart2 from "../pages/Cart2";
 import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
-import Example from "../pages/admin/OrderList";
+import OrderDetailModal from "../components/admin/OrderDetailModal";
 import SendRequestMutation from "../pages/admin/SendRequestMutation";
 import ManageMutation from "../pages/admin/ManageMutation";
+import {PaymentProofModal} from "../components/admin/PaymentProofModal";
+import OrderList from "../pages/admin/OrderList";
 
 const routes = [
   //home
@@ -85,6 +87,15 @@ const routes = [
       </ProtectedPage>
     }
   />,
+  <Route
+    key="car"
+    path="/car"
+    element={
+      <ProtectedPage>
+        <OrderDetailModal />
+      </ProtectedPage>
+    }
+  />,
   // admin
   <Route
     key="test"
@@ -136,7 +147,16 @@ const routes = [
     path="/order"
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
-        <Example />
+        <OrderList />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="proof"
+    path="/proof"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <PaymentProofModal />
       </ProtectedPage>
     }
   />,
