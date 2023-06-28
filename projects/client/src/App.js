@@ -24,6 +24,7 @@ import { api } from "./API/api";
 import { login } from "./features/userSlice";
 import { data } from "./features/warehouseSlice";
 import { Spinner } from "@chakra-ui/react";
+import { AllCategory } from "./features/categorySlice";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -39,6 +40,16 @@ function App() {
   async function getWarehouse() {
     await api.get("/warehouses/data").then((res) => dispatch(data(res.data)));
   }
+
+  const getAllCategory = async () => {
+    try {
+      const response = await api.get("/category");
+      console.log(response);
+      dispatch(AllCategory(response.data.result));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //app js > useEffect => localstorage => api request user by id => dispatch => globalstate => routes => protectedPage => cek redux => kalau sesaui return login
 
   useEffect(() => {
@@ -52,6 +63,7 @@ function App() {
     console.log(user);
 
     getWarehouse();
+    getAllCategory();
     if (userId) {
       getUser(userId);
     }

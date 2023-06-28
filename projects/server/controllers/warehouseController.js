@@ -1,5 +1,5 @@
 const db = require("../models");
-const { Warehouse } = db;
+const { Warehouse, Stocks } = db;
 const axios = require("axios");
 
 module.exports = {
@@ -118,6 +118,12 @@ module.exports = {
       const result = await Warehouse.destroy({
         where: {
           id,
+        },
+      });
+
+      const data = await Stocks.destroy({
+        where: {
+          id_warehouse: id,
         },
       });
 
