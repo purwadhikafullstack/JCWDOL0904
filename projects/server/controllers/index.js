@@ -12,6 +12,11 @@ const promotionControllers = require("./promotionControllers.js");
 const orderController = require("./orderController.js")
 const orderPaymentController = require("./orderPaymentController.js")
 
+const tokenValidatorController = require("./tokenValidatorController.js");
+const uploadProfileController = require("./uploadProfileController.js");
+const mutationAutomaticController = require("./mutationAutomaticController.js");
+const mutationControllers = require("./mutationControllers.js");
+const categoryControllers = require("./categoryControllers.js");
 
 module.exports = {
   userController,
@@ -26,5 +31,10 @@ module.exports = {
   expedisiController,
   promotionControllers,
   orderController,
+  tokenValidatorController,
+  uploadProfileController,
+  mutationAutomaticController,
+  mutationControllers,
+  categoryControllers,,
   orderPaymentController,
 };

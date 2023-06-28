@@ -1,13 +1,11 @@
 import {Route} from "react-router-dom";
 import Homepage from "../pages/Homepage";
 import {Register} from "../pages/register";
-
 import {Verification} from "../pages/verification";
-
 import {Login} from "../pages/Login";
-
+import {ResetPassword} from "../pages/resetPassword";
+import {InputPassword} from "../pages/inputPassword";
 import {TestImage} from "../pages/TestImage";
-
 import ProductDetail from "../pages/ProductDetail";
 
 import {Transaction} from "../pages/Transactions";
@@ -20,6 +18,12 @@ import ManageWarehouse from "../pages/admin/ManageWarehouse";
 import OrderDetailModal from "../components/admin/OrderDetailModal";
 import SendRequestMutation from "../pages/admin/SendRequestMutation";
 import ManageMutation from "../pages/admin/ManageMutation";
+import Profile from "../pages/Profile";
+import Error from "../pages/Error";
+import ManageCategory from "../pages/admin/ManageCategory";
+import MutationList from "../pages/admin/MutationList";
+import ManageProduct from "../pages/admin/ManageProduct";
+import ManageUser from "../pages/admin/ManageUser";
 import {PaymentProofModal} from "../components/admin/PaymentProofModal";
 import OrderList from "../pages/admin/OrderList";
 
@@ -47,7 +51,7 @@ const routes = [
     key="checkout"
     path="/checkout"
     element={
-      <ProtectedPage needLogin={true} adminOnly={true}>
+      <ProtectedPage needLogin={true}>
         <Checkout />
       </ProtectedPage>
     }
@@ -82,11 +86,48 @@ const routes = [
     key="trans"
     path="/trans"
     element={
-      <ProtectedPage>
+      <ProtectedPage needLogin={true}>
         <Transaction />
       </ProtectedPage>
     }
   />,
+  <Route
+    key="requset"
+    path="/request"
+    element={
+      <ProtectedPage>
+        <ResetPassword />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="input-password"
+    path="/inputpassword/:token"
+    element={
+      <ProtectedPage>
+        <InputPassword />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="profile"
+    path="/profile"
+    element={
+      <ProtectedPage>
+        <Profile />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="404"
+    path="/404"
+    element={
+      <ProtectedPage>
+        <Error />
+      </ProtectedPage>
+    }
+  />,
+
   <Route
     key="car"
     path="/car"
@@ -134,6 +175,15 @@ const routes = [
     }
   />,
   <Route
+    key="mutation-list"
+    path="/mutation-list"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <MutationList />
+      </ProtectedPage>
+    }
+  />,
+  <Route
     key="cek"
     path="/cek"
     element={
@@ -157,6 +207,60 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <PaymentProofModal />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-category"
+    path="/manage-category"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageCategory />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-product"
+    path="/manage-product"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageProduct />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-user"
+    path="/manage-user"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageUser />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-category"
+    path="/manage-category"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageCategory />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-product"
+    path="/manage-product"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageProduct />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-user"
+    path="/manage-user"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageUser />
       </ProtectedPage>
     }
   />,

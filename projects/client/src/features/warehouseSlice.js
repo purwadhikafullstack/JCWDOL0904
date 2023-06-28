@@ -9,7 +9,7 @@ export const warehouseSlice = createSlice({
   initialState,
   reducers: {
     data: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.value = action.payload;
       //   state.warehouse = action.payload.warehouse;
       //   state.province = action.payload.province;

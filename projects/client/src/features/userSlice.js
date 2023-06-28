@@ -18,6 +18,7 @@ export const userSlice = createSlice({
       console.log(state, action);
       state.id = action.payload.id;
       state.fullname = action.payload.fullname;
+      state.username = action.payload.username;
       state.is_verified = action.payload.is_verified;
       state.user_image = action.payload.user_image;
       state.role = action.payload.role;

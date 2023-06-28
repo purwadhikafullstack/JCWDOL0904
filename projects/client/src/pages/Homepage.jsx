@@ -23,6 +23,7 @@ import "./style/Homepage.css";
 import {api} from "../API/api";
 import UserIsNotLogin from "../components/UserIsNotLogin";
 import Swal from "sweetalert2";
+import {useSelector} from "react-redux";
 
 const Homepage = () => {
   const [page, setPage] = useState(0);
@@ -32,8 +33,9 @@ const Homepage = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState("product_name");
   // const [isLogin, SetIsLogin] = useState(false);
-
   const [products, setProducts] = useState([]);
+
+  const allCategory = useSelector((state) => state.categorySlice.value);
 
   const fetchProducts = async (category) => {
     setCategory(category);
@@ -45,6 +47,7 @@ const Homepage = () => {
           order,
           sort,
           category,
+          site: "home",
         },
       })
       .then((res) => {
@@ -110,9 +113,14 @@ const Homepage = () => {
       </Box>
       <Tabs colorScheme="black">
         <TabList justifyContent="center" className="tab-list-home">
-          <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
+          {allCategory?.map((el) => {
+            return el.category !== "no category" ? (
+              <Tab onClick={() => fetchProducts(el.id)}>{el.category}</Tab>
+            ) : null;
+          })}
+          {/* <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
           <Tab onClick={() => fetchProducts(2)}>Watch</Tab>
-          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab>
+          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab> */}
         </TabList>
         <div
           style={{
@@ -171,6 +179,22 @@ const Homepage = () => {
           className="card-con"
           style={{display: "flex", justifyContent: "center", width: "100%"}}>
           <TabPanel
+          style={{ display: "flex", justifyContent: "center", width: "100%" }}
+        >
+          {allCategory?.map((el) => {
+            return el.category !== "no category" ? (
+              <TabPanel
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                maxWidth="100%"
+              >
+                <ProductsHome products={products} category={el.id} />
+              </TabPanel>
+            ) : null;
+          })}
+
+          {/* <TabPanel
             display="flex"
             flexDirection="column"
             justifyContent="center"
@@ -190,7 +214,8 @@ const Homepage = () => {
             justifyContent="center"
             maxWidth="100%">
             <ProductsHome products={products} category={3} />
-          </TabPanel>
+          </TabPanel>{" "}
+          */}
         </TabPanels>
       </Tabs>
       <ReactPaginate

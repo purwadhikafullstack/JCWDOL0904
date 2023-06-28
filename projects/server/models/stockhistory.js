@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class StockHistory extends Model {
     /**
@@ -18,22 +16,28 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  StockHistory.init({
-    quantity: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+  StockHistory.init(
+    {
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.ENUM("in", "out"),
+        allowNull: false,
+      },
+      reference: {
+        type: DataTypes.STRING,
+        defaultValue: DataTypes.UUIDV4,
+      },
     },
-    status: {
-      type: DataTypes.ENUM('in', 'out'),
-      allowNull: false
-    },
-    reference: {
-      type: DataTypes.STRING,
-      allowNull: false
+    {
+      sequelize,
+      modelName: "StockHistory",
     }
-  }, {
-    sequelize,
-    modelName: 'StockHistory',
+  );
+  StockHistory.beforeCreate((transaction) => {
+    transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field});
   });
   return StockHistory;
 };

@@ -14,36 +14,55 @@ import {
   FormErrorMessage,
   FormHelperText,
   Input,
+  IconButton,
 } from "@chakra-ui/react";
 import { SettingsIcon, DeleteIcon, AddIcon, EditIcon } from "@chakra-ui/icons";
 import { apiro } from "../../API/apiro";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 const EditeWarehouse = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [provinces, setProvinces] = useState([]);
-  const [provincess, setProvincess] = useState([]);
+  const [provincess, setProvincess] = useState({});
   const [cities, setCities] = useState([]);
-  const [city, setCity] = useState([]);
+  const [city, setCity] = useState({});
   const [warehouse, setWarehouse] = useState("");
   const [subdistrict, setSubsdistrict] = useState("");
   const [zip, setZip] = useState("");
+  const [isLoad, setLoad] = useState(false);
+  const [idProvince, setIdProvince] = useState(0);
+
+  const { role } = useSelector((state) => state.userSlice);
 
   const getAllProvince = async () => {
     try {
       const response = await apiro.get("/rajaongkir/province");
       console.log(response.data.data);
+      // const result = response.data.data.find(
+      //   (el) => el.province === "DI Yogyakarta"
+      // );
+      // console.log(result);
+      // jawa barat =9
+      // jawa timur = 11
+      // ID Yogyakarta =
       setProvinces(response.data.data);
+      runGetCity(response.data.data);
     } catch (error) {
       console.log(error);
     }
   };
-  const fetchAddressesCity = async () => {
+  const fetchAddressesCity = async (id) => {
+    let provId;
+    if (!id || id.lenght < 1) {
+      provId = provincess.id;
+    } else {
+      provId = id;
+    }
     try {
-      const response = await apiro.get(
-        `rajaongkir/city?province_id=${provincess.id}`
-      );
+      // console.log(provincess.id);
+      const response = await apiro.get(`rajaongkir/city?province_id=${provId}`);
       console.log(response.data.data.results);
       setCities(response.data.data.results);
     } catch (error) {
@@ -53,7 +72,17 @@ const EditeWarehouse = (props) => {
 
   const handleSubmit = async () => {
     // console.log(props.wId);
+    console.log({
+      warehouse,
+      province: provincess.province,
+      city: city.city,
+      warehouse_city_id: city.id,
+      subdistrict,
+      zip: parseInt(zip),
+      id: props.wId,
+    });
     try {
+      setLoad(true);
       let response = await api.post("/warehouses/update", {
         warehouse,
         province: provincess.province,
@@ -63,6 +92,8 @@ const EditeWarehouse = (props) => {
         zip: parseInt(zip),
         id: props.wId,
       });
+      onClose();
+      setLoad(false);
       console.log(response);
       props.runFunction();
       Swal.fire({
@@ -76,6 +107,8 @@ const EditeWarehouse = (props) => {
       setSubsdistrict("");
       setZip("");
     } catch (error) {
+      onClose();
+      setLoad(false);
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
@@ -86,10 +119,21 @@ const EditeWarehouse = (props) => {
     }
   };
 
+  const runGetCity = (value) => {
+    const result = value?.find((el) => el.province === props.province);
+    console.log(result);
+    if (provincess.id) {
+      fetchAddressesCity();
+    } else {
+      fetchAddressesCity(result.province_id);
+    }
+  };
+
   useEffect(() => {
     getAllProvince();
   }, []);
   useEffect(() => {
+    // console.log(result);
     if (provincess.id) {
       fetchAddressesCity();
     }
@@ -99,14 +143,36 @@ const EditeWarehouse = (props) => {
     console.log(city, provincess);
   }, [provincess, city]);
 
+  useEffect(() => {
+    // const result = provinces?.find((el) => props.province === el.province);
+    // // console.log(result.province_id);
+    // {result ? ) :null}
+    setProvincess({ province: props.province });
+    setCity({ city: props.city, id: props.warehouse_city_id });
+    setWarehouse(props.warehouse);
+    setSubsdistrict(props.subdistrict);
+    setZip(props.zip);
+  }, [props]);
+
   return (
-    <div>
+    <div className="flex align-middle">
       {/* <Button leftIcon={<AddIcon />} onClick={onOpen}>
         Add Warehouse
       </Button> */}
-      <Button onClick={onOpen} variant="link" color="blue">
+      {/* <Button
+        onClick={onOpen}
+        
+        disabled={role === "admin" ? false : true}
+      >
         <SettingsIcon />
-      </Button>
+      </Button> */}
+
+      <IconButton
+        onClick={role === "admin" ? onOpen : null}
+        variant="link"
+        color="black"
+        icon={<SettingsIcon />}
+      />
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -136,7 +202,7 @@ const EditeWarehouse = (props) => {
                   }}
                 >
                   <option className="text-gray-800 font-medium">
-                    {provincess ? provincess.province : "Select a province"}
+                    {provincess ? provincess.province : "Select province"}
                   </option>
                   {provinces?.map((province) => {
                     return (
@@ -198,13 +264,20 @@ const EditeWarehouse = (props) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              variant="ghost"
-              leftIcon={<EditIcon />}
-              onClick={() => handleSubmit()}
-            >
-              Edit
-            </Button>
+            {isLoad ? (
+              <Button variant="ghost" isLoading></Button>
+            ) : (
+              <Button
+                variant="ghost"
+                // leftIcon={<EditIcon />}
+                backgroundColor="black"
+                color="white"
+                _hover={{ backgroundColor: "#3c3c3c" }}
+                onClick={() => handleSubmit()}
+              >
+                Edit
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

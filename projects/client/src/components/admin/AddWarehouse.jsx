@@ -19,6 +19,7 @@ import { SettingsIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import { apiro } from "../../API/apiro";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 const AddWarehouse = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,6 +30,9 @@ const AddWarehouse = (props) => {
   const [warehouse, setWarehouse] = useState("");
   const [subdistrict, setSubsdistrict] = useState("");
   const [zip, setZip] = useState("");
+  const [isLoad, setLoad] = useState(false);
+
+  const { role } = useSelector((state) => state.userSlice);
 
   const getAllProvince = async () => {
     try {
@@ -53,6 +57,7 @@ const AddWarehouse = (props) => {
 
   const handleSubmit = async () => {
     try {
+      setLoad(true);
       let response = await api.post("/warehouses", {
         warehouse,
         province: provincess.province,
@@ -63,6 +68,8 @@ const AddWarehouse = (props) => {
       });
       props.runFunction();
       console.log(response);
+      onClose();
+      setLoad(false);
       Swal.fire({
         title: "Success",
         text: response.data.message,
@@ -74,6 +81,8 @@ const AddWarehouse = (props) => {
       setSubsdistrict("");
       setZip("");
     } catch (error) {
+      onClose();
+      setLoad(false);
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
@@ -99,9 +108,17 @@ const AddWarehouse = (props) => {
 
   return (
     <div>
-      <Button leftIcon={<AddIcon />} onClick={onOpen}>
-        Add Warehouse
-      </Button>
+      {role === "admin" ? (
+        <Button
+          // leftIcon={<AddIcon />}
+          backgroundColor="black"
+          color="white"
+          onClick={onOpen}
+          _hover={{ backgroundColor: "#3c3c3c" }}
+        >
+          Add Warehouse
+        </Button>
+      ) : null}
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -193,13 +210,20 @@ const AddWarehouse = (props) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              variant="ghost"
-              leftIcon={<AddIcon />}
-              onClick={() => handleSubmit()}
-            >
-              Add
-            </Button>
+            {isLoad ? (
+              <Button variant="ghost" isLoading />
+            ) : (
+              <Button
+                variant="ghost"
+                // leftIcon={<AddIcon />}
+                backgroundColor="black"
+                color="white"
+                _hover={{ background: "#3c3c3c" }}
+                onClick={() => handleSubmit()}
+              >
+                Add
+              </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -28,31 +28,49 @@ import {
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
 import {useNavigate} from "react-router-dom";
 import {Button} from "@chakra-ui/react";
+import {useDispatch} from "react-redux";
+import {login} from "../../features/userSlice";
 
 const navigation = [
   {
     name: "Dashboard",
-    name: "Dashboard",
+    href: "/order",
+    icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: "User",
+    href: "/manage-user",
+    icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: "Mutation",
+    href: "/mutation-list",
+    icon: UsersIcon,
+    current: false,
+  },
+  {
+    name: "Warehouse",
     href: "/manage-warehouse",
     icon: HomeIcon,
     current: true,
   },
   {
-    name: "User",
-    href: "/test",
-    icon: HomeIcon,
-    current: true,
-  },
-  {
-    name: "User",
-    href: "/test",
-    icon: UsersIcon,
+    name: "Category",
+    href: "/manage-category",
+    icon: CalendarIcon,
     current: false,
   },
-  {name: "Projects", href: "/cek", icon: FolderIcon, current: false},
-  {name: "Transaction", href: "/order", icon: CalendarIcon, current: false},
-  {name: "Documents", href: "/", icon: InboxIcon, current: false},
-  {name: "Reports", href: "/", icon: ChartBarIcon, current: false},
+  // { name: "Product", href: "#", icon: InboxIcon, current: false },
+  {
+    name: "Product",
+    href: "/manage-product",
+    icon: ChartBarIcon,
+    current: false,
+  },
+
+  {name: "Reports", href: "#", icon: ChartBarIcon, current: false},
 ];
 const userNavigation = [
   {name: "Your Profile", href: "#"},
@@ -67,6 +85,23 @@ function classNames(...classes) {
 export default function Sidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigator = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogOut = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("auth");
+    dispatch(
+      login({
+        id: 0,
+        fullname: "",
+        username: "",
+        is_verified: "",
+        user_image: "",
+        role: "",
+      })
+    );
+    // navigation("/");
+  };
 
   return (
     <>
@@ -282,23 +317,23 @@ export default function Sidebar() {
                     leave="transition ease-in duration-75"
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95">
-                    {/* <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
-                          {({ active }) => (
-                            <Button
-                              href={item.href}
+                          {({active}) => (
+                            <a
+                              // href={item.href}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
-                            >
+                              onClick={(e) => handleLogOut(e)}>
                               {item.name}
-                            </Button>
+                            </a>
                           )}
                         </Menu.Item>
                       ))}
-                    </Menu.Items> */}
+                    </Menu.Items>
                   </Transition>
                 </Menu>
               </div>

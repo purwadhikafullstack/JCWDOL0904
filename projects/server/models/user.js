@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_user",
         },
       });
-      User.hasMany(models.Stocks, {
+      User.hasOne(models.Warehouse, {
         foreignKey: {
           name: "id_user",
         },
@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       user_image: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "avatar_default.jpg",
+        defaultValue: "http://localhost:8000/avatar_default.jpg",
       },
       role: {
         type: DataTypes.ENUM,
@@ -74,6 +74,15 @@ module.exports = (sequelize, DataTypes) => {
       verify_token: {
         type: DataTypes.STRING,
         allowNull: true,
+      },
+      reset_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      is_deleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
     },
     {

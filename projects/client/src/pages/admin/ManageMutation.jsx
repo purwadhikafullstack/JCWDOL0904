@@ -21,6 +21,9 @@ import ReactPaginate from "react-paginate";
 // import "./style/Homepage.css";
 import { api } from "../../API/api";
 import ProductsAdmin from "../../components/admin/ProductsAdmin";
+import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
 const ManageMutation = () => {
   const [coba, setCoba] = useState("hallo");
@@ -31,6 +34,10 @@ const ManageMutation = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState("product_name");
   const [products, setProducts] = useState([]);
+  const [isSmallerThan401] = useMediaQuery("(max-width: 767px)");
+
+  const navigation = useNavigate();
+  const ReduxCategory = useSelector((state) => state.categorySlice.value);
 
   const fetchProducts = async (category) => {
     setCategory(category);
@@ -85,59 +92,46 @@ const ManageMutation = () => {
   }, [coba]);
 
   return (
-    <div className="pl-72">
-      <h1 style={{ backgroundColor: "green" }}>ini manage mutation</h1>
-      {/* <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
-        <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                    >
-                      No
-                    </th>
-
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Warehouse Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Province
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      City
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    ></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div> */}
+    <div className={isSmallerThan401 ? null : "pl-72 pr-8"}>
+      <button
+        // type="submit"
+        className="m-6 rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        onClick={() => navigation("/mutation-list")}
+      >
+        Back To Mutation List
+      </button>
 
       <Tabs colorScheme="black">
-        <TabList justifyContent="center" className="tab-list-home">
-          <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
+        <TabList
+          justifyContent="center"
+          className="tab-list-home"
+          paddingTop="10px"
+        >
+          {/* <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
           <Tab onClick={() => fetchProducts(2)}>Watch</Tab>
-          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab>
+          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab> */}
+          {ReduxCategory.map((el) => {
+            return el.category !== "no category" ? (
+              <Tab
+                key={el.id}
+                onClick={() => fetchProducts(el.id)}
+                fontSize="12px"
+              >
+                {el.category}
+              </Tab>
+            ) : null;
+          })}
+          {ReduxCategory.map((el) => {
+            return el.category === "no category" ? (
+              <Tab
+                key={el.id}
+                onClick={() => fetchProducts(el.id)}
+                fontSize="12px"
+              >
+                {el.category}
+              </Tab>
+            ) : null;
+          })}
         </TabList>
         <div
           style={{
@@ -200,7 +194,41 @@ const ManageMutation = () => {
           className="card-con"
           style={{ display: "flex", justifyContent: "center", width: "100%" }}
         >
-          <TabPanel
+          {ReduxCategory?.map((el) => {
+            return el.category !== "no catagory" ? (
+              <TabPanel
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                maxWidth="100%"
+              >
+                <ProductsAdmin products={products} category={el.id} />
+                {/* <AllProductManage
+                  products={products}
+                  category={category}
+                  runFunction={fetchProducts}
+                /> */}
+              </TabPanel>
+            ) : null;
+          })}
+          {ReduxCategory?.map((el) => {
+            return el.category === "no catagory" ? (
+              <TabPanel
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                maxWidth="100%"
+              >
+                <ProductsAdmin products={products} category={el.id} />
+                {/* <AllProductManage
+                  products={products}
+                  category={category}
+                  runFunction={fetchProducts}
+                /> */}
+              </TabPanel>
+            ) : null;
+          })}
+          {/* <TabPanel
             display="flex"
             flexDirection="column"
             justifyContent="center"
@@ -223,7 +251,7 @@ const ManageMutation = () => {
             maxWidth="100%"
           >
             <ProductsAdmin products={products} category={3} />
-          </TabPanel>
+          </TabPanel> */}
         </TabPanels>
       </Tabs>
       <ReactPaginate
@@ -234,11 +262,11 @@ const ManageMutation = () => {
         pageCount={totalPage}
         previousLabel="< previous"
         renderOnZeroPageCount={null}
-        containerClassName="pagination"
-        pageLinkClassName="page-num"
-        previousLinkClassName="page-num"
-        nextLinkClassName="page-num"
-        activeLinkClassName="active"
+        containerClassName="flex justify-center items-center mb-10"
+        pageLinkClassName="px-2 py-1 rounded-md m-1"
+        previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
+        nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
+        activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
       />
     </div>
   );

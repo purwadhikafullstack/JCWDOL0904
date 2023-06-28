@@ -1,15 +1,12 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
+"use strict";
+const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+Helper method for defining associations.
+This method is not a part of Sequelize lifecycle.
+The models/index file will call this method automatically.*/
     static associate(models) {
       // define association here
       Transaction.belongsTo(models.Address, {
@@ -35,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.hasMany(models.TransactionItem, {
         foreignKey: {
           name: "id_transaction",
-          onDelete: 'CASCADE',
+          onDelete: "CASCADE",
         },
       });
     }
@@ -60,19 +57,16 @@ module.exports = (sequelize, DataTypes) => {
     transaction_date: {
       type: DataTypes.DATE,
     },
-    expired: {
-      type: DataTypes.DATE,
-    },
     status: {
       type: DataTypes.ENUM('Waiting For Payment', 'Waiting For Payment Confirmation', 'On Proses', 'Shipped', 'Order Confirmed', 'rejected', 'Canceled'),
     },
-  }, {
-    sequelize,
-    modelName: 'Transaction',
-  });
+    {
+      sequelize,
+      modelName: "Transaction",
+    }
+  );
   Transaction.beforeCreate((transaction) => {
-    transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field
+    transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field});
   });
-
   return Transaction;
 };

@@ -21,10 +21,11 @@ const Cart = () => {
 
   const fetchCartItems = async () => {
     try {
+      const id = JSON.parse(localStorage.getItem("auth")).id;
       const response = await api.get(`/cart`, {
         params: {
           page: currentPage,
-          userId: 2,
+          userId: id,
         },
       });
       setCartItems(response.data.cartItems);
