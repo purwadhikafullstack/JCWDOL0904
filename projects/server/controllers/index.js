@@ -15,6 +15,7 @@ const tokenValidatorController = require("./tokenValidatorController.js");
 const uploadProfileController = require("./uploadProfileController.js");
 const mutationAutomaticController = require("./mutationAutomaticController.js");
 const mutationControllers = require("./mutationControllers.js");
+const categoryControllers = require("./categoryControllers.js");
 
 module.exports = {
   userController,
@@ -33,4 +34,5 @@ module.exports = {
   uploadProfileController,
   mutationAutomaticController,
   mutationControllers,
+  categoryControllers,
 };

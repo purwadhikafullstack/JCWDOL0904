@@ -64,9 +64,9 @@ const SRMPMobileSreen = () => {
           } catch (error) {
             // console.log(error.response.data.message);
             Swal.fire({
-              title: error.response.data.title,
+              title: "Error!",
               text: error.response.data.message,
-              icon: error.response.data.icon,
+              icon: "error",
             });
           }
         }

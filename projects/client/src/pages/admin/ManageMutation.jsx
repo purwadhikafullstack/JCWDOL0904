@@ -23,6 +23,7 @@ import { api } from "../../API/api";
 import ProductsAdmin from "../../components/admin/ProductsAdmin";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
 const ManageMutation = () => {
   const [coba, setCoba] = useState("hallo");
@@ -36,6 +37,7 @@ const ManageMutation = () => {
   const [isSmallerThan401] = useMediaQuery("(max-width: 767px)");
 
   const navigation = useNavigate();
+  const ReduxCategory = useSelector((state) => state.categorySlice.value);
 
   const fetchProducts = async (category) => {
     setCategory(category);
@@ -105,9 +107,31 @@ const ManageMutation = () => {
           className="tab-list-home"
           paddingTop="10px"
         >
-          <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
+          {/* <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
           <Tab onClick={() => fetchProducts(2)}>Watch</Tab>
-          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab>
+          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab> */}
+          {ReduxCategory.map((el) => {
+            return el.category !== "no category" ? (
+              <Tab
+                key={el.id}
+                onClick={() => fetchProducts(el.id)}
+                fontSize="12px"
+              >
+                {el.category}
+              </Tab>
+            ) : null;
+          })}
+          {ReduxCategory.map((el) => {
+            return el.category === "no category" ? (
+              <Tab
+                key={el.id}
+                onClick={() => fetchProducts(el.id)}
+                fontSize="12px"
+              >
+                {el.category}
+              </Tab>
+            ) : null;
+          })}
         </TabList>
         <div
           style={{
@@ -170,7 +194,41 @@ const ManageMutation = () => {
           className="card-con"
           style={{ display: "flex", justifyContent: "center", width: "100%" }}
         >
-          <TabPanel
+          {ReduxCategory?.map((el) => {
+            return el.category !== "no catagory" ? (
+              <TabPanel
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                maxWidth="100%"
+              >
+                <ProductsAdmin products={products} category={el.id} />
+                {/* <AllProductManage
+                  products={products}
+                  category={category}
+                  runFunction={fetchProducts}
+                /> */}
+              </TabPanel>
+            ) : null;
+          })}
+          {ReduxCategory?.map((el) => {
+            return el.category === "no catagory" ? (
+              <TabPanel
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                maxWidth="100%"
+              >
+                <ProductsAdmin products={products} category={el.id} />
+                {/* <AllProductManage
+                  products={products}
+                  category={category}
+                  runFunction={fetchProducts}
+                /> */}
+              </TabPanel>
+            ) : null;
+          })}
+          {/* <TabPanel
             display="flex"
             flexDirection="column"
             justifyContent="center"
@@ -193,7 +251,7 @@ const ManageMutation = () => {
             maxWidth="100%"
           >
             <ProductsAdmin products={products} category={3} />
-          </TabPanel>
+          </TabPanel> */}
         </TabPanels>
       </Tabs>
       <ReactPaginate
@@ -204,11 +262,11 @@ const ManageMutation = () => {
         pageCount={totalPage}
         previousLabel="< previous"
         renderOnZeroPageCount={null}
-        containerClassName="pagination"
-        pageLinkClassName="page-num"
-        previousLinkClassName="page-num"
-        nextLinkClassName="page-num"
-        activeLinkClassName="active"
+        containerClassName="flex justify-center items-center mb-10"
+        pageLinkClassName="px-2 py-1 rounded-md m-1"
+        previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
+        nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
+        activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
       />
     </div>
   );

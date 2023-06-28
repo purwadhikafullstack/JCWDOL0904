@@ -22,6 +22,7 @@ import Profile from "../pages/Profile";
 import Error from "../pages/Error";
 import ManageCategory from "../pages/admin/ManageCategory";
 import MutationList from "../pages/admin/MutationList";
+import ManageProduct from "../pages/admin/ManageProduct";
 
 const routes = [
   //home
@@ -68,7 +69,7 @@ const routes = [
       </ProtectedPage>
     }
   />,
-  <Route path="/image" element={<TestImage />} />,
+  <Route key="image" path="/image" element={<TestImage />} />,
   <Route
     key="detail"
     path="/detail"
@@ -88,6 +89,7 @@ const routes = [
     }
   />,
   <Route
+    key="requset"
     path="/request"
     element={
       <ProtectedPage>
@@ -96,6 +98,7 @@ const routes = [
     }
   />,
   <Route
+    key="input-password"
     path="/inputpassword/:token"
     element={
       <ProtectedPage>
@@ -104,6 +107,7 @@ const routes = [
     }
   />,
   <Route
+    key="profile"
     path="/profile"
     element={
       <ProtectedPage>
@@ -112,6 +116,7 @@ const routes = [
     }
   />,
   <Route
+    key="404"
     path="/404"
     element={
       <ProtectedPage>
@@ -190,6 +195,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <ManageCategory />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-product"
+    path="/manage-product"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageProduct />
       </ProtectedPage>
     }
   />,

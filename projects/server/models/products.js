@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Products extends Model {
     /**
@@ -43,63 +41,66 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  Products.init({
-    product_name: {
-      type: DataTypes.STRING,
-      allowNull: false
+  Products.init(
+    {
+      product_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      product_image: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      price: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      cpu_speed: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      cpu_type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      size: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      resolution: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      colorDept: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      ram: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      storage: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      weight_g: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      battery: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
-    product_image: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    price: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    cpu_speed:{
-      type: DataTypes.STRING,
-      allowNull:false
-    },
-    cpu_type: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    size: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    resolution: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    colorDept: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    ram: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    storage: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    weight_g: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    battery: {
-      type: DataTypes.STRING,
-      allowNull: false
+    {
+      sequelize,
+      modelName: "Products",
+      paranoid: true,
     }
-
-  }, {
-    sequelize,
-    modelName: 'Products',
-  });
+  );
   return Products;
 };

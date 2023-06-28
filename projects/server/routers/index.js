@@ -14,6 +14,7 @@ const orderRouter = require("./orderRouter");
 const tokenValidatorRouter = require("./tokenValidatorRouter");
 const uploadProfileRouter = require("./uploadProfileRouter");
 const mutationRouter = require("./mutationRouters");
+const categoryRouters = require("./categoryRouters");
 module.exports = {
   userRouter,
   authRouter,
@@ -30,4 +31,5 @@ module.exports = {
   tokenValidatorRouter,
   uploadProfileRouter,
   mutationRouter,
+  categoryRouters,
 };
