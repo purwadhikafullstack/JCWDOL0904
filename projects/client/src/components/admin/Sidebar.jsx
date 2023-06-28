@@ -34,26 +34,35 @@ import { login } from "../../features/userSlice";
 const navigation = [
   {
     name: "Dashboard",
-    // name: "Dashboard",
+    href: "/order",
+    icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: "User",
+    href: "/manage-user",
+    icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: "Mutation",
+    href: "/mutation-list",
+    icon: UsersIcon,
+    current: false,
+  },
+  {
+    name: "Warehouse",
     href: "/manage-warehouse",
     icon: HomeIcon,
     current: true,
   },
   {
-    name: "User",
-    href: "/test",
-    icon: HomeIcon,
-    current: true,
-  },
-  {
-    name: "User",
-    href: "/test",
-    icon: UsersIcon,
+    name: "Category",
+    href: "/manage-category",
+    icon: CalendarIcon,
     current: false,
   },
-  { name: "Projects", href: "/cek", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: InboxIcon, current: false },
+  { name: "Product", href: "#", icon: InboxIcon, current: false },
   { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
 ];
 const userNavigation = [

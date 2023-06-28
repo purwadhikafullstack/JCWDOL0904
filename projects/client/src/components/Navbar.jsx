@@ -18,7 +18,7 @@ function classNames(...classes) {
 }
 
 export const Navbar = () => {
-  const { user_image } = useSelector((state) => state.userSlice);
+  const { user_image, id } = useSelector((state) => state.userSlice);
   // console.log(user_image);
 
   const navigation = useNavigate();
@@ -135,12 +135,17 @@ export const Navbar = () => {
                   >
                     <span className="sr-only">View notifications</span>
                     <div className="flex">
-                      <Link to="/cart">
-                        <ShoppingCartIcon
-                          className="h-6 w-6"
-                          aria-hidden="true"
-                        />
-                      </Link>
+                      {/* <Link to="/cart"> */}
+                      <ShoppingCartIcon
+                        onClick={() => {
+                          navigation("/cart");
+                          // if (id) navigation("/cart");
+                          // else alert("login dulu");
+                        }}
+                        className="h-6 w-6"
+                        aria-hidden="true"
+                      />
+                      {/* </Link> */}
                       <p>{cart.length}</p>
                     </div>
                   </button>

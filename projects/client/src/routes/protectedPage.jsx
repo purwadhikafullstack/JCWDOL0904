@@ -23,10 +23,11 @@ export default function ProtectedPage({
     //needlogin true
     //adminonly true
     if (needLogin && !user.id) {
+      console.log();
       nav("/login");
     } else if (guestOnly && user.id) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
-        nav("/test");
+        nav("/order");
       } else {
         nav("/");
       }
@@ -43,7 +44,7 @@ export default function ProtectedPage({
       setIsLoading(false);
     }, 500);
     // login => role="user" => routes khusus admin =>
-  }, [user]);
+  }, [user, needLogin]);
 
   return isLoading ? (
     <Spinner />

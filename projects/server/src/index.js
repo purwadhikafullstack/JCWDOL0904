@@ -45,6 +45,7 @@ const {
   promotionRouter,
   tokenValidatorRouter,
   uploadProfileRouter,
+  mutationRouter,
 } = require("../routers");
 
 app.use(authorize);
@@ -62,6 +63,7 @@ app.use("/api/promotion", promotionRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/auth", tokenValidatorRouter);
 app.use("/api/upload", uploadProfileRouter);
+app.use("/api/mutation", mutationRouter);
 
 // app.get("/api", (req, res) => {
 //   res.send(`Hello, this is my API`);

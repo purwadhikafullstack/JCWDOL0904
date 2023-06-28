@@ -105,7 +105,7 @@ export default function Profile() {
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isSelectedDeleteAddress, setSelectedDeletedAddress] = useState(null);
-  console.log(isSelectedDeleteAddress);
+  // console.log(isSelectedDeleteAddress);
   const [isDeleteAddressModalOpen, setDeleteAddressModalOpen] = useState(false);
   const inputFileRef = useRef("");
   const dispatch = useDispatch();
@@ -178,18 +178,26 @@ export default function Profile() {
     const fetchAddresses = async () => {
       try {
         const storedSelectedAddress = localStorage.getItem("selectedAddress");
-        // console.log(storedSelectedAddress);
         if (storedSelectedAddress) {
           setSelectedDeletedAddress(JSON.parse(storedSelectedAddress));
         } else {
-          const response = await api.get(`addresses/${getUser}`);
+          const response = await api.get(`addresses/${getUser.id}`);
           const addresses = response.data;
+          console.log(addresses);
           if (addresses.length > 0) {
-            setSelectedDeletedAddress(addresses[0]); // Set the first address as the selected address
+            // Find the address with 'is_default' set to true
+            const defaultAddress = addresses.find(
+              (address) => address.is_default === true
+            );
+
+            if (defaultAddress) {
+              setSelectedDeletedAddress(defaultAddress);
+            } else {
+              setSelectedDeletedAddress(addresses[0]); // Set the first address as the selected address
+            }
           } else {
             setSelectedDeletedAddress(null);
           }
-          // setAddressList(response.data[0].city);
         }
       } catch (error) {
         console.error(error);
@@ -198,17 +206,9 @@ export default function Profile() {
 
     fetchAddresses();
   }, []);
-  // console.log(addressList);
+
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
       <div className="min-h-full pt-20">
         <main className="flex-1 pb-8">
           {/* Page header */}
@@ -248,8 +248,6 @@ export default function Profile() {
                             className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
                             aria-hidden="true"
                           />
-                          {/* {addressList} */}
-                          {/* {isSelectedDeleteAddress?.city} */}
                           {isSelectedDeleteAddress ? (
                             <div className="mt-4 text-sm text-gray-600">
                               <div
@@ -257,44 +255,11 @@ export default function Profile() {
                                 className="mb-4"
                               >
                                 <div className="flex gap-2">
-                                  <span className="font-semibold">
-                                    Recipient Name:
-                                  </span>
+                                  <span className="font-semibold"></span>
                                   <span>
-                                    {isSelectedDeleteAddress.recipient_name}
+                                    {isSelectedDeleteAddress.subdistrict},{" "}
+                                    {isSelectedDeleteAddress.city}
                                   </span>
-                                </div>
-                                <div className="flex gap-2">
-                                  <span className="font-semibold">
-                                    Phone Number:
-                                  </span>
-                                  <span>
-                                    {isSelectedDeleteAddress.phone_number}
-                                  </span>
-                                </div>
-                                <div className="flex gap-2">
-                                  <span className="font-semibold">
-                                    Province:
-                                  </span>
-                                  <span>
-                                    {isSelectedDeleteAddress.province}
-                                  </span>
-                                </div>
-                                <div className="flex gap-2">
-                                  <span className="font-semibold">City:</span>
-                                  <span>{isSelectedDeleteAddress.city}</span>
-                                </div>
-                                <div className="flex gap-2">
-                                  <span className="font-semibold">
-                                    Subdistrict:
-                                  </span>
-                                  <span>
-                                    {isSelectedDeleteAddress.subdistrict}
-                                  </span>
-                                </div>
-                                <div className="flex gap-2">
-                                  <span className="font-semibold">ZIP:</span>
-                                  <span>{isSelectedDeleteAddress.zip}</span>
                                 </div>
                               </div>
                             </div>

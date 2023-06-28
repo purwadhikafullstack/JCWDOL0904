@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {api} from "../../API/api";
+import { useEffect, useState } from "react";
+import { api } from "../../API/api";
 import Sidebar from "../../components/admin/Sidebar";
 
 export default function Example() {
@@ -48,6 +48,7 @@ export default function Example() {
       )
     : transactionByWarehouse;
 
+  console.log(filteredTransactions);
   return (
     <>
       {/* <Sidebar /> */}
@@ -74,7 +75,8 @@ export default function Example() {
                 name="warehouse"
                 onChange={handleWarehouseChange}
                 value={selectedWarehouse}
-                className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
                 <option value="">All Warehouses</option>
                 {warehouses &&
                   warehouses.map((warehouse) => (
@@ -94,33 +96,39 @@ export default function Example() {
                       <tr>
                         <th
                           scope="col"
-                          className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                          className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                        >
                           Transaction ID
                         </th>
 
                         <th
                           scope="col"
-                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
                           Payment Proof
                         </th>
                         <th
                           scope="col"
-                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
                           Total Price
                         </th>
                         <th
                           scope="col"
-                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
                           Detail
                         </th>
                         <th
                           scope="col"
-                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
                           Status
                         </th>
                         <th
                           scope="col"
-                          className="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6">
+                          className="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6"
+                        >
                           <span className="sr-only">Detail</span>
                         </th>
                       </tr>
@@ -130,7 +138,7 @@ export default function Example() {
                         filteredTransactions.map((transaction) => (
                           <tr key={transaction.id}>
                             <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
-                              {transaction.invoice_number.substr(0, 13)}
+                              {transaction?.invoice_number.substr(0, 13)}
                             </td>
 
                             <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
@@ -144,7 +152,8 @@ export default function Example() {
                             <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                               <a
                                 href="#"
-                                className="text-indigo-600 hover:text-indigo-900">
+                                className="text-indigo-600 hover:text-indigo-900"
+                              >
                                 Detail
                               </a>
                             </td>

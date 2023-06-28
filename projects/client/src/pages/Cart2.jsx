@@ -17,7 +17,7 @@ const Cart2 = () => {
 
   const fetchCartItems = async () => {
     try {
-      const id = JSON.parse(localStorage.getItem("auth"));
+      const id = JSON.parse(localStorage.getItem("auth")).id;
       console.log(id);
       const response = await api.get(`/cart?userId=${id}`);
       console.log(response);

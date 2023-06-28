@@ -8,7 +8,7 @@ function AddressModal({ selectedAddress, onSelectAddress, closeModal }) {
     const fetchAddresses = async () => {
       try {
         const id = JSON.parse(localStorage.getItem("auth"));
-        const response = await api.get(`addresses/${id}`);
+        const response = await api.get(`addresses/${id.id}`);
         setAddressList(response.data);
       } catch (error) {
         console.error(error);

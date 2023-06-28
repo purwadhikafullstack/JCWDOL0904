@@ -61,7 +61,9 @@ const ProductDetail = () => {
       navigation("/login");
     } else {
       try {
-        const id = JSON.parse(localStorage.getItem("auth"));
+        const users = JSON.parse(localStorage.getItem("auth"));
+        let id = users.id;
+        console.log(id);
         await api.post(`/cart/add`, {
           userId: id,
           productId,

@@ -86,6 +86,9 @@ export default function Checkout() {
     setSelectedDeliveryMethod(method);
   };
 
+  const getUser = JSON.parse(localStorage.getItem("auth"));
+  // console.log(getUser);
+
   useEffect(() => {
     const fetchShippingAddress = async () => {
       try {
@@ -93,11 +96,19 @@ export default function Checkout() {
         if (storedSelectedAddress) {
           setSelectedAddress(JSON.parse(storedSelectedAddress));
         } else {
-          const id = JSON.parse(localStorage.getItem("auth"));
-          const response = await api.get(`/addresses/${id}`);
+          // const id = JSON.parse(localStorage.getItem("auth"));
+          const response = await api.get(`/addresses/${getUser.id}`);
+          console.log(response);
           const addresses = response.data;
           if (addresses.length > 0) {
-            setSelectedAddress(addresses[0]); // Set the first address as the selected address
+            const defaultAddress = addresses.find(
+              (address) => address.is_default === true
+            );
+            if (defaultAddress) {
+              setSelectedAddress(defaultAddress);
+            } else {
+              setSelectedAddress(addresses[0]); // Set the first address as the selected address
+            }
           } else {
             setSelectedAddress(null);
           }

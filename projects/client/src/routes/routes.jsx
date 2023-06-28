@@ -20,6 +20,9 @@ import SendRequestMutation from "../pages/admin/SendRequestMutation";
 import ManageMutation from "../pages/admin/ManageMutation";
 import Profile from "../pages/Profile";
 import Error from "../pages/Error";
+import ManageCategory from "../pages/admin/ManageCategory";
+import MutationList from "../pages/admin/MutationList";
+import ManageUser from "../pages/admin/ManageUser";
 
 const routes = [
   //home
@@ -45,7 +48,7 @@ const routes = [
     key="checkout"
     path="/checkout"
     element={
-      <ProtectedPage needLogin={true} adminOnly={true}>
+      <ProtectedPage needLogin={true}>
         <Checkout />
       </ProtectedPage>
     }
@@ -80,7 +83,7 @@ const routes = [
     key="trans"
     path="/trans"
     element={
-      <ProtectedPage>
+      <ProtectedPage needLogin={true}>
         <Transaction />
       </ProtectedPage>
     }
@@ -156,6 +159,15 @@ const routes = [
     }
   />,
   <Route
+    key="mutation-list"
+    path="/mutation-list"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <MutationList />
+      </ProtectedPage>
+    }
+  />,
+  <Route
     key="cek"
     path="/cek"
     element={
@@ -170,6 +182,24 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <Example />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-category"
+    path="/manage-category"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageCategory />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-user"
+    path="/manage-user"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageUser />
       </ProtectedPage>
     }
   />,
