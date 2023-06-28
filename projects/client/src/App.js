@@ -53,11 +53,19 @@ function App() {
   //app js > useEffect => localstorage => api request user by id => dispatch => globalstate => routes => protectedPage => cek redux => kalau sesaui return login
 
   useEffect(() => {
-    const userid = localStorage.getItem("auth"); //token
+    alert("asd");
+    let user = null;
+    let userId = null;
+    if (localStorage.getItem("auth")) {
+      user = JSON.parse(localStorage.getItem("auth")); //token
+      userId = user.id;
+    }
+    console.log(user);
+
     getWarehouse();
     getAllCategory();
-    if (userid) {
-      getUser(userid);
+    if (userId) {
+      getUser(userId);
     }
     setTimeout(() => {
       setIsLoading(false);

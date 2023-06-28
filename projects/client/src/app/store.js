@@ -6,6 +6,8 @@ import mutationListSlice from "../features/mutationListSlice.js";
 import addressSlice from "../features/addressSlice.js";
 import categorySlice from "../features/categorySlice.js";
 
+import allUserSlice from "../features/allUserSlice.js";
+
 export default configureStore({
   reducer: {
     userSlice,
@@ -14,5 +16,6 @@ export default configureStore({
     mutationListSlice,
     addressSlice,
     categorySlice,
+    allUserSlice,
   },
 });

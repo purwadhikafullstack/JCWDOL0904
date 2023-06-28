@@ -23,6 +23,7 @@ import Error from "../pages/Error";
 import ManageCategory from "../pages/admin/ManageCategory";
 import MutationList from "../pages/admin/MutationList";
 import ManageProduct from "../pages/admin/ManageProduct";
+import ManageUser from "../pages/admin/ManageUser";
 
 const routes = [
   //home
@@ -48,7 +49,7 @@ const routes = [
     key="checkout"
     path="/checkout"
     element={
-      <ProtectedPage needLogin={true} adminOnly={true}>
+      <ProtectedPage needLogin={true}>
         <Checkout />
       </ProtectedPage>
     }
@@ -83,7 +84,7 @@ const routes = [
     key="trans"
     path="/trans"
     element={
-      <ProtectedPage>
+      <ProtectedPage needLogin={true}>
         <Transaction />
       </ProtectedPage>
     }
@@ -204,6 +205,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <ManageProduct />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-user"
+    path="/manage-user"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageUser />
       </ProtectedPage>
     }
   />,

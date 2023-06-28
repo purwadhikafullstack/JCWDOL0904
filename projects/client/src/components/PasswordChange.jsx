@@ -11,8 +11,6 @@ import Swal from "sweetalert2";
 import { Field, ErrorMessage, Formik, Form } from "formik";
 import * as Yup from "yup";
 
-const url = "/auth/updatepassword";
-
 export const PasswordChangeModal = ({ closeAddressModal }) => {
   let navigate = useNavigate();
 
@@ -43,6 +41,7 @@ export const PasswordChangeModal = ({ closeAddressModal }) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const url = "/auth/updatepassword";
   const PasswordUpdate = async (values) => {
     console.log(values.password, values.newPassword, values.confirmPassword);
     try {
