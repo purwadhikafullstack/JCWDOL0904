@@ -14,7 +14,7 @@ import {Transaction} from "../pages/Transactions";
 
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
-import Cart2 from "../pages/Cart2";
+import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
 import OrderDetailModal from "../components/admin/OrderDetailModal";
@@ -39,7 +39,7 @@ const routes = [
     path="/cart"
     element={
       <ProtectedPage needLogin={true}>
-        <Cart2 />
+        <Cart />
       </ProtectedPage>
     }
   />,

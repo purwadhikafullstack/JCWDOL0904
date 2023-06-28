@@ -1,5 +1,5 @@
 const { Transaction, Warehouse, Products, Stocks, TransactionItem, Address, sequelize, Carts, Ekspedisi } = require('../models');
-const { Op } = require('sequelize');
+const db = require("../models");
 const moment = require("moment");
 const { io } = require("../src/index")
 
@@ -9,7 +9,7 @@ const checkExpiredOrders = async () => {
             where: {
                 status: 'Waiting For Payment',
                 expired: {
-                    [Op.lte]: moment().toDate(), // Find orders with expired date less than or equal to the current date and time
+                    [db.Sequelize.Op.lte]: moment().toDate(), // Find orders with expired date less than or equal to the current date and time
                 },
             },
             include: [
@@ -27,7 +27,6 @@ const checkExpiredOrders = async () => {
             order: [['createdAt', 'DESC']],
         });
 
-        console.log(`ini expired order`, expiredOrders);
         for (const order of expiredOrders) {
             await order.update({ status: 'Canceled' });
             console.log(`ini order`, order);
@@ -46,7 +45,6 @@ module.exports = {
     createOrder: async (req, res) => {
         try {
             const { cartItems, addressId, userId, ekspedisiId, totalAmount } = req.body;
-
             if (!ekspedisiId) {
                 return res.status(400).json({ error: 'An expedition must be selected' });
             }
@@ -61,7 +59,6 @@ module.exports = {
                 return res.status(404).json({ error: 'Address not found' });
             }
 
-            // Find the nearest warehouse using the Haversine formula
             const nearestWarehouse = await Warehouse.findOne({
                 order: [
                     [
@@ -77,12 +74,9 @@ module.exports = {
                 return res.status(404).json({ error: 'Nearest warehouse not found' });
             }
 
-            // Calculate the expiration date
             const expirationDate = new Date();
-            expirationDate.setSeconds(expirationDate.getSeconds() + 10); // Set expiration to 30 seconds from now
+            expirationDate.setSeconds(expirationDate.getSeconds() + 30); // Set expiration to 30 seconds from now
 
-
-            // Create the transaction (order)
             const transaction = await Transaction.create({
                 total_price: totalAmount,
                 transaction_date: new Date(),
@@ -94,8 +88,6 @@ module.exports = {
                 expired: expirationDate,
             });
 
-
-            // Create the transactionItems for the ordered products
             const transactionItems = await Promise.all(
                 cartItems.map(async (cartItem) => {
                     const { Product, quantity } = cartItem;
@@ -106,7 +98,6 @@ module.exports = {
                         return res.status(404).send({ error: `Product with ID ${Product.id} not found` });
                     }
 
-                    // Check stock availability in all warehouses
                     const totalStock = await Stocks.sum('stock', {
                         where: { id_product: Product.id },
                     });
@@ -140,8 +131,26 @@ module.exports = {
         try {
             let page = Number(req.query.page);
             const limit = 8;
+            const warehouseId = req.query.warehouseId;
+            const invoiceNumber = req.query.invoiceNumber;
+            const status = req.query.status;
 
-            const totalOrders = await Transaction.count();
+            const whereCondition = {};
+            if (warehouseId) {
+                whereCondition.id_warehouse = warehouseId;
+            }
+            if (status) {
+                whereCondition.status = status;
+            }
+            if (invoiceNumber) {
+                whereCondition.invoice_number = {
+                    [db.Sequelize.Op.like]: `%${invoiceNumber}%`,
+                };
+            }
+
+            const totalOrders = await Transaction.count({
+                where: whereCondition,
+            });
             const orders = await Transaction.findAndCountAll({
                 include: [
                     {
@@ -155,7 +164,8 @@ module.exports = {
                         model: Ekspedisi,
                     },
                 ],
-                order: [['createdAt', 'DESC']],
+                where: whereCondition,
+                order: [['createdAt', 'DESC'], ['status', 'DESC']],
                 limit,
                 offset: page * limit,
             });
@@ -171,9 +181,23 @@ module.exports = {
             const { warehouseId } = req.params;
             let page = Number(req.query.page);
             const limit = 8;
+            const invoiceNumber = req.query.invoiceNumber;
+            const status = req.query.status;
+
+            const whereCondition = {};
+            if (status) {
+                whereCondition.status = status;
+            }
+            if (invoiceNumber) {
+                whereCondition.invoice_number = {
+                    [db.Sequelize.Op.like]: `%${invoiceNumber}%`,
+                };
+            }
 
             const totalOrders = await Transaction.count({
-                where: { id_warehouse: warehouseId },
+                where: {
+                    id_warehouse: warehouseId
+                },
             });
 
             const orders = await Transaction.findAll({
@@ -189,13 +213,14 @@ module.exports = {
                         model: Ekspedisi,
                     },
                 ],
-                where: { id_warehouse: warehouseId }, // Filter orders by warehouse ID
+                where: { id_warehouse: warehouseId },
                 order: [['createdAt', 'DESC']],
                 limit,
                 offset: page * limit,
             });
 
-            res.status(200).send({ orders });
+            const totalPages = Math.ceil(totalOrders / limit);
+            res.status(200).send({ orders, totalPages });
         } catch (error) {
             console.error(error);
             res.status(500).send({ error: 'Internal server error' });
@@ -203,9 +228,29 @@ module.exports = {
     },
     getAllOrderByUser: async (req, res) => {
         try {
-            const { id_user } = req.params;
-            const orders = await Transaction.findAll({
-                where: { id_user },
+            const userId = req.query.userId;
+            let page = Number(req.query.page);
+            const limit = 5;
+            const invoiceNumber = req.query.invoiceNumber;
+            const status = req.query.status;
+
+            const whereCondition = {};
+            if (userId) {
+                whereCondition.id_user = userId;
+            }
+            if (status) {
+                whereCondition.status = status;
+            }
+            if (invoiceNumber) {
+                whereCondition.invoice_number = {
+                    [db.Sequelize.Op.like]: `%${invoiceNumber}%`,
+                };
+            }
+
+            const totalOrders = await Transaction.count({
+                where: whereCondition,
+            });
+            const orders = await Transaction.findAndCountAll({
                 include: [
                     {
                         model: TransactionItem,
@@ -218,10 +263,17 @@ module.exports = {
                         model: Ekspedisi,
                     },
                 ],
+                where: whereCondition,
                 order: [['createdAt', 'DESC']],
+                limit,
+                offset: page * limit,
             });
 
-            res.status(200).send({ orders });
+            // console.log(orders.rows.length);
+            // console.log(`ini total orders`, totalOrders);
+            // console.log(`Ini roders count`, orders.count);
+            const totalPages = Math.ceil(orders.count / limit);
+            res.status(200).send({ orders: orders.rows, totalPages });
         } catch (error) {
             console.error(error);
         }
@@ -251,41 +303,21 @@ module.exports = {
             console.error(error);
         }
     },
-    uploadPaymentProof: async (req, res) => {
-        try {
-            console.log(req.file);
-            const transactionId = req.params.id;
-            // const paymentProofPath = req.file.path;
-
-            const { file } = req
-            const filepath = file ? "/" + file.filename : null
-
-            await Transaction.update(
-                { payment_proof: process.env.IMAGE_URL + filepath, status: "Waiting For Payment Confirmation" },
-                { where: { id: transactionId } }
-            );
-
-            res.status(200).send({ message: 'Payment proof uploaded successfully' });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Error uploading payment proof' });
-        }
-    },
     cancelOrder: async (req, res) => {
         try {
             const transactionId = req.params.id;
 
             const transaction = await Transaction.findByPk(transactionId);
             if (!transaction) {
-                return res.status(404).json({ error: 'Transaction not found' });
+                return res.status(404).json({ message: 'Transaction not found' });
             }
 
             if (transaction.status === 'Canceled') {
-                return res.status(400).json({ error: 'Transaction is already canceled' });
+                return res.status(400).json({ message: 'Transaction is already canceled' });
             }
 
             if (transaction.status === 'Waiting For Payment Confirmation' || transaction.status === 'On Proses' || transaction.status === 'On Proses' || transaction.status === 'Shipped') {
-                return res.status(400).json({ error: 'You can not canceled transaction' });
+                return res.status(400).json({ message: 'You can not canceled transaction' });
             }
 
             // Update the transaction status to "Canceled"
@@ -297,54 +329,27 @@ module.exports = {
             res.status(500).json({ message: 'Error canceling transaction' });
         }
     },
-
-    getPaymentProof: async (req, res) => {
-        const { id } = req.params;
-
-        try {
-            const transaction = await Transaction.findByPk(id, {
-                attributes: ['payment_proof'],
-            });
-
-            if (!transaction) {
-                return res.status(404).json({ message: 'Transaction not found' });
-            }
-
-            if (!transaction.payment_proof) {
-                return res.status(404).json({ message: 'Payment proof not found' });
-            }
-
-            res.json({ payment_proof: transaction.payment_proof });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-        }
-    },
     rejectOrder: async (req, res) => {
         try {
             const transactionId = req.params.id;
             const transaction = await Transaction.findByPk(transactionId);
 
             if (!transaction) {
-                return res.status(404).json({ error: 'Transaction not found' });
+                return res.status(404).json({ message: 'Transaction not found' });
             }
 
-            // Update the transaction status to "Waiting For Payment"
+            if (transaction.status !== 'Waiting For Payment Confirmation') {
+                return res.status(400).json({ message: 'Cannot reject transaction with the current status' });
+            }
+
             await transaction.update({ status: 'Waiting For Payment' });
 
-            // Calculate the expiration date as the current date + 30 seconds
-            const expirationDate = moment().add(30, 'seconds');
+            const expirationDate = new Date();
+            expirationDate.setSeconds(expirationDate.getSeconds() + 30);
             await transaction.update({ expired: expirationDate });
+            await transaction.update({ payment_proof: null });
 
-            // Start the timer to automatically cancel the order if not paid within the given deadline
-            setTimeout(async () => {
-                const updatedTransaction = await Transaction.findByPk(transaction.id);
-                if (updatedTransaction.status === 'Waiting For Payment') {
-                    await updatedTransaction.update({ status: 'Canceled' });
-                }
-            }, 30000); // 30 seconds
-
-            res.status(200).json({ message: 'Transaction rejected successfully', transaction: updatedTransaction });
+            res.status(200).json({ message: 'Transaction rejected successfully' });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Error rejecting transaction' });

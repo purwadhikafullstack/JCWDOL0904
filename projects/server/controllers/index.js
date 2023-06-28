@@ -10,6 +10,7 @@ const cartController = require("./cartController.js");
 const expedisiController = require("./ekspedisiController.js");
 const promotionControllers = require("./promotionControllers.js");
 const orderController = require("./orderController.js")
+const orderPaymentController = require("./orderPaymentController.js")
 
 
 module.exports = {
@@ -24,5 +25,6 @@ module.exports = {
   cartController,
   expedisiController,
   promotionControllers,
-  orderController
+  orderController,
+  orderPaymentController,
 };

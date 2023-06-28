@@ -150,13 +150,6 @@ export default function Checkout() {
         ekspedisiId: selectedDeliveryMethod.id,
       });
 
-      // Handle the successful checkout response here
-      console.log("Order created successfully:", response);
-      socket.emit("statusUpdated", {
-        transactionId: response.data.transaction.id,
-        newStatus: "Waiting For Payment",
-      });
-
       setCartItems([]);
       dispatch(updateCart({cart: []}));
       localStorage.removeItem("cartItems");
@@ -192,7 +185,7 @@ export default function Checkout() {
         <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
           <h1 className="sr-only">Checkout</h1>
           <section aria-labelledby="cart-heading" className="lg:col-span-7">
-            {cartItems.map((item) => (
+            {cartItems?.map((item) => (
               <div className="mx-auto w-full max-w-lg" key={item.id}>
                 <h2 className="sr-only">Order summary</h2>
                 <ul

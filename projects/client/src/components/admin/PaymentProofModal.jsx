@@ -39,11 +39,11 @@ export const PaymentProofModal = ({
             <div
               className="modal-overlay fixed inset-0 bg-black opacity-50"
               onClick={handleOverlayClick}></div>
-            <div className="modal-content bg-white rounded-lg shadow-sm max-w-sm mx-auto absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="bg-white rounded-lg shadow-sm max-w-sm mx-auto absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <div className="modal-header bg-gray-200 rounded-t-lg py-3 px-6">
                 <h2 className="text-xl font-bold">Payment Proof</h2>
               </div>
-              <div className="modal-body p-6 overflow-y-auto max-h-80">
+              <div className="modal-body p-6 overflow-y-auto max-h-96">
                 <img
                   src={paymentProof}
                   alt="Payment Proof"

@@ -2,11 +2,12 @@ import {useEffect, useState} from "react";
 import {api} from "../../API/api";
 import {PaymentProofModal} from "../../components/admin/PaymentProofModal";
 import {useSelector} from "react-redux";
-import io from "socket.io-client";
-import {useCallback} from "react";
 import OrderDetailModal from "../../components/admin/OrderDetailModal";
 import ReactPaginate from "react-paginate";
-// import "../style/Homepage.css";
+import {Input, InputGroup, InputRightElement, Stack} from "@chakra-ui/react";
+import {SearchIcon} from "@chakra-ui/icons";
+import io from "socket.io-client";
+import Swal from "sweetalert2";
 
 export default function OrderList() {
   const [transactionByWarehouse, setTransactionByWarehouse] = useState([]);
@@ -15,6 +16,12 @@ export default function OrderList() {
 
   const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
   const [totalPages, setTotalPages] = useState(0);
+
+  const [selectedStatus, setSelectedStatus] = useState("");
+
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  console.log(invoiceNumber);
+  console.log(`isStatus`, selectedStatus);
 
   console.log(warehouses);
   console.log(transactionByWarehouse);
@@ -25,9 +32,13 @@ export default function OrderList() {
 
   useEffect(() => {
     fetchWarehouses();
-  }, [currentPage]);
+  }, []);
 
-  const fetchTransactions = useCallback(async () => {
+  useEffect(() => {
+    fetchTransactions();
+  }, [selectedWarehouse, invoiceNumber, currentPage, selectedStatus]);
+
+  const fetchTransactions = async () => {
     try {
       let response;
       if (user.role === "adminWarehouse") {
@@ -38,7 +49,12 @@ export default function OrderList() {
       } else {
         // If the user is not a warehouse admin, fetch all transactions
         response = await api.get(`/order`, {
-          params: {page: currentPage},
+          params: {
+            page: currentPage,
+            warehouseId: selectedWarehouse,
+            invoiceNumber: invoiceNumber,
+            status: selectedStatus,
+          },
         });
       }
       console.log(response);
@@ -48,7 +64,13 @@ export default function OrderList() {
     } catch (error) {
       console.error(error);
     }
-  }, [user.role, user.id_warehouse, currentPage, selectedWarehouse]);
+  };
+
+  const handleSearch = (e) => {
+    setInvoiceNumber(e.target.value);
+    setCurrentPage(0);
+    fetchTransactions();
+  };
 
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
@@ -73,12 +95,6 @@ export default function OrderList() {
       setSelectedWarehouse(selectedValue);
     }
   };
-
-  const filteredTransactions = selectedWarehouse
-    ? transactionByWarehouse.filter(
-        (transaction) => transaction.id_warehouse == selectedWarehouse
-      )
-    : transactionByWarehouse;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPaymentProof, setSelectedPaymentProof] = useState("");
@@ -107,18 +123,48 @@ export default function OrderList() {
     setSelectedOrderDetail("");
   };
 
+  const handleStatusChange = (e) => {
+    setSelectedStatus(e.target.value);
+  };
+
   const handleRejectTransaction = async (transactionId) => {
     try {
       await api.patch(`/order/${transactionId}/reject`);
       fetchTransactions();
     } catch (error) {
+      Swal.fire({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
       console.error(error);
     }
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
+    const socket = io("http://localhost:8000");
+    console.log(`is socket connected`, socket);
+
+    // Event listener for transaction updates
+    socket.on("transaction-update", (updatedTransaction) => {
+      console.log("Received updated transaction:", updatedTransaction);
+      setTransactionByWarehouse((prevTransactions) => {
+        const updatedTransactions = prevTransactions.map((transaction) => {
+          if (transaction.id === updatedTransaction.id) {
+            return updatedTransaction;
+          }
+          return transaction;
+        });
+        return updatedTransactions;
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -129,38 +175,63 @@ export default function OrderList() {
               <h1 className="text-xl font-semibold text-gray-900">
                 Transactions
               </h1>
-              <p className="mt-2 text-sm text-gray-700">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam
-                maiores velit pariatur repudiandae asperiores nam veniam
-                molestias, obcaecati libero nisi.
-              </p>
-            </div>
-
-            <div className="mt-4 sm:mt-0 sm:ml-4">
-              <label htmlFor="warehouse" className="sr-only">
-                Warehouse
-              </label>
-              <select
-                id="warehouse"
-                name="warehouse"
-                disabled={user.role === "adminWarehouse"}
-                onChange={handleWarehouseChange}
-                value={selectedWarehouse}
-                className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                <option value="">All Warehouses</option>
-                {warehouses &&
-                  warehouses.map((warehouse) => (
-                    <option
-                      key={warehouse.id}
-                      value={warehouse.id}
-                      disabled={
-                        user.role === "adminWarehouse" &&
-                        warehouse.id !== user.id_warehouse
-                      }>
-                      {warehouse.warehouse}
+              <div className="flex gap-3 pb-3 pt-5">
+                <div className="mt-4 sm:mt-0 sm:ml-4">
+                  <select
+                    id="warehouse"
+                    name="warehouse"
+                    disabled={user.role === "adminWarehouse"}
+                    onChange={handleWarehouseChange}
+                    value={selectedWarehouse}
+                    className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-full shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="">All Warehouses</option>
+                    {warehouses &&
+                      warehouses.map((warehouse) => (
+                        <option
+                          key={warehouse.id}
+                          value={warehouse.id}
+                          disabled={
+                            user.role === "adminWarehouse" &&
+                            warehouse.id !== user.id_warehouse
+                          }>
+                          {warehouse.warehouse}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div>
+                  <select
+                    value={selectedStatus}
+                    onChange={handleStatusChange}
+                    className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-full shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="">All Status</option>
+                    <option value="Waiting For Payment">
+                      Waiting For Payment
                     </option>
-                  ))}
-              </select>
+                    <option value="Waiting For Payment Confirmation">
+                      Waiting For Payment Confirmation
+                    </option>
+                    <option value="On Proses">On Proses</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Order Confirmed">Order Confirmed</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="Canceled">Canceled</option>
+                  </select>
+                </div>
+                <InputGroup>
+                  <InputRightElement
+                    pointerEvents="none"
+                    children={<SearchIcon color="#B9BAC4" />}
+                  />
+                  <Input
+                    placeholder="Search Invoice Number"
+                    borderRadius="50px"
+                    value={invoiceNumber}
+                    onChange={handleSearch}
+                    paddingX={3}
+                  />
+                </InputGroup>
+              </div>
             </div>
           </div>
           <div className="mt-6 flex flex-col justify-end max-w-5xl xl ml-auto">
@@ -175,7 +246,6 @@ export default function OrderList() {
                           className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
                           Transaction ID
                         </th>
-
                         <th
                           scope="col"
                           className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -204,8 +274,8 @@ export default function OrderList() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
-                      {filteredTransactions &&
-                        filteredTransactions.map((transaction) => (
+                      {transactionByWarehouse &&
+                        transactionByWarehouse.map((transaction) => (
                           <tr key={transaction.id}>
                             <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
                               {transaction.invoice_number.substr(0, 13)}

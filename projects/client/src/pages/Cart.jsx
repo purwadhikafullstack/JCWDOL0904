@@ -5,29 +5,40 @@ import Swal from "sweetalert2";
 import {useDispatch} from "react-redux";
 import {cart, subtotal} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
-import {SunDim} from "phosphor-react";
+import ReactPaginate from "react-paginate";
 
-const Cart2 = () => {
+const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(false);
+  console.log(cartItems);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const fetchCartItems = async () => {
     try {
-      const response = await api.get(`/cart?userId=2`);
-      setCartItems(response.data);
-      console.log(response.data);
+      const response = await api.get(`/cart`, {
+        params: {
+          page: currentPage,
+          userId: 2,
+        },
+      });
+      setCartItems(response.data.cartItems);
+      setTotalPages(response.data.totalPages);
 
       let sum = 0;
-      response.data.forEach((e) => (sum += e.quantity * e.Product.price));
+      response.data.cartItems.forEach(
+        (e) => (sum += e.quantity * e.Product.price)
+      );
       setTotalPrice(sum);
 
       dispatch(
         cart({
-          cart: response.data,
+          cart: response.data.cartItems,
         })
       );
 
@@ -37,7 +48,10 @@ const Cart2 = () => {
         })
       );
 
-      localStorage.setItem("cartItems", JSON.stringify(response.data));
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(response.data.cartItems)
+      );
       localStorage.setItem("subTotal", JSON.stringify(sum));
     } catch (error) {
       console.error(error);
@@ -46,12 +60,12 @@ const Cart2 = () => {
 
   useEffect(() => {
     fetchCartItems();
-  }, []);
+  }, [currentPage]);
 
   const updateCartProduct = async (cartItemId, action) => {
     setLoading(true);
     try {
-      const response = await api.patch(`/cart/update`, {
+      const response = await api.patch(`/cart`, {
         cartItemId,
         action,
       });
@@ -94,6 +108,10 @@ const Cart2 = () => {
         }
       }
     });
+  };
+
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
   };
   return (
     <div className="bg-white min-h-[700px] pt-10">
@@ -205,6 +223,22 @@ const Cart2 = () => {
                 );
               })}
             </ul>
+            <div className="mt-6 flex justify-center">
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel="next >"
+                onPageChange={handlePageChange}
+                pageRangeDisplayed={5}
+                pageCount={totalPages}
+                previousLabel="< previous"
+                renderOnZeroPageCount={null}
+                containerClassName="flex justify-center items-center mb-10"
+                pageLinkClassName="px-2 py-1 rounded-md m-1"
+                previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
+                nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
+                activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
+              />
+            </div>
           </section>
 
           <section
@@ -242,4 +276,4 @@ const Cart2 = () => {
   );
 };
 
-export default Cart2;
+export default Cart;

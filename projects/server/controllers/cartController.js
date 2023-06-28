@@ -76,16 +76,37 @@ module.exports = {
     },
     getAllCartItems: async (req, res) => {
         try {
-            const { userId } = req.query;
+            let page = Number(req.query.page);
+            const limit = 8;
+            const userId = req.query.userId;
+            const invoiceNumber = req.query.invoiceNumber;
+            const status = req.query.status;
 
-            const cartItems = await Carts.findAll({
-                where: { id_user: userId },
+            const whereCondition = {};
+            if (userId) {
+                whereCondition.id_user = userId;
+            }
+            if (status) {
+                whereCondition.status = status;
+            }
+            if (invoiceNumber) {
+                whereCondition.invoice_number = {
+                    [db.Sequelize.Op.like]: `%${invoiceNumber}%`,
+                };
+            }
+
+            const cartItems = await Carts.findAndCountAll({
+                where: whereCondition,
                 include: [
                     { model: Products },
                     { model: User }
-                ]
+                ],
+                limit,
+                offset: page * limit,
             });
-            return res.status(200).send(cartItems);
+
+            const totalPages = Math.ceil(cartItems.count / limit);
+            return res.status(200).send({ cartItems: cartItems.rows, totalPages: totalPages });
         } catch (error) {
             console.error(error);
             return res.status(500).send({ error: 'Unable to fetch cart items' });
