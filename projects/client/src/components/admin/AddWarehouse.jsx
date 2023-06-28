@@ -19,6 +19,7 @@ import { SettingsIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
 import { apiro } from "../../API/apiro";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 const AddWarehouse = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,6 +31,8 @@ const AddWarehouse = (props) => {
   const [subdistrict, setSubsdistrict] = useState("");
   const [zip, setZip] = useState("");
   const [isLoad, setLoad] = useState(false);
+
+  const { role } = useSelector((state) => state.userSlice);
 
   const getAllProvince = async () => {
     try {
@@ -105,15 +108,17 @@ const AddWarehouse = (props) => {
 
   return (
     <div>
-      <Button
-        leftIcon={<AddIcon />}
-        backgroundColor="black"
-        color="white"
-        onClick={onOpen}
-        _hover={{ backgroundColor: "#3c3c3c" }}
-      >
-        Add Warehouse
-      </Button>
+      {role === "admin" ? (
+        <Button
+          // leftIcon={<AddIcon />}
+          backgroundColor="black"
+          color="white"
+          onClick={onOpen}
+          _hover={{ backgroundColor: "#3c3c3c" }}
+        >
+          Add Warehouse
+        </Button>
+      ) : null}
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

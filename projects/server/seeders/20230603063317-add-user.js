@@ -11,7 +11,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: "avatar_default.jpg",
+        user_image: "http://localhost:8000/avatar_default.jpg",
         role: "user",
         verify_token: null,
         createdAt: new Date(),
@@ -23,7 +23,7 @@ module.exports = {
         email: "Asep@gmail.com",
         password: "123",
         is_verified: true,
-        user_image: null,
+        user_image: "http://localhost:8000/avatar_default.jpg",
         role: "user",
         verify_token: null,
         createdAt: new Date(),
@@ -35,7 +35,7 @@ module.exports = {
         email: "adi@gmail.com",
         password: "123",
         is_verified: true,
-        user_image: null,
+        user_image: "http://localhost:8000/avatar_default.jpg",
         role: "user",
         verify_token: null,
         createdAt: new Date(),
@@ -48,7 +48,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: "avatar_default.jpg",
+        user_image: "http://localhost:8000/avatar_default.jpg",
         role: "admin",
         verify_token: null,
         createdAt: new Date(),
@@ -61,7 +61,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: null,
+        user_image: "http://localhost:8000/avatar_default.jpg",
         role: "adminWarehouse",
         verify_token: null,
         createdAt: new Date(),
@@ -74,7 +74,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: null,
+        user_image: "http://localhost:8000/avatar_default.jpg",
         role: "adminWarehouse",
         verify_token: null,
         createdAt: new Date(),
@@ -87,7 +87,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: null,
+        user_image: "http://localhost:8000/avatar_default.jpg",
         role: "adminWarehouse",
         verify_token: null,
         createdAt: new Date(),

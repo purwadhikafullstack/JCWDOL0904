@@ -140,16 +140,11 @@ module.exports = {
           id_product: id,
         },
       });
-      if (getStockMovement.dataValues.stock < 1) {
-        throw new Error("stock is unavailable!");
-      }
-
       if (getStockMovement.dataValues.stock < qty) {
-        throw new Error({
-          message: "stock is too man!",
-          title: "Error!",
-          icon: "error",
-        });
+        throw new Error("Your request is too many!");
+      }
+      if (getStockMovement.dataValues.stock < 1) {
+        throw new Error("Stock is unavailable!");
       }
 
       const currentTime = new Date();
@@ -191,10 +186,10 @@ module.exports = {
             role,
             id: idUser,
           },
-          include: [stocks],
+          include: [warehouse],
         });
 
-        idWarehouse = dataUser.Stocks[0].id_warehouse;
+        idWarehouse = dataUser.Warehouse.id;
       }
 
       if (idWarehouse) sort = idWarehouse;

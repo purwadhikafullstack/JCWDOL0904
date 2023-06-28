@@ -60,7 +60,14 @@ const navigation = [
     icon: CalendarIcon,
     current: false,
   },
-  { name: "Product", href: "#", icon: InboxIcon, current: false },
+  // { name: "Product", href: "#", icon: InboxIcon, current: false },
+  {
+    name: "Product",
+    href: "/manage-product",
+    icon: ChartBarIcon,
+    current: false,
+  },
+
   { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
 ];
 const userNavigation = [

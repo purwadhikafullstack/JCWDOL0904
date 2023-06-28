@@ -20,6 +20,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Stack,
+  Spinner,
 } from "@chakra-ui/react";
 import { api } from "../../API/api";
 import { SettingsIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
@@ -31,6 +32,8 @@ import { data } from "../../features/warehouseSlice";
 
 const ManageWarehouse = () => {
   const value = useSelector((state) => state.warehouseSlice.value);
+  const { role } = useSelector((state) => state.userSlice);
+
   const dispatch = useDispatch();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -138,12 +141,21 @@ const ManageWarehouse = () => {
             display="flex"
             alignContent="center"
           >
-            <EditeWarehouse wId={el.id} runFunction={getWarehouseData} />
+            <EditeWarehouse
+              wId={el.id}
+              warehouse={el.warehouse}
+              province={el.province}
+              city={el.city}
+              warehouse_city_id={el.warehouse_city_id}
+              subdistrict={el.subdistrict}
+              zip={el.zip}
+              runFunction={getWarehouseData}
+            />
             <Button
               variant="link"
               color="red"
               width="40px"
-              onClick={() => deleteWarehouse(el.id)}
+              onClick={role === "admin" ? () => deleteWarehouse(el.id) : null}
             >
               <DeleteIcon />
             </Button>
@@ -155,74 +167,68 @@ const ManageWarehouse = () => {
 
   return (
     <div className={` ${paddingLeft}  py-10 items-center`}>
-      <h1>ini manage </h1>
-      <div>
-        <AddWarehouse runFunction={getWarehouseData} />
-      </div>
-      <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
-        <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                    >
-                      No
-                    </th>
+      {value ? (
+        <div>
+          <div className="sm:flex-auto">
+            <h1 className="text-xl font-semibold text-gray-900">
+              Manage Warehouse
+            </h1>
+          </div>
+          <div className="mt-5">
+            <AddWarehouse runFunction={getWarehouseData} />
+          </div>
+          <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
+            <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-300">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                        >
+                          No
+                        </th>
 
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Warehouse Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Province
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      City
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {warehouse}
-                </tbody>
-              </table>
+                        <th
+                          scope="col"
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          Warehouse Name
+                        </th>
+                        <th
+                          scope="col"
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          Province
+                        </th>
+                        <th
+                          scope="col"
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          City
+                        </th>
+                        <th
+                          scope="col"
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                      {warehouse}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody></ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      ) : (
+        <Spinner />
+      )}
     </div>
   );
 };
