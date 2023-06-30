@@ -134,4 +134,14 @@ module.exports = {
       console.log(error);
     }
   },
+  // get all warehouse where id
+  getAllWarehousesId: async (req, res) => {
+    try {
+      const result = await Warehouse.findAll();
+      res.json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
 };

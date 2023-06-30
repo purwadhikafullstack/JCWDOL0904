@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { allUserData } from "../../features/allUserSlice";
 import AddAdmin from "../../components/admin/AddAdmin";
+import EditWarehouse from "../../components/admin/EditAdminWarehouse";
 
 const ManageWarehouse = () => {
   const value = useSelector((state) => state.allUserSlice.value);
@@ -125,6 +126,12 @@ const ManageWarehouse = () => {
               alignContent="center"
             >
               <EditUser
+                uId={el.id}
+                username={el.username}
+                fullname={el.fullname}
+                runFunction={getUserData}
+              />
+              <EditWarehouse
                 uId={el.id}
                 username={el.username}
                 fullname={el.fullname}

@@ -73,7 +73,7 @@ const EditUser = (props) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Update Admin Data</ModalHeader>
+          <ModalHeader>Update Data</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
