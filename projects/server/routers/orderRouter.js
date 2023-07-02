@@ -1,16 +1,22 @@
 const router = require("express").Router()
-const { orderController, orderPaymentController } = require("../controllers")
-const upload = require("../middleware/multer")
+const { orderControllers, orderPaymentController, orderGetController, orderAdminController } = require("../controllers")
+const upload = require("../middleware/multer").single("file");
 
-router.post("/", orderController.createOrder)
-router.get("/", orderController.getAllOrders)
-router.get("/user", orderController.getAllOrderByUser);
-router.get("/:warehouseId", orderController.getOrdersByWarehouse);
-router.get("/detail/:id", orderController.getOrderById);
-router.patch("/cancel/:id", orderController.cancelOrder)
-router.patch('/:id/reject', orderController.rejectOrder);
+router.get("/", orderGetController.getAllOrders)
+router.get("/user", orderGetController.getAllOrderByUser);
 
-router.patch("/upload-payment-proof/:id", upload.single("file"), orderPaymentController.uploadPaymentProof)
+router.post("/", orderControllers.createOrder)
+router.get("/:warehouseId", orderGetController.getOrdersByWarehouse);
+router.patch("/cancel/:id", orderControllers.cancelOrder)
+router.put("/:id/accept", orderControllers.acceptOrder)
+
+// Admin
+router.get("/detail/:id", orderGetController.getOrderById);
+router.patch('/:id/reject', orderAdminController.rejectOrder);
+router.patch('/confirm', orderAdminController.confirmOrder);
+router.post('/send/:orderId', orderAdminController.sendOrder);
+
+router.patch("/upload-payment-proof/:id", upload, orderPaymentController.uploadPaymentProof)
 router.get("/:id/payment-proof", orderPaymentController.getPaymentProof)
 
 module.exports = router

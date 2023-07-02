@@ -6,15 +6,11 @@ module.exports = {
     findNearestWarehouse: async (req, res) => {
         try {
             const { addressId } = req.params;
-
-            // Find the address by ID
             const address = await Address.findByPk(addressId);
 
             if (!address) {
                 return res.status(404).json({ error: 'Address not found' });
             }
-
-            // Find the nearest warehouse using the Haversine formula
             const nearestWarehouse = await Warehouse.findOne({
                 order: [
                     [

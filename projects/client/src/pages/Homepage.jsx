@@ -178,17 +178,13 @@ const Homepage = () => {
         <TabPanels
           className="card-con"
           style={{display: "flex", justifyContent: "center", width: "100%"}}>
-          <TabPanel
-          style={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
           {allCategory?.map((el) => {
             return el.category !== "no category" ? (
               <TabPanel
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
-                maxWidth="100%"
-              >
+                maxWidth="100%">
                 <ProductsHome products={products} category={el.id} />
               </TabPanel>
             ) : null;

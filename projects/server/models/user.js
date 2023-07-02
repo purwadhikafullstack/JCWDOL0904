@@ -19,11 +19,6 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_user",
         },
       });
-      User.hasOne(models.Warehouse, {
-        foreignKey: {
-          name: "id_user",
-        },
-      });
       User.hasMany(models.Transaction, {
         foreignKey: {
           name: "id_user",
@@ -32,6 +27,16 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsTo(models.Warehouse, {
         foreignKey: {
           name: "id_warehouse",
+        },
+      });
+      User.hasMany(models.Notification, {
+        foreignKey: {
+          name: "id_user",
+        },
+      });
+      User.hasMany(models.UserNotification, {
+        foreignKey: {
+          name: "id_user",
         },
       });
     }

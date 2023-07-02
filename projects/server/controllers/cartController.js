@@ -1,5 +1,5 @@
 const db = require("../models");
-const { Carts, Products, User } = db;
+const { Carts, Products, User, Category } = db;
 
 module.exports = {
   addToCart: async (req, res) => {
@@ -85,42 +85,22 @@ module.exports = {
   },
   getAllCartItems: async (req, res) => {
     try {
-      const { userId } = req.query;
-      return res.status(404).send({ message: "Cart item not found" });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({ error: "Unable to update cart item" });
-    }
-  },
-  getAllCartItems: async (req, res) => {
-    try {
-      let page = Number(req.query.page);
-      const limit = 8;
       const userId = req.query.userId;
-      const invoiceNumber = req.query.invoiceNumber;
-      const status = req.query.status;
 
-      const whereCondition = {};
-      if (userId) {
-        whereCondition.id_user = userId;
-      }
-      if (status) {
-        whereCondition.status = status;
-      }
-      if (invoiceNumber) {
-        whereCondition.invoice_number = {
-          [db.Sequelize.Op.like]: `%${invoiceNumber}%`,
-        };
-      }
-
-      const cartItems = await Carts.findAll({
-        where: { id_user: userId },
+      const cartItems = await Carts.findAndCountAll({
+        where: {
+          id_user: userId
+        },
         include: [
-          { model: Products },
+          {
+            model: Products,
+            include: [Category],
+          },
           { model: User }
-        ]
+        ],
       });
-      return res.status(200).send(cartItems);
+
+      return res.status(200).send({ cartItems: cartItems.rows });
     } catch (error) {
       console.error(error);
       return res.status(500).send({ error: 'Unable to fetch cart items' });

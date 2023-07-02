@@ -20,8 +20,8 @@ module.exports = {
       {
         fullname: "Asep Angga Ihza Sukarya",
         username: "asep",
-        email: "Asep@gmail.com",
-        password: "123",
+        email: "asep@gmail.com",
+        password: "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
         user_image: "http://localhost:8000/avatar_default.jpg",
         role: "user",
@@ -66,6 +66,7 @@ module.exports = {
         verify_token: null,
         createdAt: new Date(),
         updatedAt: new Date(),
+        id_warehouse: 1,
       },
       {
         fullname: "Admin Warehouse 2",
@@ -79,6 +80,7 @@ module.exports = {
         verify_token: null,
         createdAt: new Date(),
         updatedAt: new Date(),
+        id_warehouse: 2,
       },
       {
         fullname: "Admin Warehouse 3",
@@ -92,6 +94,7 @@ module.exports = {
         verify_token: null,
         createdAt: new Date(),
         updatedAt: new Date(),
+        id_warehouse: 3,
       },
     ]);
   },

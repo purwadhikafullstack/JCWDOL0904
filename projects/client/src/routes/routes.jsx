@@ -83,8 +83,8 @@ const routes = [
     }
   />,
   <Route
-    key="trans"
-    path="/trans"
+    key="transactions"
+    path="/transactions"
     element={
       <ProtectedPage needLogin={true}>
         <Transaction />

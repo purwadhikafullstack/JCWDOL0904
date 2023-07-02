@@ -28,7 +28,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       reference: {
         type: DataTypes.STRING,
-        defaultValue: DataTypes.UUIDV4,
       },
     },
     {
@@ -36,8 +35,8 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "StockHistory",
     }
   );
-  StockHistory.beforeCreate((transaction) => {
-    transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field});
-  });
+  // StockHistory.beforeCreate((transaction) => {
+  //   transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field});
+  // });
   return StockHistory;
 };

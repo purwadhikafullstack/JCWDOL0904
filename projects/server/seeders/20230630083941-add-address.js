@@ -4,7 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert('Addresses', [{
-      recipient_name: 'asep',
+      recipient_name: 'Angga',
       phone_number: "080000000002",
       is_default: 1,
       province: "Jawa Barat",
@@ -32,7 +32,7 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
-      recipient_name: 'asep',
+      recipient_name: 'Asep',
       phone_number: "080000000001",
       is_default: 0,
       province: "Jawa Barat",
@@ -42,6 +42,20 @@ module.exports = {
       zip: 40521,
       latitude: "-6.9007783",
       longitude: "107.5556959",
+      id_user: 2,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      recipient_name: 'Meca',
+      phone_number: "085340001",
+      is_default: 0,
+      province: "Jawa Timur",
+      city: "Surabaya",
+      address_city_id: 444,
+      subdistrict: "Wonokromo",
+      zip: 60244,
+      latitude: "-7.3042532",
+      longitude: "112.745001",
       id_user: 2,
       createdAt: new Date(),
       updatedAt: new Date()

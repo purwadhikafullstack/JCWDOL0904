@@ -1,11 +1,10 @@
-import {XMarkIcon, CreditCardIcon} from "@heroicons/react/20/solid";
 import {useState, useEffect} from "react";
 import {api} from "../API/api";
 import Swal from "sweetalert2";
 import {useDispatch} from "react-redux";
 import {cart, subtotal} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
-import ReactPaginate from "react-paginate";
+import {CartItem} from "../components/CartItem";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -13,23 +12,16 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   console.log(cartItems);
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const fetchCartItems = async () => {
     try {
-      const id = JSON.parse(localStorage.getItem("auth")).id;
+      const userId = JSON.parse(localStorage.getItem("auth")).id;
       const response = await api.get(`/cart`, {
-        params: {
-          page: currentPage,
-          userId: id,
-        },
+        params: {userId},
       });
       setCartItems(response.data.cartItems);
-      setTotalPages(response.data.totalPages);
 
       let sum = 0;
       response.data.cartItems.forEach(
@@ -42,13 +34,11 @@ const Cart = () => {
           cart: response.data.cartItems,
         })
       );
-
       dispatch(
         subtotal({
           subtotal: sum,
         })
       );
-
       localStorage.setItem(
         "cartItems",
         JSON.stringify(response.data.cartItems)
@@ -61,7 +51,7 @@ const Cart = () => {
 
   useEffect(() => {
     fetchCartItems();
-  }, [currentPage]);
+  }, []);
 
   const updateCartProduct = async (cartItemId, action) => {
     setLoading(true);
@@ -111,9 +101,6 @@ const Cart = () => {
     });
   };
 
-  const handlePageChange = (selectedPage) => {
-    setCurrentPage(selectedPage.selected);
-  };
   return (
     <div className="bg-white min-h-[700px] pt-10">
       <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -125,121 +112,20 @@ const Cart = () => {
             <h2 id="cart-heading" className="sr-only">
               Items in your shopping cart
             </h2>
-
             <ul
               role="list"
               className="divide-y divide-gray-200 border-t border-b border-gray-200">
               {cartItems.map((item) => {
-                const subtotal = item.quantity * item.Product.price;
                 return (
-                  <li key={item.id} className="flex py-6 sm:py-10">
-                    <div className="flex-shrink-0">
-                      <img
-                        src={item.Product.product_image}
-                        alt={item.name}
-                        className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
-                      />
-                    </div>
-
-                    <div className="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                      <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
-                        <div>
-                          <div className="flex justify-between">
-                            <h3 className="text-sm">
-                              <a
-                                href={item.href}
-                                className="font-medium text-gray-700 hover:text-gray-800">
-                                {item.Product.product_name}
-                              </a>
-                            </h3>
-                          </div>
-                          <div className="mt-1 flex text-sm">
-                            <p className="text-gray-500">{item.size}</p>
-                            <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">
-                              Rp. {item.Product.price.toLocaleString("id-ID")}
-                            </p>
-                          </div>
-                          <p className="mt-1 text-sm font-medium text-gray-900">
-                            {item.price}
-                          </p>
-                        </div>
-
-                        <div className="mt-4 sm:mt-0 sm:pr-9">
-                          <label htmlFor="" className="sr-only">
-                            Quantity, product name
-                          </label>
-                          <div className="flex space-x-4">
-                            <button
-                              type="button"
-                              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none"
-                              onClick={() =>
-                                updateCartProduct(item.id, "decrease")
-                              }>
-                              -
-                            </button>
-                            <input
-                              id=""
-                              name=""
-                              type="text"
-                              value={item.quantity}
-                              readOnly
-                              className="w-12 text-center border border-gray-300"
-                            />
-                            <button
-                              type="button"
-                              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none"
-                              onClick={() =>
-                                updateCartProduct(item.id, "increase")
-                              }>
-                              +
-                            </button>
-                          </div>
-
-                          <div className="absolute top-0 right-0">
-                            <button
-                              type="button"
-                              className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
-                              onClick={() => deleteCartItem(item.id)}>
-                              <span className="sr-only">Remove</span>
-                              <XMarkIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <p className="mt-4 flex space-x-2 text-sm text-gray-700">
-                        <CreditCardIcon
-                          className="h-5 w-5 flex-shrink-0 text-gray-700"
-                          aria-hidden="true"
-                        />
-                        <span>
-                          Subtotal: Rp {subtotal.toLocaleString("id-ID")}
-                        </span>
-                      </p>
-                    </div>
-                  </li>
+                  <CartItem
+                    key={item.id}
+                    item={item}
+                    updateCartProduct={updateCartProduct}
+                    deleteCartItem={deleteCartItem}
+                  />
                 );
               })}
             </ul>
-            <div className="mt-6 flex justify-center">
-              <ReactPaginate
-                breakLabel="..."
-                nextLabel="next >"
-                onPageChange={handlePageChange}
-                pageRangeDisplayed={5}
-                pageCount={totalPages}
-                previousLabel="< previous"
-                renderOnZeroPageCount={null}
-                containerClassName="flex justify-center items-center mb-10"
-                pageLinkClassName="px-2 py-1 rounded-md m-1"
-                previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-                nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-                activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
-              />
-            </div>
           </section>
 
           <section

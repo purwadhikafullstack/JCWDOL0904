@@ -3,6 +3,7 @@ import {api} from "../../API/api";
 import {useCallback} from "react";
 import {useState} from "react";
 import {TruckIcon} from "@heroicons/react/20/solid";
+import moment from "moment";
 
 export default function OrderDetailModal({
   isDetailModalOpen,
@@ -13,7 +14,6 @@ export default function OrderDetailModal({
   console.log(transactions);
 
   useEffect(() => {
-    // Fetch transactions initially
     fetchTransactions();
   }, []);
 
@@ -52,6 +52,11 @@ export default function OrderDetailModal({
                   <div>
                     <p className="mt-2 text-3xl font-bold tracking-tight">
                       Order detail!
+                    </p>
+                    <p className="mt-1 text-sm text-gray-600">
+                      {moment(transaction.createdAt).format(
+                        "MMMM Do YYYY, h:mm:ss a"
+                      )}
                     </p>
                   </div>
 
