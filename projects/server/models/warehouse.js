@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Warehouse.belongsTo(models.User, {
-        foreignKey: {
-          name: "id_user",
-        },
-      });
+      // Warehouse.hasMany(models.User, {
+      //   foreignKey: {
+      //     name: "id_warehouse",
+      //   },
+      // });
       Warehouse.hasMany(models.StockMovement, {
         foreignKey: {
           name: "warehouse_sender_id",
@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
       Warehouse.hasMany(models.Transaction, {
+        foreignKey: {
+          name: "id_warehouse",
+        },
+      });
+      Warehouse.hasMany(models.User, {
         foreignKey: {
           name: "id_warehouse",
         },

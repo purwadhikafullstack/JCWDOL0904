@@ -19,14 +19,19 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_user",
         },
       });
-      User.hasOne(models.Warehouse, {
+      // User.hasOne(models.Warehouse, {
+      //   foreignKey: {
+      //     name: "id_user",
+      //   },
+      // });
+      User.hasMany(models.Transaction, {
         foreignKey: {
           name: "id_user",
         },
       });
-      User.hasMany(models.Transaction, {
+      User.belongsTo(models.Warehouse, {
         foreignKey: {
-          name: "id_user",
+          name: "id_warehouse",
         },
       });
     }

@@ -24,6 +24,7 @@ import ManageCategory from "../pages/admin/ManageCategory";
 import MutationList from "../pages/admin/MutationList";
 import ManageProduct from "../pages/admin/ManageProduct";
 import ManageUser from "../pages/admin/ManageUser";
+import SalesReport from "../pages/admin/SalesReport";
 
 const routes = [
   //home
@@ -111,7 +112,7 @@ const routes = [
     key="profile"
     path="/profile"
     element={
-      <ProtectedPage>
+      <ProtectedPage needLogin={true}>
         <Profile />
       </ProtectedPage>
     }
@@ -214,6 +215,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <ManageUser />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="sales-report"
+    path="/sales-report"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <SalesReport />
       </ProtectedPage>
     }
   />,

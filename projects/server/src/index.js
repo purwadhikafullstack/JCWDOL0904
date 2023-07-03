@@ -47,6 +47,7 @@ const {
   uploadProfileRouter,
   mutationRouter,
   categoryRouters,
+  transactionRouter,
 } = require("../routers");
 
 app.use(authorize);
@@ -66,6 +67,7 @@ app.use("/api/auth", tokenValidatorRouter);
 app.use("/api/upload", uploadProfileRouter);
 app.use("/api/mutation", mutationRouter);
 app.use("/api/category", categoryRouters);
+app.use("/api/transaction", transactionRouter);
 
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_SIZE") {

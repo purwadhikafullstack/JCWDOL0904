@@ -53,7 +53,6 @@ function App() {
   //app js > useEffect => localstorage => api request user by id => dispatch => globalstate => routes => protectedPage => cek redux => kalau sesaui return login
 
   useEffect(() => {
-    alert("asd");
     let user = null;
     let userId = null;
     if (localStorage.getItem("auth")) {

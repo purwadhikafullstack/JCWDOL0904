@@ -1,8 +1,10 @@
 const db = require("../models");
+const User = db.User;
 const { Warehouse, Stocks } = db;
 const axios = require("axios");
 
 module.exports = {
+  // Get All Warehouse
   getAllWarehouses: async (req, res) => {
     try {
       const result = await Warehouse.findAll();
@@ -12,6 +14,8 @@ module.exports = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  // Create Warehouse
   createWarehouse: async (req, res) => {
     try {
       const { warehouse, province, city, warehouse_city_id, subdistrict, zip } =
@@ -47,6 +51,8 @@ module.exports = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  // Edit Warehouse
   editeWareHouse: async (req, res) => {
     try {
       const {
@@ -111,6 +117,8 @@ module.exports = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  // Delete Warehouse
   deleteWareHouse: async (req, res) => {
     try {
       const { id } = req.params;
@@ -134,14 +142,43 @@ module.exports = {
       console.log(error);
     }
   },
-  // get all warehouse where id
-  getAllWarehousesId: async (req, res) => {
+
+  // Change Admin Warehouse
+
+  changeWarehouse: async (req, res) => {
     try {
-      const result = await Warehouse.findAll();
-      res.json(result);
+      const { currentWarehouse, id_warehouse, id, role } = req.body;
+      console.log(req.body);
+
+      const findUser = await User.findOne({
+        where: { id },
+      });
+
+      if (role === "adminWarehouse" || role === "user") {
+        return res.status(400).send({
+          message: "You don't have permission!",
+        });
+      }
+
+      if (currentWarehouse === id_warehouse) {
+        res.status(400).send({
+          message: "You select the same warehouse, please select another",
+        });
+      }
+      const result = await User.update(
+        { id_warehouse },
+        {
+          where: {
+            id: findUser.dataValues.id,
+          },
+        }
+      );
+      res.status(200).send({
+        message: "Update admin warehouse success",
+        // data: result,
+      });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      console.log(error);
     }
   },
 };

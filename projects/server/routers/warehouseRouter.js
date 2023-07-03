@@ -6,6 +6,6 @@ router.post("/", warehouseController.createWarehouse);
 router.get("/data", warehouseController.getAllWarehouses);
 router.post("/update", warehouseController.editeWareHouse);
 router.delete("/delete/:id", warehouseController.deleteWareHouse);
-router.get("/data/user", warehouseController.getAllWarehousesId);
+router.post("/update/admin", warehouseController.changeWarehouse);
 
 module.exports = router;
