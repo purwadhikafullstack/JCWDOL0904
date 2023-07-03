@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Warehouse.belongsTo(models.User, {
+      Warehouse.hasMany(models.User, {
         foreignKey: {
-          name: "id_user",
+          name: "id_warehouse",
         },
       });
       Warehouse.hasMany(models.StockMovement, {
@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
       Warehouse.hasMany(models.Transaction, {
+        foreignKey: {
+          name: "id_warehouse",
+        },
+      });
+      Warehouse.hasMany(models.User, {
         foreignKey: {
           name: "id_warehouse",
         },

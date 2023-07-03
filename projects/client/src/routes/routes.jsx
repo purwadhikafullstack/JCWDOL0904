@@ -1,21 +1,21 @@
-import { Route } from "react-router-dom";
+import {Route} from "react-router-dom";
 import Homepage from "../pages/Homepage";
-import { Register } from "../pages/register";
-import { Verification } from "../pages/verification";
-import { Login } from "../pages/Login";
-import { ResetPassword } from "../pages/resetPassword";
-import { InputPassword } from "../pages/inputPassword";
-import { TestImage } from "../pages/TestImage";
+import {Register} from "../pages/register";
+import {Verification} from "../pages/verification";
+import {Login} from "../pages/Login";
+import {ResetPassword} from "../pages/resetPassword";
+import {InputPassword} from "../pages/inputPassword";
+import {TestImage} from "../pages/TestImage";
 import ProductDetail from "../pages/ProductDetail";
 
-import { Transaction } from "../pages/Transactions";
+import {Transaction} from "../pages/Transactions";
 
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
-import Cart2 from "../pages/Cart2";
+import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import ManageWarehouse from "../pages/admin/ManageWarehouse";
-import Example from "../pages/admin/OrderList";
+import OrderDetailModal from "../components/admin/OrderDetailModal";
 import SendRequestMutation from "../pages/admin/SendRequestMutation";
 import ManageMutation from "../pages/admin/ManageMutation";
 import Profile from "../pages/Profile";
@@ -24,6 +24,10 @@ import ManageCategory from "../pages/admin/ManageCategory";
 import MutationList from "../pages/admin/MutationList";
 import ManageProduct from "../pages/admin/ManageProduct";
 import ManageUser from "../pages/admin/ManageUser";
+import {PaymentProofModal} from "../components/admin/PaymentProofModal";
+import OrderList from "../pages/admin/OrderList";
+import Notification from "../pages/Notification";
+import NotificationDetailModal from "../components/NotificationDetailModal";
 
 const routes = [
   //home
@@ -41,7 +45,7 @@ const routes = [
     path="/cart"
     element={
       <ProtectedPage needLogin={true}>
-        <Cart2 />
+        <Cart />
       </ProtectedPage>
     }
   />,
@@ -81,8 +85,8 @@ const routes = [
     }
   />,
   <Route
-    key="trans"
-    path="/trans"
+    key="transactions"
+    path="/transactions"
     element={
       <ProtectedPage needLogin={true}>
         <Transaction />
@@ -126,6 +130,33 @@ const routes = [
     }
   />,
 
+  <Route
+    key="car"
+    path="/car"
+    element={
+      <ProtectedPage>
+        <OrderDetailModal />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="notification"
+    path="/notification"
+    element={
+      <ProtectedPage>
+        <Notification />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="nd"
+    path="/nd"
+    element={
+      <ProtectedPage>
+        <NotificationDetailModal />
+      </ProtectedPage>
+    }
+  />,
   // admin
   <Route
     key="test"
@@ -186,7 +217,43 @@ const routes = [
     path="/order"
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
-        <Example />
+        <OrderList />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="proof"
+    path="/proof"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <PaymentProofModal />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-category"
+    path="/manage-category"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageCategory />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-product"
+    path="/manage-product"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageProduct />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-user"
+    path="/manage-user"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageUser />
       </ProtectedPage>
     }
   />,

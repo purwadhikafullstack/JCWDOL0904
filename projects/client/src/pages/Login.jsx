@@ -1,13 +1,13 @@
-import { React, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../API/api";
+import {React, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {api} from "../API/api";
 import Swal from "sweetalert2";
-import { Field, ErrorMessage, Formik, Form } from "formik";
+import {Field, ErrorMessage, Formik, Form} from "formik";
 import * as Yup from "yup";
 
-import { Button } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
-import { login } from "../features/userSlice";
+import {Button} from "@chakra-ui/react";
+import {useDispatch} from "react-redux";
+import {login} from "../features/userSlice";
 
 const url = "/auth/login";
 
@@ -36,8 +36,15 @@ export const Login = () => {
       });
       console.log(response);
       if (response.status == 200) {
-        const { id, fullname, username, is_verified, user_image, role } =
-          response.data.result;
+        const {
+          id,
+          fullname,
+          username,
+          is_verified,
+          user_image,
+          role,
+          id_warehouse,
+        } = response.data.result;
         const authData = {
           id,
           fullname,
@@ -45,6 +52,7 @@ export const Login = () => {
           is_verified,
           user_image,
           role,
+          id_warehouse,
         };
         localStorage.setItem("auth", JSON.stringify(authData));
         console.log(authData);
@@ -68,8 +76,7 @@ export const Login = () => {
       <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
           href="#"
-          class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-        >
+          class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
           <img
             class="w-8 h-8 mr-2"
             src="http://localhost:8000/logo_galaxy_2.png"
@@ -90,15 +97,13 @@ export const Login = () => {
               validationSchema={loginSchema}
               onSubmit={(values) => {
                 loginAccount(values.email, values.password);
-              }}
-            >
+              }}>
               {(props) => (
                 <Form>
                   <div>
                     <label
                       for="email"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
+                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       Your email
                     </label>
                     <input
@@ -117,8 +122,7 @@ export const Login = () => {
                   <div>
                     <label
                       for="email"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
+                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                       Password
                     </label>
                     <div className="relative">
@@ -136,8 +140,7 @@ export const Login = () => {
                       <button
                         type="button"
                         onClick={togglePasswordVisibility}
-                        className="absolute inset-y-0 right-0 px-3 flex items-center"
-                      >
+                        className="absolute inset-y-0 right-0 px-3 flex items-center">
                         {showPassword ? (
                           <svg
                             className="w-4 h-4 text-gray-500 dark:text-gray-300 cursor-pointer"
@@ -147,8 +150,7 @@ export const Login = () => {
                             stroke="currentColor"
                             strokeWidth="2"
                             strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
+                            strokeLinejoin="round">
                             <path
                               d="M15.5 9A3.5 3.5 0 1 1 12 5.5v0a3.5 3.5 0 0 1 3.5 3.5z"
                               fill="none"
@@ -167,8 +169,7 @@ export const Login = () => {
                             stroke="currentColor"
                             strokeWidth="2"
                             strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
+                            strokeLinejoin="round">
                             <path
                               d="M12 18.5v.5m0 0v-.5m0 .5h6m0-9h-6m0 0H5.5a1.5 1.5 0 0 0 0 3H12m0 0a1.5 1.5 0 0 0 0-3h-2.5a1.5 1.5 0 0 0 0 3H12m0 0a1.5 1.5 0 0 0 0-3h2.5a1.5 1.5 0 0 0 0 3H12z"
                               fill="none"
@@ -182,16 +183,14 @@ export const Login = () => {
                     Forgot password?{" "}
                     <Button
                       onClick={() => navigate("/request")}
-                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                    >
+                      class="font-medium text-primary-600 hover:underline dark:text-primary-500">
                       Click here
                     </Button>
                   </p>
                   <div class="flex items-start"></div>
                   <button
                     type="submit"
-                    class="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                  >
+                    class="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                     Log in
                   </button>
                   <ErrorMessage name="password" component="div" />
@@ -202,8 +201,7 @@ export const Login = () => {
               Dont have an account?{" "}
               <Button
                 onClick={() => navigate("/register")}
-                class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-              >
+                class="font-medium text-primary-600 hover:underline dark:text-primary-500">
                 Register here
               </Button>
             </p>

@@ -10,8 +10,6 @@ import { useState, useEffect } from "react";
 import Homepage from "./pages/Homepage";
 import ProductDetail from "./pages/ProductDetail";
 import Test from "./pages/Test";
-import Cart from "./pages/Cart";
-import Cart2 from "./pages/Cart2";
 import Checkout from "./pages/Checkout";
 import { Ekspedisi } from "./components/Ekspedisi";
 import { Verification } from "./pages/verification";
@@ -53,7 +51,6 @@ function App() {
   //app js > useEffect => localstorage => api request user by id => dispatch => globalstate => routes => protectedPage => cek redux => kalau sesaui return login
 
   useEffect(() => {
-    alert("asd");
     let user = null;
     let userId = null;
     if (localStorage.getItem("auth")) {

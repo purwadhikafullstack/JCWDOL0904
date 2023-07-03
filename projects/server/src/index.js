@@ -5,10 +5,22 @@ const { join } = require("path");
 const dotenv = require("dotenv").config({ override: true });
 const db = require("../models");
 const bodyParser = require("body-parser");
+
 const { authorize } = require("../middleware/validator");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
+
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server, {
+  cors: { origin: '*' },
+});
+global.io = io;
+
+module.exports = { io };
+
 // app.use(
 //   cors({
 //     origin: [
@@ -20,11 +32,14 @@ const app = express();
 
 // console.log(process.env.WHITELISTED_DOMAIN);
 
+
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public/images"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //#region API ROUTES
 
@@ -33,7 +48,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const {
   authRouter,
   userRouter,
-  TestingMulterRouter,
   addressRouter,
   warehouseRouter,
   nearestWarehouseRouter,
@@ -47,12 +61,12 @@ const {
   uploadProfileRouter,
   mutationRouter,
   categoryRouters,
+  notificationRouter,
 } = require("../routers");
 
 app.use(authorize);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
-// app.use("/api/upload", TestingMulterRouter);
 app.use("/api/addresses", addressRouter);
 app.use("/api/warehouses", warehouseRouter);
 app.use("/api/nearest-warehouse", nearestWarehouseRouter);
@@ -66,6 +80,7 @@ app.use("/api/auth", tokenValidatorRouter);
 app.use("/api/upload", uploadProfileRouter);
 app.use("/api/mutation", mutationRouter);
 app.use("/api/category", categoryRouters);
+app.use("/api/notification", notificationRouter);
 
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_SIZE") {
@@ -123,7 +138,21 @@ app.get("*", (req, res) => {
 
 //#endregion
 
-app.listen(PORT, (err) => {
+io.on('connection', (socket) => {
+  console.log('A client connected');
+
+  // Handle client disconnection
+  socket.on('disconnect', () => {
+    console.log('A client disconnected');
+  });
+
+  // Listen for transaction updates
+  socket.on('transaction-update', (updatedTransaction) => {
+    console.log('Received transaction update:', updatedTransaction);
+  });
+});
+
+server.listen(PORT, (err) => {
   if (err) {
     console.log(`ERROR: ${err}`);
   } else {

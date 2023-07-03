@@ -1,135 +1,166 @@
-import React, {useState} from "react";
+import {useState, useEffect} from "react";
+import {api} from "../API/api";
+import Swal from "sweetalert2";
+import {useDispatch} from "react-redux";
+import {cart, subtotal} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
+import {CartItem} from "../components/CartItem";
 
-export default function Cart() {
-  const [productCart, setProductCart] = useState([
-    {
-      id: 1,
-      name: "Product 1",
-      price: 10.99,
-      image: "https://example.com/product1.jpg",
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 19.99,
-      image: "https://example.com/product2.jpg",
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      price: 5.99,
-      image: "https://example.com/product3.jpg",
-    },
-  ]);
+const Cart = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [loading, setLoading] = useState(false);
+  console.log(cartItems);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const fetchCartItems = async () => {
+    try {
+      const userId = JSON.parse(localStorage.getItem("auth")).id;
+      const response = await api.get(`/cart`, {
+        params: {userId},
+      });
+      setCartItems(response.data.cartItems);
+
+      let sum = 0;
+      response.data.cartItems.forEach(
+        (e) => (sum += e.quantity * e.Product.price)
+      );
+      setTotalPrice(sum);
+
+      dispatch(
+        cart({
+          cart: response.data.cartItems,
+        })
+      );
+      dispatch(
+        subtotal({
+          subtotal: sum,
+        })
+      );
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify(response.data.cartItems)
+      );
+      localStorage.setItem("subTotal", JSON.stringify(sum));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
+  const updateCartProduct = async (cartItemId, action) => {
+    setLoading(true);
+    try {
+      const response = await api.patch(`/cart`, {
+        cartItemId,
+        action,
+      });
+      console.log(response.data);
+      const updatedItems = cartItems.map((item) => {
+        if (item.id === cartItemId) {
+          return {
+            ...item,
+            quantity: response.data.quantity,
+          };
+        }
+        return item;
+      });
+      setCartItems(updatedItems);
+      fetchCartItems();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteCartItem = async (cartItemId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to delete this item from your cart.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+      confirmButtonColor: "black",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await api.delete(`/cart/${cartItemId}`);
+          fetchCartItems();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    });
+  };
 
   return (
-    <>
-      <div className="pt-24 h-max">
-        {productCart.length !== 0 ? (
-          <>
-            {/* grid */}
-            <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-12 md:justify-center px-5">
-              {/* Card Start */}
-              <div className="col-start-1 col-end-5 md:col-start-1 md:col-end-5 lg:col-start-3 lg:col-end-9 lg:mr-3">
-                {productCart.map((value, index) => (
-                  <div className="border my-3 rounded-sm" key={value.id}>
-                    <div className="md:border-b-2">
-                      {/* Content Start */}
-                      <div className="flex justify-between p-3 h-max md:h-[100px]">
-                        <div className="flex items-center w-full">
-                          <div className="flex justify-center bg-red-400">
-                            <img
-                              src={value.image}
-                              alt="Product"
-                              className="w-[60px]"
-                            />
-                          </div>
-                          <div className="text-sm">
-                            <div className="font-semibold text-neutral-600">
-                              {value.name}
-                            </div>
-                            <div className="font-bold">
-                              Price: Rp. {value.price.toLocaleString()}
-                            </div>
-                            <div className="pt-3">Subtotal: Rp 123,456</div>
-                            <div className="flex md:hidden">
-                              {/* Quantity buttons */}
-                              <button className="w-8 h-8">-</button>
-                              <div className="col-span-2 border-x w-14 h-8 text-xs flex justify-center items-center">
-                                Quantity
-                              </div>
-                              <button className="w-8 h-8">+</button>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="hidden md:flex gap-3">
-                          {/* Quantity buttons */}
-                          <button className="w-4">-</button>
-                          <div className="col-span-2 border w-8 h-8 text-xs flex justify-center items-center bg-slate-200 border-neutral-300 rounded-sm">
-                            Quantity
-                          </div>
-                          <button className="w-4">+</button>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <button className="pl-5 py-3 text-sm text-gray-400 hover:text-gray-800 hidden md:block">
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {/* Card End */}
+    <div className="bg-white min-h-[700px] pt-10">
+      <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Shopping Cart
+        </h1>
+        <form className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
+          <section aria-labelledby="cart-heading" className="lg:col-span-7">
+            <h2 id="cart-heading" className="sr-only">
+              Items in your shopping cart
+            </h2>
+            <ul
+              role="list"
+              className="divide-y divide-gray-200 border-t border-b border-gray-200">
+              {cartItems.map((item) => {
+                return (
+                  <CartItem
+                    key={item.id}
+                    item={item}
+                    updateCartProduct={updateCartProduct}
+                    deleteCartItem={deleteCartItem}
+                  />
+                );
+              })}
+            </ul>
+          </section>
 
-              <div className="hidden md:grid md:col-start-5 md:col-end-7 lg:col-start-9 lg:col-end-11 relative">
-                <div className="px-5 sticky">
-                  <div className="font-bold text-xl py-4 border-b-2">
-                    CONTINUE
-                  </div>
-                  <div className="py-4 flex justify-between">
-                    Total
-                    <span className="font-bold">Rp. 20.000</span>
-                  </div>
-                  <button className="bg-neutral-900 text-white w-full py-1 rounded-sm">
-                    BUY
-                  </button>
-                </div>
-              </div>
-            </div>
+          <section
+            aria-labelledby="summary-heading"
+            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
+            <h2
+              id="summary-heading"
+              className="text-lg font-medium text-gray-900">
+              Order summary
+            </h2>
 
-            <div className="border-t-2 flex w-full justify-between bg-white z-10 fixed bottom-0 px-5 py-2 md:hidden">
-              <div className="py-4">
-                <span className="text-sm mr-1">Total</span>
-                <span className="font-bold text-xl">Rp. 20.000</span>
+            <dl className="mt-6 space-y-4">
+              <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+                <dt className="text-base font-medium text-gray-900">
+                  Order total
+                </dt>
+                <dd className="text-base font-medium text-gray-900">
+                  Rp. {totalPrice.toLocaleString("id-ID")}
+                </dd>
               </div>
-              <div className="flex items-center">
-                <button className="bg-neutral-900 text-white px-7 py-1 rounded-sm">
-                  BUY
-                </button>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="w-full flex flex-col items-center">
-            <div className="flex flex-col items-center my-14">
-              <img src="sffjd" alt="Empty Cart" />
-              <p className="text-xl font-semibold text-neutral-700 my-4">
-                You don't have any items in the cart.
-              </p>
+            </dl>
+
+            <div className="mt-6">
               <button
-                onClick={() => navigate("/")}
-                className="bg-black px-10 py-2 text-white font-semibold">
-                Shop Now
+                onClick={() => navigate("/checkout")}
+                type="submit"
+                className="w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Continue to Checkout
               </button>
             </div>
-          </div>
-        )}
+          </section>
+        </form>
       </div>
-      {/* <Toaster /> */}
-    </>
+    </div>
   );
-}
+};
+
+export default Cart;

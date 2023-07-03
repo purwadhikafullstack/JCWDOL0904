@@ -7,6 +7,7 @@ const initialState = {
   is_verified: "",
   user_image: "",
   role: "",
+  id_warehouse: 0
 };
 
 export const userSlice = createSlice({
@@ -21,6 +22,7 @@ export const userSlice = createSlice({
       state.is_verified = action.payload.is_verified;
       state.user_image = action.payload.user_image;
       state.role = action.payload.role;
+      state.id_warehouse = action.payload.id_warehouse;
     },
   },
 });

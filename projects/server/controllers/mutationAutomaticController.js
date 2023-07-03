@@ -127,11 +127,6 @@ module.exports = {
               stock: el.qty,
               product_name: el.product_name,
             });
-            // console.log("keluar");
-            // return res.status(400).send({
-            //   data: { id_product: el.id_product, stock: el.qty },
-            //   message: `stock for ${el.qty} piece of ${el.product_name} is empty on every warehouse`,
-            // });
           }
         })
       );
