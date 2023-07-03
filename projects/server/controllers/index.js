@@ -19,6 +19,7 @@ const mutationControllers = require("./mutationControllers.js");
 const categoryControllers = require("./categoryControllers.js");
 const orderGetController = require("./orderGetController.js")
 const orderAdminController = require("./orderAdminController.js")
+const notificationController = require("./notificationController.js")
 
 module.exports = {
   userController,
@@ -40,5 +41,6 @@ module.exports = {
   categoryControllers,
   orderPaymentController,
   orderGetController,
-  orderAdminController
+  orderAdminController,
+  notificationController
 };

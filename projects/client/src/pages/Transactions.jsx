@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {api} from "../API/api";
-import Swal from "sweetalert2";
 import io from "socket.io-client";
 import {Input, InputGroup, InputRightElement} from "@chakra-ui/react";
 import {SearchIcon} from "@chakra-ui/icons";

@@ -48,7 +48,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const {
   authRouter,
   userRouter,
-  TestingMulterRouter,
   addressRouter,
   warehouseRouter,
   nearestWarehouseRouter,
@@ -62,12 +61,12 @@ const {
   uploadProfileRouter,
   mutationRouter,
   categoryRouters,
+  notificationRouter,
 } = require("../routers");
 
 app.use(authorize);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
-// app.use("/api/upload", TestingMulterRouter);
 app.use("/api/addresses", addressRouter);
 app.use("/api/warehouses", warehouseRouter);
 app.use("/api/nearest-warehouse", nearestWarehouseRouter);
@@ -81,6 +80,7 @@ app.use("/api/auth", tokenValidatorRouter);
 app.use("/api/upload", uploadProfileRouter);
 app.use("/api/mutation", mutationRouter);
 app.use("/api/category", categoryRouters);
+app.use("/api/notification", notificationRouter);
 
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_SIZE") {

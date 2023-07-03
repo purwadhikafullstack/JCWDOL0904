@@ -27,7 +27,6 @@ export const Navbar = () => {
   const [isLogin, SetIsLogin] = useState(false);
 
   useEffect(() => {
-    // const id = JSON.parse(localStorage.getItem("idUser"));
     if (!localStorage.getItem("auth")) SetIsLogin(false);
     else if (localStorage.getItem("auth")) SetIsLogin(true);
   }, [localStorage.getItem("auth")]);
@@ -122,13 +121,13 @@ export const Navbar = () => {
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
                   <button
                     type="button"
-                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
                     <span className="sr-only">View notifications</span>
                     <div className="flex gap-3">
                       <div className="flex">
                         <EnvelopeIcon
                           onClick={() => {
-                            navigation("/");
+                            navigation("/notification");
                             // if (id) navigation("/cart");
                             // else alert("login dulu");
                           }}
@@ -141,7 +140,7 @@ export const Navbar = () => {
                   </button>
                   <button
                     type="button"
-                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
                     <span className="sr-only">View notifications</span>
                     <div className="flex gap-3">
                       <div className="flex">
@@ -166,7 +165,7 @@ export const Navbar = () => {
                           <img
                             className="h-8 w-8 rounded-full"
                             src={user_image}
-                            alt=""
+                            alt="usr"
                           />
                         </Menu.Button>
                       </div>
@@ -251,7 +250,6 @@ export const Navbar = () => {
           </div>
           <Disclosure.Panel className="md:hidden">
             <div className="space-y-1 pt-2 pb-3">
-              {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
               <Disclosure.Button
                 as="a"
                 href="#"
@@ -278,12 +276,12 @@ export const Navbar = () => {
                 </div>
                 <button
                   type="button"
-                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2">
                   <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
-                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2">
                   <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>

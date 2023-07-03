@@ -26,6 +26,8 @@ import ManageProduct from "../pages/admin/ManageProduct";
 import ManageUser from "../pages/admin/ManageUser";
 import {PaymentProofModal} from "../components/admin/PaymentProofModal";
 import OrderList from "../pages/admin/OrderList";
+import Notification from "../pages/Notification";
+import NotificationDetailModal from "../components/NotificationDetailModal";
 
 const routes = [
   //home
@@ -134,6 +136,24 @@ const routes = [
     element={
       <ProtectedPage>
         <OrderDetailModal />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="notification"
+    path="/notification"
+    element={
+      <ProtectedPage>
+        <Notification />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="nd"
+    path="/nd"
+    element={
+      <ProtectedPage>
+        <NotificationDetailModal />
       </ProtectedPage>
     }
   />,
