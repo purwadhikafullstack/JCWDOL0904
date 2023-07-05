@@ -100,35 +100,23 @@ const ManageProduct = () => {
   };
 
   useEffect(() => {
-    // getUserData();
     fetchProducts(category);
-    // console.log(isLogin);
   }, [page, search, sort, order]);
 
   useEffect(() => {
-    // console.log(coba);
     getAllCategory();
   }, []);
 
   return (
-    <div className={isSmallerThan401 ? null : "pl-72 pr-8"}>
-      {/* <button
-        // type="submit"
-        className="m-6 rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        onClick={() => navigation("/mutation-list")}
-      >
-        Back To Mutation List
-      </button> */}
-
-      <Tabs colorScheme="black">
+    <div className={isSmallerThan401 ? null : "ml-64 mr-2"}>
+      <Tabs colorScheme="black" isLazy variant="enclosed">
         <TabList
-          justifyContent="center"
           className="tab-list-home"
           paddingTop="10px"
+          overflowX="scroll"
+          overflowY="clip"
+          whiteSpace="nowrap"
         >
-          {/* <Tab onClick={() => fetchProducts(ReduxCategory.id)}>
-            {ReduxCategory.category}
-          </Tab> */}
           {ReduxCategory.map((el) => {
             return el.category !== "no category" ? (
               <Tab
@@ -151,22 +139,15 @@ const ManageProduct = () => {
               </Tab>
             ) : null;
           })}
-          {/* <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
-          <Tab onClick={() => fetchProducts(2)}>Watch</Tab>
-          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab> */}
         </TabList>
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
             marginTop: "10px",
           }}
         >
-          <Stack
-            flexDirection="row"
-            alignItems="center"
-            className="con-category"
-          >
+          <Stack direction="row" alignItems="center">
+            <CreateNewProduct getProducts={fetchProducts} />
+
             <InputGroup>
               <InputRightElement
                 pointerEvents="none"
@@ -186,9 +167,9 @@ const ManageProduct = () => {
                 alignItems: "center",
               }}
             >
-              <Text fontSize="12px" width="50px">
+              {/* <Text fontSize="12px" width="50px">
                 Sort By:
-              </Text>
+              </Text> */}
               <Select
                 placeholder="By name A~Z"
                 width="120px"
@@ -212,41 +193,45 @@ const ManageProduct = () => {
           </Stack>
         </div>
         {/* <button>Create Product</button> */}
-        <CreateNewProduct getProducts={fetchProducts} />
-        <TabPanels
-          style={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
-          <TabPanel
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            maxWidth="100%"
+        <Stack>
+          <TabPanels
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+            }}
           >
-            <AllProductManage
-              products={products}
-              category={category}
-              runFunction={fetchProducts}
-            />
-          </TabPanel>
-          {ReduxCategory?.map((el) => {
-            return (
-              <TabPanel
-                display="flex"
-                flexDirection="row"
-                justifyContent="center"
-                maxWidth="100%"
-                key={el.id}
-              >
-                <AllProductManage
-                  products={products}
-                  category={category}
-                  runFunction={fetchProducts}
-                />
-              </TabPanel>
-            );
-          })}
+            <TabPanel
+              display="flex"
+              flexDirection="column"
+              // justifyContent="center"
+              maxWidth="100%"
+            >
+              <AllProductManage
+                products={products}
+                category={category}
+                runFunction={fetchProducts}
+              />
+            </TabPanel>
+            {ReduxCategory?.map((el) => {
+              return (
+                <TabPanel
+                  display="flex"
+                  flexDirection="row"
+                  // justifyContent="center"
+                  maxWidth="100%"
+                  key={el.id}
+                >
+                  <AllProductManage
+                    products={products}
+                    category={category}
+                    runFunction={fetchProducts}
+                  />
+                </TabPanel>
+              );
+            })}
 
-          {/* <TabPanel
+            {/* <TabPanel
             display="flex"
             flexDirection="row"
             justifyContent="center"
@@ -258,7 +243,8 @@ const ManageProduct = () => {
               runFunction={fetchProducts}
             />
           </TabPanel> */}
-        </TabPanels>
+          </TabPanels>
+        </Stack>
       </Tabs>
       <ReactPaginate
         breakLabel="..."

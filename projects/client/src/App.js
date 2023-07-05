@@ -36,7 +36,9 @@ function App() {
   }
 
   async function getWarehouse() {
-    await api.get("/warehouses/data").then((res) => dispatch(data(res.data)));
+    await api
+      .get("/warehouses/data")
+      .then((res) => dispatch(data(res.data.result)));
   }
 
   const getAllCategory = async () => {

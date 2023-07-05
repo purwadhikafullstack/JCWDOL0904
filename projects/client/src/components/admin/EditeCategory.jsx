@@ -41,7 +41,7 @@ const EditeCategory = (props) => {
       setLoad(true);
       let response = await api.patch("/category/update", {
         id: props.Cid,
-        categor,
+        cate: categor,
       });
       // .catch(() => {});
       onClose();

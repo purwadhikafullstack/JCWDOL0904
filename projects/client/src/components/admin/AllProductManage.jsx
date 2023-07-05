@@ -173,135 +173,52 @@ const AllProductManage = ({ products, runFunction, category }) => {
   });
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
-      {/* {products?.map((el) => {
-        return (
-          <Card
-            key={el.id}
-            direction={{ base: "column", sm: "row" }}
-            overflow="hidden"
-            variant="outline"
-            alignItems="center"
-            height="90px"
-            mt="5px"
-          >
-            <Tooltip
-              hasArrow
-              label="Click to update image"
-              bg="gray.300"
-              color="black"
-            >
-              <Image
-                objectFit="cover"
-                width="60px"
-                height="60px"
-                src={`${el.product_image}`}
-                alt="Caffe Latte"
-                marginLeft="10px"
-                cursor="pointer"
-                onClick={() => {
-                  imageIsCLicked();
-                  setIdPorduct(el.id);
-                }}
-              />
-            </Tooltip>
-            <Input
-              type="file"
-              hidden
-              ref={fileInputRef}
-              onChange={(e) => changePic(e.target.files[0], idProduct)}
-            ></Input>
-            <Stack>
-              <CardBody>
-                <Heading size="sm" width="200px">
-                  {el.product_name}
-                </Heading>
-                <Text>id {el.id}</Text>
-
-                <Text
-                  py="2"
-                  noOfLines={2}
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  fontSize="12px"
-                  height="45px"
-                  width="200px"
-                >
-                  {el.description}
-                </Text>
-              </CardBody>
-            </Stack>
-            <Button>Detail</Button>
-
-            <CardFooter width="150px" justifyContent="right">
-              <EditeProduct
-                runFunction={runFunction}
-                productData={el}
-                category={category}
-                idProduct={el.id}
-              />
-              <IconButton
-                variant="link"
-                color="red"
-                backgroundColor="#F9FAFB"
-                padding="10px"
-                borderRadius="50px"
-                _hover={{ backgroundColor: "red", color: "white" }}
-                onClick={() => deleteProduct(el.id)}
-                icon={<DeleteIcon />}
-              />
-            </CardFooter>
-          </Card>
-        );
-      })} */}
-      <table className="min-w-full divide-y divide-gray-300">
-        <thead className="bg-gray-50">
-          <tr>
-            {/* <th
-              scope="col"
-              className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-            >
-              No
-            </th> */}
-
-            <th
-              scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
-              Image
-            </th>
-            <th
-              scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900  w-64"
-            >
-              Product Name
-            </th>
-            <th
-              scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
-              Price
-            </th>
-            <th
-              scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
-              More
-            </th>
-            <th
-              scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-            >
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {allProduct}
-        </tbody>
-      </table>
+    <div className="mt-5 mb-6 flex flex-col justify-end max-w-5xl xl">
+      <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Image
+                  </th>
+                  <th
+                    scope="col"
+                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900  w-64"
+                  >
+                    Product Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Price
+                  </th>
+                  <th
+                    scope="col"
+                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    More
+                  </th>
+                  <th
+                    scope="col"
+                    className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {allProduct}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

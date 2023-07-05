@@ -176,12 +176,36 @@ module.exports = {
   getAllMutation: async (req, res) => {
     try {
       let { sort, role, idUser } = req.query;
+      let page = req.query.page || 0;
+      const site = req.query.site || undefined;
+      let status = req.query.status || null;
+      let arrange = req.query.arrange || "DESC";
+      const search = parseInt(req.query.search) || undefined;
+      let request_number;
+      if (search && search.lenght > 0) {
+        request_number = {
+          request_number: {
+            [db.Sequelize.Op.like]: `%${search}%`,
+          },
+        };
+      } else {
+        request_number = null;
+      }
+
+      let limit = null;
+      let allRows = [];
+      let allCount = 0;
+
+      if (status === "all")
+        status = { [db.Sequelize.Op.or]: ["pending", "rejected", "approved"] };
+
+      if (site === "mutationList") limit = 4;
       console.log(sort, role, idUser);
-      let dataUser = [];
       let idWarehouse = null;
       console.log(req.query);
+
       if (role == "adminWarehouse") {
-        dataUser = await user.findOne({
+        const dataUser = await user.findOne({
           where: {
             role,
             id: idUser,
@@ -189,13 +213,21 @@ module.exports = {
           include: [warehouse],
         });
 
-        idWarehouse = dataUser.Warehouse.id;
+        sort = dataUser.Warehouse.id;
       }
 
-      if (idWarehouse) sort = idWarehouse;
-
-      const result = await stockmovement.findAll({
-        order: [["createdAt", "DESC"]],
+      const result = await stockmovement.findAndCountAll({
+        where: search
+          ? {
+              status,
+              request_number: {
+                [db.Sequelize.Op.like]: `%${search}%`,
+              },
+            }
+          : {
+              status,
+            },
+        order: [["createdAt", arrange]],
         include: [
           {
             model: warehouse,
@@ -210,11 +242,20 @@ module.exports = {
           },
           product,
         ],
+        limit,
+        offset: page * limit,
       });
 
+      allRows = result.rows;
+      allCount = result.count;
+
+      const totalPage = Math.ceil(allCount / limit);
+
       res.status(200).send({
-        result,
+        result: allRows,
         idWarehouse,
+        totalPage,
+        search,
       });
     } catch (error) {
       console.log(error);
