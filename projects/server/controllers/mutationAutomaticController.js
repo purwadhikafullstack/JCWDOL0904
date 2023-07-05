@@ -211,11 +211,11 @@ module.exports = {
         })
       );
 
-      const currentTime = new Date();
-      let request_number = currentTime.getTime();
-      request_number = request_number.toString();
-      request_number = request_number.substring(0, 5);
-      request_number = parseInt(request_number);
+      // const currentTime = new Date();
+      // let request_number = currentTime.getTime();
+      // request_number = request_number.toString();
+      // request_number = request_number.substring(0, 5);
+      // request_number = parseInt(request_number);
 
       await Promise.all(
         warehouseAvailable.map(async (el) => {
@@ -229,19 +229,21 @@ module.exports = {
               id_product: el[0].Stocks[0].id_product,
               quantity: stockNeeded.qty,
               warehouse_receive_id: id_warehouse_seller,
-              request_number: request_number,
+              // request_number: request_number,
             });
             await stockhistory.create({
               id_product: el[0].Stocks[0].id_product,
               quantity: stockNeeded.qty,
-              reference: request_number,
+              // reference: request_number,
               status: "out",
+              id_warehouse: el[0].id,
             });
             await stockhistory.create({
               id_product: el[0].Stocks[0].id_product,
               quantity: stockNeeded.qty,
-              reference: request_number,
+              // reference: request_number,
               status: "in",
+              id_warehouse: id_warehouse_seller,
             });
           }
         })

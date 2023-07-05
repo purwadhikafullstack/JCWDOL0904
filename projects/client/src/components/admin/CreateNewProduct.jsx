@@ -96,7 +96,7 @@ const CreateNewProduct = (props) => {
     <div>
       {role === "admin" ? (
         <button
-          className="mt-2 ml-52 rounded-md border border-transparent bg-gray-950 py-2 px-4 text-xs font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          className="mt-2 ml-2 w-40 rounded-md border border-transparent bg-gray-950 py-2 px-4 text-xs font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           onClick={onOpen}
         >
           Create New Product

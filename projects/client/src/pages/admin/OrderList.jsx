@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {api} from "../../API/api";
-import {PaymentProofModal} from "../../components/admin/PaymentProofModal";
-import {useSelector} from "react-redux";
+import { useEffect, useState } from "react";
+import { api } from "../../API/api";
+import { PaymentProofModal } from "../../components/admin/PaymentProofModal";
+import { useSelector } from "react-redux";
 import OrderDetailModal from "../../components/admin/OrderDetailModal";
 import io from "socket.io-client";
 import Pagination from "../../components/admin/Pagination";
@@ -52,7 +52,7 @@ export default function OrderList() {
           },
         });
       }
-      const {orders, totalPages} = response.data;
+      const { orders, totalPages } = response.data;
       setTransactionByWarehouse(orders);
       setTotalPages(totalPages);
     } catch (error) {
@@ -70,7 +70,7 @@ export default function OrderList() {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
-      setWarehouses(response.data);
+      setWarehouses(response.data.result);
     } catch (error) {
       console.error(error);
     }

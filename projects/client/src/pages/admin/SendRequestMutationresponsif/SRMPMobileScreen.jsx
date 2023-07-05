@@ -80,7 +80,7 @@ const SRMPMobileSreen = () => {
       .then((result) => {
         console.log(result);
         // setWarehouses(result.data);
-        dispatch(data(result.data));
+        dispatch(data(result.data.result));
       })
       .catch((err) => {
         console.log(err);

@@ -31,8 +31,9 @@ const AddCategory = (props) => {
   const handleSubmit = async () => {
     try {
       setLoad(true);
+      console.log(categor);
       let response = await api.post("/category/add", {
-        categor,
+        cate: categor,
       });
       props.runFunction();
       console.log(response);

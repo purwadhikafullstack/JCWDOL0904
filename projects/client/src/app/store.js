@@ -7,6 +7,7 @@ import addressSlice from "../features/addressSlice.js";
 import categorySlice from "../features/categorySlice.js";
 
 import allUserSlice from "../features/allUserSlice.js";
+import stockSlice from "../features/stockSlice.js";
 
 export default configureStore({
   reducer: {
@@ -17,5 +18,6 @@ export default configureStore({
     addressSlice,
     categorySlice,
     allUserSlice,
+    stockSlice,
   },
 });

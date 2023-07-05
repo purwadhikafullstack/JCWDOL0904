@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class StockHistory extends Model {
     /**
@@ -12,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       StockHistory.belongsTo(models.Products, {
         foreignKey: {
           name: "id_product",
+        },
+      });
+      StockHistory.belongsTo(models.Products, {
+        foreignKey: {
+          name: "id_warehouse",
         },
       });
     }
@@ -27,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       reference: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
     },
     {
@@ -35,8 +42,8 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "StockHistory",
     }
   );
-  // StockHistory.beforeCreate((transaction) => {
-  //   transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field});
-  // });
+  StockHistory.beforeCreate((transaction) => {
+    transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field});
+  });
   return StockHistory;
 };
