@@ -117,6 +117,19 @@ module.exports = {
         }
       );
 
+      const stockHistoryAddedIn = await stockhistory.create({
+        quantity: qty,
+        status: "in",
+        id_product,
+        id_warehouse: warehouse_receive_id,
+      });
+      const stockHistoryAddedOut = await stockhistory.create({
+        quantity: qty,
+        status: "out",
+        id_product,
+        id_warehouse: warehouse_sender_id,
+      });
+
       res.status(200).send({
         stockInWarehouseSenderUpdate,
         stockInWarehouseReceiveUpdate,
@@ -147,11 +160,11 @@ module.exports = {
         throw new Error("Stock is unavailable!");
       }
 
-      const currentTime = new Date();
-      let request_number = currentTime.getTime();
-      request_number = request_number.toString();
-      request_number = request_number.substring(0, 5);
-      request_number = parseInt(request_number);
+      // const currentTime = new Date();
+      // let request_number = currentTime.getTime();
+      // request_number = request_number.toString();
+      // request_number = request_number.substring(0, 5);
+      // request_number = parseInt(request_number);
 
       const result = await stockmovement.create({
         id_product: parseInt(id),
@@ -159,7 +172,7 @@ module.exports = {
         warehouse_receive_id,
         quantity: qty,
         status,
-        request_number,
+        // request_number,
       });
 
       res.status(200).send({

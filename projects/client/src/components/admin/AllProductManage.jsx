@@ -100,9 +100,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
     count++;
     return (
       <tr key={el.id}>
-        {/* <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
-          {count}
-        </td> */}
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
           <Tooltip
             hasArrow
@@ -112,7 +109,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
           >
             <Image
               objectFit="cover"
-              //   maxW={{ base: "100%", sm: "200px" }}
               width="40px"
               height="40px"
               src={`${el.product_image}`}
