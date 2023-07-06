@@ -37,49 +37,43 @@ The models/index file will call this method automatically.*/
       });
     }
   }
-  Transaction.init(
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      total_price: {
-        type: DataTypes.INTEGER,
-      },
-      invoice_number: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-      },
-      payment_proof: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      transaction_date: {
-        type: DataTypes.DATE,
-      },
-      expired: {
-        type: DataTypes.DATE,
-      },
-      status: {
-        type: DataTypes.ENUM(
-          "Waiting For Payment",
-          "Waiting For Payment Confirmation",
-          "On Proses",
-          "Shipped",
-          "Order Confirmed",
-          "rejected",
-          "Canceled"
-        ),
-      },
+  Transaction.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    {
-      sequelize,
-      modelName: "Transaction",
-    }
-  );
+    total_price: {
+      type: DataTypes.INTEGER,
+    },
+    invoice_number: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+    },
+    payment_proof: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    expired: {
+      type: DataTypes.DATE,
+    },
+    transaction_date: {
+      type: DataTypes.DATE,
+    },
+    status: {
+      type: DataTypes.ENUM('Waiting For Payment', 'Waiting For Payment Confirmation', 'On Process', 'Shipped', 'Order Confirmed', 'Canceled'),
+    },
+    expired_confirmed: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  }, {
+    sequelize,
+    modelName: "Transaction",
+  });
   Transaction.beforeCreate((transaction) => {
     transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field});
   });
+
   return Transaction;
 };

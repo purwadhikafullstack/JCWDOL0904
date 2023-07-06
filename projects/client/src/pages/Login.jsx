@@ -35,9 +35,16 @@ export const Login = () => {
         password: inputPassword,
       });
       console.log(response);
-      if (response.status == 200) {
-        const { id, fullname, username, is_verified, user_image, role } =
-          response.data.result;
+      if (response.status === 200) {
+        const {
+          id,
+          fullname,
+          username,
+          is_verified,
+          user_image,
+          role,
+          id_warehouse,
+        } = response.data.result;
         const authData = {
           id,
           fullname,
@@ -45,13 +52,11 @@ export const Login = () => {
           is_verified,
           user_image,
           role,
+          id_warehouse,
         };
         localStorage.setItem("auth", JSON.stringify(authData));
         console.log(authData);
         dispatch(login(authData));
-        // localStorage.setItem("auth", JSON.stringify(response.data.result.id));
-        // console.log(response.data.result);
-        // dispatch(login(response.data.result));
       }
     } catch (err) {
       Swal.fire({

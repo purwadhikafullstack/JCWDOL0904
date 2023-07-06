@@ -76,6 +76,12 @@ const navigation = [
     icon: ChartBarIcon,
     current: false,
   },
+  {
+    name: "History",
+    href: "/sales-report",
+    icon: ChartBarIcon,
+    current: false,
+  },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "#" },

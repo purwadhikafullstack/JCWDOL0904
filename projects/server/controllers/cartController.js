@@ -1,5 +1,5 @@
 const db = require("../models");
-const { Carts, Products, User } = db;
+const { Carts, Products, User, Category } = db;
 
 module.exports = {
   addToCart: async (req, res) => {
@@ -85,16 +85,25 @@ module.exports = {
   },
   getAllCartItems: async (req, res) => {
     try {
-      const { userId } = req.query;
+      const userId = req.query.userId;
 
-      const cartItems = await Carts.findAll({
-        where: { id_user: userId },
-        include: [{ model: Products }, { model: User }],
+      const cartItems = await Carts.findAndCountAll({
+        where: {
+          id_user: userId
+        },
+        include: [
+          {
+            model: Products,
+            include: [Category],
+          },
+          { model: User }
+        ],
       });
-      return res.status(200).send(cartItems);
+
+      return res.status(200).send({ cartItems: cartItems.rows });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ error: "Unable to fetch cart items" });
+      return res.status(500).send({ error: 'Unable to fetch cart items' });
     }
   },
   deleteCart: async (req, res) => {
@@ -104,9 +113,7 @@ module.exports = {
       console.log(cartItem);
       if (cartItem) {
         await Carts.destroy({ where: { id: cartItemId } });
-        return res
-          .status(200)
-          .send({ message: "Cart item deleted successfully" });
+        return res.status(200).send({ message: "Cart item deleted successfully" });
       }
 
       return res.status(404).send({ message: "Cart item not found" });

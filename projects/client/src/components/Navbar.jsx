@@ -5,6 +5,7 @@ import {
   Bars3Icon,
   XMarkIcon,
   ShoppingCartIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import { Link, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -12,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { updateCart } from "../features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { login } from "../features/userSlice";
+import LoginModal from "./loginModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -26,7 +28,6 @@ export const Navbar = () => {
   const [isLogin, SetIsLogin] = useState(false);
 
   useEffect(() => {
-    // const id = JSON.parse(localStorage.getItem("idUser"));
     if (!localStorage.getItem("auth")) SetIsLogin(false);
     else if (localStorage.getItem("auth")) SetIsLogin(true);
   }, [localStorage.getItem("auth")]);
@@ -107,46 +108,58 @@ export const Navbar = () => {
                     alt="Your Company"
                   />
                 </div>
-                <div className="hidden md:ml-6 md:flex md:space-x-8">
-                  {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
-                  {/* <a
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900">
-                    Dashboard
-                  </a> */}
-                </div>
+                <div className="hidden md:ml-6 md:flex md:space-x-8"></div>
               </div>
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   {isLogin ? null : (
-                    <button
-                      type="button"
-                      className="relative inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                      onClick={() => navigation("/login")}
-                    >
-                      <span>Login</span>
-                    </button>
+                    <LoginModal />
+                    // <button
+                    //   type="button"
+                    //   className="relative inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    //   onClick={() => navigation("/login")}
+                    // >
+                    //   <span>Login</span>
+                    // </button>
                   )}
                 </div>
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
                   <button
                     type="button"
-                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500"
                   >
                     <span className="sr-only">View notifications</span>
-                    <div className="flex">
-                      {/* <Link to="/cart"> */}
-                      <ShoppingCartIcon
-                        onClick={() => {
-                          navigation("/cart");
-                          // if (id) navigation("/cart");
-                          // else alert("login dulu");
-                        }}
-                        className="h-6 w-6"
-                        aria-hidden="true"
-                      />
-                      {/* </Link> */}
-                      <p>{cart.length}</p>
+                    <div className="flex gap-3">
+                      <div className="flex">
+                        <EnvelopeIcon
+                          onClick={() => {
+                            navigation("/notification");
+                            // if (id) navigation("/cart");
+                            // else alert("login dulu");
+                          }}
+                          className="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                        <p>{cart.length}</p>
+                      </div>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500"
+                  >
+                    <span className="sr-only">View notifications</span>
+                    <div className="flex gap-3">
+                      <div className="flex">
+                        <ShoppingCartIcon
+                          onClick={() => {
+                            navigation("/cart");
+                          }}
+                          className="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                        <p>{cart.length}</p>
+                      </div>
                     </div>
                   </button>
 
@@ -159,7 +172,7 @@ export const Navbar = () => {
                           <img
                             className="h-8 w-8 rounded-full"
                             src={user_image}
-                            alt=""
+                            alt="usr"
                           />
                         </Menu.Button>
                       </div>
@@ -184,6 +197,20 @@ export const Navbar = () => {
                                 onClick={() => navigation("/profile")}
                               >
                                 Your Profile
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm"
+                                )}
+                                onClick={() => navigation("/transactions")}
+                              >
+                                Transactions
                               </a>
                             )}
                           </Menu.Item>
@@ -236,7 +263,6 @@ export const Navbar = () => {
           </div>
           <Disclosure.Panel className="md:hidden">
             <div className="space-y-1 pt-2 pb-3">
-              {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
               <Disclosure.Button
                 as="a"
                 href="#"
@@ -264,9 +290,14 @@ export const Navbar = () => {
                 </div>
                 <button
                   type="button"
-                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2"
                 >
-                  <span className="sr-only">View notifications</span>
+                  <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2"
+                >
                   <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>

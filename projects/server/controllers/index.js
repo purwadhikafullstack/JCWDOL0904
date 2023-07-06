@@ -9,13 +9,17 @@ const rajaongkirController = require("./rajaongkirController.js");
 const cartController = require("./cartController.js");
 const expedisiController = require("./ekspedisiController.js");
 const promotionControllers = require("./promotionControllers.js");
-const orderController = require("./orderController.js");
+const orderControllers = require("./orderControllers.js")
+const orderPaymentController = require("./orderPaymentController.js")
 
 const tokenValidatorController = require("./tokenValidatorController.js");
 const uploadProfileController = require("./uploadProfileController.js");
 const mutationAutomaticController = require("./mutationAutomaticController.js");
 const mutationControllers = require("./mutationControllers.js");
 const categoryControllers = require("./categoryControllers.js");
+const orderGetController = require("./orderGetController.js")
+const orderAdminController = require("./orderAdminController.js")
+const notificationController = require("./notificationController.js")
 
 module.exports = {
   userController,
@@ -29,10 +33,14 @@ module.exports = {
   cartController,
   expedisiController,
   promotionControllers,
-  orderController,
+  orderControllers,
   tokenValidatorController,
   uploadProfileController,
   mutationAutomaticController,
   mutationControllers,
   categoryControllers,
+  orderPaymentController,
+  orderGetController,
+  orderAdminController,
+  notificationController
 };

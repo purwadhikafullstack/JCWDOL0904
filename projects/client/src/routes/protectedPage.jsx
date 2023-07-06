@@ -37,7 +37,7 @@ export default function ProtectedPage({
       user.role !== "adminWarehouse" &&
       adminOnly
     ) {
-      nav("/login");
+      nav("/");
     }
 
     setTimeout(() => {
