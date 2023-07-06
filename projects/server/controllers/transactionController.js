@@ -1,5 +1,6 @@
 const db = require("../models");
-const { Transaction, Warehouse, TransactionItem, Products, User } = db;
+const { Transaction, Warehouse, TransactionItem, Products, User, Category } =
+  db;
 const axios = require("axios");
 const { Op, where } = require("sequelize");
 
@@ -47,7 +48,7 @@ module.exports = {
           },
           {
             model: TransactionItem,
-            include: [Products],
+            include: [{ model: Products, include: [Category] }],
           },
           {
             model: User,
@@ -63,6 +64,7 @@ module.exports = {
         where: {
           status: {
             [Op.ne]: "Canceled",
+            // "Waiting For Payment Confirmation"
           },
         },
       });

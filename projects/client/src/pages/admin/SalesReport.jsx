@@ -8,6 +8,7 @@ import Pagination from "../../components/admin/Pagination";
 import OrderDetailModal from "../../components/admin/OrderDetailModal";
 import OrderSearch from "../../components/admin/OrderSearch";
 import OrderWarehouseDropdown from "../../components/admin/OrderWarehouseDropdown";
+import ProductCategoryDropdown from "../../components/admin/ProductCategoryDropdown";
 
 const SalesReport = () => {
   const value = useSelector((state) => state.transactionSlice.value);
@@ -26,6 +27,8 @@ const SalesReport = () => {
   const [sort, setSort] = useState("ASC");
   const user = useSelector((state) => state.userSlice);
   console.log(user);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [category, setCategory] = useState([]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -75,7 +78,18 @@ const SalesReport = () => {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
+      console.log(response.data);
       setWarehouses(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchCategory = async () => {
+    try {
+      const response = await api.get("/category");
+      console.log(response.data.result);
+      setCategory(response.data.result);
     } catch (error) {
       console.error(error);
     }
@@ -87,6 +101,10 @@ const SalesReport = () => {
 
   useEffect(() => {
     fetchWarehouses();
+  }, []);
+
+  useEffect(() => {
+    fetchCategory();
   }, []);
 
   useEffect(() => {
@@ -116,6 +134,11 @@ const SalesReport = () => {
     } else {
       setSelectedWarehouse(selectedValue);
     }
+  };
+  const handleCategoryChange = (event) => {
+    const selectedCategoryValue = event.target.value;
+    console.log(selectedCategoryValue);
+    setSelectedCategory(selectedCategoryValue);
   };
 
   const handleSorting = (value) => {
@@ -192,6 +215,12 @@ const SalesReport = () => {
                 handleWarehouseChange={handleWarehouseChange}
                 selectedWarehouse={selectedWarehouse}
                 warehouses={warehouses}
+              />
+              <ProductCategoryDropdown
+                // user={user}
+                handleCategoryChange={handleCategoryChange}
+                selectedCategory={selectedCategory}
+                category={category}
               />
               <Select
                 placeholder=""
