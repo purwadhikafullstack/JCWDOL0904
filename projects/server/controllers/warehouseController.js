@@ -7,8 +7,34 @@ module.exports = {
   // Get All Warehouse
   getAllWarehouses: async (req, res) => {
     try {
-      const result = await Warehouse.findAll();
-      res.json(result);
+      const search = req.query.search || "";
+      const site = req.query.site || null;
+      const page = req.query.page || 0;
+      const limit = 4;
+
+      let allRows = [];
+      let allCount = 0;
+
+      if (site === "manageW") {
+        const result = await Warehouse.findAndCountAll({
+          where: {
+            warehouse: {
+              [db.Sequelize.Op.like]: `%${search}%`,
+            },
+          },
+          limit,
+          offset: page * limit,
+        });
+
+        allRows = result.rows;
+        allCount = result.count;
+      } else {
+        allRows = await Warehouse.findAll();
+      }
+
+      const totalPage = Math.ceil(allCount / limit);
+
+      res.status(200).send({ result: allRows, totalPage });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error" });

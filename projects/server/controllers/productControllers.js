@@ -15,44 +15,50 @@ const categor = db.Category;
 module.exports = {
   getAllProduct: async (req, res) => {
     try {
-      let page = parseInt(req.query.page);
+      let page = parseInt(req.query.page) || 0;
       const search = req.query.search || "";
-      const order = req.query.order;
-      const sort = req.query.sort;
+      const order = req.query.order || "createdAt";
+      const sort = req.query.sort || "ASC";
       const category = req.query.category || 1;
       const site = req.query.site;
       let limit = 4;
-      let where = null;
+      let where = {
+        product_name: {
+          [db.Sequelize.Op.like]: `%${search}%`,
+        },
+        id_category: category,
+      };
       let include = null;
-      if (category === "all") {
-        where = {
-          product_name: {
-            [db.Sequelize.Op.like]: `%${search}%`,
-          },
-        };
+      console.log(page);
+      // if (category === "all") {
+      //   where = {
+      //     product_name: {
+      //       [db.Sequelize.Op.like]: `%${search}%`,
+      //     },
+      //   };
 
-        // include = [
-        //   {
-        //     model: categor,
-        //     where: {
-        //       deletedAt: true,
-        //     },
-        //   },
-        // ];
-      } else {
-        where = {
-          product_name: {
-            [db.Sequelize.Op.like]: `%${search}%`,
-          },
-          id_category: category,
-        };
-      }
+      //   // include = [
+      //   //   {
+      //   //     model: categor,
+      //   //     where: {
+      //   //       deletedAt: true,
+      //   //     },
+      //   //   },
+      //   // ];
+      // } else {
+      //   where = {
+      //     product_name: {
+      //       [db.Sequelize.Op.like]: `%${search}%`,
+      //     },
+      //     id_category: category,
+      //   };
+      // }
 
       if (site === "home") limit = 9;
 
-      console.log(site);
+      // console.log(site);
       const SORT = [[order, sort]];
-      console.log(SORT);
+      // console.log(SORT);
 
       if (search) page = 0;
 

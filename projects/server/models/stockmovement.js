@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class StockMovement extends Model {
     /**
@@ -31,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
   StockMovement.init(
     {
       request_number: {
-        type: DataTypes.INTEGER, // Tipe datanya blm
-        allowNull: false,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       status: {
         type: DataTypes.ENUM,
@@ -49,5 +50,8 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
     }
   );
+  StockMovement.beforeCreate((transaction) => {
+    transaction.invoice_number = uuidv4(); // Generate UUID and assign it to the 'invoice_number' field});
+  });
   return StockMovement;
 };

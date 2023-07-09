@@ -28,6 +28,7 @@ import { PaymentProofModal } from "../components/admin/PaymentProofModal";
 import OrderList from "../pages/admin/OrderList";
 import Notification from "../pages/Notification";
 import NotificationDetailModal from "../components/NotificationDetailModal";
+import ManageStock from "../pages/admin/ManageStock";
 import SalesReport from "../pages/admin/SalesReport";
 
 const routes = [
@@ -282,6 +283,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <ManageUser />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="manage-stock"
+    path="/manage-stock"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <ManageStock />
       </ProtectedPage>
     }
   />,

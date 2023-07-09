@@ -49,6 +49,7 @@ const ManageMutation = () => {
           order,
           sort,
           category,
+          site: "home",
         },
       })
       .then((res) => {
@@ -94,22 +95,19 @@ const ManageMutation = () => {
   return (
     <div className={isSmallerThan401 ? null : "pl-72 pr-8"}>
       <button
-        // type="submit"
-        className="m-6 rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        className="mt-6 rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         onClick={() => navigation("/mutation-list")}
       >
         Back To Mutation List
       </button>
 
-      <Tabs colorScheme="black">
+      <Tabs colorScheme="black" isLazy variant="enclosed">
         <TabList
-          justifyContent="center"
           className="tab-list-home"
           paddingTop="10px"
+          overflowX="scroll"
+          overflowY="clip"
         >
-          {/* <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
-          <Tab onClick={() => fetchProducts(2)}>Watch</Tab>
-          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab> */}
           {ReduxCategory.map((el) => {
             return el.category !== "no category" ? (
               <Tab
@@ -203,11 +201,6 @@ const ManageMutation = () => {
                 maxWidth="100%"
               >
                 <ProductsAdmin products={products} category={el.id} />
-                {/* <AllProductManage
-                  products={products}
-                  category={category}
-                  runFunction={fetchProducts}
-                /> */}
               </TabPanel>
             ) : null;
           })}
@@ -220,38 +213,9 @@ const ManageMutation = () => {
                 maxWidth="100%"
               >
                 <ProductsAdmin products={products} category={el.id} />
-                {/* <AllProductManage
-                  products={products}
-                  category={category}
-                  runFunction={fetchProducts}
-                /> */}
               </TabPanel>
             ) : null;
           })}
-          {/* <TabPanel
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            maxWidth="100%"
-          >
-            <ProductsAdmin products={products} category={1} />
-          </TabPanel>
-          <TabPanel
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            maxWidth="100%"
-          >
-            <ProductsAdmin products={products} category={2} />
-          </TabPanel>
-          <TabPanel
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            maxWidth="100%"
-          >
-            <ProductsAdmin products={products} category={3} />
-          </TabPanel> */}
         </TabPanels>
       </Tabs>
       <ReactPaginate

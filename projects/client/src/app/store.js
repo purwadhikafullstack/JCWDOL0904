@@ -6,6 +6,7 @@ import mutationListSlice from "../features/mutationListSlice.js";
 import addressSlice from "../features/addressSlice.js";
 import categorySlice from "../features/categorySlice.js";
 import allUserSlice from "../features/allUserSlice.js";
+import stockSlice from "../features/stockSlice.js";
 import transactionSlice from "../features/transactionSlice.js";
 
 export default configureStore({
@@ -17,6 +18,7 @@ export default configureStore({
     addressSlice,
     categorySlice,
     allUserSlice,
+    stockSlice,
     transactionSlice,
   },
 });

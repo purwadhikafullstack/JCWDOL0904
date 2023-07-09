@@ -69,7 +69,14 @@ const navigation = [
     icon: ChartBarIcon,
     current: false,
   },
+  {
+    name: "Stock",
+    href: "/manage-stock",
+    icon: ChartBarIcon,
+    current: false,
+  },
 
+  { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
   {
     name: "Reports",
     href: "/sales-report",

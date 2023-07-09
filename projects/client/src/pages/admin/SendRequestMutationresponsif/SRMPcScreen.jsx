@@ -80,7 +80,7 @@ const SRMPcScreen = () => {
       .then((result) => {
         console.log(result);
         // setWarehouses(result.data);
-        dispatch(data(result.data));
+        dispatch(data(result.data.result));
       })
       .catch((err) => {
         console.log(err);
@@ -119,7 +119,7 @@ const SRMPcScreen = () => {
       //   console.log(warehouseFiltered);
       setValueSender(warehouseFiltered);
     }
-  }, [wReceiver]);
+  }, [wReceiver, wSender]);
 
   useEffect(() => {
     let filteredStock = null;
