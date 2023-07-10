@@ -1,8 +1,8 @@
-import {useEffect} from "react";
-import {api} from "../../API/api";
-import {useCallback} from "react";
-import {useState} from "react";
-import {TruckIcon} from "@heroicons/react/20/solid";
+import { useEffect } from "react";
+import { api } from "../../API/api";
+import { useCallback } from "react";
+import { useState } from "react";
+import { TruckIcon } from "@heroicons/react/20/solid";
 import moment from "moment";
 
 export default function OrderDetailModal({
@@ -11,7 +11,7 @@ export default function OrderDetailModal({
   selectedTransaction,
 }) {
   const [transactions, setTransactions] = useState([]);
-  console.log(transactions);
+  // console.log(transactions);
 
   useEffect(() => {
     fetchTransactions();
@@ -45,13 +45,14 @@ export default function OrderDetailModal({
           <div className="modal modal-open">
             <div
               className="modal-overlay fixed inset-0 bg-black opacity-50 -z-10"
-              onClick={handleOverlayClick}></div>
+              onClick={handleOverlayClick}
+            ></div>
             <main className="modal-content bg-white max-h-[600px] overflow-y-auto rounded-xl w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl sm:p-6 md:p-8">
               {transactions.map((transaction) => (
                 <div key={transaction.id} className="space-y-4">
                   <div>
                     <p className="mt-2 text-3xl font-bold tracking-tight">
-                      Order detail!
+                      Order detail
                     </p>
                     <p className="mt-1 text-sm text-gray-600">
                       {moment(transaction.createdAt).format(
@@ -62,7 +63,8 @@ export default function OrderDetailModal({
 
                   <section
                     aria-labelledby="order-heading"
-                    className="border-t border-gray-200">
+                    className="border-t border-gray-200"
+                  >
                     <h2 id="order-heading" className="sr-only">
                       Your order
                     </h2>
@@ -71,7 +73,8 @@ export default function OrderDetailModal({
                     {transaction.TransactionItems.map((transactionItem) => (
                       <div
                         key={transactionItem.id}
-                        className="flex flex-col border-b border-gray-200 py-5">
+                        className="flex flex-col border-b border-gray-200 py-5"
+                      >
                         <div>
                           <h4 className="font-medium text-gray-900">
                             <a href={transactionItem.Product.product_name}>

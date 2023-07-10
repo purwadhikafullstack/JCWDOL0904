@@ -80,8 +80,18 @@ const navigation = [
     icon: CircleStackIcon,
     current: false,
   },
-
-  { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
+  {
+    name: "Reports",
+    href: "/sales-report",
+    icon: ChartBarIcon,
+    current: false,
+  },
+  {
+    name: "History",
+    href: "/sales-report",
+    icon: ChartBarIcon,
+    current: false,
+  },
 ];
 const userNavigation = [
   // { name: "Your Profile", href: "#" },

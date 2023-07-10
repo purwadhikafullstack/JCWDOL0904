@@ -29,6 +29,7 @@ import OrderList from "../pages/admin/OrderList";
 import Notification from "../pages/Notification";
 import NotificationDetailModal from "../components/NotificationDetailModal";
 import ManageStock from "../pages/admin/ManageStock";
+import SalesReport from "../pages/admin/SalesReport";
 
 const routes = [
   //home
@@ -80,7 +81,7 @@ const routes = [
 
   <Route
     key="login"
-    path="/login"
+    path="/"
     element={
       <ProtectedPage guestOnly={true}>
         <Login />
@@ -128,7 +129,7 @@ const routes = [
     key="profile"
     path="/profile"
     element={
-      <ProtectedPage guestOnly={true}>
+      <ProtectedPage needLogin={true}>
         <Profile />
       </ProtectedPage>
     }
@@ -303,6 +304,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <ManageStock />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="sales-report"
+    path="/sales-report"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <SalesReport />
       </ProtectedPage>
     }
   />,

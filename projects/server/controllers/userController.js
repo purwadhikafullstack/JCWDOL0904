@@ -1,6 +1,7 @@
 const db = require("../models");
 const { Op } = require("sequelize");
 const User = db.User;
+const Warehouse = db.Warehouse;
 const jwt = require("jsonwebtoken");
 const nodemailer = require("../helpers/nodemailer");
 const fs = require("fs");
@@ -176,7 +177,13 @@ module.exports = {
   // get all user data
   getAllUserData: async (req, res) => {
     try {
-      const result = await User.findAll();
+      const result = await User.findAll({
+        include: [
+          {
+            model: Warehouse,
+          },
+        ],
+      });
       res.json(result);
     } catch (error) {
       console.log(error);
@@ -246,7 +253,7 @@ module.exports = {
 
       let payload = { id: user.id };
       let token = jwt.sign(payload, "galaxy", {
-        expiresIn: "1m",
+        expiresIn: "5m",
       });
 
       await User.update(
@@ -288,8 +295,14 @@ module.exports = {
   // Edit admin data
   updateUserData: async (req, res) => {
     try {
-      // const { id } = req.params;
-      const { id, username, fullname, password } = req.body;
+      const { id, username, fullname, password, role } = req.body;
+      console.log(req.body);
+
+      if (role === "adminWarehouse" || role === "user") {
+        return res.status(400).send({
+          message: "You don't have permission!",
+        });
+      }
 
       if (!username || !fullname || !password) {
         return res.status(400).send({

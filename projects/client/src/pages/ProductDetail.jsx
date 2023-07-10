@@ -60,7 +60,7 @@ const ProductDetail = () => {
         icon: "info",
         confirmButtonText: "Ok",
       });
-      navigation("/login");
+      navigation("/");
     } else {
       try {
         // const users = JSON.parse(localStorage.getItem("auth"));

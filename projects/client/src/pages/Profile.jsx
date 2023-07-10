@@ -1,79 +1,15 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  const colors = require('tailwindcss/colors')
-  
-  module.exports = {
-    // ...
-    theme: {
-      extend: {
-        colors: {
-          cyan: colors.cyan,
-        },
-      },
-    },
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, useRef, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
-import {
-  Bars3CenterLeftIcon,
-  BellIcon,
-  ClockIcon,
-  CogIcon,
-  CreditCardIcon,
-  DocumentChartBarIcon,
-  HomeIcon,
-  QuestionMarkCircleIcon,
-  ScaleIcon,
-  ShieldCheckIcon,
-  UserGroupIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import {
-  BanknotesIcon,
-  BuildingOfficeIcon,
-  CheckCircleIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/20/solid";
+import { useRef, useState } from "react";
+import { BanknotesIcon, BuildingOfficeIcon } from "@heroicons/react/20/solid";
 import { api } from "../API/api";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AddAddressModal } from "../components/AddAddressModal";
-import AddressModal from "../components/AddressModal";
-import axios from "axios";
-import { Button } from "@chakra-ui/react";
 import { PasswordChangeModal } from "../components/PasswordChange";
-import userSlice, { login } from "../features/userSlice";
+import { login } from "../features/userSlice";
 import DeleteAddressModal from "../components/DeleteAddressModal";
+import Swal from "sweetalert2";
 
-// const navigation = [
-//   { name: "Home", href: "/", icon: HomeIcon, current: true },
-//   { name: "History", href: "/login", icon: ClockIcon, current: false },
-//   { name: "Balances", href: "#", icon: ScaleIcon, current: false },
-//   { name: "Cards", href: "#", icon: CreditCardIcon, current: false },
-//   { name: "Recipients", href: "#", icon: UserGroupIcon, current: false },
-//   { name: "Reports", href: "#", icon: DocumentChartBarIcon, current: false },
-// ];
-// const secondaryNavigation = [
-//   // { name: "Reset Password", href: "/request", icon: CogIcon },
-//   // { name: "Help", href: "#", icon: QuestionMarkCircleIcon },
-//   // { name: "Privacy", href: "#", icon: ShieldCheckIcon },
-// ];
-const cards = [
-  // { name: "Account balance", href: "#", icon: ScaleIcon, amount: "$30,659.45" },
-  // More items...
-];
 const transactions = [
   {
     id: 1,
@@ -98,23 +34,19 @@ function classNames(...classes) {
 }
 
 export default function Profile() {
-  // const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [isPasswordChangeModalOpen, setPasswordChangeModalOpen] =
     useState(false);
-  const [isAddressModalOpen, setAddressModalOpen] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(null);
   const [isSelectedDeleteAddress, setSelectedDeletedAddress] = useState(null);
-  // console.log(isSelectedDeleteAddress);
   const [isDeleteAddressModalOpen, setDeleteAddressModalOpen] = useState(false);
   const inputFileRef = useRef("");
   const dispatch = useDispatch();
 
   const handleSubmitProfile = async (e) => {
     const id = JSON.parse(localStorage.getItem("auth"));
-    // console.log(JSON.parse(localStorage.getItem("auth")));
+    console.log(id.id);
     const formData = new FormData();
-    formData.append("id", id);
+    formData.append("id", id.id);
     formData.append("user_image", e.target.files[0]);
 
     try {
@@ -132,7 +64,7 @@ export default function Profile() {
   const userData = async () => {
     try {
       const id = JSON.parse(localStorage.getItem("auth"));
-      const response = await api.get(`/user/auth/${id})`);
+      const response = await api.get(`/user/auth/${id.id})`);
       dispatch(login(response.data.user));
     } catch (error) {
       console.log(error);

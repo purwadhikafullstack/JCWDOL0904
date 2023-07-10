@@ -20,7 +20,7 @@ export default function ProtectedPage({
 
   useEffect(() => {
     if (needLogin && !user.id) {
-      console.log();
+      // console.log();
       nav("/");
     } else if (guestOnly && user.id) {
       if (user.role == "admin" || user.role === "adminWarehouse") {

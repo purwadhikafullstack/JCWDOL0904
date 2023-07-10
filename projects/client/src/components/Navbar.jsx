@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { updateCart } from "../features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { login } from "../features/userSlice";
+import LoginModal from "./loginModal";
 import env from "react-dotenv";
 
 function classNames(...classes) {
@@ -114,13 +115,14 @@ export const Navbar = () => {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   {isLogin ? null : (
-                    <button
-                      type="button"
-                      className="relative inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                      onClick={() => navigation("/login")}
-                    >
-                      <span>Login</span>
-                    </button>
+                    <LoginModal />
+                    // <button
+                    //   type="button"
+                    //   className="relative inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    //   onClick={() => navigation("/login")}
+                    // >
+                    //   <span>Login</span>
+                    // </button>
                   )}
                 </div>
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">

@@ -1,17 +1,26 @@
-import { React, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
+import React, { useState } from "react";
 import { api } from "../API/api";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Field, ErrorMessage, Formik, Form } from "formik";
 import * as Yup from "yup";
-
-import { Button } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";
 import { login } from "../features/userSlice";
 
-const url = "/auth/login";
+const LoginModal = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-export const Login = () => {
+  const url = "/auth/login";
   let navigate = useNavigate();
   let dispatch = useDispatch();
 
@@ -57,8 +66,10 @@ export const Login = () => {
         localStorage.setItem("auth", JSON.stringify(authData));
         console.log(authData);
         dispatch(login(authData));
+        onClose();
       }
     } catch (err) {
+      onClose();
       Swal.fire({
         title: "Error!",
         text: err.response.data.message,
@@ -69,24 +80,20 @@ export const Login = () => {
   };
 
   return (
-    <section class="bg-gray-50 dark:bg-gray-900">
-      <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="#"
-          class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-        >
-          <img
-            class="w-8 h-8 mr-2"
-            src="http://localhost:8000/logo_galaxy_2.png"
-            alt="logo"
-          />
-          Galaxy
-        </a>
-        <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Login
-            </h1>
+    <div>
+      <button
+        className="relative inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        onClick={onOpen}
+      >
+        Login
+      </button>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Login</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody margin="25px">
             <Formik
               initialValues={{
                 email: "",
@@ -101,8 +108,8 @@ export const Login = () => {
                 <Form>
                   <div>
                     <label
-                      for="email"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      htmlFor="email"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white py-1"
                     >
                       Your email
                     </label>
@@ -110,7 +117,7 @@ export const Login = () => {
                       type="email"
                       name="email"
                       id="email"
-                      class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Email"
                       required=""
                       onChange={props.handleChange} //setstate
@@ -121,8 +128,8 @@ export const Login = () => {
                   </div>
                   <div>
                     <label
-                      for="email"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      htmlFor="password"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white py-1"
                     >
                       Password
                     </label>
@@ -131,7 +138,7 @@ export const Login = () => {
                         type={showPassword ? "text" : "password"}
                         name="password"
                         id="password"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Password"
                         required=""
                         as={Field}
@@ -182,28 +189,31 @@ export const Login = () => {
                         )}
                       </button>
                     </div>
+                    <ErrorMessage name="password" component="div" />
                   </div>
-                  <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                  <p className="text-sm font-light text-gray-500 dark:text-gray-400 m-2">
                     Forgot password?{" "}
-                    <Button
-                      onClick={() => navigate("/request")}
-                      class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    <button
+                      onClick={() => {
+                        navigate("/request");
+                        onClose();
+                      }}
+                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                     >
                       Click here
-                    </Button>
+                    </button>
                   </p>
-                  <div class="flex items-start"></div>
+                  <div className="flex items-start"></div>
                   <button
                     type="submit"
-                    class="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    className="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                   >
                     Log in
                   </button>
-                  <ErrorMessage name="password" component="div" />
                 </Form>
               )}
             </Formik>
-            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+            <p class="text-sm font-light text-gray-500 dark:text-gray-400 my-1 ">
               Dont have an account?{" "}
               <Button
                 onClick={() => navigate("/register")}
@@ -212,9 +222,11 @@ export const Login = () => {
                 Register here
               </Button>
             </p>
-          </div>
-        </div>
-      </div>
-    </section>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </div>
   );
 };
+
+export default LoginModal;
