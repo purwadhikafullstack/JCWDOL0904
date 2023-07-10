@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Address extends Model {
     /**
@@ -23,50 +21,53 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  Address.init({
-    recipient_name: {
-      type: DataTypes.STRING,
-      allowNull: false
+  Address.init(
+    {
+      recipient_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      phone_number: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      is_default: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      province: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      city: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      address_city_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      subdistrict: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      zip: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      latitude: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      longitude: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
-    phone_number: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    is_default: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
-    },
-    province: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    city: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    address_city_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    subdistrict: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    zip: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    latitude: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    longitude: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-  }, {
-    sequelize,
-    modelName: 'Address',
-  });
+    {
+      sequelize,
+      modelName: "Address",
+    }
+  );
   return Address;
 };

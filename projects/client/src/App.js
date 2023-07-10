@@ -44,7 +44,7 @@ function App() {
   const getAllCategory = async () => {
     try {
       const response = await api.get("/category");
-      console.log(response);
+      // console.log(response);
       dispatch(AllCategory(response.data.result));
     } catch (error) {
       console.log(error);
@@ -59,7 +59,7 @@ function App() {
       user = JSON.parse(localStorage.getItem("auth")); //token
       userId = user.id;
     }
-    console.log(user);
+    // console.log(user);
 
     getWarehouse();
     getAllCategory();

@@ -23,8 +23,8 @@ export default function ProtectedPage({
     //needlogin true
     //adminonly true
     if (needLogin && !user.id) {
-      console.log();
-      nav("/login");
+      // console.log();
+      nav("/");
     } else if (guestOnly && user.id) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
         nav("/order");
@@ -37,7 +37,7 @@ export default function ProtectedPage({
       user.role !== "adminWarehouse" &&
       adminOnly
     ) {
-      nav("/login");
+      nav("/");
     }
 
     setTimeout(() => {

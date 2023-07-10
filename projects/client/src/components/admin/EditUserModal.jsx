@@ -33,6 +33,9 @@ const EditUser = (props) => {
 
   const url = "/user/data/update";
   const handleSubmit = async () => {
+    const id = JSON.parse(localStorage.getItem("auth"));
+    const role = id ? id.role : null;
+    console.log(role);
     try {
       setLoad(true);
       let response = await api.post(url, {
@@ -40,10 +43,10 @@ const EditUser = (props) => {
         fullname,
         username,
         password,
+        role: role,
       });
       onClose();
       setLoad(false);
-      console.log(response);
       props.runFunction();
       Swal.fire({
         title: "Success",
@@ -73,7 +76,7 @@ const EditUser = (props) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Update Admin Data</ModalHeader>
+          <ModalHeader>Update Data</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>

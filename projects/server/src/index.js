@@ -60,6 +60,7 @@ const {
   categoryRouters,
   notificationRouter,
   stockRouter,
+  transactionRouter,
 } = require("../routers");
 
 app.use(authorize);
@@ -80,6 +81,7 @@ app.use("/api/mutation", mutationRouter);
 app.use("/api/category", categoryRouters);
 app.use("/api/notification", notificationRouter);
 app.use("/api/stock", stockRouter);
+app.use("/api/transaction", transactionRouter);
 
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_SIZE") {
