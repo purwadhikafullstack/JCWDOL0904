@@ -20,6 +20,7 @@ const SalesReport = () => {
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [transactionByMonth, setTransactionByMonth] = useState(0);
   const [transaction, setTransaction] = useState(null);
   const [product, setProduct] = useState(null);
   const [paddingLeft, setPaddingLeft] = useState("pl-72");
@@ -35,6 +36,7 @@ const SalesReport = () => {
   const [category, setCategory] = useState([]);
   const [productSearch, setProductSearch] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(1);
+  // console.log(user);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -80,6 +82,7 @@ const SalesReport = () => {
       setTotalPage(result.data.totalPages);
       dispatch(transactionItemData(result.data.allProduct));
       setTotalPrice(result.data.total_price);
+      setTransactionByMonth(result.data.total_value_by_month);
     } catch (error) {
       console.log(error);
     }
@@ -120,6 +123,9 @@ const SalesReport = () => {
   useEffect(() => {
     getProductTransaction();
   }, [page, productSearch, selectedWarehouse, selectedCategory, selectedMonth]);
+  useEffect(() => {
+    setPage(0);
+  }, [selectedWarehouse, selectedCategory, selectedMonth]);
 
   const closeDetailModal = () => {
     setIsDetailModalOpen(false);
@@ -165,7 +171,7 @@ const SalesReport = () => {
   const ProductMap = itemValue?.map((pEl) => {
     const date = pEl.Transaction.transaction_date;
     const formattedDate = moment(date).format("DD MMMM YYYY");
-    console.log(pEl);
+    // console.log(pEl);
     // console.log(pEl.Product.Stocks);
     return (
       <tr key={pEl}>
@@ -307,20 +313,30 @@ const SalesReport = () => {
                     <tbody className="divide-y divide-gray-200 bg-white">
                       {ProductMap}
                     </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
+            <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-300">
                     <tfoot>
                       <tr>
                         <td
                           colSpan="2"
                           className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-semibold text-left text-gray-900"
                         >
-                          Total Transaction:
+                          ALLTransaction:
                         </td>
                         <td></td>
                         <td
-                          colSpan="1"
+                          colSpan="2"
                           className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold"
                         >
-                          {`Rp ${totalPrice.toLocaleString()}`}
+                          {`Rp ${parseInt(totalPrice).toLocaleString()}`}
                         </td>
                       </tr>
                     </tfoot>
@@ -330,31 +346,30 @@ const SalesReport = () => {
                           colSpan="2"
                           className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-semibold text-left text-gray-900"
                         >
-                          Transaction:
+                          Transaction Filtered:
                         </td>
                         <td></td>
                         <td
-                          colSpan="1"
+                          colSpan="2"
                           className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold"
                         >
-                          {`Rp ${totalPrice.toLocaleString()}`}
+                          {`Rp ${parseInt(
+                            transactionByMonth
+                          ).toLocaleString()}`}
                         </td>
                       </tr>
                     </tfoot>
                   </table>
                 </div>
               </div>
-              <Pagination
-                totalPages={totalPage}
-                handlePageChange={handlePage}
-              />
-              <OrderDetailModal
-                isDetailModalOpen={isDetailModalOpen}
-                closeDetailModal={closeDetailModal}
-                selectedTransaction={selectedTransaction}
-              />
             </div>
           </div>
+          <Pagination totalPages={totalPage} handlePageChange={handlePage} />
+          <OrderDetailModal
+            isDetailModalOpen={isDetailModalOpen}
+            closeDetailModal={closeDetailModal}
+            selectedTransaction={selectedTransaction}
+          />
         </div>
       ) : (
         <Spinner />

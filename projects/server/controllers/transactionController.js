@@ -106,7 +106,7 @@ module.exports = {
       const role = req.query.role;
       const productSearch = req.query.productSearch || "";
       const userId = parseInt(req.query.userId);
-      let warehouse = parseInt(req.query.warehouse) || null;
+      let warehouse = parseInt(req.query.warehouse);
       let categoryFilter = req.query.category || "";
       const month = req.query.month;
 
@@ -180,8 +180,6 @@ module.exports = {
         }
       });
 
-      // console.log(result);
-
       const paging = await TransactionItem.findAll({
         where: {
           ...(categoryFilter ? { category: categoryFilter } : {}),
@@ -226,17 +224,82 @@ module.exports = {
         ],
       });
 
+      let onePrice = [];
+      paging.forEach((el) => {
+        const oneWarehouse = el.Product.TransactionItems.find((element) => {
+          return el.id === element.id;
+        });
+        if (oneWarehouse) {
+          onePrice.push(oneWarehouse);
+        }
+      });
+
+      const transactionByMonth = await TransactionItem.findAll({
+        where: {
+          createdAt: {
+            [Op.gte]: startDate,
+            [Op.lte]: endDate,
+          },
+        },
+        include: [
+          {
+            model: Products,
+            where: {
+              product_name: {
+                [db.Sequelize.Op.like]: `%${productSearch}%`,
+              },
+            },
+            include: [
+              {
+                model: TransactionItem,
+                include: [
+                  {
+                    model: Transaction,
+
+                    where: {
+                      ...(warehouse ? { id_warehouse: warehouse } : {}),
+                    },
+
+                    include: [
+                      {
+                        model: Warehouse,
+                      },
+                    ],
+                  },
+                  {
+                    model: Products,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      const priceOnly = onePrice.map((el) => {
+        return el.price;
+      });
+
+      let priceFilter = priceOnly.reduce((acc, curr) => {
+        return acc + curr;
+      }, 0);
+
       const total_price = await TransactionItem.sum("price");
-      const totalPages = Math.ceil(parseInt(paging.length) / limit);
+      const totalPages = Math.ceil(parseInt(onePrice.length) / limit);
 
       res.status(200).send({
         allProduct,
         totalPages,
         test: allProduct.length,
         total_price,
+        total_value_by_month: priceFilter,
         warehouse,
         userId,
         month: month,
+        transactionByMonth,
+        priceFilter,
+        priceOnly,
+        onePrice,
       });
     } catch (error) {
       console.error(error);
