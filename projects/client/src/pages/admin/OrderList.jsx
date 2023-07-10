@@ -156,7 +156,7 @@ export default function OrderList() {
     <>
       <div className="px-4 mt-5 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
-          <div className="sm:flex-auto ml-72">
+          <div className="sm:flex-auto">
             <h1 className="text-xl font-semibold text-gray-900">
               Transactions
             </h1>
@@ -180,7 +180,7 @@ export default function OrderList() {
             </div>
           </div>
         </div>
-        <div className="mt-6 flex flex-col justify-end max-w-5xl xl ml-auto">
+        <div className="mt-6 flex flex-col justify-end xl ml-auto">
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

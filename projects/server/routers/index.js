@@ -17,6 +17,7 @@ const mutationRouter = require("./mutationRouters");
 const categoryRouters = require("./categoryRouters");
 const notificationRouter = require("./notificationRouter");
 const stockRouter = require("./stockRouters");
+const migrationRouter = require("./migrationRouter");
 
 module.exports = {
   userRouter,
@@ -37,4 +38,5 @@ module.exports = {
   categoryRouters,
   notificationRouter,
   stockRouter,
+  migrationRouter,
 };

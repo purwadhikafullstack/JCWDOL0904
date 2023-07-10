@@ -21,7 +21,7 @@ module.exports = {
       const sort = req.query.sort || "ASC";
       const category = req.query.category || 1;
       const site = req.query.site;
-      let limit = 4;
+      let limit = 10;
       let where = {
         product_name: {
           [db.Sequelize.Op.like]: `%${search}%`,
@@ -29,30 +29,6 @@ module.exports = {
         id_category: category,
       };
       let include = null;
-      console.log(page);
-      // if (category === "all") {
-      //   where = {
-      //     product_name: {
-      //       [db.Sequelize.Op.like]: `%${search}%`,
-      //     },
-      //   };
-
-      //   // include = [
-      //   //   {
-      //   //     model: categor,
-      //   //     where: {
-      //   //       deletedAt: true,
-      //   //     },
-      //   //   },
-      //   // ];
-      // } else {
-      //   where = {
-      //     product_name: {
-      //       [db.Sequelize.Op.like]: `%${search}%`,
-      //     },
-      //     id_category: category,
-      //   };
-      // }
 
       if (site === "home") limit = 9;
 
@@ -81,24 +57,6 @@ module.exports = {
           order: SORT,
           limit: limit,
           offset: page * limit,
-          // attributes: [
-          //   "id",
-          //   "product_name",
-          //   "product_image",
-          //   "price",
-          //   "description",
-          //   "cpu_speed",
-          //   "cpu_type",
-          //   "size",
-          //   "resolution",
-          //   "colorDept",
-          //   "ram",
-          //   "storage",
-          //   "weight_g",
-          //   "battery",
-          //   "createdAt",
-          //   "updatedAt",
-          // ],
         });
 
       console.log(page);

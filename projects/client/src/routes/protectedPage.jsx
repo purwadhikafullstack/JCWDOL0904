@@ -19,25 +19,24 @@ export default function ProtectedPage({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // console.log(user);
-    //needlogin true
-    //adminonly true
     if (needLogin && !user.id) {
       console.log();
-      nav("/login");
+      nav("/");
     } else if (guestOnly && user.id) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
         nav("/order");
       } else {
         nav("/");
       }
+    } else if (needLogin && !adminOnly && user.role !== "user") {
+      nav("/order");
     } else if (
       needLogin &&
       user.role !== "admin" &&
       user.role !== "adminWarehouse" &&
       adminOnly
     ) {
-      nav("/login");
+      nav("/");
     }
 
     setTimeout(() => {
@@ -47,11 +46,24 @@ export default function ProtectedPage({
   }, [user, needLogin]);
 
   return isLoading ? (
-    <Spinner />
+    <div
+      style={{
+        display: "Flex",
+        height: "100vh",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <img
+        src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_2.png`}
+        className="w-32 h-28 align-middle rounded-full animate-bounce"
+      />
+    </div>
   ) : user.role == "admin" || user.role === "adminWarehouse" ? (
     <>
-      <Sidebar />
-      {children}
+      <Sidebar mainPage={children} />
+      {/* {children} */}
     </>
   ) : (
     <div className="App">

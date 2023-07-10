@@ -66,8 +66,16 @@ const AddWarehouse = (props) => {
         subdistrict,
         zip: parseInt(zip),
       });
+      let result;
+      if (response && response.length > 0) {
+        result = await api.post("/stock/initial", {
+          id: response.data.newWarehouse.id,
+        });
+      }
+
       props.runFunction();
       console.log(response);
+      console.log(result);
       onClose();
       setLoad(false);
       Swal.fire({
@@ -110,7 +118,6 @@ const AddWarehouse = (props) => {
     <div>
       {role === "admin" ? (
         <Button
-          // leftIcon={<AddIcon />}
           backgroundColor="black"
           color="white"
           onClick={onOpen}

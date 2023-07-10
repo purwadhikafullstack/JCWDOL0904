@@ -1,15 +1,15 @@
-import {useState, useEffect} from "react";
-import {api} from "../API/api";
+import { useState, useEffect } from "react";
+import { api } from "../API/api";
 import AddressModal from "../components/AddressModal";
-import {AddAddressModal} from "../components/AddAddressModal";
-import {Ekspedisi} from "../components/Ekspedisi";
-import {apiro} from "../API/apiro";
-import {useNavigate} from "react-router-dom";
-import {updateCart} from "../features/cartSlice";
-import {useDispatch} from "react-redux";
+import { AddAddressModal } from "../components/AddAddressModal";
+import { Ekspedisi } from "../components/Ekspedisi";
+import { apiro } from "../API/apiro";
+import { useNavigate } from "react-router-dom";
+import { updateCart } from "../features/cartSlice";
+import { useDispatch } from "react-redux";
 import CartCheckout from "../components/CartCheckout";
 import ShippingSection from "../components/ShippingSection";
-import {CheckoutTotalSection} from "../components/CheckoutTotalSection";
+import { CheckoutTotalSection } from "../components/CheckoutTotalSection";
 import Alert from "../components/SwallAlert";
 
 export default function Checkout() {
@@ -120,16 +120,17 @@ export default function Checkout() {
   const handleCheckout = async (e) => {
     e.preventDefault();
     try {
+      const userId = JSON.parse(localStorage.getItem("auth")).id;
       await api.post("/order", {
         cartItems: cartItems,
         productQty: cartItems.quantity,
         addressId: selectedAddress.id,
-        userId: 2, // Masih hardcode
+        userId: userId, // Masih hardcode
         totalAmount: totalAmount,
         ekspedisiId: selectedDeliveryMethod.id,
       });
       setCartItems([]);
-      dispatch(updateCart({cart: []}));
+      dispatch(updateCart({ cart: [] }));
       localStorage.removeItem("cartItems");
       navigate("/transactions");
     } catch (error) {

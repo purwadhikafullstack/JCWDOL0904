@@ -8,7 +8,8 @@ module.exports = {
       const search = req.query.search || "";
       const site = req.query.site || null;
       const page = req.query.page || 0;
-      const limit = 4;
+      const sort = req.query.sort || "DESC";
+      const limit = 10;
 
       let allRows = [];
       let allCount = 0;
@@ -20,6 +21,7 @@ module.exports = {
               [db.Sequelize.Op.like]: `%${search}%`,
             },
           },
+          order: [["createdAt", sort]],
           limit,
           offset: page * limit,
         });
@@ -32,7 +34,7 @@ module.exports = {
 
       const totalPage = Math.ceil(allCount / limit);
 
-      res.status(200).send({ result: allRows, totalPage });
+      res.status(200).send({ result: allRows, totalPage, search });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error" });
@@ -42,6 +44,21 @@ module.exports = {
     try {
       const { warehouse, province, city, warehouse_city_id, subdistrict, zip } =
         req.body;
+
+      const sameWarehouse = await Warehouse.findOne({ where: { warehouse } });
+      const sameData = await Warehouse.findOne({
+        where: {
+          province,
+          city,
+          warehouse_city_id,
+          subdistrict,
+          zip,
+        },
+      });
+
+      if (sameWarehouse) throw new Error("Warehouse name already exist!");
+      if (sameData)
+        throw new Error("Warehouse with exact same place already exist!");
 
       const query = `${subdistrict}%20${city}%20${province}%20${zip}`;
       const response = await axios.get(
@@ -63,14 +80,18 @@ module.exports = {
           longitude,
         });
 
-        res.status(201).json(newWarehouse);
+        res.status(200).send({ newWarehouse });
       } else {
-        console.error("No results found");
-        res.status(500).json({ error: "Geocoding error" });
+        // console.error("No results found");
+        // res.status(500).send({ message: "Geocoding error" });
+        throw new Error("Geocoding error");
       }
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(400).send({
+        message: error.message,
+      });
+      // res.status(500).json({ error: "Internal server error" });
     }
   },
   editeWareHouse: async (req, res) => {
@@ -140,7 +161,16 @@ module.exports = {
   deleteWareHouse: async (req, res) => {
     try {
       const { id } = req.params;
-      //   console.log(id);
+      const stockIsAvailable = await Stocks.findOne({
+        where: {
+          id_warehouse: id,
+          stock: { [db.Sequelize.Op.gt]: 0 },
+        },
+      });
+      if (stockIsAvailable)
+        throw new Error(
+          "Stock in this warehouse is still available. you need to do migration to make the stock is empty!!!!"
+        );
       const result = await Warehouse.destroy({
         where: {
           id,
@@ -158,6 +188,9 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
 };
