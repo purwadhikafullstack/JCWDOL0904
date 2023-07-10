@@ -42,6 +42,7 @@ export default function OrderList() {
             status: selectedStatus,
           },
         });
+        console.log(response);
       } else {
         response = await api.get(`/order`, {
           params: {
@@ -70,7 +71,8 @@ export default function OrderList() {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
-      setWarehouses(response.data.result);
+
+      setWarehouses(response.data.result.result);
     } catch (error) {
       console.error(error);
     }
@@ -81,6 +83,7 @@ export default function OrderList() {
       setSelectedWarehouse(user.id_warehouse);
     } else {
       setSelectedWarehouse(selectedValue);
+      console.log(setSelectedWarehouse);
     }
   };
   const handleViewPaymentProof = (idtrans) => {

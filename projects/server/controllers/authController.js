@@ -219,7 +219,7 @@ module.exports = {
         data: userPassword,
       });
     } catch (err) {
-      await roll.rollback();
+      // await roll.rollback();
       console.log(err);
       res.status(400).send({
         message: "Server Error!",
