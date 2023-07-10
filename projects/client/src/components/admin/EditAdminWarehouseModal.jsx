@@ -37,8 +37,10 @@ const EditWarehouse = (props) => {
 
   const getWarehouseData = async () => {
     try {
+      console.log("test");
       let response = await api.get(url);
-      setWarehouses(response.data);
+      console.log(response);
+      setWarehouses(response.data.result);
     } catch (error) {
       console.log(error);
     }

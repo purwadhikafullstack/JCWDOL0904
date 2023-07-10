@@ -75,8 +75,6 @@ const navigation = [
     icon: ChartBarIcon,
     current: false,
   },
-
-  { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
   {
     name: "Reports",
     href: "/sales-report",

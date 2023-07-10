@@ -11,7 +11,7 @@ export default function OrderDetailModal({
   selectedTransaction,
 }) {
   const [transactions, setTransactions] = useState([]);
-  console.log(transactions);
+  // console.log(transactions);
 
   useEffect(() => {
     fetchTransactions();

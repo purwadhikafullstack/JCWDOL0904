@@ -66,8 +66,10 @@ const LoginModal = () => {
         localStorage.setItem("auth", JSON.stringify(authData));
         console.log(authData);
         dispatch(login(authData));
+        onClose();
       }
     } catch (err) {
+      onClose();
       Swal.fire({
         title: "Error!",
         text: err.response.data.message,

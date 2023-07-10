@@ -7,7 +7,7 @@ const initialState = {
   is_verified: "",
   user_image: "",
   role: "",
-  id_warehouse: 0
+  id_warehouse: 0,
 };
 
 export const userSlice = createSlice({
@@ -15,7 +15,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      console.log(state, action);
+      // console.log(state, action);
       state.id = action.payload.id;
       state.fullname = action.payload.fullname;
       state.username = action.payload.username;

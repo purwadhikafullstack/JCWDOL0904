@@ -8,6 +8,7 @@ import categorySlice from "../features/categorySlice.js";
 import allUserSlice from "../features/allUserSlice.js";
 import stockSlice from "../features/stockSlice.js";
 import transactionSlice from "../features/transactionSlice.js";
+import transactionItemSlice from "../features/transactionItemSlice.js";
 
 export default configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export default configureStore({
     allUserSlice,
     stockSlice,
     transactionSlice,
+    transactionItemSlice,
   },
 });

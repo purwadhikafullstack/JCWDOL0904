@@ -21,7 +21,7 @@ const ProductCategoryDropdown = ({
           category.map((categoryId) => (
             <option
               key={categoryId.id}
-              value={categoryId.id}
+              value={categoryId.category}
               // disabled={
               //   user.role === "adminWarehouse" &&
               //   categoryId.id !== user.id_warehouse

@@ -3,32 +3,38 @@ import { Stack, Spinner, Select } from "@chakra-ui/react";
 import { api } from "../../API/api";
 import { useDispatch, useSelector } from "react-redux";
 import { transactionData } from "../../features/transactionSlice";
+import { transactionItemData } from "../../features/transactionItemSlice";
 import moment from "moment";
 import Pagination from "../../components/admin/Pagination";
 import OrderDetailModal from "../../components/admin/OrderDetailModal";
 import OrderSearch from "../../components/admin/OrderSearch";
 import OrderWarehouseDropdown from "../../components/admin/OrderWarehouseDropdown";
 import ProductCategoryDropdown from "../../components/admin/ProductCategoryDropdown";
+import ProductSearch from "../../components/admin/ProductSearch";
 
 const SalesReport = () => {
   const value = useSelector((state) => state.transactionSlice.value);
+  // console.log(value);
+  const itemValue = useSelector((state) => state.transactionItemSlice.value);
+  // console.log(itemValue);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [transaction, setTransaction] = useState(null);
+  const [product, setProduct] = useState(null);
   const [paddingLeft, setPaddingLeft] = useState("pl-72");
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState("");
   const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
-  const [invoiceNumber, setInvoiceNumber] = useState("");
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouses, setWarehouses] = useState([]);
   const [order, setOrder] = useState("product_name");
   const [sort, setSort] = useState("ASC");
   const user = useSelector((state) => state.userSlice);
-  console.log(user);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [category, setCategory] = useState([]);
+  const [productSearch, setProductSearch] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(1);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -47,8 +53,8 @@ const SalesReport = () => {
     };
   }, []);
 
-  const url = "/transaction/data";
-  const getTransactionData = async () => {
+  const urlProduct = "/transaction/product";
+  const getProductTransaction = async () => {
     try {
       let selectWarehouse;
       if (user.id_warehouse) {
@@ -56,19 +62,23 @@ const SalesReport = () => {
       } else {
         selectWarehouse = selectedWarehouse;
       }
-      let result = await api.get(url, {
+      let selectCategory = selectedCategory;
+
+      let result = await api.get(urlProduct, {
         params: {
           page,
-          invoiceNumber,
-          role: user.role,
           userId: user.id,
+          productSearch,
+          role: user.role,
           warehouse: selectWarehouse,
+          category: selectCategory,
+          month: selectedMonth,
         },
       });
       console.log(result);
-      setTransaction(result.data.data);
-      dispatch(transactionData(result.data.data));
+      // setProduct(result.data.result);
       setTotalPage(result.data.totalPages);
+      dispatch(transactionItemData(result.data.allProduct));
       setTotalPrice(result.data.total_price);
     } catch (error) {
       console.log(error);
@@ -78,8 +88,8 @@ const SalesReport = () => {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
-      console.log(response.data);
-      setWarehouses(response.data);
+      // console.log(response.data.result);
+      setWarehouses(response.data.result);
     } catch (error) {
       console.error(error);
     }
@@ -88,7 +98,7 @@ const SalesReport = () => {
   const fetchCategory = async () => {
     try {
       const response = await api.get("/category");
-      console.log(response.data.result);
+      // console.log(response.data.result);
       setCategory(response.data.result);
     } catch (error) {
       console.error(error);
@@ -108,8 +118,8 @@ const SalesReport = () => {
   }, []);
 
   useEffect(() => {
-    getTransactionData();
-  }, [page, invoiceNumber, selectedWarehouse]);
+    getProductTransaction();
+  }, [page, productSearch, selectedWarehouse, selectedCategory, selectedMonth]);
 
   const closeDetailModal = () => {
     setIsDetailModalOpen(false);
@@ -118,12 +128,6 @@ const SalesReport = () => {
   const handleViewOrderDetail = (idtrans) => {
     setSelectedTransaction(idtrans);
     setIsDetailModalOpen(true);
-  };
-
-  const handleSearch = (e) => {
-    setInvoiceNumber(e.target.value);
-    setCurrentPage(0);
-    getTransactionData();
   };
 
   const handleWarehouseChange = (event) => {
@@ -139,6 +143,7 @@ const SalesReport = () => {
     const selectedCategoryValue = event.target.value;
     console.log(selectedCategoryValue);
     setSelectedCategory(selectedCategoryValue);
+    console.log(setSelectedMonth);
   };
 
   const handleSorting = (value) => {
@@ -157,41 +162,27 @@ const SalesReport = () => {
     }
   };
 
-  const transactionMap = value?.map((el, index) => {
-    const date = el.transaction_date;
+  const ProductMap = itemValue?.map((pEl) => {
+    const date = pEl.Transaction.transaction_date;
     const formattedDate = moment(date).format("DD MMMM YYYY");
+    console.log(pEl);
+    // console.log(pEl.Product.Stocks);
     return (
-      <tr key={el.id}>
+      <tr key={pEl}>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-          {el.invoice_number}
+          {pEl.Product.product_name}
         </td>
-        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
           {formattedDate}
         </td>
-        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-          {el.status}
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+          {pEl.Transaction.Warehouse.warehouse}
         </td>
-        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-          {el.Warehouse.warehouse}
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+          {pEl.category}
         </td>
-        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-          <button
-            onClick={() => handleViewOrderDetail(el.id)}
-            className="text-indigo-600 hover:text-indigo-900"
-          >
-            Detail
-          </button>
-        </td>
-        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-          {`Rp ${el.total_price.toLocaleString()}`}
-        </td>
-        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-          <Stack
-            direction="row"
-            spacing={0}
-            display="flex"
-            alignContent="center"
-          ></Stack>
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+          {`Rp ${pEl.price.toLocaleString()}`}
         </td>
       </tr>
     );
@@ -199,17 +190,19 @@ const SalesReport = () => {
 
   return (
     <div className={` ${paddingLeft}  py-10 items-center`}>
-      {value ? (
+      {itemValue ? (
         <div>
           <div className="sm:flex-auto">
             <h1 className="text-xl font-semibold text-gray-900">
               Sales Report
             </h1>
             <Stack direction={"row"} className="flex gap-3 pb-3 pt-5">
-              <OrderSearch
-                handleSearch={handleSearch}
-                invoiceNumber={invoiceNumber}
+              <ProductSearch
+                handleSearch={setProductSearch}
+                productSearch={productSearch}
               />
+            </Stack>
+            <Stack direction="row">
               <OrderWarehouseDropdown
                 user={user}
                 handleWarehouseChange={handleWarehouseChange}
@@ -222,6 +215,8 @@ const SalesReport = () => {
                 selectedCategory={selectedCategory}
                 category={category}
               />
+            </Stack>
+            <Stack direction="row">
               <Select
                 placeholder=""
                 width="120px"
@@ -244,6 +239,29 @@ const SalesReport = () => {
                   Price high - low
                 </option>
               </Select>
+              <Select
+                // placeholder="-"
+                width="120px"
+                display="flex"
+                justifyContent="center"
+                borderRadius="50px"
+                style={{ fontSize: "11px" }}
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+              >
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </Select>
             </Stack>
           </div>
           <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
@@ -257,7 +275,7 @@ const SalesReport = () => {
                           scope="col"
                           className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          Invoice Number
+                          Product
                         </th>
 
                         <th
@@ -270,40 +288,55 @@ const SalesReport = () => {
                           scope="col"
                           className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          Transaction Status
-                        </th>
-                        <th
-                          scope="col"
-                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                        >
                           Warehouse
                         </th>
                         <th
                           scope="col"
                           className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          Detail
+                          Category
                         </th>
                         <th
                           scope="col"
                           className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          Total Price
+                          Item Price
                         </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
-                      {transactionMap}
+                      {ProductMap}
                     </tbody>
                     <tfoot>
                       <tr>
                         <td
-                          colSpan="5"
+                          colSpan="2"
                           className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-semibold text-left text-gray-900"
                         >
-                          Total Transaction :
+                          Total Transaction:
                         </td>
-                        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold">
+                        <td></td>
+                        <td
+                          colSpan="1"
+                          className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold"
+                        >
+                          {`Rp ${totalPrice.toLocaleString()}`}
+                        </td>
+                      </tr>
+                    </tfoot>
+                    <tfoot>
+                      <tr>
+                        <td
+                          colSpan="2"
+                          className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-semibold text-left text-gray-900"
+                        >
+                          Transaction:
+                        </td>
+                        <td></td>
+                        <td
+                          colSpan="1"
+                          className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold"
+                        >
                           {`Rp ${totalPrice.toLocaleString()}`}
                         </td>
                       </tr>
