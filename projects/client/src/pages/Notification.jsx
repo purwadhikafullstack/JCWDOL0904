@@ -6,21 +6,34 @@ import moment from "moment";
 import {useDispatch} from "react-redux";
 import {unreadCount} from "../features/notificationSlice";
 import io from "socket.io-client";
+import {Input, InputGroup, InputRightElement} from "@chakra-ui/react";
+import {SearchIcon} from "@chakra-ui/icons";
+import Pagination from "../components/admin/Pagination";
+import OrderSearch from "../components/admin/OrderSearch";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showAll, setShowAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
+  const [totalPages, setTotalPages] = useState(0);
+  const [invoiceNumber, setInvoiceNumber] = useState("");
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     const socket = io("http://localhost:8000");
-    socket.on("notificationUpdate", (updatedNotifications) => {
-      console.log("ini update from socet", updatedNotifications);
+    socket.on("notification", (updatedNotifications) => {
       setNotifications(updatedNotifications);
-      // Update unread count here if needed
+    });
+
+    return () => {
+      socket.off("notification");
+    };
+  }, []);
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationRead", (updatedNotifications) => {
       const unread = updatedNotifications.filter((notification) => {
         return (
           notification.UserNotifications.length === 0 ||
@@ -29,30 +42,39 @@ export default function Notification() {
       });
       dispatch(unreadCount({unread: unread.length}));
     });
-
     return () => {
-      socket.off("notificationUpdate");
+      socket.off("notificationRead");
     };
   }, []);
 
   useEffect(() => {
     fetchNotification();
-  }, [showAll]);
+  }, [currentPage, invoiceNumber]);
 
   const fetchNotification = async () => {
     try {
       let response = await api.get("/notification", {
         params: {
           userId: 2,
-          showAll: showAll,
+          page: currentPage,
+          invoiceNumber: invoiceNumber,
         },
       });
-
       setNotifications(response.data.notif);
+      setTotalPages(response.data.totalPages);
       console.log(response);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleSearch = (e) => {
+    setInvoiceNumber(e.target.value);
+    setCurrentPage(0);
+    fetchNotification();
+  };
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
   };
 
   const openModal = (notificationId, event) => {
@@ -60,21 +82,21 @@ export default function Notification() {
     setSelectedNotification(notificationId);
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setSelectedNotification(null);
     setIsModalOpen(false);
   };
-
-  const handleSeeAll = () => {
-    setShowAll(true);
-  };
-
   return (
     <div className="pt-24 cursor-default">
       <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
         Notifications
       </h1>
+      <div className="max-w-[605px] mt-7 m-auto">
+        <OrderSearch
+          handleSearch={handleSearch}
+          invoiceNumber={invoiceNumber}
+        />
+      </div>
       <div className="flex pt-6 min-h-[650px] justify-center ">
         <ul role="list" className="flex flex-col gap-3">
           {notifications.map((notification) => {
@@ -116,13 +138,12 @@ export default function Notification() {
           })}
         </ul>
       </div>
-      {!showAll && (
-        <button
-          onClick={handleSeeAll}
-          className="mt-4 mb-8 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg focus:outline-none">
-          See All
-        </button>
-      )}
+      <div className="-mt-12">
+        <Pagination
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
+      </div>
       {selectedNotification && (
         <NotificationDetailModal
           closeModal={closeModal}

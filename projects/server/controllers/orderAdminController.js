@@ -62,8 +62,7 @@ module.exports = {
             await Promise.all(promises);
 
             // Create a notification for the user
-            await createNotification(`Order ${transaction.invoice_number}`, 'Your order is being processed', transaction.id_user, "admin");
-
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'Your order is being processed', transaction.id_user, "admin");
             await transaction.update({ status: 'On Process' });
 
             res.status(200).send({ message: 'Transaction confirmed successfully' });
@@ -91,7 +90,7 @@ module.exports = {
             await transaction.update({ payment_proof: null });
 
             // Create a notification for the user
-            await createNotification(`Order ${transaction.invoice_number}`, 'Your order is rejected, please update proof of payment', transaction.id_user, "admin");
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'Your order is rejected, please update proof of payment', transaction.id_user, "admin");
 
             res.status(200).send({ message: 'Transaction rejected successfully' });
         } catch (error) {
@@ -99,7 +98,6 @@ module.exports = {
             res.status(500).send({ message: 'Error rejecting transaction' });
         }
     },
-
     sendOrder: async (req, res) => {
         try {
             const { orderId } = req.params;
@@ -118,20 +116,16 @@ module.exports = {
             if (!order) {
                 return res.status(404).json({ message: 'Order not found' });
             }
-
             if (order.status == 'Shipped') {
                 return res.status(400).json({ message: 'Transaction is already sent' });
             }
-
             if (order.status !== 'On Process') {
                 return res.status(400).json({ message: 'The transaction is not eligible to be sent' });
             }
 
-
             for (const item of order.TransactionItems) {
                 // Iterate over each item in the order
                 const product = await Products.findByPk(item.id_product);
-
                 if (!product) {
                     return res.status(404).send({ error: `Product with ID ${item.id_product} not found` });
                 }
@@ -140,12 +134,10 @@ module.exports = {
                 const totalStock = await Stocks.sum('stock', {
                     where: { id_product: item.id_product },
                 });
-
                 if (totalStock <= 0) {
                     // If the product is out of stock, return an error response
                     return res.status(400).send({ error: `Product with ID ${item.id_product} is out of stock` });
                 }
-
                 if (item.quantity > totalStock) {
                     // If there is insufficient stock for the product, return an error response
                     return res.status(400).send({ error: `Insufficient stock for product with ID ${item.id_product}` });
@@ -153,13 +145,11 @@ module.exports = {
             }
 
             const expirationDate = new Date();
-            expirationDate.setSeconds(expirationDate.getSeconds() + 15);
-
+            expirationDate.setSeconds(expirationDate.getSeconds() + 30);
             await order.update({ status: 'Shipped', expired_confirmed: expirationDate });
 
             // Create a notification for the user
-            let notification = await createNotification(`Order ${order.invoice_number}`, 'Your order has been shipped', order.id_user, "admin");
-
+            let notification = await createNotification(`Invoice ${order.invoice_number}`, 'Your order has been shipped', order.id_user, "admin");
             io.emit('notification', notification);
             sendEmailNotification(order.User, 'Your order has been shipped');
 
@@ -186,10 +176,11 @@ module.exports = {
                     ],
                     order: [['createdAt', 'DESC']],
                 });
-
                 for (const order of updatedOrder) {
                     await order.update({ status: 'Order Confirmed' });
                     io.emit("orderConfirmed", order.toJSON());
+                    await createNotification(`Invoice ${order.invoice_number}`, 'Order has been received', order.id_user, "admin");
+                    await createNotification(`Invoice ${order.invoice_number}`, 'Order has been received', order.id_user, "user");
                 }
             }, timeoutDuration);
             res.status(200).send({ message: 'Order sent successfully' });

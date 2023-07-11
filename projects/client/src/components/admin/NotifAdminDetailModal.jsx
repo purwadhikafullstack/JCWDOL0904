@@ -26,7 +26,6 @@ export default function NotifAdminDetailModal({
     try {
       const response = await api.post(`/notification/admin`, {
         notificationId: selectedNotification,
-        userId: 2,
       });
       fetchNotification();
       console.log(response);
@@ -50,17 +49,20 @@ export default function NotifAdminDetailModal({
   };
 
   return (
-    <>
+    <div className="flex items-center justify-center">
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-400">
+        <div className="fixed inset-0 m-auto flex items-center justify-center z-400">
           <div
             className="absolute inset-0 bg-gray-900 bg-opacity-50"
             onClick={handleOverlayClick}
           />
           <div className="relative bg-white p-6 rounded-xl max-w-2xl mx-auto">
-            <div>
-              <span className="rounded-lg inline-flex p-3 ring-4 ring-white">
-                <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
+            <div className="m-auto flex items-center">
+              <span className="rounded-lg m-auto flex items-center justify-center inline-flex p-3 ring-4 ring-white">
+                <EnvelopeIcon
+                  className="h-6 text-center w-6"
+                  aria-hidden="true"
+                />
               </span>
             </div>
             <div>
@@ -72,13 +74,15 @@ export default function NotifAdminDetailModal({
                       {notify.title}
                     </p>
                   </h3>
-                  <p className="mt-2 text-sm text-gray-500">{notify.message}</p>
+                  <p className="mt-2 text-center text-sm text-gray-500">
+                    {notify.message}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

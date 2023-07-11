@@ -1,5 +1,5 @@
+const db = require('../models');
 const { UserNotification, Notification, User } = require('../models');
-const { sendEmailNotification, sendWebSocketNotification } = require('../utils/notificationService');
 const { io } = require("../src/index")
 
 module.exports = {
@@ -10,7 +10,6 @@ module.exports = {
             id_user: userId,
             from: from
         });
-
         await UserNotification.create({
             read: false,
             id_notification: notification.id,
@@ -43,43 +42,41 @@ module.exports = {
             order: [["createdAt", "DESC"]],
         });
 
-        io.emit("notificationUpdate", updatedNotifications);
+        io.emit("notification", updatedNotifications);
+        io.emit("notificationRead", updatedNotifications);
         io.emit("notificationAdminUpdate", updatedAdminNotifications);
 
         return notification;
     },
     getNotificationByUser: async (req, res) => {
         try {
-            const { userId, showAll } = req.query;
-            let notif;
-
-            const whereCondition = {
-                id_user: userId,
-                from: 'admin',
-            };
-
-            if (showAll == 'true') {
-                notif = await Notification.findAll({
-                    where: whereCondition,
-                    include: [
-                        {
-                            model: UserNotification,
-                        },
-                    ],
-                    order: [['createdAt', 'DESC']],
-                });
-            } else {
-                notif = await Notification.findAll({
-                    where: whereCondition,
-                    include: [
-                        {
-                            model: UserNotification,
-                        },
-                    ],
-                    order: [['createdAt', 'DESC']],
-                    limit: 9,
-                });
+            const { userId, page, invoiceNumber } = req.query;
+            const limit = 9;
+            let whereCondition = {};
+            if (userId) {
+                whereCondition.id_user = userId;
+                whereCondition.from = 'admin';
             }
+            if (invoiceNumber) {
+                whereCondition.title = {
+                    [db.Sequelize.Op.like]: `%${invoiceNumber}%`,
+                };
+            }
+            const notif = await Notification.findAll({
+                include: [
+                    {
+                        model: UserNotification,
+                    },
+                ],
+                where: whereCondition,
+                order: [['createdAt', 'DESC']],
+                limit: limit,
+                offset: parseInt(page) * parseInt(limit),
+            });
+            const count = await Notification.count({
+                where: whereCondition,
+            });
+            const totalPages = Math.ceil(count / limit);
 
             const read = await Notification.findAll({
                 where: whereCondition,
@@ -91,50 +88,44 @@ module.exports = {
                 order: [['createdAt', 'DESC']],
             });
 
-
-
-            io.emit("notificationUpdate", read);
-
-
-            res.status(200).send({ notif });
+            io.emit("notification", notif);
+            io.emit("notificationRead", read);
+            res.status(200).send({ notif, totalPages });
         } catch (error) {
             console.error(error);
         }
     },
     getAllNotificationByAdmin: async (req, res) => {
         try {
-            const { showAll } = req.query;
-            let notif;
-
-            const whereCondition = {
-                from: 'user',
-            };
-
-            if (showAll == 'true') {
-                notif = await Notification.findAll({
-                    where: whereCondition,
-                    include: [
-                        {
-                            model: UserNotification,
-                        },
-                    ],
-                    order: [['createdAt', 'DESC']],
-                });
-            } else {
-                notif = await Notification.findAll({
-                    where: whereCondition,
-                    include: [
-                        {
-                            model: UserNotification,
-                        },
-                    ],
-                    order: [['createdAt', 'DESC']],
-                    limit: 9,
-                });
+            const { page, invoiceNumber } = req.query;
+            const limit = 9;
+            let whereCondition = {};
+            if (page) {
+                whereCondition.from = 'user';
             }
+            if (invoiceNumber) {
+                whereCondition.title = {
+                    [db.Sequelize.Op.like]: `%${invoiceNumber}%`,
+                };
+            }
+            const notif = await Notification.findAll({
+                include: [
+                    {
+                        model: UserNotification,
+                    },
+                ],
+                where: whereCondition,
+                order: [['createdAt', 'DESC']],
+                limit: limit,
+                offset: parseInt(page) * parseInt(limit),
+            });
+            const count = await Notification.count({
+                where: whereCondition,
+            });
+            const totalPages = Math.ceil(count / limit);
 
             const read = await Notification.findAll({
-                where: whereCondition,
+                where: { from: 'user' },
                 include: [
                     {
                         model: UserNotification,
@@ -143,9 +134,9 @@ module.exports = {
                 order: [['createdAt', 'DESC']],
             });
 
-            io.emit("notificationAdminUpdate", read);
-
-            res.status(200).send({ notif });
+            io.emit("notificationAdmin", notif);
+            io.emit("notificationAdminRead", read);
+            res.status(200).send({ notif, totalPages });
         } catch (error) {
             console.error(error);
             res.status(500).send({ error: 'Unable to fetch notifications' });
@@ -220,13 +211,12 @@ module.exports = {
     },
     readAdminNotification: async (req, res) => {
         try {
-            const { userId, notificationId } = req.body;
+            const { notificationId } = req.body;
 
             // Check if the user has already read the notification
             const existingUserNotification = await UserNotification.findOne({
                 where: {
                     read: true,
-                    id_user: userId,
                     id_notification: notificationId,
                 },
                 include: [
@@ -238,7 +228,6 @@ module.exports = {
                     },
                 ],
             });
-
             if (existingUserNotification) {
                 res.status(400).send({ message: 'Notification already read by the user' });
                 return;
@@ -250,7 +239,6 @@ module.exports = {
                 },
                 {
                     where: {
-                        id_user: userId,
                         id_notification: notificationId,
                     },
                     include: [

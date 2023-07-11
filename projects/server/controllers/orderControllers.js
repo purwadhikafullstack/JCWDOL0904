@@ -31,7 +31,7 @@ const checkExpiredOrders = async () => {
             await order.update({ status: 'Canceled' });
             io.emit("transaction-update", order.toJSON());
 
-            await createNotification(`Order ${order.invoice_number}`, 'Your order is canceled, the payment time is expired.', order.id_user, "admin");
+            await createNotification(`Invoice ${order.invoice_number}`, 'Your order is canceled, the payment time is expired.', order.id_user, "admin");
         }
         // Create a notification for the user
     } catch (error) {
@@ -111,7 +111,7 @@ module.exports = {
                     id_user: userId,
                 },
             });
-            await createNotification(`Order ${transaction.invoice_number}`, 'New order', userId, "user");
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'New order', userId, "user");
             return res.status(201).send({ transaction, transactionItems });
         } catch (error) {
             console.error(error);
@@ -133,7 +133,7 @@ module.exports = {
                 return res.status(400).send({ message: 'You cannot cancel the transaction' });
             }
 
-            await createNotification(`Order ${transaction.invoice_number}`, 'Canceled by the user', transaction.id_user, "user");
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'Canceled by the user', transaction.id_user, "user");
             await transaction.update({ status: 'Canceled' });
             res.status(200).send({ message: 'Transaction canceled successfully' });
         } catch (error) {
@@ -159,6 +159,7 @@ module.exports = {
             }
 
             await transaction.update({ status: "Order Confirmed" });
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'Canceled by the user', transaction.id_user, "user");
             res.status(200).send({ message: 'Transaction confirmed successfully' });
         } catch (error) {
             console.log(error);

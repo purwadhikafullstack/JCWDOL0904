@@ -56,14 +56,14 @@ export default function NotificationDetailModal({
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-400">
+        <div className="fixed inset-0 m-auto flex items-center justify-center z-400">
           <div
             className="absolute inset-0 bg-gray-900 bg-opacity-50"
             onClick={handleOverlayClick}
           />
           <div className="relative bg-white p-6 rounded-xl max-w-2xl mx-auto">
-            <div>
-              <span className="rounded-lg inline-flex p-3 ring-4 ring-white">
+            <div className="flex items-center justify-center">
+              <span className="rounded-lg inline-flex p-3 ring-4 m-auto ring-white">
                 <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
               </span>
             </div>

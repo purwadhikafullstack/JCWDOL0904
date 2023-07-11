@@ -173,14 +173,14 @@ const TransactionSections = ({
                   </div>
                   <div className="flex items-center justify-between py-4">
                     <div className="flex items-center">
-                      {transaction.status === "Shipped" ||
-                      transaction.status === "Order Confirmed" ? (
+                      {transaction.status === "Shipped" && (
                         <button
                           onClick={() => acceptOrder(transaction.id)}
                           className="px-4 py-2 text-sm font-medium text-white bg-black rounded-full hover:bg-gray-800">
                           Accept Order
                         </button>
-                      ) : (
+                      )}
+                      {transaction.status === "Waiting For Payment" && (
                         <label className="px-4 py-2 text-sm font-medium text-white bg-black rounded-full hover:bg-gray-800 transition ease-in-out duration-300">
                           <input
                             type="file"
@@ -196,11 +196,13 @@ const TransactionSections = ({
                           Upload Payment Proof
                         </label>
                       )}
-                      <button
-                        onClick={() => cancelOrder(transaction.id)}
-                        className="px-5 py-2 ml-4 text-sm font-medium text-black hover:bg-red-600 hover:text-white transition ease-in-out duration-300 rounded-full bg-slate-100">
-                        Cancel Order
-                      </button>
+                      {transaction.status === "Waiting For Payment" && (
+                        <button
+                          onClick={() => cancelOrder(transaction.id)}
+                          className="px-5 py-2 ml-4 text-sm font-medium text-black hover:bg-red-600 hover:text-white transition ease-in-out duration-300 rounded-full bg-slate-100">
+                          Cancel Order
+                        </button>
+                      )}
                     </div>
                   </div>
                 </dl>

@@ -289,7 +289,7 @@ const routes = [
     key="admin-notification"
     path="/admin-notification"
     element={
-      <ProtectedPage>
+      <ProtectedPage needLogin={true} adminOnly={true}>
         <AdminNotification />
       </ProtectedPage>
     }

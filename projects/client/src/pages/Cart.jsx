@@ -49,20 +49,18 @@ const Cart = () => {
       console.error(error);
     }
   };
-
   useEffect(() => {
     fetchCartItems();
   }, []);
 
   const updateCartProduct = async (cartItemId, action, quantity) => {
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await api.patch(`/cart`, {
         cartItemId,
         action,
         quantity,
       });
-      console.log(response.data);
       const updatedItems = cartItems.map((item) => {
         if (item.id === cartItemId) {
           return {

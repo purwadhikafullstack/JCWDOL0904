@@ -14,7 +14,7 @@ module.exports = {
             const filepath = file ? "/" + file.filename : null
 
             await Transaction.update(
-                { payment_proof: process.env.IMAGE_URL + filepath, status: "Waiting For Payment Confirmation" },
+                { payment_proof: process.env.IMAGE_URL + filepath, status: "Waiting For Payment Confirmation", updatedAt: Date.now() },
                 { where: { id: transactionId } }
             );
 
@@ -28,21 +28,21 @@ module.exports = {
 
         try {
             const transaction = await Transaction.findByPk(id, {
-                attributes: ['payment_proof'],
+                attributes: ['payment_proof', 'updatedAt'],
             });
 
             if (!transaction) {
-                return res.status(404).json({ message: 'Transaction not found' });
+                return res.status(404).send({ message: 'Transaction not found' });
             }
 
             if (!transaction.payment_proof) {
-                return res.status(404).json({ message: 'Payment proof not found' });
+                return res.status(404).send({ message: 'Payment proof not found' });
             }
 
-            res.json({ payment_proof: transaction.payment_proof });
+            res.send({ payment_proof: transaction.payment_proof, expired: transaction.updatedAt });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
+            res.status(500).send({ message: 'Internal server error' });
         }
     },
 }

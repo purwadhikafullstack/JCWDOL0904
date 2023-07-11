@@ -11,7 +11,7 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
   console.log(item);
 
   const handleDecrease = () => {
-    if (inputQuantity > -1) {
+    if (inputQuantity > 1) {
       const newQuantity = inputQuantity - 1;
       setInputQuantity(newQuantity);
       updateCartProduct(item.id, "decrease");
@@ -131,7 +131,10 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
             className="h-5 w-5 flex-shrink-0 text-gray-700"
             aria-hidden="true"
           />
-          <span>Subtotal: Rp {subtotal.toLocaleString("id-ID")}</span>
+          <span>
+            Subtotal: Rp{" "}
+            {subtotal == "NaN" ? null : subtotal.toLocaleString("id-ID")}
+          </span>
         </p>
       </div>
     </li>

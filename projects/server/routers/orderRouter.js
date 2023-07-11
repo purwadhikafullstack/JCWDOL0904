@@ -7,7 +7,7 @@ router.get("/user", orderGetController.getAllOrderByUser);
 
 router.post("/", orderControllers.createOrder)
 router.get("/:warehouseId", orderGetController.getOrdersByWarehouse);
-router.patch("/cancel/:id", orderControllers.cancelOrder)
+router.patch("/:id/cancel", orderControllers.cancelOrder)
 router.put("/:id/accept", orderControllers.acceptOrder)
 
 // Admin

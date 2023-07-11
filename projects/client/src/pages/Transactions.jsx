@@ -72,7 +72,7 @@ export const Transaction = () => {
   };
   const cancelOrder = async (id) => {
     try {
-      const response = await api.patch(`/order/cancel/${id}`);
+      const response = await api.patch(`/order/${id}/cancel`);
       Alert({
         title: "Success!",
         text: response.data.message,

@@ -149,7 +149,7 @@ export default function Checkout() {
       setCartItems([]);
       dispatch(updateCart({cart: []}));
       localStorage.removeItem("cartItems");
-      // localStorage.removeItem("selectedAddress");
+      localStorage.removeItem("selectedAddress");
       navigate("/transactions");
     } catch (error) {
       Alert({

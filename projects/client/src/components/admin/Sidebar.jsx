@@ -96,7 +96,7 @@ export default function Sidebar() {
 
   useEffect(() => {
     const socket = io("http://localhost:8000");
-    socket.on("notificationAdminUpdate", (updatedNotifications) => {
+    socket.on("notificationAdminRead", (updatedNotifications) => {
       console.log("This is an update from the socket", updatedNotifications);
       const unreadAdmin = updatedNotifications.filter((notification) => {
         return (
@@ -108,7 +108,7 @@ export default function Sidebar() {
     });
 
     return () => {
-      socket.off("notificationAdminUpdate");
+      socket.off("notificationAdminRead");
     };
   }, []);
 

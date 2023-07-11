@@ -12,7 +12,6 @@ module.exports = {
   autoMutation: async (req, res) => {
     try {
       const { id } = req.body;
-      console.log("Hello WOrldddddddddddd");
       const warehouse_seller = await transaction.findOne({
         where: {
           id,

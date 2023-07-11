@@ -30,7 +30,6 @@ module.exports = {
         }
         cartItem.quantity = totalQuantity;
 
-        // Mengupdate kuantitas dalam keranjang
         await cartItem.save();
       } else {
         await Carts.create({
@@ -81,12 +80,6 @@ module.exports = {
           // Decrease the quantity by 1
           if (cartItem.quantity > 1) {
             cartItem.quantity -= 1;
-          } else {
-            // If the quantity is 1, delete the cart item
-            await Carts.destroy({ where: { id: cartItemId } });
-            return res
-              .status(200)
-              .send({ message: "Cart item deleted successfully" });
           }
         } else if (action === "input") {
           // Update the quantity with the input value

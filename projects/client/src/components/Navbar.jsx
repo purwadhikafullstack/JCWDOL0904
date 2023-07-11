@@ -36,7 +36,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     const socket = io("http://localhost:8000");
-    socket.on("notificationUpdate", (updatedNotifications) => {
+    socket.on("notificationRead", (updatedNotifications) => {
       console.log("This is an update from the socket", updatedNotifications);
 
       const unread = updatedNotifications.filter((notification) => {
@@ -137,6 +137,45 @@ export const Navbar = () => {
                     src="http://localhost:8000/logo_galaxy.png"
                     alt="Your Company"
                   />
+                  <div className="flex ml-40 justify-end md:hidden lg:hidden xl:hidden">
+                    {isLogin ? (
+                      <button
+                        type="button"
+                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                        <div className="flex gap-3">
+                          <div className="flex">
+                            <EnvelopeIcon
+                              onClick={() => {
+                                navigation("/notification");
+                              }}
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                            <p>{unreads}</p>
+                          </div>
+                        </div>
+                      </button>
+                    ) : null}
+                    {isLogin ? (
+                      <button
+                        type="button"
+                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                        <span className="sr-only">View notifications</span>
+                        <div className="flex gap-3">
+                          <div className="flex">
+                            <ShoppingCartIcon
+                              onClick={() => {
+                                navigation("/cart");
+                              }}
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                            <p>{cart.length}</p>
+                          </div>
+                        </div>
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
                 <div className="hidden md:ml-6 md:flex md:space-x-8"></div>
               </div>
@@ -161,8 +200,6 @@ export const Navbar = () => {
                           <EnvelopeIcon
                             onClick={() => {
                               navigation("/notification");
-                              // if (id) navigation("/cart");
-                              // else alert("login dulu");
                             }}
                             className="h-6 w-6"
                             aria-hidden="true"
