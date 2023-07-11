@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_product",
         },
       });
-      StockHistory.belongsTo(models.Products, {
+      StockHistory.belongsTo(models.Warehouse, {
         foreignKey: {
           name: "id_warehouse",
         },
@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
       reference: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
+      },
+      current_stock: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
     },
     {

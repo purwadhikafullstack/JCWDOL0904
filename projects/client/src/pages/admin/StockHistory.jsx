@@ -11,12 +11,17 @@ import OrderSearch from "../../components/admin/OrderSearch";
 import OrderWarehouseDropdown from "../../components/admin/OrderWarehouseDropdown";
 import ProductCategoryDropdown from "../../components/admin/ProductCategoryDropdown";
 import ProductSearch from "../../components/admin/ProductSearch";
+import { stockHistoryData } from "../../features/stockHistorySlice";
 
-const SalesReport = () => {
+const StockHistory = () => {
   const value = useSelector((state) => state.transactionSlice.value);
   // console.log(value);
   const itemValue = useSelector((state) => state.transactionItemSlice.value);
   // console.log(itemValue);
+  const stockHistoryValue = useSelector(
+    (state) => state.stockHistorySlice.value
+  );
+  // console.log(stockHistoryValue);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -32,8 +37,8 @@ const SalesReport = () => {
   const [order, setOrder] = useState("product_name");
   const [sort, setSort] = useState("ASC");
   const user = useSelector((state) => state.userSlice);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [category, setCategory] = useState([]);
+  // const [selectedCategory, setSelectedCategory] = useState("");
+  // const [category, setCategory] = useState([]);
   const [productSearch, setProductSearch] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(1);
   // console.log(user);
@@ -55,8 +60,8 @@ const SalesReport = () => {
     };
   }, []);
 
-  const urlProduct = "/transaction/product";
-  const getProductTransaction = async () => {
+  const urlHistory = "stock-history/history";
+  const getHistoryData = async () => {
     try {
       let selectWarehouse;
       if (user.id_warehouse) {
@@ -64,26 +69,22 @@ const SalesReport = () => {
       } else {
         selectWarehouse = selectedWarehouse;
       }
-      let selectCategory = selectedCategory;
-
-      let result = await api.get(urlProduct, {
+      // console.log(selectedWarehouse);
+      console.log(selectedMonth);
+      let response = await api.get(urlHistory, {
         params: {
-          page,
+          page: currentPage,
           userId: user.id,
           productSearch,
           role: user.role,
           warehouse: selectWarehouse,
-          category: selectCategory,
           month: selectedMonth,
         },
       });
-      console.log(result);
-      // setProduct(result.data.result);
-      setTotalPage(result.data.totalPages);
+      console.log(response);
+      setTotalPage(response.data.totalPage);
       console.log(totalPage);
-      dispatch(transactionItemData(result.data.allProduct));
-      setTotalPrice(result.data.total_price);
-      setTransactionByMonth(result.data.total_value_by_month);
+      dispatch(stockHistoryData(response.data.result.rows));
     } catch (error) {
       console.log(error);
     }
@@ -92,25 +93,14 @@ const SalesReport = () => {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
-      // console.log(response.data.result);
       setWarehouses(response.data.result);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const fetchCategory = async () => {
-    try {
-      const response = await api.get("/category");
-      // console.log(response.data.result);
-      setCategory(response.data.result);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handlePage = (event) => {
-    setPage(event.selected);
+    setCurrentPage(event.selected);
   };
 
   useEffect(() => {
@@ -118,15 +108,16 @@ const SalesReport = () => {
   }, []);
 
   useEffect(() => {
-    fetchCategory();
+    getHistoryData();
+  }, [currentPage, productSearch, selectedWarehouse, selectedMonth]);
+
+  useEffect(() => {
+    getHistoryData();
   }, []);
 
   useEffect(() => {
-    getProductTransaction();
-  }, [page, productSearch, selectedWarehouse, selectedCategory, selectedMonth]);
-  useEffect(() => {
     setPage(0);
-  }, [selectedWarehouse, selectedCategory, selectedMonth]);
+  }, [selectedWarehouse, selectedMonth]);
 
   const closeDetailModal = () => {
     setIsDetailModalOpen(false);
@@ -144,13 +135,8 @@ const SalesReport = () => {
       setSelectedWarehouse(user.id_warehouse);
     } else {
       setSelectedWarehouse(selectedValue);
+      // console.log(setSelectedWare)
     }
-  };
-  const handleCategoryChange = (event) => {
-    const selectedCategoryValue = event.target.value;
-    console.log(selectedCategoryValue);
-    setSelectedCategory(selectedCategoryValue);
-    console.log(setSelectedMonth);
   };
 
   const handleSorting = (value) => {
@@ -169,27 +155,34 @@ const SalesReport = () => {
     }
   };
 
-  const ProductMap = itemValue?.map((pEl) => {
-    const date = pEl.Transaction.transaction_date;
+  const HistoryDataMap = stockHistoryValue?.map((historyValue) => {
+    const date = historyValue.createdAt;
     const formattedDate = moment(date).format("DD MMMM YYYY");
-    console.log(pEl);
-    // console.log(pEl.Product.Stocks);
+    const stockOut = historyValue.status === "in" ? "-" : historyValue.status;
+    const stockIn = historyValue.status === "out" ? "-" : historyValue.status;
+    // console.log(historyValue);
     return (
-      <tr key={pEl}>
+      <tr key={historyValue}>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-          {pEl.Product.product_name}
+          {historyValue.Product.product_name}
         </td>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
           {formattedDate}
         </td>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-          {pEl.Transaction.Warehouse.warehouse}
+          {historyValue.quantity}
         </td>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-          {pEl.category}
+          {historyValue.Warehouse.warehouse}
         </td>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-          {`Rp ${pEl.price.toLocaleString()}`}
+          {stockIn}
+        </td>
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+          {stockOut}
+        </td>
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+          {historyValue.current_stock}
         </td>
       </tr>
     );
@@ -201,7 +194,7 @@ const SalesReport = () => {
         <div>
           <div className="sm:flex-auto">
             <h1 className="text-xl font-semibold text-gray-900">
-              Sales Report
+              Stock History
             </h1>
             <Stack direction={"row"} className="flex gap-3 pb-3 pt-5">
               <ProductSearch
@@ -215,12 +208,6 @@ const SalesReport = () => {
                 handleWarehouseChange={handleWarehouseChange}
                 selectedWarehouse={selectedWarehouse}
                 warehouses={warehouses}
-              />
-              <ProductCategoryDropdown
-                // user={user}
-                handleCategoryChange={handleCategoryChange}
-                selectedCategory={selectedCategory}
-                category={category}
               />
             </Stack>
             <Stack direction="row">
@@ -289,7 +276,13 @@ const SalesReport = () => {
                           scope="col"
                           className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          Transaction Date
+                          Date
+                        </th>
+                        <th
+                          scope="col"
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          Quantity
                         </th>
                         <th
                           scope="col"
@@ -301,65 +294,28 @@ const SalesReport = () => {
                           scope="col"
                           className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          Category
+                          Stock In
                         </th>
                         <th
                           scope="col"
                           className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                         >
-                          Item Price
+                          Stock Out
+                        </th>
+                        <th
+                          scope="col"
+                          className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                        >
+                          Current Stock
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 bg-white">
+                    {/* <tbody className="divide-y divide-gray-200 bg-white">
                       {ProductMap}
+                    </tbody> */}
+                    <tbody className="divide-y divide-gray-200 bg-white">
+                      {HistoryDataMap}
                     </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
-            <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                  <table className="min-w-full divide-y divide-gray-300">
-                    <tfoot>
-                      <tr>
-                        <td
-                          colSpan="2"
-                          className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-semibold text-left text-gray-900"
-                        >
-                          ALLTransaction:
-                        </td>
-                        <td></td>
-                        <td
-                          colSpan="2"
-                          className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold"
-                        >
-                          {`Rp ${parseInt(totalPrice).toLocaleString()}`}
-                        </td>
-                      </tr>
-                    </tfoot>
-                    <tfoot>
-                      <tr>
-                        <td
-                          colSpan="2"
-                          className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-semibold text-left text-gray-900"
-                        >
-                          Transaction Filtered:
-                        </td>
-                        <td></td>
-                        <td
-                          colSpan="2"
-                          className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold"
-                        >
-                          {`Rp ${parseInt(
-                            transactionByMonth
-                          ).toLocaleString()}`}
-                        </td>
-                      </tr>
-                    </tfoot>
                   </table>
                 </div>
               </div>
@@ -379,4 +335,4 @@ const SalesReport = () => {
   );
 };
 
-export default SalesReport;
+export default StockHistory;

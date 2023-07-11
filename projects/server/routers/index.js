@@ -17,6 +17,8 @@ const categoryRouters = require("./categoryRouters");
 const notificationRouter = require("./notificationRouter");
 const stockRouter = require("./stockRouters");
 const transactionRouter = require("./transactionsRouter");
+const stockHistoryRouter = require("./stockHistoryRouter");
+
 module.exports = {
   userRouter,
   authRouter,
@@ -37,4 +39,5 @@ module.exports = {
   notificationRouter,
   stockRouter,
   transactionRouter,
+  stockHistoryRouter,
 };
