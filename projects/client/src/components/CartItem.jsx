@@ -1,19 +1,54 @@
-import React from "react";
+import React, {useState} from "react";
 import {XMarkIcon, CreditCardIcon} from "@heroicons/react/20/solid";
+import Alert from "./SwallAlert";
 
 export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
   const subtotal = item.quantity * item.Product.price;
-
+  const [inputQuantity, setInputQuantity] = useState(item.quantity);
+  const stock = item.Product.Stocks.reduce((totalStock, stockItem) => {
+    return totalStock + stockItem.stock;
+  }, 0);
   console.log(item);
 
   const handleDecrease = () => {
-    updateCartProduct(item.id, "decrease");
+    if (inputQuantity > -1) {
+      const newQuantity = inputQuantity - 1;
+      setInputQuantity(newQuantity);
+      updateCartProduct(item.id, "decrease");
+    }
   };
 
   const handleIncrease = () => {
-    updateCartProduct(item.id, "increase");
+    if (inputQuantity < stock) {
+      const newQuantity = inputQuantity + 1;
+      setInputQuantity(newQuantity);
+      updateCartProduct(item.id, "increase");
+    } else {
+      Alert({
+        title: "Failed!",
+        text: "Insufficient Stock",
+        icon: "error",
+      });
+    }
   };
-
+  const handleInputQuantity = (e) => {
+    const newQuantity = parseInt(e.target.value, 10);
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      setInputQuantity(1);
+      updateCartProduct(item.id, "input", 1);
+    } else if (newQuantity > stock) {
+      setInputQuantity(stock);
+      updateCartProduct(item.id, "input", stock);
+      Alert({
+        title: "Failed!",
+        text: "Insufficient Stock",
+        icon: "error",
+      });
+    } else {
+      setInputQuantity(newQuantity);
+      updateCartProduct(item.id, "input", newQuantity);
+    }
+  };
   const handleDelete = () => {
     deleteCartItem(item.id);
   };
@@ -66,10 +101,11 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
                 id=""
                 name=""
                 type="text"
-                value={item.quantity}
-                readOnly
+                value={inputQuantity}
+                onChange={handleInputQuantity}
                 className="w-12 text-center border border-gray-300"
               />
+
               <button
                 type="button"
                 className="px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none"

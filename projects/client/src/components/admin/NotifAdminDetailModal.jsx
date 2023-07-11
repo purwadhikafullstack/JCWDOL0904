@@ -1,13 +1,9 @@
 import {EnvelopeIcon} from "@heroicons/react/24/outline";
 import {useState} from "react";
 import {useEffect} from "react";
-import {api} from "../API/api";
+import {api} from "../../API/api";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function NotificationDetailModal({
+export default function NotifAdminDetailModal({
   fetchNotification,
   selectedNotification,
   closeModal,

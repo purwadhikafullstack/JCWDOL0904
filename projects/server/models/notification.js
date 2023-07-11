@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
     Notification.init({
         title: DataTypes.STRING,
         message: DataTypes.STRING,
+        from: {
+            type: DataTypes.ENUM('user', 'admin'),
+        },
     }, {
         sequelize,
         modelName: 'Notification',

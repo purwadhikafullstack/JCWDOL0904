@@ -1,6 +1,7 @@
 import React from "react";
 import {api} from "../../API/api";
 import Alert from "../SwallAlert";
+import Swal from "sweetalert2";
 
 const OrderTable = ({
   transactionByWarehouse,
@@ -33,18 +34,31 @@ const OrderTable = ({
 
   const handleConfirmTransaction = async (transactionId) => {
     try {
-      await api.post(`/mutation/auto-mutation`, {
-        id: transactionId,
+      const shouldConfirm = await Swal.fire({
+        title: "Confirmation",
+        text: "Are you sure you want to confirm this transaction?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, confirm",
+        confirmButtonColor: "black",
+        cancelButtonText: "Cancel",
+        dangerMode: true,
       });
-      let response = await api.patch(`/order/confirm`, {
-        id: transactionId,
-      });
-      Alert({
-        title: "Success!",
-        text: response.data.message,
-        icon: "success",
-      });
-      fetchTransactions();
+      if (shouldConfirm.isConfirmed) {
+        await api.post(`/mutation/auto-mutation`, {
+          id: transactionId,
+        });
+        let response = await api.patch(`/order/confirm`, {
+          id: transactionId,
+        });
+        console.log(response);
+        Alert({
+          title: "Success!",
+          text: response.data.message,
+          icon: "success",
+        });
+        fetchTransactions();
+      }
     } catch (error) {
       Alert({
         title: "Failed!",
@@ -62,7 +76,7 @@ const OrderTable = ({
             <th
               scope="col"
               className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-              Transaction ID
+              Invoice Number
             </th>
             <th
               scope="col"
@@ -124,32 +138,40 @@ const OrderTable = ({
                 <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                   {transaction.status}
                 </td>
-                <td className="whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                  {transaction.status === "Waiting For Payment Confirmation" ||
-                  transaction.status === "Waiting For Payment" ? (
+                <td className="whitespace-nowrap py-2 text-right text-sm font-medium sm:pr-6">
+                  {transaction.status === "Waiting For Payment Confirmation" ? (
                     <button
                       disabled={adminWarehouse}
                       onClick={() => handleConfirmTransaction(transaction.id)}
-                      className="text-white rounded-md bg-black w-16 h-7 text-xs mr-4 hover:bg-gray-800">
+                      className="text-white rounded-md bg-black w-16 h-7 -mr-4 text-xs hover:bg-gray-800">
                       Confirm
                     </button>
                   ) : (
+                    <span style={{visibility: "hidden"}}>Confirm</span>
+                  )}
+                  {transaction.status === "On Process" ? (
                     <button
                       disabled={adminWarehouse}
                       onClick={() => handleSendTransaction(transaction.id)}
-                      className="text-white rounded-md bg-black w-16 h-7 text-xs mr-4 hover:bg-gray-800">
+                      className="text-white rounded-md bg-green-700 w-16 h-7 text-xs mr-[57px]  hover:bg-green-800">
                       Send
                     </button>
+                  ) : (
+                    <span style={{visibility: "hidden"}}>Send</span>
+                  )}
+                  {transaction.status === "Waiting For Payment Confirmation" ? (
+                    <button
+                      disabled={adminWarehouse}
+                      onClick={() => handleRejectTransaction(transaction.id)}
+                      className="text-white text-xs w-16 h-7 rounded-md bg-black hover:bg-gray-800 mr-4">
+                      Reject
+                    </button>
+                  ) : (
+                    <span style={{visibility: "hidden"}}>Reject</span>
                   )}
                   <button
                     disabled={adminWarehouse}
-                    onClick={() => handleRejectTransaction(transaction.id)}
-                    className="text-black mr-4 hover:text-indigo-900">
-                    Reject
-                  </button>
-                  <button
-                    disabled={adminWarehouse}
-                    className="text-black hover:text-red-600">
+                    className="text-white rounded-md w-16 h-7 bg-red-700 hover:bg-red-800">
                     Cancel
                   </button>
                 </td>

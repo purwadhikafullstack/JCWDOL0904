@@ -13,6 +13,8 @@ import {useDispatch} from "react-redux";
 import {updateCart} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
 import {login} from "../features/userSlice";
+import {unreadCount} from "../features/notificationSlice";
+import io from "socket.io-client";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -25,11 +27,31 @@ export const Navbar = () => {
   const navigation = useNavigate();
   const dispatch = useDispatch();
   const [isLogin, SetIsLogin] = useState(false);
+  const [unreads, setUnreads] = useState(0);
 
   useEffect(() => {
     if (!localStorage.getItem("auth")) SetIsLogin(false);
     else if (localStorage.getItem("auth")) SetIsLogin(true);
   }, [localStorage.getItem("auth")]);
+
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationUpdate", (updatedNotifications) => {
+      console.log("This is an update from the socket", updatedNotifications);
+
+      const unread = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      setUnreads(unread.length);
+    });
+
+    return () => {
+      socket.off("notificationUpdate");
+    };
+  }, []);
 
   const handleLogOut = () => {
     localStorage.removeItem("selectedAddress");
@@ -44,32 +66,43 @@ export const Navbar = () => {
         role: "",
       })
     );
-    // navigation("/home");
+    // navigation("/login");
   };
 
-  const [cartLength, setCartLength] = useState(0);
   const {cart} = useSelector((state) => state.cartSlice.value);
+  const notificationUnread = useSelector(
+    (state) => state.notificationSlice.value.unread
+  );
   useEffect(() => {
-    setCartLength(cart.length);
-  }, [cart]);
+    setUnreads(notificationUnread);
+  }, [notificationUnread]);
 
   // Dispatch the Redux action to update the cart
   const updateCartData = (cart) => {
     dispatch(updateCart({cart}));
   };
+  const updateUnreadCount = (unread) => {
+    dispatch(unreadCount({unread}));
+  };
 
-  // update kembalo cartdata ketika load page
+  // update kembalo cartdata dan unreadCount notifikasi ketika load page
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
       updateCartData(JSON.parse(storedCart));
     }
+
+    const unreadCount = localStorage.getItem("unread");
+    if (unreadCount) {
+      updateUnreadCount(JSON.parse(unreadCount));
+    }
   }, []);
 
-  // update cart di local storage setiap cart ada perubahan
+  // update cart, and notification di local storage setiap cart atau notification ada perubahan
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    localStorage.setItem("unread", JSON.stringify(notificationUnread));
+  }, [cart, notificationUnread]);
   return (
     <Disclosure
       as="nav"
@@ -119,43 +152,45 @@ export const Navbar = () => {
                   )}
                 </div>
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
-                  <button
-                    type="button"
-                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
-                    <span className="sr-only">View notifications</span>
-                    <div className="flex gap-3">
-                      <div className="flex">
-                        <EnvelopeIcon
-                          onClick={() => {
-                            navigation("/notification");
-                            // if (id) navigation("/cart");
-                            // else alert("login dulu");
-                          }}
-                          className="h-6 w-6"
-                          aria-hidden="true"
-                        />
-                        <p>{cart.length}</p>
+                  {isLogin ? (
+                    <button
+                      type="button"
+                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                      <div className="flex gap-3">
+                        <div className="flex">
+                          <EnvelopeIcon
+                            onClick={() => {
+                              navigation("/notification");
+                              // if (id) navigation("/cart");
+                              // else alert("login dulu");
+                            }}
+                            className="h-6 w-6"
+                            aria-hidden="true"
+                          />
+                          <p>{unreads}</p>
+                        </div>
                       </div>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
-                    <span className="sr-only">View notifications</span>
-                    <div className="flex gap-3">
-                      <div className="flex">
-                        <ShoppingCartIcon
-                          onClick={() => {
-                            navigation("/cart");
-                          }}
-                          className="h-6 w-6"
-                          aria-hidden="true"
-                        />
-                        <p>{cart.length}</p>
+                    </button>
+                  ) : null}
+                  {isLogin ? (
+                    <button
+                      type="button"
+                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                      <span className="sr-only">View notifications</span>
+                      <div className="flex gap-3">
+                        <div className="flex">
+                          <ShoppingCartIcon
+                            onClick={() => {
+                              navigation("/cart");
+                            }}
+                            className="h-6 w-6"
+                            aria-hidden="true"
+                          />
+                          <p>{cart.length}</p>
+                        </div>
                       </div>
-                    </div>
-                  </button>
-
+                    </button>
+                  ) : null}
                   {/* Profile dropdown */}
                   {isLogin ? (
                     <Menu as="div" className="relative ml-3">

@@ -12,6 +12,7 @@ module.exports = {
   autoMutation: async (req, res) => {
     try {
       const { id } = req.body;
+      console.log("Hello WOrldddddddddddd");
       const warehouse_seller = await transaction.findOne({
         where: {
           id,
@@ -132,16 +133,6 @@ module.exports = {
       );
 
       if (stockIsEmpty.length > 0) {
-        await transaction.update(
-          {
-            status: "rejected",
-          },
-          {
-            where: {
-              id,
-            },
-          }
-        );
         return res.status(400).send({
           data: stockIsEmpty,
           message: "stock is empty on every warehouse",

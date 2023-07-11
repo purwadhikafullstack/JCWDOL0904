@@ -1,13 +1,15 @@
-import {useEffect, useState, useRef} from "react";
-import {api} from "../API/api";
+import {useEffect, useState} from "react";
 import {MdError, MdCheckCircle} from "react-icons/md";
-import NotificationDetailModal from "../components/NotificationDetailModal";
+import NotificationDetailModal from "../../components/NotificationDetailModal";
 import moment from "moment";
 import {useDispatch} from "react-redux";
-import {unreadCount} from "../features/notificationSlice";
+import {unreadCount} from "../../features/notificationSlice";
 import io from "socket.io-client";
+import {api} from "../../API/api";
+import {unreadAdminCount} from "../../features/adminNotificationSlice";
+import NotifAdminDetailModal from "../../components/admin/NotifAdminDetailModal";
 
-export default function Notification() {
+export default function AdminNotification() {
   const [notifications, setNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,21 +19,21 @@ export default function Notification() {
 
   useEffect(() => {
     const socket = io("http://localhost:8000");
-    socket.on("notificationUpdate", (updatedNotifications) => {
-      console.log("ini update from socet", updatedNotifications);
+    socket.on("notificationAdminUpdate", (updatedNotifications) => {
+      console.log("ini update from socet Admin Notif", updatedNotifications);
       setNotifications(updatedNotifications);
       // Update unread count here if needed
-      const unread = updatedNotifications.filter((notification) => {
+      const unreadAdmin = updatedNotifications.filter((notification) => {
         return (
           notification.UserNotifications.length === 0 ||
           !notification.UserNotifications[0].read
         );
       });
-      dispatch(unreadCount({unread: unread.length}));
+      dispatch(unreadAdminCount({unreadAdmin: unreadAdmin.length}));
     });
 
     return () => {
-      socket.off("notificationUpdate");
+      socket.off("notificationAdminUpdate");
     };
   }, []);
 
@@ -39,11 +41,11 @@ export default function Notification() {
     fetchNotification();
   }, [showAll]);
 
+  console.log(notifications);
   const fetchNotification = async () => {
     try {
-      let response = await api.get("/notification", {
+      let response = await api.get("/notification/admin", {
         params: {
-          userId: 2,
           showAll: showAll,
         },
       });
@@ -124,7 +126,7 @@ export default function Notification() {
         </button>
       )}
       {selectedNotification && (
-        <NotificationDetailModal
+        <NotifAdminDetailModal
           closeModal={closeModal}
           isOpen={isModalOpen}
           fetchNotification={fetchNotification}

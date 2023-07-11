@@ -5,6 +5,7 @@ import {useDispatch} from "react-redux";
 import {cart, subtotal} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
 import {CartItem} from "../components/CartItem";
+import Alert from "../components/SwallAlert";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -53,12 +54,13 @@ const Cart = () => {
     fetchCartItems();
   }, []);
 
-  const updateCartProduct = async (cartItemId, action) => {
+  const updateCartProduct = async (cartItemId, action, quantity) => {
     setLoading(true);
     try {
       const response = await api.patch(`/cart`, {
         cartItemId,
         action,
+        quantity,
       });
       console.log(response.data);
       const updatedItems = cartItems.map((item) => {
@@ -73,6 +75,11 @@ const Cart = () => {
       setCartItems(updatedItems);
       fetchCartItems();
     } catch (error) {
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
       console.error(error);
     } finally {
       setLoading(false);

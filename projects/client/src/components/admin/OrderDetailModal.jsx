@@ -63,11 +63,6 @@ export default function OrderDetailModal({
                   <section
                     aria-labelledby="order-heading"
                     className="border-t border-gray-200">
-                    <h2 id="order-heading" className="sr-only">
-                      Your order
-                    </h2>
-
-                    <h3 className="sr-only">Items</h3>
                     {transaction.TransactionItems.map((transactionItem) => (
                       <div
                         key={transactionItem.id}
@@ -107,10 +102,7 @@ export default function OrderDetailModal({
                     ))}
 
                     <div className="sm:ml-40 sm:pl-6">
-                      <h3 className="sr-only">Your information</h3>
-
-                      <h4 className="sr-only">Addresses</h4>
-                      <dl className="grid grid-cols-2 gap-x-6 py-5 text-sm">
+                      <dl className="flex justify-between gap-x-6 py-5 text-sm">
                         <div>
                           <dt className="font-medium text-gray-900">
                             Shipping address
@@ -134,14 +126,14 @@ export default function OrderDetailModal({
                             Shipping courier
                           </dt>
                           <dd className="mt-2 text-gray-700">
-                            <p className="text-gray-900 justify-center flex gap-1 items-center">
+                            <p className="text-gray-900 flex gap-1 items-center">
                               <TruckIcon className="h-4" />
                               <span>{transaction.Ekspedisi.name} </span>
-                              <p className="text-gray-600">
-                                {" "}
-                                2–5 business days
-                              </p>
                             </p>
+                            <p className="text-gray-600"> 2–5 business days</p>
+                            <dd className=" text-gray-600">
+                              Rp. {transaction.ongkir.toLocaleString("id-ID")}
+                            </dd>
                           </dd>
                         </div>
                       </dl>

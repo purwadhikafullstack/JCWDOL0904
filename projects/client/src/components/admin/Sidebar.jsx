@@ -1,17 +1,3 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 import {Fragment, useState} from "react";
 import {Dialog, Menu, Transition} from "@headlessui/react";
 import {
@@ -30,6 +16,10 @@ import {useNavigate} from "react-router-dom";
 import {Button} from "@chakra-ui/react";
 import {useDispatch} from "react-redux";
 import {login} from "../../features/userSlice";
+import {io} from "socket.io-client";
+import {useEffect} from "react";
+import {useSelector} from "react-redux";
+import {unreadAdminCount} from "../../features/adminNotificationSlice";
 
 const navigation = [
   {
@@ -84,6 +74,7 @@ function classNames(...classes) {
 
 export default function Sidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminUnreads, setAdminUnreads] = useState(0);
   const navigator = useNavigate();
   const dispatch = useDispatch();
 
@@ -103,6 +94,37 @@ export default function Sidebar() {
     // navigation("/");
   };
 
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationAdminUpdate", (updatedNotifications) => {
+      console.log("This is an update from the socket", updatedNotifications);
+      const unreadAdmin = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      setAdminUnreads(unreadAdmin.length);
+    });
+
+    return () => {
+      socket.off("notificationAdminUpdate");
+    };
+  }, []);
+
+  const notificationAdminUnread = useSelector(
+    (state) => state.adminNotificationSlice.value.unreadAdmin
+  );
+
+  useEffect(() => {
+    const storedAdminUnreads = localStorage.getItem("adminUnreads");
+    if (storedAdminUnreads) {
+      setAdminUnreads(parseInt(storedAdminUnreads));
+    }
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("adminUnreads", adminUnreads.toString());
+  }, [adminUnreads]);
   return (
     <>
       {/*
@@ -164,7 +186,7 @@ export default function Sidebar() {
                   <div className="flex flex-shrink-0 items-center px-4">
                     <img
                       className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                      src="http://localhost:8000/logo_galaxy.png"
                       alt="Your Company"
                     />
                   </div>
@@ -214,10 +236,10 @@ export default function Sidebar() {
         <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex min-h-0 flex-1 flex-col bg-black">
-            <div className="flex h-16 flex-shrink-0 items-center bg-[#F9FAFB] px-4">
+            <div className="flex h-16 flex-shrink-0 justify-center items-center bg-[#F9FAFB] px-4">
               <img
                 className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                src="http://localhost:8000/logo_galaxy.png"
                 alt="Your Company"
               />
             </div>
@@ -292,9 +314,13 @@ export default function Sidebar() {
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
+                  onClick={() => navigator("/admin-notification")}
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                   <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
+                  <div className="flex">
+                    <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    <p>{adminUnreads}</p>
+                  </div>
                 </button>
 
                 {/* Profile dropdown */}

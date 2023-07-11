@@ -5,8 +5,9 @@ import warehouseSlice from "../features/warehouseSlice.js";
 import mutationListSlice from "../features/mutationListSlice.js";
 import addressSlice from "../features/addressSlice.js";
 import categorySlice from "../features/categorySlice.js";
-
+import notificationSlice from "../features/notificationSlice.js";
 import allUserSlice from "../features/allUserSlice.js";
+import adminNotificationSlice from "../features/adminNotificationSlice.js";
 
 export default configureStore({
   reducer: {
@@ -17,5 +18,7 @@ export default configureStore({
     addressSlice,
     categorySlice,
     allUserSlice,
+    notificationSlice,
+    adminNotificationSlice,
   },
 });

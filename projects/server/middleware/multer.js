@@ -9,9 +9,9 @@ const storage = multer.diskStorage({
     cb(
       null,
       path.parse(file.originalname).name +
-        "_" +
-        Date.now() +
-        path.extname(file.originalname)
+      "_" +
+      Date.now() +
+      path.extname(file.originalname)
     );
   },
 });

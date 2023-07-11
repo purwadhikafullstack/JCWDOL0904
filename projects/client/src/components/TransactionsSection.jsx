@@ -52,12 +52,15 @@ const TransactionSections = ({
                           alt={transactionItem.Product.product_name}
                           className="mr-6 h-16 w-16 rounded object-cover object-center"
                         />
-                        <div>
-                          <div className="font-medium mr-20 text-left text-gray-900">
+                        <div className="flex flex-col">
+                          <div className="font-medium text-sm -ml-1  mr-24 text-left text-gray-900">
                             {transactionItem.Product.product_name}
                           </div>
-                          <div className="mt-2 sm:hidden">
-                            Rp. {transactionItem.Product.price}
+                          <div className="mt-2 text-xs -ml-16 sm:hidden">
+                            Rp.{" "}
+                            {transactionItem.Product.price.toLocaleString(
+                              "id-ID"
+                            )}
                           </div>
                         </div>
                       </div>
@@ -66,14 +69,14 @@ const TransactionSections = ({
                       Rp.{" "}
                       {transactionItem.Product.price.toLocaleString("id-ID")}
                     </td>
-                    <td className="text-left py-6 pr-8 sm:table-cell">
+                    <td className="text-left py-6 pr-8 text-md sm:table-cell">
                       {transactionItem.Product.description}
                     </td>
                     <td className="py-6 text-right font-medium">
                       <a
                         href={transactionItem.href}
                         className="text-indigo-600">
-                        <span className="hidden lg:inline">
+                        <span className="hidden lg:inline md:inline">
                           {transactionItem.quantity}
                         </span>
                         <span className="sr-only">
@@ -86,7 +89,9 @@ const TransactionSections = ({
               </tbody>
             </div>
             {/* Billing */}
-            <section aria-labelledby="summary-heading" className="mt-5">
+            <section
+              aria-labelledby="summary-heading"
+              className="mt-5 shadow-md rounded-lg transition duration-300">
               <h2 id="summary-heading" className="sr-only">
                 Billing Summary
               </h2>
@@ -151,12 +156,20 @@ const TransactionSections = ({
                   </div>
                 </dl>
 
-                <dl className="mt-8 divide-y divide-gray-200 text-sm lg:col-span-5 lg:mt-0">
-                  <div className="flex items-center justify-between pb-4">
-                    <dt className="text-gray-600">Order total</dt>
-                    <dd className="font-medium text-gray-900">
-                      Rp. {transaction.total_price.toLocaleString("id-ID")}
-                    </dd>
+                <dl className="mt-8  text-sm lg:col-span-5 lg:mt-0">
+                  <div className="divide-y divide-gray-200">
+                    <div className="flex items-center justify-between pb-1">
+                      <dt className="text-gray-900">Shipping fee</dt>
+                      <dd className="font-medium text-gray-900">
+                        Rp. {transaction.ongkir.toLocaleString("id-ID")}
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <dt className="text-gray-900 font-medium">Order total</dt>
+                      <dd className="font-medium text-gray-900">
+                        Rp. {transaction.total_price.toLocaleString("id-ID")}
+                      </dd>
+                    </div>
                   </div>
                   <div className="flex items-center justify-between py-4">
                     <div className="flex items-center">
@@ -168,7 +181,7 @@ const TransactionSections = ({
                           Accept Order
                         </button>
                       ) : (
-                        <label className="px-4 py-2 text-sm font-medium text-white bg-black rounded-full hover:bg-gray-800">
+                        <label className="px-4 py-2 text-sm font-medium text-white bg-black rounded-full hover:bg-gray-800 transition ease-in-out duration-300">
                           <input
                             type="file"
                             className="hidden"
@@ -185,7 +198,7 @@ const TransactionSections = ({
                       )}
                       <button
                         onClick={() => cancelOrder(transaction.id)}
-                        className="px-5 py-2 ml-4 text-sm font-medium text-black hover:bg-white rounded-full bg-slate-100">
+                        className="px-5 py-2 ml-4 text-sm font-medium text-black hover:bg-red-600 hover:text-white transition ease-in-out duration-300 rounded-full bg-slate-100">
                         Cancel Order
                       </button>
                     </div>

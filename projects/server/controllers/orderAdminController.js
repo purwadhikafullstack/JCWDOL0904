@@ -1,20 +1,87 @@
-const { Transaction, Warehouse, Products, Stocks, TransactionItem, Address, sequelize, Carts, Ekspedisi, Notification } = require('../models');
+const { Transaction, Warehouse, Products, Stocks, TransactionItem, Address, sequelize, User, Ekspedisi, Notification, StockHistory } = require('../models');
 const db = require("../models");
 const moment = require("moment");
-const { io } = require("../src/index")
-const { } = require("../")
+const { io } = require("../src/index");
+const { sendEmailNotification } = require('../utils/notificationService');
+const { createNotification } = require("./notificationController")
 
 module.exports = {
+    confirmOrder: async (req, res) => {
+        try {
+            const { id } = req.body;
+            const transaction = await Transaction.findOne({
+                where: {
+                    id,
+                },
+                include: [
+                    {
+                        model: TransactionItem,
+                        include: {
+                            model: Products,
+                        },
+                    },
+                ],
+            });
+
+            if (transaction.status === 'On Process') {
+                return res.status(400).send({ message: 'Transaction is already in process' });
+            }
+
+            if (transaction.status !== 'Waiting For Payment Confirmation') {
+                return res.status(404).send({ message: 'Transaction not eligible for confirmation' });
+            }
+
+            // Deduct stock from the warehouse and create stock history
+            const transactionItems = transaction.TransactionItems;
+            const promises = transactionItems.map(async (item) => {
+                const product = item.Product;
+                const stock = await Stocks.findOne({
+                    where: {
+                        id_product: product.id,
+                        id_warehouse: transaction.id_warehouse, // Assuming warehouse ID is stored in the transaction
+                    },
+                });
+
+                if (!stock || stock.stock < item.quantity) {
+                    throw new Error(`Insufficient stock for product ${product.product_name}`);
+                }
+
+                // Deduct stock quantity
+                stock.stock -= item.quantity;
+                await stock.save();
+
+                // Create stock history
+                await StockHistory.create({
+                    quantity: item.quantity,
+                    status: 'out',
+                    reference: `Transaction #${transaction.id}`,
+                    id_product: product.id,
+                });
+            });
+
+            await Promise.all(promises);
+
+            // Create a notification for the user
+            await createNotification(`Order ${transaction.invoice_number}`, 'Your order is being processed', transaction.id_user, "admin");
+
+            await transaction.update({ status: 'On Process' });
+
+            res.status(200).send({ message: 'Transaction confirmed successfully' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ message: 'Failed to confirm transaction' });
+        }
+    },
     rejectOrder: async (req, res) => {
         try {
             const transactionId = req.params.id;
             const transaction = await Transaction.findByPk(transactionId);
 
             if (!transaction) {
-                return res.status(404).json({ message: 'Transaction not found' });
+                return res.status(404).send({ message: 'Transaction not found' });
             }
             if (transaction.status !== 'Waiting For Payment Confirmation') {
-                return res.status(400).json({ message: 'Cannot reject transaction with the current status' });
+                return res.status(400).send({ message: 'Cannot reject transaction with the current status' });
             }
             await transaction.update({ status: 'Waiting For Payment' });
 
@@ -23,33 +90,16 @@ module.exports = {
             await transaction.update({ expired: expirationDate });
             await transaction.update({ payment_proof: null });
 
-            res.status(200).json({ message: 'Transaction rejected successfully' });
+            // Create a notification for the user
+            await createNotification(`Order ${transaction.invoice_number}`, 'Your order is rejected, please update proof of payment', transaction.id_user, "admin");
+
+            res.status(200).send({ message: 'Transaction rejected successfully' });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Error rejecting transaction' });
+            res.status(500).send({ message: 'Error rejecting transaction' });
         }
     },
-    confirmOrder: async (req, res) => {
-        try {
-            const { id } = req.body;
-            const transaction = await Transaction.findOne({
-                where: {
-                    id,
-                },
-            });
-            if (transaction.status === 'On Process') {
-                return res.status(400).send({ message: 'Transaction is already in process' });
-            }
-            if (transaction.status !== 'Waiting For Payment Confirmation') {
-                return res.status(404).send({ message: 'Transaction not eligible for confirmation' });
-            }
 
-            await transaction.update({ status: "On Process" });
-            res.status(200).send({ message: 'Transaction confirmed successfully' });
-        } catch (error) {
-            console.log(error);
-        }
-    },
     sendOrder: async (req, res) => {
         try {
             const { orderId } = req.params;
@@ -58,6 +108,9 @@ module.exports = {
                     {
                         model: TransactionItem,
                         include: [Products],
+                    },
+                    {
+                        model: User,
                     },
                 ],
             });
@@ -100,19 +153,16 @@ module.exports = {
             }
 
             const expirationDate = new Date();
-            expirationDate.setSeconds(expirationDate.getSeconds() + 30);
+            expirationDate.setSeconds(expirationDate.getSeconds() + 15);
 
             await order.update({ status: 'Shipped', expired_confirmed: expirationDate });
 
             // Create a notification for the user
-            const notification = await Notification.create({
-                title: `Order ${order.invoice_number}`,
-                message: 'Your order has been shipped',
-                id_user: order.id_user, // Assuming there is a userId field in the Transaction model
-            });
+            let notification = await createNotification(`Order ${order.invoice_number}`, 'Your order has been shipped', order.id_user, "admin");
 
-            // Notify the user about the sent order
-            // Implement the notification mechanism here (e.g., send an email or emit a websocket event)
+            io.emit('notification', notification);
+            sendEmailNotification(order.User, 'Your order has been shipped');
+
             const timeoutDuration = order.expired_confirmed - new Date();
             setTimeout(async () => {
                 const updatedOrder = await Transaction.findAll({
@@ -142,10 +192,10 @@ module.exports = {
                     io.emit("orderConfirmed", order.toJSON());
                 }
             }, timeoutDuration);
-            res.status(200).json({ message: 'Order sent successfully' });
+            res.status(200).send({ message: 'Order sent successfully' });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Error sending order' });
+            res.status(500).send({ message: 'Error sending order' });
         }
     },
 }
