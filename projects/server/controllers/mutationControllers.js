@@ -20,9 +20,12 @@ module.exports = {
         },
       });
 
-      if (getStockmovementData.status !== "pending") {
+      if (
+        getStockmovementData.status === "approved" ||
+        getStockmovementData.status === "rejected"
+      ) {
         return res.status(400).send({
-          message: "action already run!",
+          message: "Your partner already done this!",
           title: "Error!",
           icon: "error",
         });
@@ -60,8 +63,15 @@ module.exports = {
         },
       });
 
-      if (getStockmovementData.status !== "pending") {
-        throw new Error("action already run!");
+      if (
+        getStockmovementData.status === "approved" ||
+        getStockmovementData.status === "rejected"
+      ) {
+        return res.status(400).send({
+          message: "Your partner already done this!",
+          title: "Error!",
+          icon: "error",
+        });
       }
 
       const WarehouseSender = await stocks.findOne({
@@ -76,36 +86,47 @@ module.exports = {
           id_product,
         },
       });
-
       if (WarehouseSender.stock < qty) {
         throw new Error("stock is unavailable");
       }
 
+      let stockInWarehouseReceiveUpdate;
+      // let stockInWarehouseReceive;
+      if (!WarehouseReceive || WarehouseReceive.lenght < 0) {
+        stockInWarehouseReceiveUpdate = await stocks.create({
+          stock: qty,
+          id_warehouse: warehouse_receive_id,
+          id_product,
+        });
+        const stockHistoryAddedIn = await stockhistory.create({
+          quantity: qty,
+          status: "in",
+          id_product,
+          id_warehouse: warehouse_receive_id,
+          current_stock: qty,
+        });
+      } else {
+        const stockInWarehouseReceive = WarehouseReceive.stock + qty;
+        stockInWarehouseReceiveUpdate = await stocks.update(
+          { stock: stockInWarehouseReceive },
+          { where: { id_warehouse: warehouse_receive_id, id_product } }
+        );
+        const stockHistoryAddedIn = await stockhistory.create({
+          quantity: qty,
+          status: "in",
+          id_product,
+          id_warehouse: warehouse_receive_id,
+          current_stock: stockInWarehouseReceive,
+        });
+      }
+
       const stockInWarehouseSender = WarehouseSender.stock - qty;
-      const stockInWarehouseReceive = WarehouseReceive.stock + qty;
 
       const stockInWarehouseSenderUpdate = await stocks.update(
-        {
-          stock: stockInWarehouseSender,
-        },
-        {
-          where: {
-            id_warehouse: warehouse_sender_id,
-            id_product,
-          },
-        }
+        { stock: stockInWarehouseSender },
+        { where: { id_warehouse: warehouse_sender_id, id_product } }
       );
-      const stockInWarehouseReceiveUpdate = await stocks.update(
-        {
-          stock: stockInWarehouseReceive,
-        },
-        {
-          where: {
-            id_warehouse: warehouse_receive_id,
-            id_product,
-          },
-        }
-      );
+
       const updateStockMovement = await stockmovement.update(
         {
           status: "approved",
@@ -117,17 +138,12 @@ module.exports = {
         }
       );
 
-      const stockHistoryAddedIn = await stockhistory.create({
-        quantity: qty,
-        status: "in",
-        id_product,
-        id_warehouse: warehouse_receive_id,
-      });
       const stockHistoryAddedOut = await stockhistory.create({
         quantity: qty,
         status: "out",
         id_product,
         id_warehouse: warehouse_sender_id,
+        current_stock: stockInWarehouseSender,
       });
 
       res.status(200).send({
@@ -138,27 +154,31 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
-      res.status(400).send({
-        message: error.message,
-      });
+      // res.status(400).send({
+      //   message: error.message,
+      // });
     }
   },
   manualMutation: async (req, res) => {
     try {
       const { id, warehouse_sender_id, warehouse_receive_id, qty, status } =
         req.body;
+      if (!warehouse_sender_id)
+        throw new Error("Please enter warehouse sender");
+
+      if (qty === 0) throw new Error("You can't request 0 stock");
       const getStockMovement = await stocks.findOne({
         where: {
           id_warehouse: warehouse_sender_id,
           id_product: id,
         },
       });
-      if (getStockMovement.dataValues.stock < qty) {
+
+      if (getStockMovement.dataValues.stock < qty)
         throw new Error("Your request is too many!");
-      }
-      if (getStockMovement.dataValues.stock < 1) {
+
+      if (getStockMovement.dataValues.stock < 1)
         throw new Error("Stock is unavailable!");
-      }
 
       // const currentTime = new Date();
       // let request_number = currentTime.getTime();
@@ -193,11 +213,14 @@ module.exports = {
       const site = req.query.site || undefined;
       let status = req.query.status || null;
       let arrange = req.query.arrange || "DESC";
-      const search = parseInt(req.query.search) || undefined;
+      const search = req.query.search || "";
+      const request = req.query.request || "in";
+      console.log(request);
       let request_number;
+      let product_name;
       if (search && search.lenght > 0) {
-        request_number = {
-          request_number: {
+        product_name = {
+          product_name: {
             [db.Sequelize.Op.like]: `%${search}%`,
           },
         };
@@ -210,9 +233,16 @@ module.exports = {
       let allCount = 0;
 
       if (status === "all")
-        status = { [db.Sequelize.Op.or]: ["pending", "rejected", "approved"] };
+        status = {
+          [db.Sequelize.Op.or]: [
+            "pending",
+            "rejected",
+            "approved",
+            "migration",
+          ],
+        };
 
-      if (site === "mutationList") limit = 4;
+      if (site === "mutationList") limit = 10;
       console.log(sort, role, idUser);
       let idWarehouse = null;
       console.log(req.query);
@@ -230,30 +260,39 @@ module.exports = {
       }
 
       const result = await stockmovement.findAndCountAll({
-        where: search
-          ? {
-              status,
-              request_number: {
-                [db.Sequelize.Op.like]: `%${search}%`,
-              },
-            }
-          : {
-              status,
-            },
+        where: {
+          status,
+        },
         order: [["createdAt", arrange]],
         include: [
           {
             model: warehouse,
             as: "senderWarehouse",
             where: {
-              id: parseInt(sort),
+              ...(request === "out" ? { id: parseInt(sort) } : {}),
             },
+
+            // where: { id: parseInt(sort) },
           },
           {
             model: warehouse,
             as: "receiverWarehouse",
+            where: {
+              ...(request === "in" ? { id: parseInt(sort) } : {}),
+            },
           },
-          product,
+          {
+            model: product,
+            where: {
+              ...(search
+                ? {
+                    product_name: {
+                      [db.Sequelize.Op.like]: `%${search}%`,
+                    },
+                  }
+                : {}),
+            },
+          },
         ],
         limit,
         offset: page * limit,

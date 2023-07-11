@@ -151,12 +151,12 @@ const ManageWarehouse = () => {
   });
 
   return (
-    <div className={` ${paddingLeft}  py-10 items-center`}>
+    <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <h1>Manage User </h1>
       <div>
         <AddAdmin />
       </div>
-      <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
+      <div className="mt-6 flex flex-col justify-end xl">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

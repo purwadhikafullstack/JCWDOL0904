@@ -60,6 +60,7 @@ const {
   categoryRouters,
   notificationRouter,
   stockRouter,
+  migrationRouter,
   transactionRouter,
 } = require("../routers");
 
@@ -81,6 +82,7 @@ app.use("/api/mutation", mutationRouter);
 app.use("/api/category", categoryRouters);
 app.use("/api/notification", notificationRouter);
 app.use("/api/stock", stockRouter);
+app.use("/api/migration", migrationRouter);
 app.use("/api/transaction", transactionRouter);
 
 app.use(function (err, req, res, next) {

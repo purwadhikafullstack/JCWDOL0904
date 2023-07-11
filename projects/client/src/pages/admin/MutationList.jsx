@@ -13,6 +13,7 @@ import {
   Input,
   Text,
   Select,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { api } from "../../API/api";
 import {
@@ -29,12 +30,14 @@ import { data } from "../../features/warehouseSlice";
 import { useNavigate } from "react-router-dom";
 import { mutation } from "../../features/mutationListSlice";
 import ReactPaginate from "react-paginate";
+import MigrationModal from "../../components/admin/migrationModal";
 
 const MutationList = () => {
   const navigation = useNavigate();
   const value = useSelector((state) => state.mutationListSlice.value);
   const { role, id } = useSelector((state) => state.userSlice);
   const warehouse = useSelector((state) => state.warehouseSlice.value);
+  const [isSmallerThan] = useMediaQuery("(max-width: 767px)");
   const dispatch = useDispatch();
 
   const [status, setStatus] = useState("all");
@@ -48,6 +51,7 @@ const MutationList = () => {
   const [sort, setSort] = useState(1);
   const [isAdmin, setIsAdmin] = useState();
   const [isError, setIsError] = useState(null);
+  const [request, setRequest] = useState("in");
   const swalCheckingObject = {
     title: "Are you sure?",
     text: "You won't be able to revert this!",
@@ -60,22 +64,6 @@ const MutationList = () => {
   const swalErrorCatch = (error) => {
     Swal.fire({ title: "Error!", text: error, icon: "error" });
   };
-
-  // const handleArrange = (value) => {
-  //   if (value === "1") {
-  //     setOrder("product_name");
-  //     setSort("DESC");
-  //   } else if (value === "2") {
-  //     setOrder("price");
-  //     setSort("ASC");
-  //   } else if (value === "3") {
-  //     setOrder("price");
-  //     setSort("DESC");
-  //   } else {
-  //     setOrder("product_name");
-  //     setSort("ASC");
-  //   }
-  // };
 
   const rejectMutation = async (id) => {
     Swal.fire(swalCheckingObject).then(async (result) => {
@@ -90,9 +78,8 @@ const MutationList = () => {
         }
       } catch (error) {
         console.log(error);
-        swalErrorCatch(error.response.data.message).then(() => {
-          getMutationData();
-        });
+        swalErrorCatch(error.response.data.message);
+        getMutationData();
       }
     });
   };
@@ -120,9 +107,8 @@ const MutationList = () => {
         }
       } catch (error) {
         console.log(error);
-        swalErrorCatch(error.response.data.message).then(() => {
-          getMutationData();
-        });
+        swalErrorCatch(error.response.data.message);
+        getMutationData();
       }
     });
   };
@@ -133,24 +119,6 @@ const MutationList = () => {
     } else {
       setIsAdmin(false);
     }
-
-    const updatePaddingLeft = () => {
-      if (window.innerWidth < 401) {
-        setPaddingLeft("");
-      } else {
-        setPaddingLeft("pl-72");
-      }
-    };
-
-    // Memanggil fungsi saat halaman dimuat dan saat ukuran layar berubah
-    window.addEventListener("DOMContentLoaded", updatePaddingLeft);
-    window.addEventListener("resize", updatePaddingLeft);
-
-    // Membersihkan event listener saat komponen unmount
-    return () => {
-      window.removeEventListener("DOMContentLoaded", updatePaddingLeft);
-      window.removeEventListener("resize", updatePaddingLeft);
-    };
   }, []);
 
   useEffect(() => {
@@ -173,6 +141,7 @@ const MutationList = () => {
           search,
           status,
           arrange,
+          request,
         },
       })
       .then((result) => {
@@ -187,19 +156,13 @@ const MutationList = () => {
 
   useEffect(() => {
     getMutationData();
-  }, [sort, page, search, status, arrange]);
+  }, [sort, page, search, status, arrange, request]);
 
   let count = 0;
   const allMutation = value?.map((el) => {
     count++;
     return (
       <tr key={el.id}>
-        <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
-          {count}
-        </td>
-        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-          {el.request_number}
-        </td>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
           {el.status}
         </td>
@@ -215,9 +178,63 @@ const MutationList = () => {
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
           {el.receiverWarehouse.warehouse}
         </td>
-        {el.status === "approved" || el.status === "rejected" ? (
+        {request === "in" ? (
+          el.status === "pending" ? (
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              <button
+                type="submit"
+                className="rounded-md border border-transparent bg-red-600 py-2 px-4 text-xs font-medium text-white shadow-sm hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mx-1"
+                // onClick={() => navigation("/manage-mutation")}
+                onClick={() => rejectMutation(el.id)}
+              >
+                Reject
+              </button>
+            </td>
+          ) : el.status === "migration" ? (
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              <button
+                type="submit"
+                className="rounded-md border border-transparent bg-gray-950 py-2 px-4 text-xs font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mx-1"
+                onClick={() =>
+                  proceedMutation(
+                    el.id,
+                    el.senderWarehouse.id,
+                    el.receiverWarehouse.id,
+                    el.quantity,
+                    el.Product.id
+                  )
+                }
+              >
+                Confirm
+              </button>
+              <button
+                type="submit"
+                className="rounded-md border border-transparent bg-red-600 py-2 px-4 text-xs font-medium text-white shadow-sm hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mx-1"
+                // onClick={() => navigation("/manage-mutation")}
+                onClick={() => rejectMutation(el.id)}
+              >
+                Reject
+              </button>
+            </td>
+          ) : (
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              No Action
+            </td>
+          )
+        ) : el.status === "approved" || el.status === "rejected" ? (
           <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
             No Action
+          </td>
+        ) : el.status === "migration" ? (
+          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+            <button
+              type="submit"
+              className="rounded-md border border-transparent bg-red-600 py-2 px-4 text-xs font-medium text-white shadow-sm hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mx-1"
+              // onClick={() => navigation("/manage-mutation")}
+              onClick={() => rejectMutation(el.id)}
+            >
+              Reject
+            </button>
           </td>
         ) : (
           <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
@@ -239,7 +256,7 @@ const MutationList = () => {
             <button
               type="submit"
               className="rounded-md border border-transparent bg-red-600 py-2 px-4 text-xs font-medium text-white shadow-sm hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mx-1"
-              //   onClick={() => navigation("/manage-mutation")}
+              // onClick={() => navigation("/manage-mutation")}
               onClick={() => rejectMutation(el.id)}
             >
               Reject
@@ -260,14 +277,14 @@ const MutationList = () => {
   };
 
   return (
-    <div className={` ${paddingLeft}  py-10 items-center mr-10`}>
+    <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <h1 className="text-xl font-semibold text-gray-900 mb-5"> Mutation </h1>
 
       <div>
         <Stack
           display="flex"
           flexDirection="row"
-          marginBottom="20px"
+          marginBottom="5px"
           alignItems="center"
         >
           {/* <Text>Warehouse:</Text> */}
@@ -278,7 +295,11 @@ const MutationList = () => {
             onChange={(e) => handleSorting(e.target.value)}
           >
             {warehouse?.map((el) => {
-              return <option value={el.id}>{el.warehouse}</option>;
+              return (
+                <option key={el.id} value={el.id}>
+                  {el.warehouse}
+                </option>
+              );
             })}
           </Select>
           {/* <Text>Status:</Text> */}
@@ -291,6 +312,17 @@ const MutationList = () => {
             <option value="pending">Pending</option>
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
+            <option value="migration">Migration</option>
+          </Select>
+        </Stack>
+        <Stack direction="row" marginBottom="10px">
+          <Select
+            borderRadius="50px"
+            defaultValue={request}
+            onChange={(e) => setRequest(e.target.value)}
+          >
+            <option value="in">Product In</option>
+            <option value="out">Product Out</option>
           </Select>
           {/* <Text>Sort:</Text> */}
           <Select
@@ -298,13 +330,13 @@ const MutationList = () => {
             defaultValue={arrange}
             onChange={(e) => setArrange(e.target.value)}
           >
-            <option value="DESC">Sort newest to oldest</option>
-            <option value="ASC">Sort oldest to newest</option>
+            <option value="DESC">Newest to oldest</option>
+            <option value="ASC">Oldest to newest</option>
           </Select>
         </Stack>
       </div>
       <Stack direction="row">
-        {isAdmin ? (
+        {role === "adminWarehouse" ? (
           <button
             type="submit"
             className="rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -313,41 +345,35 @@ const MutationList = () => {
             Mutation
           </button>
         ) : null}
+        {role === "admin" ? (
+          <MigrationModal
+            runFunction={getMutationData}
+            allWarehouse={warehouse}
+          />
+        ) : null}
+
         <InputGroup>
           <InputRightElement
             pointerEvents="none"
             children={<SearchIcon color="#B9BAC4" />}
           />
           <Input
-            placeholder="Search request number here....."
+            placeholder="Search product here....."
             value={search}
-            type="number"
+            type="text"
             onChange={(e) => setSearch(e.target.value)}
             borderRadius="50px"
           />
         </InputGroup>
       </Stack>
 
-      <div className="mt-5 mb-6 flex flex-col justify-end max-w-5xl xl">
+      <div className="mt-5 mb-6 flex flex-col justify-end  xl">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                    >
-                      No
-                    </th>
-
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Request Number
-                    </th>
                     <th
                       scope="col"
                       className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"

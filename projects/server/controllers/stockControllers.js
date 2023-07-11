@@ -10,6 +10,8 @@ module.exports = {
       const ware = req.query.ware;
       let page = req.query.page || 0;
       const search = req.query.search || "";
+      let categoryFilter = req.query.categoryFilter || "";
+      const sort = req.query.sort || "ASC";
       let limit = 5;
       const stockFilter = req.query.stockFilter;
       let sto;
@@ -27,7 +29,11 @@ module.exports = {
       console.log(sto);
 
       const result = await product.findAndCountAll({
-        where: { product_name: { [Op.like]: `%${search}%` } },
+        order: [[stoc, "stock", sort]],
+        where: {
+          product_name: { [Op.like]: `%${search}%` },
+          ...(categoryFilter ? { id_category: categoryFilter } : {}),
+        },
         include: [
           {
             model: stoc,
@@ -37,18 +43,29 @@ module.exports = {
                 : { id_warehouse: ware },
           },
         ],
-        limit,
+        // limit,
         offset: page * limit,
       });
+      const limitedData = result.rows.slice(0, limit);
 
-      const forPage = await product.findAndCountAll({
-        where: { product_name: { [Op.like]: `%${search}%` } },
-        limit,
-        offset: page * limit,
+      const forPage = await product.findAll({
+        where: {
+          product_name: { [Op.like]: `%${search}%` },
+          ...(categoryFilter ? { id_category: categoryFilter } : {}),
+        },
+        include: [
+          {
+            model: stoc,
+            where:
+              sto || sto === 0
+                ? { id_warehouse: ware, stock: sto }
+                : { id_warehouse: ware },
+          },
+        ],
       });
 
-      const totalPage = Math.ceil(forPage.count / limit);
-      res.status(200).send({ result: result.rows, totalPage });
+      const totalPage = Math.ceil(forPage.length / limit);
+      res.status(200).send({ result: limitedData, totalPage, categoryFilter });
     } catch (error) {
       console.log(error);
     }
@@ -71,6 +88,7 @@ module.exports = {
         id_product: currentStock.id_product,
         status: "in",
         id_warehouse: currentStock.id_warehouse,
+        current_stock: newStock + currentStock.stock,
       });
       res.status(200).send({ currentStock, historyStock });
     } catch (error) {
@@ -96,9 +114,28 @@ module.exports = {
         id_product: currentStock.id_product,
         status: "out",
         id_warehouse: currentStock.id_warehouse,
+        current_stock: currentStock.stock - newStock,
       });
 
       res.status(200).send({ stockDecrease, historyStock });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  initialDataStock: async (req, res) => {
+    try {
+      const { id } = req.body;
+      const allProduct = await product.findAll();
+
+      allProduct.forEach(async (el) => {
+        await stoc.create({
+          stock: 0,
+          id_product: el.id,
+          id_warehouse: id,
+        });
+      });
+
+      res.status(200).send({ allProduct });
     } catch (error) {
       console.log(error);
     }

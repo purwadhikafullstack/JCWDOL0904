@@ -10,6 +10,9 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Select,
+  Stack,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { DeleteIcon, SearchIcon, SettingsIcon } from "@chakra-ui/icons";
@@ -17,15 +20,18 @@ import AddCategory from "../../components/admin/AddCategory";
 import Swal from "sweetalert2";
 import EditeCategory from "../../components/admin/EditeCategory";
 import ReactPaginate from "react-paginate";
+import Pagination from "../../components/admin/Pagination";
 
 const ManageCategory = () => {
   const dispatch = useDispatch();
   const value = useSelector((state) => state.categorySlice.value);
   const { role } = useSelector((state) => state.userSlice);
+  const [isSmallerThan] = useMediaQuery("(max-width: 767px)");
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
+  const [sort, setSort] = useState("DESC");
 
   const handlePageClick = (event) => {
     setPage(event.selected);
@@ -37,6 +43,7 @@ const ManageCategory = () => {
         params: {
           search,
           page,
+          sort,
           site: "manageC",
         },
       });
@@ -86,16 +93,15 @@ const ManageCategory = () => {
 
   useEffect(() => {
     getAllCategory();
-  }, [page, search]);
+  }, [page, search, sort]);
 
   const categoryContainer = value?.map((el) => {
     return el.category !== "no category" ? (
-      <tr
-        key={el.id}
-        className="my-5 bg-gray-50 rounded-full h-20 flex items-center"
-      >
-        <td className="flex row-auto items-center justify-between w-full p-10">
-          <h1>{el.category}</h1>
+      <tr key={el.id} className="flex justify-between ">
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+          {el.category}
+        </td>
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
           <ButtonGroup>
             <EditeCategory
               Cid={el.id}
@@ -114,47 +120,92 @@ const ManageCategory = () => {
             />
           </ButtonGroup>
         </td>
+        {/* <td className="flex row-auto items-center justify-between w-full p-10">
+          <h1>{el.category}</h1>
+          <ButtonGroup>
+            <EditeCategory
+              Cid={el.id}
+              categoryName={el.category}
+              runFunction={getAllCategory}
+            />
+            <IconButton
+              variant="link"
+              color="red"
+              backgroundColor="#F9FAFB"
+              padding="10px"
+              borderRadius="50px"
+              _hover={{ backgroundColor: "red", color: "white" }}
+              onClick={role === "admin" ? () => deleteCategory(el.id) : null}
+              icon={<DeleteIcon />}
+            />
+          </ButtonGroup>
+        </td> */}
       </tr>
     ) : null;
   });
 
   return (
-    <div className="pl-72 mr-6 mt-5">
+    <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <div className="sm:flex-auto mb-5">
         <h1 className="text-xl font-semibold text-gray-900">Manage Category</h1>
       </div>
-
-      <InputGroup>
-        <InputRightElement
-          pointerEvents="none"
-          children={<SearchIcon color="#B9BAC4" />}
-        />
-        <Input
-          placeholder="Search here....."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+      <Stack direction="row">
+        <InputGroup>
+          <InputRightElement
+            pointerEvents="none"
+            children={<SearchIcon color="#B9BAC4" />}
+          />
+          <Input
+            placeholder="Search here....."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            borderRadius="50px"
+          />
+        </InputGroup>
+        <Select
           borderRadius="50px"
-        />
-      </InputGroup>
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="DESC">A - Z</option>
+          <option value="ASC">Z - A</option>
+        </Select>
+      </Stack>
 
       <AddCategory runFunction={getAllCategory} />
-      <table className="w-full">
+      <div className="mt-5 mb-6 flex flex-col justify-end  xl">
+        <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-300">
+                <thead className="bg-gray-50 ">
+                  <tr className="flex justify-between ">
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Category
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900 mr-10"
+                    >
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {categoryContainer}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <table className="w-full">
         <tbody>{categoryContainer}</tbody>
-      </table>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={totalPage}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-        containerClassName="flex justify-center items-center mb-10"
-        pageLinkClassName="px-2 py-1 rounded-md m-1"
-        previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
-      />
+      </table> */}
+      <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );
 };

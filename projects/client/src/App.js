@@ -21,7 +21,7 @@ import routes from "./routes/routes";
 import { api } from "./API/api";
 import { login } from "./features/userSlice";
 import { data } from "./features/warehouseSlice";
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { AllCategory } from "./features/categorySlice";
 
 function App() {
@@ -117,7 +117,20 @@ function App() {
       )
       } */}
       {isLoading ? (
-        <Spinner />
+        <div
+          style={{
+            display: "Flex",
+            height: "100vh",
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_2.png`}
+            className="w-32 h-28 align-middle rounded-full animate-bounce"
+          />
+        </div>
       ) : (
         <Routes>{routes.map((route) => route)}</Routes>
       )}

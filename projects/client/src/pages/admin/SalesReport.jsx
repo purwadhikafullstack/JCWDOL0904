@@ -195,7 +195,7 @@ const SalesReport = () => {
   });
 
   return (
-    <div className={` ${paddingLeft}  py-10 items-center`}>
+    <div className={`mr-5 ml-5 py-10 items-center`}>
       {itemValue ? (
         <div>
           <div className="sm:flex-auto">

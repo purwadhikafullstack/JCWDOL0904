@@ -7,6 +7,7 @@ module.exports = {
     try {
       const site = req.query.site;
       const limit = 3;
+      const sort = req.query.sort || "DESC";
       let page = req.query.page;
       const search = req.query.search || "";
       let allRows = [];
@@ -31,6 +32,7 @@ module.exports = {
             },
           },
           limit,
+          order: [["category", sort]],
           offset: page * limit,
         });
         allRows = result.rows;

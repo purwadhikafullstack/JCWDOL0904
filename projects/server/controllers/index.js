@@ -21,6 +21,7 @@ const orderGetController = require("./orderGetController.js");
 const orderAdminController = require("./orderAdminController.js");
 const notificationController = require("./notificationController.js");
 const stockControllers = require("./stockControllers.js");
+const migrationController = require("./migrationController.js");
 
 module.exports = {
   userController,
@@ -45,4 +46,5 @@ module.exports = {
   orderAdminController,
   notificationController,
   stockControllers,
+  migrationController,
 };
