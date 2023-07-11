@@ -1,21 +1,23 @@
+import { useMediaQuery } from "@chakra-ui/react";
 import React from "react";
 import ReactPaginate from "react-paginate";
 
-const Pagination = ({totalPages, handlePageChange}) => {
+const Pagination = ({ totalPages, handlePageChange }) => {
+  const [isSmallerThan] = useMediaQuery("(max-width: 767px)");
   return (
     <div className="mt-6 flex justify-center">
       <ReactPaginate
         breakLabel="..."
-        nextLabel="next >"
+        nextLabel=" >"
         onPageChange={handlePageChange}
-        pageRangeDisplayed={5}
+        pageRangeDisplayed={isSmallerThan ? 3 : 5}
         pageCount={totalPages}
-        previousLabel="< previous"
+        previousLabel="< "
         renderOnZeroPageCount={null}
         containerClassName="flex justify-center items-center mb-10"
-        pageLinkClassName="px-2 py-1 rounded-md m-1"
-        previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
+        pageLinkClassName="px-2 py-1 rounded-md m-1 hover:bg-gray-200"
+        previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1 hover:bg-gray-200"
+        nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1 hover:bg-gray-200"
         activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
       />
     </div>

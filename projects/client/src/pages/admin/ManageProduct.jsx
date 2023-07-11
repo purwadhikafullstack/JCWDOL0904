@@ -27,6 +27,7 @@ import AllProductManage from "../../components/admin/AllProductManage";
 import CreateNewProduct from "../../components/admin/CreateNewProduct";
 import { useDispatch, useSelector } from "react-redux";
 import { AllCategory } from "../../features/categorySlice";
+import Pagination from "../../components/admin/Pagination";
 
 const ManageProduct = () => {
   // const [coba, setCoba] = useState("hallo");
@@ -41,12 +42,8 @@ const ManageProduct = () => {
   let objectForProduct = {};
 
   const ReduxCategory = useSelector((state) => state.categorySlice.value);
-  const navigation = useNavigate();
   const dispatch = useDispatch();
 
-  // const trying = (coba) => {
-  //   console.log(search, page, order, sort, category, coba);
-  // };
   const fetchProducts = async (category) => {
     setCategory(category);
     await api
@@ -100,35 +97,26 @@ const ManageProduct = () => {
   };
 
   useEffect(() => {
-    // getUserData();
     fetchProducts(category);
-    // console.log(isLogin);
   }, [page, search, sort, order]);
 
   useEffect(() => {
-    // console.log(coba);
     getAllCategory();
   }, []);
 
   return (
-    <div className={isSmallerThan401 ? null : "pl-72 pr-8"}>
-      {/* <button
-        // type="submit"
-        className="m-6 rounded-md border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        onClick={() => navigation("/mutation-list")}
-      >
-        Back To Mutation List
-      </button> */}
-
-      <Tabs colorScheme="black">
+    <div className="px-4 mt-5 sm:px-6 lg:px-8">
+      <div className="sm:flex-auto mb-5">
+        <h1 className="text-xl font-semibold text-gray-900">Manage product</h1>
+      </div>
+      <Tabs colorScheme="black" isLazy variant="enclosed">
         <TabList
-          justifyContent="center"
-          className="tab-list-home"
+          // className="tab-list-home"
           paddingTop="10px"
+          overflowX="scroll"
+          overflowY="clip"
+          whiteSpace="nowrap"
         >
-          {/* <Tab onClick={() => fetchProducts(ReduxCategory.id)}>
-            {ReduxCategory.category}
-          </Tab> */}
           {ReduxCategory.map((el) => {
             return el.category !== "no category" ? (
               <Tab
@@ -151,29 +139,16 @@ const ManageProduct = () => {
               </Tab>
             ) : null;
           })}
-          {/* <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
-          <Tab onClick={() => fetchProducts(2)}>Watch</Tab>
-          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab> */}
         </TabList>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "10px",
-          }}
-        >
-          <Stack
-            flexDirection="row"
-            alignItems="center"
-            className="con-category"
-          >
+        <div className="mt-2 mx-5">
+          <Stack direction="row" alignItems="center">
             <InputGroup>
               <InputRightElement
                 pointerEvents="none"
                 children={<SearchIcon color="#B9BAC4" />}
               />
               <Input
-                placeholder="Search here....."
+                placeholder="Search product here....."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 borderRadius="50px"
@@ -183,97 +158,58 @@ const ManageProduct = () => {
               style={{
                 display: "flex",
                 flexDirection: "row",
-                alignItems: "center",
               }}
             >
-              <Text fontSize="12px" width="50px">
-                Sort By:
-              </Text>
               <Select
                 placeholder="By name A~Z"
-                width="120px"
                 display="flex"
-                justifyContent="center"
                 borderRadius="50px"
-                style={{ fontSize: "11px" }}
                 onChange={(e) => handleSorting(e.target.value)}
               >
-                <option value="1" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By name Z~A
-                </option>
-                <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By price low~high
-                </option>
-                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By price high~low
-                </option>
+                <option value="1">By name Z~A</option>
+                <option value="2">By price low~high</option>
+                <option value="3">By price high~low</option>
               </Select>
             </div>
           </Stack>
+          <CreateNewProduct getProducts={fetchProducts} />
         </div>
         {/* <button>Create Product</button> */}
-        <CreateNewProduct getProducts={fetchProducts} />
-        <TabPanels
-          style={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
-          <TabPanel
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            maxWidth="100%"
-          >
-            <AllProductManage
-              products={products}
-              category={category}
-              runFunction={fetchProducts}
-            />
-          </TabPanel>
-          {ReduxCategory?.map((el) => {
-            return (
-              <TabPanel
-                display="flex"
-                flexDirection="row"
-                justifyContent="center"
-                maxWidth="100%"
-                key={el.id}
-              >
-                <AllProductManage
-                  products={products}
-                  category={category}
-                  runFunction={fetchProducts}
-                />
-              </TabPanel>
-            );
-          })}
-
-          {/* <TabPanel
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            maxWidth="100%"
-          >
-            <AllProductManage
-              products={products}
-              category={category}
-              runFunction={fetchProducts}
-            />
-          </TabPanel> */}
-        </TabPanels>
+        <Stack>
+          <TabPanels>
+            <TabPanel
+            // display="flex"
+            // flexDirection="column"
+            // justifyContent="center"
+            // maxWidth="100%"
+            >
+              <AllProductManage
+                products={products}
+                category={category}
+                runFunction={fetchProducts}
+              />
+            </TabPanel>
+            {ReduxCategory?.map((el) => {
+              return (
+                <TabPanel
+                  // display="flex"
+                  // flexDirection="row"
+                  // justifyContent="center"
+                  // maxWidth="100%"
+                  key={el.id}
+                >
+                  <AllProductManage
+                    products={products}
+                    category={category}
+                    runFunction={fetchProducts}
+                  />
+                </TabPanel>
+              );
+            })}
+          </TabPanels>
+        </Stack>
       </Tabs>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={totalPage}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-        containerClassName="flex justify-center items-center mb-10"
-        pageLinkClassName="px-2 py-1 rounded-md m-1"
-        previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
-      />
+      <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );
 };

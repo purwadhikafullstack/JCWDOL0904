@@ -16,6 +16,8 @@ import Swal from "sweetalert2";
 
 const SRMPcScreen = () => {
   const value = useSelector((state) => state.warehouseSlice.value);
+  const adminWarehouseReceive = useSelector((state) => state.userSlice);
+
   const [valueSender, setValueSender] = useState([]);
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -42,7 +44,7 @@ const SRMPcScreen = () => {
           try {
             const id = product.id;
             const warehouse_sender_id = wSender.id;
-            const warehouse_receive_id = wReceiver.id;
+            const warehouse_receive_id = adminWarehouseReceive.id_warehouse;
             const status = "pending";
             const qty = parseInt(quantity);
             const response = await api.post("/mutation/manual-mutation", {
@@ -80,7 +82,7 @@ const SRMPcScreen = () => {
       .then((result) => {
         console.log(result);
         // setWarehouses(result.data);
-        dispatch(data(result.data));
+        dispatch(data(result.data.result));
       })
       .catch((err) => {
         console.log(err);
@@ -112,14 +114,16 @@ const SRMPcScreen = () => {
 
   useEffect(() => {
     let warehouseFiltered;
-    if (wReceiver && value) {
+    if (adminWarehouseReceive && value) {
       console.log(value);
       console.log(wReceiver);
-      warehouseFiltered = value.filter((el) => el.id !== wReceiver.id);
+      warehouseFiltered = value.filter(
+        (el) => el.id !== adminWarehouseReceive.id_warehouse
+      );
       //   console.log(warehouseFiltered);
       setValueSender(warehouseFiltered);
     }
-  }, [wReceiver]);
+  }, []);
 
   useEffect(() => {
     let filteredStock = null;
@@ -142,62 +146,13 @@ const SRMPcScreen = () => {
   }, [stock]);
 
   return (
-    <div className="pl-72 pr-5">
-      {/* <XMarkIcon
-          className="top-2 absolute right-2 h-6 w-6 text-gray-500 hover:text-gray-700 transition-colors duration-300 ease-in-out cursor-pointer"
-          aria-hidden="true"
-          onClick={handleClose}
-        /> */}
-
+    <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <h2 className="text-lg font-medium text-gray-500 mt-4">
         Send Mutation Request
       </h2>
       <form onSubmit={handleSubmit}>
         <Stack direction="row">
           <div className="w-96">
-            <div className="p-5">
-              <div>
-                <label
-                  htmlFor="province"
-                  className="block text-sm font-medium text-gray-500"
-                >
-                  Warehouse Receive
-                </label>
-                <div className="mt-1">
-                  <select
-                    id="province"
-                    name="province"
-                    value={wReceiver}
-                    autoComplete="province"
-                    placeholder={wReceiver}
-                    className="block w-full border h-7 pl-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    onChange={(e) => {
-                      console.log(JSON.parse(e.target.value));
-                      setReceiver(JSON.parse(e.target.value));
-                    }}
-                  >
-                    <option className="text-gray-800 font-medium">
-                      {/* {provincess ? provincess.province : "Select a province"} */}
-                      {wReceiver
-                        ? `selecting ${wReceiver.warehouse}`
-                        : "select warehouse"}
-                    </option>
-                    {value?.map((el) => (
-                      <option
-                        className="text-gray-500"
-                        key={el.id}
-                        value={JSON.stringify({
-                          id: el.id,
-                          warehouse: el.warehouse,
-                        })}
-                      >
-                        {el.warehouse}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
             <div className="p-5">
               <div>
                 <label
@@ -220,7 +175,7 @@ const SRMPcScreen = () => {
                     }}
                   >
                     <option className="text-gray-800 font-medium">
-                      {wReceiver && wSender
+                      {wSender
                         ? `selecting ${wSender.warehouse}`
                         : "Select a warehouse"}
                     </option>

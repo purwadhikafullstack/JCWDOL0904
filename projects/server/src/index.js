@@ -11,11 +11,11 @@ const { authorize } = require("../middleware/validator");
 const PORT = process.env.PORT || 8000;
 const app = express();
 
-const http = require('http');
+const http = require("http");
 const server = http.createServer(app);
-const { Server } = require('socket.io');
+const { Server } = require("socket.io");
 const io = new Server(server, {
-  cors: { origin: '*' },
+  cors: { origin: "*" },
 });
 global.io = io;
 
@@ -32,14 +32,11 @@ module.exports = { io };
 
 // console.log(process.env.WHITELISTED_DOMAIN);
 
-
-
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public/images"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 //#region API ROUTES
 
@@ -62,6 +59,9 @@ const {
   mutationRouter,
   categoryRouters,
   notificationRouter,
+  stockRouter,
+  migrationRouter,
+  transactionRouter,
 } = require("../routers");
 
 app.use(authorize);
@@ -81,6 +81,9 @@ app.use("/api/upload", uploadProfileRouter);
 app.use("/api/mutation", mutationRouter);
 app.use("/api/category", categoryRouters);
 app.use("/api/notification", notificationRouter);
+app.use("/api/stock", stockRouter);
+app.use("/api/migration", migrationRouter);
+app.use("/api/transaction", transactionRouter);
 
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_SIZE") {
@@ -138,17 +141,17 @@ app.get("*", (req, res) => {
 
 //#endregion
 
-io.on('connection', (socket) => {
-  console.log('A client connected');
+io.on("connection", (socket) => {
+  console.log("A client connected");
 
   // Handle client disconnection
-  socket.on('disconnect', () => {
-    console.log('A client disconnected');
+  socket.on("disconnect", () => {
+    console.log("A client disconnected");
   });
 
   // Listen for transaction updates
-  socket.on('transaction-update', (updatedTransaction) => {
-    console.log('Received transaction update:', updatedTransaction);
+  socket.on("transaction-update", (updatedTransaction) => {
+    console.log("Received transaction update:", updatedTransaction);
   });
 });
 

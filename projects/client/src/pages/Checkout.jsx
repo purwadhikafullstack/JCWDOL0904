@@ -137,11 +137,12 @@ export default function Checkout() {
     e.preventDefault();
     try {
       setOngkirIsLoading(true);
+      const userId = JSON.parse(localStorage.getItem("auth")).id;
       await api.post("/order", {
         cartItems: cartItems,
         productQty: cartItems.quantity,
         addressId: selectedAddress.id,
-        userId: 2, // Masih hardcode
+        userId: userId, // Masih hardcode
         totalAmount: totalAmount,
         ongkir,
         ekspedisiId: selectedDeliveryMethod.id,

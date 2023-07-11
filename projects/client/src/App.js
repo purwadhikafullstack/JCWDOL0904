@@ -21,7 +21,7 @@ import routes from "./routes/routes";
 import { api } from "./API/api";
 import { login } from "./features/userSlice";
 import { data } from "./features/warehouseSlice";
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { AllCategory } from "./features/categorySlice";
 import { unreadAdminCount } from "./features/adminNotificationSlice";
 import { io } from "socket.io-client";
@@ -39,13 +39,15 @@ function App() {
   }
 
   async function getWarehouse() {
-    await api.get("/warehouses/data").then((res) => dispatch(data(res.data)));
+    await api
+      .get("/warehouses/data")
+      .then((res) => dispatch(data(res.data.result)));
   }
 
   const getAllCategory = async () => {
     try {
       const response = await api.get("/category");
-      console.log(response);
+      // console.log(response);
       dispatch(AllCategory(response.data.result));
     } catch (error) {
       console.log(error);
@@ -60,7 +62,7 @@ function App() {
       user = JSON.parse(localStorage.getItem("auth")); //token
       userId = user.id;
     }
-    console.log(user);
+    // console.log(user);
 
     getWarehouse();
     getAllCategory();
@@ -129,7 +131,20 @@ function App() {
       )
       } */}
       {isLoading ? (
-        <Spinner />
+        <div
+          style={{
+            display: "Flex",
+            height: "100vh",
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <img
+            src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_2.png`}
+            className="w-32 h-28 align-middle rounded-full animate-bounce"
+          />
+        </div>
       ) : (
         <Routes>{routes.map((route) => route)}</Routes>
       )}

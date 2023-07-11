@@ -15,6 +15,7 @@ import { BeatLoader } from "react-spinners";
 import "./style/ProductDetail.css";
 import UserIsNotLogin from "../components/UserIsNotLogin";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 const ProductDetail = () => {
   const navigation = useNavigate();
@@ -22,6 +23,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState({});
   const [stock, setStock] = useState(0);
   const [isLogin, SetIsLogin] = useState(false);
+  const userLogin = useSelector((state) => state.userSlice);
 
   useEffect(() => {
     const idProduct = localStorage.getItem("idProduct");
@@ -58,11 +60,11 @@ const ProductDetail = () => {
         icon: "info",
         confirmButtonText: "Ok",
       });
-      navigation("/login");
+      navigation("/");
     } else {
       try {
-        const users = JSON.parse(localStorage.getItem("auth"));
-        let id = users.id;
+        // const users = JSON.parse(localStorage.getItem("auth"));
+        let id = userLogin.id;
         console.log(id);
         await api.post(`/cart/add`, {
           userId: id,
@@ -145,7 +147,7 @@ const ProductDetail = () => {
             marginTop="20px"
             borderRadius="20px"
           >
-            <Table variant="simple" colorScheme="gray">
+            <Table variant="striped" colorScheme="gray">
               <Tbody>
                 <Tr>
                   <Td>CPU Speed</Td>

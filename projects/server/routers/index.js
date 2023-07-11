@@ -10,12 +10,14 @@ const cartRouter = require("./cartRouter");
 const ekpedisiRouter = require("./ekspedisiRouter");
 const promotionRouter = require("./promotionRouter");
 const orderRouter = require("./orderRouter");
-
 const tokenValidatorRouter = require("./tokenValidatorRouter");
 const uploadProfileRouter = require("./uploadProfileRouter");
 const mutationRouter = require("./mutationRouters");
 const categoryRouters = require("./categoryRouters");
-const notificationRouter = require("./notificationRouter")
+const notificationRouter = require("./notificationRouter");
+const stockRouter = require("./stockRouters");
+const migrationRouter = require("./migrationRouter");
+const transactionRouter = require("./transactionsRouter");
 module.exports = {
   userRouter,
   authRouter,
@@ -33,5 +35,8 @@ module.exports = {
   uploadProfileRouter,
   mutationRouter,
   categoryRouters,
-  notificationRouter
+  notificationRouter,
+  stockRouter,
+  migrationRouter,
+  transactionRouter,
 };

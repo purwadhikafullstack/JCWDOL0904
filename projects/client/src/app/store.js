@@ -8,6 +8,9 @@ import categorySlice from "../features/categorySlice.js";
 import notificationSlice from "../features/notificationSlice.js";
 import allUserSlice from "../features/allUserSlice.js";
 import adminNotificationSlice from "../features/adminNotificationSlice.js";
+import stockSlice from "../features/stockSlice.js";
+import transactionSlice from "../features/transactionSlice.js";
+import transactionItemSlice from "../features/transactionItemSlice.js";
 
 export default configureStore({
   reducer: {
@@ -18,7 +21,5 @@ export default configureStore({
     addressSlice,
     categorySlice,
     allUserSlice,
-    notificationSlice,
-    adminNotificationSlice,
   },
 });

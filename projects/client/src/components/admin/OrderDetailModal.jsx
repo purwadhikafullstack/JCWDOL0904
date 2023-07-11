@@ -11,7 +11,7 @@ export default function OrderDetailModal({
   selectedTransaction,
 }) {
   const [transactions, setTransactions] = useState([]);
-  console.log(transactions);
+  // console.log(transactions);
 
   useEffect(() => {
     fetchTransactions();
@@ -51,7 +51,7 @@ export default function OrderDetailModal({
                 <div key={transaction.id} className="space-y-4">
                   <div>
                     <p className="mt-2 text-3xl font-bold tracking-tight">
-                      Order detail!
+                      Order detail
                     </p>
                     <p className="mt-1 text-sm text-gray-600">
                       {moment(transaction.createdAt).format(

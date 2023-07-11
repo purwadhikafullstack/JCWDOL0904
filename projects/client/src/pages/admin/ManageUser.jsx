@@ -13,11 +13,12 @@ import {
 } from "@chakra-ui/react";
 import { api } from "../../API/api";
 import { SettingsIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
-import EditUser from "../../components/admin/EditUser";
+import EditUser from "../../components/admin/EditUserModal";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { allUserData } from "../../features/allUserSlice";
 import AddAdmin from "../../components/admin/AddAdmin";
+import EditWarehouse from "../../components/admin/EditAdminWarehouseModal";
 
 const ManageWarehouse = () => {
   const value = useSelector((state) => state.allUserSlice.value);
@@ -27,8 +28,6 @@ const ManageWarehouse = () => {
   const [paddingLeft, setPaddingLeft] = useState("pl-72");
 
   useEffect(() => {
-    console.log(value);
-
     const updatePaddingLeft = () => {
       if (window.innerWidth < 401) {
         setPaddingLeft("");
@@ -52,7 +51,7 @@ const ManageWarehouse = () => {
   const getUserData = async () => {
     try {
       await api.get(url).then((result) => {
-        console.log(result);
+        // console.log(result);
         dispatch(allUserData(result.data));
       });
     } catch (err) {
@@ -102,6 +101,7 @@ const ManageWarehouse = () => {
   let count = 0;
   const allUser = value.map((el) => {
     if (!el.is_deleted) {
+      console.log(el);
       count++;
       return (
         <tr key={el.id}>
@@ -130,6 +130,11 @@ const ManageWarehouse = () => {
                 fullname={el.fullname}
                 runFunction={getUserData}
               />
+              <EditWarehouse
+                uId={el.id}
+                warehouse={el.Warehouse}
+                runFunction={getUserData}
+              />
               <Button
                 variant="link"
                 color="red"
@@ -146,12 +151,12 @@ const ManageWarehouse = () => {
   });
 
   return (
-    <div className={` ${paddingLeft}  py-10 items-center`}>
+    <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <h1>Manage User </h1>
       <div>
         <AddAdmin />
       </div>
-      <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
+      <div className="mt-6 flex flex-col justify-end xl">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

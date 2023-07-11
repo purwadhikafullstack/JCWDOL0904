@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
-import {api} from "../API/api";
+import { useEffect, useState } from "react";
+import { api } from "../API/api";
 import io from "socket.io-client";
-import {Input, InputGroup, InputRightElement} from "@chakra-ui/react";
-import {SearchIcon} from "@chakra-ui/icons";
+import { Input, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 import Pagination from "../components/admin/Pagination";
 import TransactionSections from "../components/TransactionsSection";
 import Alert from "../components/SwallAlert";
@@ -20,9 +20,10 @@ export const Transaction = () => {
   }, [currentPage, invoiceNumber, selectedStatus]);
   const fetchTransactions = async () => {
     try {
+      const userId = JSON.parse(localStorage.getItem("auth")).id;
       const response = await api.get("/order/user", {
         params: {
-          userId: 2,
+          userId,
           page: currentPage,
           invoiceNumber: invoiceNumber,
           status: selectedStatus,
@@ -52,7 +53,7 @@ export const Transaction = () => {
         `/order/upload-payment-proof/${transactionId}`,
         formData,
         {
-          headers: {"Content-Type": "multipart/form-data"},
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
       Alert({

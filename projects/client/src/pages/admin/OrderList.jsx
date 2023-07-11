@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {api} from "../../API/api";
-import {PaymentProofModal} from "../../components/admin/PaymentProofModal";
-import {useSelector} from "react-redux";
+import { useEffect, useState } from "react";
+import { api } from "../../API/api";
+import { PaymentProofModal } from "../../components/admin/PaymentProofModal";
+import { useSelector } from "react-redux";
 import OrderDetailModal from "../../components/admin/OrderDetailModal";
 import io from "socket.io-client";
 import Pagination from "../../components/admin/Pagination";
@@ -42,6 +42,7 @@ export default function OrderList() {
             status: selectedStatus,
           },
         });
+        console.log(response);
       } else {
         response = await api.get(`/order`, {
           params: {
@@ -52,7 +53,7 @@ export default function OrderList() {
           },
         });
       }
-      const {orders, totalPages} = response.data;
+      const { orders, totalPages } = response.data;
       setTransactionByWarehouse(orders);
       setTotalPages(totalPages);
     } catch (error) {
@@ -70,7 +71,8 @@ export default function OrderList() {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
-      setWarehouses(response.data);
+
+      setWarehouses(response.data.result.result);
     } catch (error) {
       console.error(error);
     }
@@ -81,6 +83,7 @@ export default function OrderList() {
       setSelectedWarehouse(user.id_warehouse);
     } else {
       setSelectedWarehouse(selectedValue);
+      console.log(setSelectedWarehouse);
     }
   };
   const handleViewPaymentProof = (idtrans) => {
@@ -156,7 +159,7 @@ export default function OrderList() {
     <>
       <div className="px-4 mt-5 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
-          <div className="sm:flex-auto ml-72">
+          <div className="sm:flex-auto">
             <h1 className="text-xl font-semibold text-gray-900">
               Transactions
             </h1>
@@ -181,7 +184,7 @@ export default function OrderList() {
             </div>
           </div>
         </div>
-        <div className="mt-6 flex flex-col justify-end max-w-5xl xl ml-auto">
+        <div className="mt-6 flex flex-col justify-end xl ml-auto">
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

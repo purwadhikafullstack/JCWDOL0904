@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tabs,
   TabList,
@@ -14,16 +14,19 @@ import {
   InputGroup,
   InputRightElement,
   Box,
+  useMediaQuery,
 } from "@chakra-ui/react";
-import {SearchIcon} from "@chakra-ui/icons";
+import { SearchIcon } from "@chakra-ui/icons";
 import ProductsHome from "../components/ProductsHome";
 import ReactPaginate from "react-paginate";
 import Carousel from "../components/Carousel";
 import "./style/Homepage.css";
-import {api} from "../API/api";
+import { api } from "../API/api";
 import UserIsNotLogin from "../components/UserIsNotLogin";
 import Swal from "sweetalert2";
-import {useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AllCategory } from "../features/categorySlice";
+import Pagination from "../components/admin/Pagination";
 
 const Homepage = () => {
   const [page, setPage] = useState(0);
@@ -34,8 +37,10 @@ const Homepage = () => {
   const [order, setOrder] = useState("product_name");
   // const [isLogin, SetIsLogin] = useState(false);
   const [products, setProducts] = useState([]);
+  const [isSmallerThan401] = useMediaQuery("(max-width: 767px)");
 
   const allCategory = useSelector((state) => state.categorySlice.value);
+  const dispatch = useDispatch();
 
   const fetchProducts = async (category) => {
     setCategory(category);
@@ -60,6 +65,19 @@ const Homepage = () => {
       });
   };
 
+  const getAllCategory = async () => {
+    try {
+      const response = await api.get("/category", {
+        params: {
+          site: "home",
+        },
+      });
+      console.log(response.data.result);
+      dispatch(AllCategory(response.data.result));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // const getUserData = async () => {
   //   const id = JSON.parse(localStorage.getItem("idUser"));
   //   // console.log(id);
@@ -102,21 +120,28 @@ const Homepage = () => {
 
   useEffect(() => {
     // getUserData();
+    getAllCategory();
     fetchProducts(category);
     // console.log(isLogin);
   }, [page, search, sort, order]);
 
   return (
-    <div style={{minHeight: "150vh"}}>
+    <div style={{ minHeight: "150vh" }}>
       <Box backgroundColor="black" maxW="100%">
         <Carousel />
       </Box>
-      <Tabs colorScheme="black">
-        <TabList justifyContent="center" className="tab-list-home">
+      <Tabs colorScheme="black" isLazy variant="enclosed">
+        <TabList
+          justifyContent="center"
+          className="tab-list-home"
+          overflowX="scroll"
+          overflowY="clip"
+          whiteSpace="nowrap"
+        >
           {allCategory?.map((el) => {
-            return el.category !== "no category" ? (
+            return (
               <Tab onClick={() => fetchProducts(el.id)}>{el.category}</Tab>
-            ) : null;
+            );
           })}
           {/* <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
           <Tab onClick={() => fetchProducts(2)}>Watch</Tab>
@@ -127,11 +152,13 @@ const Homepage = () => {
             display: "flex",
             justifyContent: "center",
             marginTop: "10px",
-          }}>
+          }}
+        >
           <Stack
             flexDirection="column"
             alignItems="center"
-            className="con-category">
+            className="con-category"
+          >
             <InputGroup>
               <InputRightElement
                 pointerEvents="none"
@@ -149,7 +176,8 @@ const Homepage = () => {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-              }}>
+              }}
+            >
               <Text fontSize="12px" width="50px">
                 Sort By:
               </Text>
@@ -159,15 +187,16 @@ const Homepage = () => {
                 display="flex"
                 justifyContent="center"
                 borderRadius="50px"
-                style={{fontSize: "11px"}}
-                onChange={(e) => handleSorting(e.target.value)}>
-                <option value="1" style={{fontSize: "10px", borderRadius: 0}}>
+                style={{ fontSize: "11px" }}
+                onChange={(e) => handleSorting(e.target.value)}
+              >
+                <option value="1" style={{ fontSize: "10px", borderRadius: 0 }}>
                   By name Z~A
                 </option>
-                <option value="2" style={{fontSize: "10px", borderRadius: 0}}>
+                <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
                   By price low~high
                 </option>
-                <option value="3" style={{fontSize: "10px", borderRadius: 0}}>
+                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
                   By price high~low
                 </option>
               </Select>
@@ -177,57 +206,23 @@ const Homepage = () => {
 
         <TabPanels
           className="card-con"
-          style={{display: "flex", justifyContent: "center", width: "100%"}}>
+          style={{ display: "flex", justifyContent: "center", width: "100%" }}
+        >
           {allCategory?.map((el) => {
             return el.category !== "no category" ? (
               <TabPanel
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
-                maxWidth="100%">
+                maxWidth="100%"
+              >
                 <ProductsHome products={products} category={el.id} />
               </TabPanel>
             ) : null;
           })}
-
-          {/* <TabPanel
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            maxWidth="100%">
-            <ProductsHome products={products} category={1} />
-          </TabPanel>
-          <TabPanel
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            maxWidth="100%">
-            <ProductsHome products={products} category={2} />
-          </TabPanel>
-          <TabPanel
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            maxWidth="100%">
-            <ProductsHome products={products} category={3} />
-          </TabPanel>{" "}
-          */}
         </TabPanels>
       </Tabs>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={totalPage}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-        containerClassName="pagination"
-        pageLinkClassName="page-num"
-        previousLinkClassName="page-num"
-        nextLinkClassName="page-num"
-        activeLinkClassName="active"
-      />
+      <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );
 };
