@@ -145,8 +145,10 @@ export default function Sidebar(props) {
     if (storedAdminUnreads) {
       setAdminUnreads(parseInt(storedAdminUnreads));
     }
+    setAdminUnreads(notificationAdminUnread);
   }, []);
   useEffect(() => {
+    setAdminUnreads(notificationAdminUnread);
     localStorage.setItem("adminUnreads", adminUnreads.toString());
   }, [adminUnreads]);
   return (
@@ -330,7 +332,7 @@ export default function Sidebar(props) {
                   <span className="sr-only">View notifications</span>
                   <div className="flex">
                     <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    <p>{adminUnreads}</p>
+                    <p>{adminUnreads ? adminUnreads : 0}</p>
                   </div>
                 </button>
 

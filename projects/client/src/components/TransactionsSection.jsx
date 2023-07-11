@@ -161,7 +161,10 @@ const TransactionSections = ({
                     <div className="flex items-center justify-between pb-1">
                       <dt className="text-gray-900">Shipping fee</dt>
                       <dd className="font-medium text-gray-900">
-                        Rp. {transaction.ongkir.toLocaleString("id-ID")}
+                        Rp.{" "}
+                        {transaction.ongkir
+                          ? transaction.ongkir.toLocaleString("id-ID")
+                          : null}
                       </dd>
                     </div>
                     <div className="flex items-center justify-between pt-1">

@@ -2,7 +2,6 @@ const { Transaction, Warehouse, Products, Stocks, TransactionItem, Address, sequ
 const db = require("../models");
 const moment = require("moment");
 const { io } = require("../src/index");
-const { sendEmailNotification } = require('../utils/notificationService');
 const { createNotification } = require("./notificationController")
 
 module.exports = {
@@ -54,8 +53,8 @@ module.exports = {
                 await StockHistory.create({
                     quantity: item.quantity,
                     status: 'out',
-                    reference: `Transaction #${transaction.id}`,
                     id_product: product.id,
+                    current_stock: stock.stock - item.quantity,
                 });
             });
 

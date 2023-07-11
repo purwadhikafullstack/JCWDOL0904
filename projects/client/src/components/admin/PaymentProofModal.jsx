@@ -47,7 +47,6 @@ export const PaymentProofModal = ({
               <div className="modal-header flex justify-between items-center bg-gray-200 rounded-t-lg py-3 px-6">
                 <h2 className="text-xl font-bold">Payment Proof</h2>
                 <h2 className="text-xs">
-                  {" "}
                   {moment(expired).format("YYYY-MM-DD HH:mm:ss")}
                 </h2>
               </div>

@@ -72,7 +72,6 @@ export const Navbar = () => {
     // navigation("/login");
   };
 
-  const [cartLength, setCartLength] = useState(0);
   const {cart} = useSelector((state) => state.cartSlice.value);
   const notificationUnread = useSelector(
     (state) => state.notificationSlice.value.unread
