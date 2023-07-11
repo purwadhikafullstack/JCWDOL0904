@@ -26,6 +26,7 @@ import UserIsNotLogin from "../components/UserIsNotLogin";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { AllCategory } from "../features/categorySlice";
+import Pagination from "../components/admin/Pagination";
 
 const Homepage = () => {
   const [page, setPage] = useState(0);
@@ -221,20 +222,7 @@ const Homepage = () => {
           })}
         </TabPanels>
       </Tabs>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={totalPage}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-        containerClassName="flex justify-center items-center mb-10"
-        pageLinkClassName="px-2 py-1 rounded-md m-1"
-        previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
-      />
+      <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );
 };

@@ -12,13 +12,17 @@
   }
   ```
 */
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
+  ArrowPathIcon,
   Bars3BottomLeftIcon,
   BellIcon,
+  BuildingStorefrontIcon,
   CalendarIcon,
   ChartBarIcon,
+  CircleStackIcon,
+  DevicePhoneMobileIcon,
   FolderIcon,
   HomeIcon,
   InboxIcon,
@@ -28,8 +32,9 @@ import {
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../features/userSlice";
+// import env from "react-dotenv";
 
 const navigation = [
   {
@@ -41,19 +46,19 @@ const navigation = [
   {
     name: "User",
     href: "/manage-user",
-    icon: HomeIcon,
+    icon: UsersIcon,
     current: true,
   },
   {
     name: "Mutation",
     href: "/mutation-list",
-    icon: UsersIcon,
+    icon: ArrowPathIcon,
     current: false,
   },
   {
     name: "Warehouse",
     href: "/manage-warehouse",
-    icon: HomeIcon,
+    icon: BuildingStorefrontIcon,
     current: true,
   },
   {
@@ -66,12 +71,24 @@ const navigation = [
   {
     name: "Product",
     href: "/manage-product",
-    icon: ChartBarIcon,
+    icon: DevicePhoneMobileIcon,
     current: false,
   },
   {
     name: "Stock",
     href: "/manage-stock",
+    icon: CircleStackIcon,
+    current: false,
+  },
+  {
+    name: "Reports",
+    href: "/sales-report",
+    icon: ChartBarIcon,
+    current: false,
+  },
+  {
+    name: "History",
+    href: "/sales-report",
     icon: ChartBarIcon,
     current: false,
   },
@@ -89,8 +106,8 @@ const navigation = [
   },
 ];
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
+  // { name: "Your Profile", href: "#" },
+  // { name: "Settings", href: "#" },
   { name: "Sign out", href: "#" },
 ];
 
@@ -98,10 +115,15 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Sidebar() {
+export default function Sidebar(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [buttonActive, setButtonActive] = useState(navigation[0].name);
+  const { user_image, username } = useSelector((state) => state.userSlice);
   const navigator = useNavigate();
   const dispatch = useDispatch();
+  useEffect(() => {
+    navigator("/order");
+  }, []);
 
   const handleLogOut = (e) => {
     e.preventDefault();
@@ -116,19 +138,10 @@ export default function Sidebar() {
         role: "",
       })
     );
-    // navigation("/");
   };
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
@@ -185,7 +198,7 @@ export default function Sidebar() {
                   <div className="flex flex-shrink-0 items-center px-4">
                     <img
                       className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                       alt="Your Company"
                     />
                   </div>
@@ -195,12 +208,19 @@ export default function Sidebar() {
                         <Button
                           key={item.name}
                           // href={item.href}
-                          backgroundColor="black"
+                          backgroundColor={
+                            buttonActive === item.name ? "#4A5568" : "black"
+                          }
                           _hover={{ backgroundColor: "#4A5568" }}
                           color="white"
                           width="300px"
+                          justifyContent="left"
                           // href={item.href}
-                          onClick={() => navigator(item.href)}
+                          onClick={() => {
+                            navigator(item.href);
+                            setButtonActive(item.name);
+                            setSidebarOpen(false);
+                          }}
                           // className={classNames(
                           //   item.current
                           //     ? "bg-gray-900 text-white"
@@ -234,11 +254,11 @@ export default function Sidebar() {
         {/* Static sidebar for desktop */}
         <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex min-h-0 flex-1 flex-col bg-black">
-            <div className="flex h-16 flex-shrink-0 items-center bg-[#F9FAFB] px-4">
+          <div className="flex min-h-0 flex-1 flex-col items-center bg-black">
+            <div className="flex h-16 flex-shrink-0 items-center px-4">
               <img
                 className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
                 alt="Your Company"
               />
             </div>
@@ -248,13 +268,18 @@ export default function Sidebar() {
                   <Button
                     key={item.name}
                     // href={item.href}
-                    backgroundColor="black"
+                    backgroundColor={
+                      buttonActive === item.name ? "#4A5568" : "black"
+                    }
                     _hover={{ backgroundColor: "#4A5568" }}
                     color="white"
                     width="230px"
                     justifyContent="left"
                     // href={item.href}
-                    onClick={() => navigator(item.href)}
+                    onClick={() => {
+                      navigator(item.href);
+                      setButtonActive(item.name);
+                    }}
                     // className={classNames(
                     //   item.current
                     //     ? "bg-gray-900 text-white"
@@ -288,29 +313,12 @@ export default function Sidebar() {
               <span className="sr-only">Open sidebar</span>
               <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
             </button>
-            <div className="flex flex-1 justify-between px-4">
-              <div className="flex flex-1">
-                <form className="flex w-full md:ml-0" action="#" method="GET">
-                  <label htmlFor="search-field" className="sr-only">
-                    Search
-                  </label>
-                  <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-                      <MagnifyingGlassIcon
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <input
-                      id="search-field"
-                      className="block h-full w-full border-transparent py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-sm"
-                      placeholder="Search"
-                      type="search"
-                      name="search"
-                    />
-                  </div>
-                </form>
-              </div>
+            <div className=" flex items-end">
+              <h1 className="text-xs font-semibold text-gray-900 mb-5 ml-5 flex align-middle">
+                Welcome, <span className="font-bold"> {username}</span>
+              </h1>
+            </div>
+            <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
@@ -327,7 +335,7 @@ export default function Sidebar() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src={user_image}
                         alt=""
                       />
                     </Menu.Button>
@@ -349,7 +357,7 @@ export default function Sidebar() {
                               // href={item.href}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
                               )}
                               onClick={(e) => handleLogOut(e)}
                             >
@@ -365,20 +373,7 @@ export default function Sidebar() {
             </div>
           </div>
 
-          {/* <main className="flex-1">
-            <div className="py-6">
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-                <h1 className="text-2xl font-semibold text-gray-900">
-                  Dashboard
-                </h1>
-              </div>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-                <div className="py-4">
-                  <div className="h-96 rounded-lg border-4 border-dashed border-gray-200" />
-                </div>
-              </div>
-            </div>
-          </main> */}
+          <main className="flex-1">{props.mainPage}</main>
         </div>
       </div>
     </>

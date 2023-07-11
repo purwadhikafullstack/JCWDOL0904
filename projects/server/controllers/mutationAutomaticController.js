@@ -132,16 +132,6 @@ module.exports = {
       );
 
       if (stockIsEmpty.length > 0) {
-        await transaction.update(
-          {
-            status: "rejected",
-          },
-          {
-            where: {
-              id,
-            },
-          }
-        );
         return res.status(400).send({
           data: stockIsEmpty,
           message: "stock is empty on every warehouse",
@@ -211,12 +201,6 @@ module.exports = {
         })
       );
 
-      // const currentTime = new Date();
-      // let request_number = currentTime.getTime();
-      // request_number = request_number.toString();
-      // request_number = request_number.substring(0, 5);
-      // request_number = parseInt(request_number);
-
       await Promise.all(
         warehouseAvailable.map(async (el) => {
           const stockNeeded = mutationNeeded.find(
@@ -229,21 +213,27 @@ module.exports = {
               id_product: el[0].Stocks[0].id_product,
               quantity: stockNeeded.qty,
               warehouse_receive_id: id_warehouse_seller,
-              // request_number: request_number,
             });
+            const currentStockOut = updateStock.find(
+              (s) => s.id_product === el[0].Stocks[0].id_product
+            );
             await stockhistory.create({
               id_product: el[0].Stocks[0].id_product,
               quantity: stockNeeded.qty,
-              // reference: request_number,
               status: "out",
               id_warehouse: el[0].id,
+              current_stock: currentStockOut.stock,
             });
+            const currentStockIn = updateReceiveStock.find(
+              (s) => s.id_product === el[0].Stocks[0].id_product
+            );
             await stockhistory.create({
               id_product: el[0].Stocks[0].id_product,
               quantity: stockNeeded.qty,
               // reference: request_number,
               status: "in",
               id_warehouse: id_warehouse_seller,
+              current_stock: currentStockIn.stock,
             });
           }
         })

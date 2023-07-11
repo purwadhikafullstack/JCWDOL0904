@@ -61,11 +61,23 @@ const routes = [
       </ProtectedPage>
     }
   />,
-  <Route key="register" path="/register" element={<Register />} />,
+  <Route
+    key="register"
+    path="/register"
+    element={
+      <ProtectedPage guestOnly={true}>
+        <Register />
+      </ProtectedPage>
+    }
+  />,
   <Route
     key="verification"
     path="/verification/:token"
-    element={<Verification />}
+    element={
+      <ProtectedPage guestOnly={true}>
+        <Verification />
+      </ProtectedPage>
+    }
   />,
 
   <Route
@@ -82,7 +94,7 @@ const routes = [
     key="detail"
     path="/detail"
     element={
-      <ProtectedPage>
+      <ProtectedPage guestOnly={true}>
         <ProductDetail />
       </ProtectedPage>
     }
@@ -100,7 +112,7 @@ const routes = [
     key="requset"
     path="/request"
     element={
-      <ProtectedPage>
+      <ProtectedPage guestOnly={true}>
         <ResetPassword />
       </ProtectedPage>
     }
@@ -109,7 +121,7 @@ const routes = [
     key="input-password"
     path="/inputpassword/:token"
     element={
-      <ProtectedPage>
+      <ProtectedPage guestOnly={true}>
         <InputPassword />
       </ProtectedPage>
     }
@@ -137,7 +149,7 @@ const routes = [
     key="car"
     path="/car"
     element={
-      <ProtectedPage>
+      <ProtectedPage needLogin={true}>
         <OrderDetailModal />
       </ProtectedPage>
     }
@@ -146,7 +158,7 @@ const routes = [
     key="notification"
     path="/notification"
     element={
-      <ProtectedPage>
+      <ProtectedPage needLogin={true}>
         <Notification />
       </ProtectedPage>
     }
@@ -155,7 +167,7 @@ const routes = [
     key="nd"
     path="/nd"
     element={
-      <ProtectedPage>
+      <ProtectedPage needLogin={true}>
         <NotificationDetailModal />
       </ProtectedPage>
     }

@@ -8,7 +8,8 @@ module.exports = {
         product_name: "Galaxy A54 5G",
         product_image: "http://localhost:8000/Galaxy_A54_5G.png",
         price: 6399000,
-        description: "Mulai dari Rp 533.250/bln. Kalkulator Finansial",
+        description:
+          "Dengan VDIS dan angle OIS yang lebih lebar, Galaxy A54 5G akan membantu Anda merekam video-video berkualitas tinggi dengan mudah melalui reframing dan autofokus otomatis.",
         cpu_speed: "2.4GHz, 2GHz",
         cpu_type: "Octa-Core",
         size: '163.1mm (6.4 full rectangle) / 158.9mm (6.3" rounded corners)',

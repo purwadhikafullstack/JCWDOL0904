@@ -36,7 +36,14 @@ const ProductsHome = ({ products }) => {
               onClick={() => handleToDetail(el.id)}
               className="con-cards"
             >
-              <Card cursor="pointer" width="200px" height="330px">
+              <Card
+                cursor="pointer"
+                width="200px"
+                height="330px"
+                // backgroundColor="white"
+                className="bg-white hover:bg-gray-200"
+                // _hover={{ backgroundColor: "#4a5568" }}
+              >
                 <CardBody>
                   <Image
                     src={`${el.product_image}`}

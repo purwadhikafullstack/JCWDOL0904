@@ -14,14 +14,16 @@ import { updateCart } from "../features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { login } from "../features/userSlice";
 import LoginModal from "./loginModal";
+import env from "react-dotenv";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export const Navbar = () => {
-  const { user_image, id } = useSelector((state) => state.userSlice);
-  // console.log(user_image);
+  const { user_image, id, username, email } = useSelector(
+    (state) => state.userSlice
+  );
 
   const navigation = useNavigate();
   const dispatch = useDispatch();
@@ -98,13 +100,13 @@ export const Navbar = () => {
                   onClick={() => navigation("/")}
                 >
                   <img
-                    className="block h-8 w-auto lg:hidden"
-                    src="http://localhost:8000/logo_galaxy.png"
+                    className="block h-8 w-auto lg:hidden "
+                    src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                     alt="Your Company"
                   />
                   <img
                     className="hidden h-8 w-auto lg:block"
-                    src="http://localhost:8000/logo_galaxy.png"
+                    src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                     alt="Your Company"
                   />
                 </div>
@@ -134,8 +136,6 @@ export const Navbar = () => {
                         <EnvelopeIcon
                           onClick={() => {
                             navigation("/notification");
-                            // if (id) navigation("/cart");
-                            // else alert("login dulu");
                           }}
                           className="h-6 w-6"
                           aria-hidden="true"
@@ -265,60 +265,68 @@ export const Navbar = () => {
             <div className="space-y-1 pt-2 pb-3">
               <Disclosure.Button
                 as="a"
-                href="#"
-                className="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 sm:pl-5 sm:pr-6"
+                onClick={() => navigation("/")}
+                className="block border-l-4 border-white bg-black py-2 pl-3 pr-4 text-base font-medium text-white sm:pl-5 sm:pr-6"
               >
                 Dashboard
               </Disclosure.Button>
             </div>
             <div className="border-t border-gray-200 pt-4 pb-3">
-              <div className="flex items-center px-4 sm:px-6">
+              <div className="flex items-center px-4 sm:px-6 justify-between">
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={user_image}
                     alt=""
                   />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-gray-800">
-                    Tom Cook
+                    {username}
                   </div>
                   <div className="text-sm font-medium text-gray-500">
-                    tom@example.com
+                    {email}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2"
-                >
-                  <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2"
-                >
-                  <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                <div>
+                  <Disclosure.Button
+                    onClick={() => {
+                      navigation("/notification");
+                    }}
+                    type="button"
+                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2"
+                  >
+                    <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
+                  </Disclosure.Button>
+                  <Disclosure.Button
+                    onClick={() => {
+                      navigation("/cart");
+                    }}
+                    type="button"
+                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2"
+                  >
+                    <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
+                  </Disclosure.Button>
+                </div>
               </div>
               <div className="mt-3 space-y-1">
                 <Disclosure.Button
+                  onClick={() => navigation("/profile")}
                   as="a"
-                  href="#"
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
                 >
                   Your Profile
                 </Disclosure.Button>
                 <Disclosure.Button
+                  onClick={() => navigation("/transactions")}
                   as="a"
-                  href="#"
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
                 >
-                  Settings
+                  Transactioin
                 </Disclosure.Button>
                 <Disclosure.Button
+                  onClick={() => handleLogOut()}
                   as="a"
-                  href="#"
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
                 >
                   Sign out
