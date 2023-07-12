@@ -1,7 +1,8 @@
 const { Transaction, Warehouse, Products, Stocks, TransactionItem, Address, sequelize, Carts, Ekspedisi } = require('../models');
 const db = require("../models");
 const moment = require("moment");
-const { io } = require("../src/index")
+const { io } = require("../src/index");
+const { createNotification } = require('./notificationController');
 
 const checkExpiredOrders = async () => {
     try {
@@ -29,7 +30,10 @@ const checkExpiredOrders = async () => {
         for (const order of expiredOrders) {
             await order.update({ status: 'Canceled' });
             io.emit("transaction-update", order.toJSON());
+
+            await createNotification(`Invoice ${order.invoice_number}`, 'Your order is canceled, the payment time is expired.', order.id_user, "admin");
         }
+        // Create a notification for the user
     } catch (error) {
         console.error('Error checking expired orders:', error);
     }
@@ -39,7 +43,7 @@ setInterval(checkExpiredOrders, 11000);
 module.exports = {
     createOrder: async (req, res) => {
         try {
-            const { cartItems, addressId, userId, ekspedisiId, totalAmount, category } = req.body;
+            const { cartItems, addressId, userId, ekspedisiId, totalAmount, category, ongkir } = req.body;
             if (!ekspedisiId) {
                 return res.status(400).json({ error: 'An expedition must be selected' });
             }
@@ -68,6 +72,7 @@ module.exports = {
             expirationDate.setSeconds(expirationDate.getSeconds() + 30); // Set expiration to 30 seconds from now
             const transaction = await Transaction.create({
                 total_price: totalAmount,
+                ongkir: ongkir,
                 transaction_date: new Date(),
                 status: 'Waiting For Payment',
                 id_address: addressId,
@@ -83,12 +88,15 @@ module.exports = {
                     if (!product) {
                         return res.status(404).send({ error: `Product with ID ${Product.id} not found` });
                     }
-                    const totalStock = await Stocks.sum('stock', {
+                    // Check if the product is out of stock
+                    const stocks = await Stocks.findAll({
                         where: { id_product: Product.id },
                     });
-                    if (totalStock <= 0) {
+                    const totalStock = stocks.reduce((total, stock) => total + stock.stock, 0);
+                    if (totalStock < quantity) {
                         return res.status(400).send({ error: `Product with ID ${Product.id} is out of stock` });
                     }
+
                     return TransactionItem.create({
                         quantity,
                         price: product.price,
@@ -103,6 +111,7 @@ module.exports = {
                     id_user: userId,
                 },
             });
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'New order', userId, "user");
             return res.status(201).send({ transaction, transactionItems });
         } catch (error) {
             console.error(error);
@@ -111,7 +120,9 @@ module.exports = {
     cancelOrder: async (req, res) => {
         try {
             const transactionId = req.params.id;
-            const transaction = await Transaction.findByPk(transactionId);
+            const transaction = await Transaction.findByPk(transactionId, {
+                include: [{ model: TransactionItem, include: [Products] }],
+            });
             if (!transaction) {
                 return res.status(404).send({ message: 'Transaction not found' });
             }
@@ -119,8 +130,10 @@ module.exports = {
                 return res.status(400).send({ message: 'Transaction is already canceled' });
             }
             if (transaction.status === 'Waiting For Payment Confirmation' || transaction.status === 'On Process' || transaction.status === 'Order Confirmed' || transaction.status === 'Shipped') {
-                return res.status(400).send({ message: 'You can not canceled transaction' });
+                return res.status(400).send({ message: 'You cannot cancel the transaction' });
             }
+
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'Canceled by the user', transaction.id_user, "user");
             await transaction.update({ status: 'Canceled' });
             res.status(200).send({ message: 'Transaction canceled successfully' });
         } catch (error) {
@@ -146,6 +159,7 @@ module.exports = {
             }
 
             await transaction.update({ status: "Order Confirmed" });
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'Canceled by the user', transaction.id_user, "user");
             res.status(200).send({ message: 'Transaction confirmed successfully' });
         } catch (error) {
             console.log(error);

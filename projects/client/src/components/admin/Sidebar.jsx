@@ -1,17 +1,3 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
@@ -35,6 +21,8 @@ import { Button } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../features/userSlice";
 // import env from "react-dotenv";
+import { io } from "socket.io-client";
+import { unreadAdminCount } from "../../features/adminNotificationSlice";
 
 const navigation = [
   {
@@ -105,6 +93,7 @@ function classNames(...classes) {
 
 export default function Sidebar(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminUnreads, setAdminUnreads] = useState(0);
   const [buttonActive, setButtonActive] = useState(navigation[0].name);
   const { user_image, username } = useSelector((state) => state.userSlice);
   const navigator = useNavigate();
@@ -128,6 +117,39 @@ export default function Sidebar(props) {
     );
   };
 
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationAdminRead", (updatedNotifications) => {
+      console.log("This is an update from the socket", updatedNotifications);
+      const unreadAdmin = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      setAdminUnreads(unreadAdmin.length);
+    });
+
+    return () => {
+      socket.off("notificationAdminRead");
+    };
+  }, []);
+
+  const notificationAdminUnread = useSelector(
+    (state) => state.adminNotificationSlice.value.unreadAdmin
+  );
+
+  useEffect(() => {
+    const storedAdminUnreads = localStorage.getItem("adminUnreads");
+    if (storedAdminUnreads) {
+      setAdminUnreads(parseInt(storedAdminUnreads));
+    }
+    setAdminUnreads(notificationAdminUnread);
+  }, []);
+  useEffect(() => {
+    setAdminUnreads(notificationAdminUnread);
+    localStorage.setItem("adminUnreads", adminUnreads.toString());
+  }, [adminUnreads]);
   return (
     <>
       <div>
@@ -242,8 +264,8 @@ export default function Sidebar(props) {
         {/* Static sidebar for desktop */}
         <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex min-h-0 flex-1 flex-col items-center bg-black">
-            <div className="flex h-16 flex-shrink-0 items-center px-4">
+          <div className="flex min-h-0 flex-1 flex-col bg-black">
+            <div className="flex h-16 flex-shrink-0 justify-center items-center bg-[#F9FAFB] px-4">
               <img
                 className="h-8 w-auto"
                 src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
@@ -310,10 +332,14 @@ export default function Sidebar(props) {
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
+                  onClick={() => navigator("/admin-notification")}
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
+                  <div className="flex">
+                    <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    <p>{adminUnreads ? adminUnreads : 0}</p>
+                  </div>
                 </button>
 
                 {/* Profile dropdown */}

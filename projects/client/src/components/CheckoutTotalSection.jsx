@@ -1,13 +1,27 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
+import {PulseLoader} from "react-spinners";
+import {css} from "@emotion/react";
 
 export const CheckoutTotalSection = ({
   handleCheckout,
   subTotal,
   totalAmount,
   ongkir,
+  isOngkirLoading,
 }) => {
   const navigate = useNavigate();
+
+  const spinnerStyles = css`
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 5px;
+  `;
   return (
     <div>
       <div className="relative mt-8">
@@ -46,11 +60,28 @@ export const CheckoutTotalSection = ({
           </div>
         </dl>
 
-        <button
-          type="submit"
-          className="mt-6 w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-          Checkout
-        </button>
+        {isOngkirLoading ? (
+          <button
+            type="submit"
+            className="mt-6 w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            disabled>
+            <span className="inline-flex items-center">
+              <PulseLoader
+                size={10}
+                css={spinnerStyles}
+                color="currentColor"
+                loading={true}
+              />
+              <span className="ml-2">Loading</span>
+            </span>
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="mt-6 w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            Checkout
+          </button>
+        )}
         <button
           onClick={() => navigate("/")}
           className="mt-6 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm ">

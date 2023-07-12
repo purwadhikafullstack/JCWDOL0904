@@ -73,7 +73,7 @@ export const Transaction = () => {
   };
   const cancelOrder = async (id) => {
     try {
-      const response = await api.patch(`/order/cancel/${id}`);
+      const response = await api.patch(`/order/${id}/cancel`);
       Alert({
         title: "Success!",
         text: response.data.message,
@@ -148,7 +148,7 @@ export const Transaction = () => {
   };
   return (
     <>
-      <div className="bg-white min-h-full">
+      <div className="bg-white min-h-[700px]">
         <main className="pt-24 mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="m-auto max-w-full">
             <h1 className="text-3xl font-bold mb-4">Transactions</h1>

@@ -5,12 +5,12 @@ import {useDispatch} from "react-redux";
 import {cart, subtotal} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
 import {CartItem} from "../components/CartItem";
+import Alert from "../components/SwallAlert";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(false);
-  console.log(cartItems);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,13 +22,11 @@ const Cart = () => {
         params: {userId},
       });
       setCartItems(response.data.cartItems);
-
       let sum = 0;
       response.data.cartItems.forEach(
         (e) => (sum += e.quantity * e.Product.price)
       );
       setTotalPrice(sum);
-
       dispatch(
         cart({
           cart: response.data.cartItems,
@@ -48,19 +46,18 @@ const Cart = () => {
       console.error(error);
     }
   };
-
   useEffect(() => {
     fetchCartItems();
   }, []);
 
-  const updateCartProduct = async (cartItemId, action) => {
-    setLoading(true);
+  const updateCartProduct = async (cartItemId, action, quantity) => {
     try {
+      setLoading(true);
       const response = await api.patch(`/cart`, {
         cartItemId,
         action,
+        quantity,
       });
-      console.log(response.data);
       const updatedItems = cartItems.map((item) => {
         if (item.id === cartItemId) {
           return {
@@ -73,12 +70,16 @@ const Cart = () => {
       setCartItems(updatedItems);
       fetchCartItems();
     } catch (error) {
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
-
   const deleteCartItem = async (cartItemId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -100,7 +101,6 @@ const Cart = () => {
       }
     });
   };
-
   return (
     <div className="bg-white min-h-[700px] pt-10">
       <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -117,12 +117,17 @@ const Cart = () => {
               className="divide-y divide-gray-200 border-t border-b border-gray-200">
               {cartItems.map((item) => {
                 return (
-                  <CartItem
-                    key={item.id}
-                    item={item}
-                    updateCartProduct={updateCartProduct}
-                    deleteCartItem={deleteCartItem}
-                  />
+                  <div>
+                    {cartItems && (
+                      <CartItem
+                        key={item.id}
+                        item={item}
+                        updateCartProduct={updateCartProduct}
+                        deleteCartItem={deleteCartItem}
+                      />
+                    )}
+                    {!cartItems && <p>Cart is empty</p>}
+                  </div>
                 );
               })}
             </ul>

@@ -23,6 +23,9 @@ import { login } from "./features/userSlice";
 import { data } from "./features/warehouseSlice";
 import { Flex, Spinner } from "@chakra-ui/react";
 import { AllCategory } from "./features/categorySlice";
+import { unreadAdminCount } from "./features/adminNotificationSlice";
+import { io } from "socket.io-client";
+import { unreadCount } from "./features/notificationSlice";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -69,6 +72,17 @@ function App() {
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
+  }, []);
+
+  const updateUnreadCount = (unread) => {
+    dispatch(unreadCount({ unread }));
+  };
+
+  useEffect(() => {
+    const unreadCount = localStorage.getItem("unread");
+    if (unreadCount) {
+      updateUnreadCount(JSON.parse(unreadCount));
+    }
   }, []);
 
   // const
