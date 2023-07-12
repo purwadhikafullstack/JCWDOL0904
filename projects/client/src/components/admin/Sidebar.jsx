@@ -88,18 +88,6 @@ const navigation = [
   },
   {
     name: "History",
-    href: "/sales-report",
-    icon: ChartBarIcon,
-    current: false,
-  },
-  {
-    name: "Reports",
-    href: "/sales-report",
-    icon: ChartBarIcon,
-    current: false,
-  },
-  {
-    name: "History",
     href: "/stock-history",
     icon: ChartBarIcon,
     current: false,

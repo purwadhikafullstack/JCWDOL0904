@@ -56,7 +56,7 @@ const Homepage = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setProducts(res.data.data);
         setTotalPage(res.data.totalPage);
       })
@@ -72,7 +72,7 @@ const Homepage = () => {
           site: "home",
         },
       });
-      console.log(response.data.result);
+      // console.log(response.data.result);
       dispatch(AllCategory(response.data.result));
     } catch (error) {
       console.log(error);

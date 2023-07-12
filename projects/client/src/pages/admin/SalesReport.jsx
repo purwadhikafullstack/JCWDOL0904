@@ -14,6 +14,7 @@ import ProductSearch from "../../components/admin/ProductSearch";
 
 const SalesReport = () => {
   const value = useSelector((state) => state.transactionSlice.value);
+  const userData = useSelector((state) => state.userSlice);
   // console.log(value);
   const itemValue = useSelector((state) => state.transactionItemSlice.value);
   // console.log(itemValue);
@@ -29,13 +30,13 @@ const SalesReport = () => {
   const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouses, setWarehouses] = useState([]);
-  const [order, setOrder] = useState("product_name");
+  const [order, setOrder] = useState("createdAt");
   const [sort, setSort] = useState("ASC");
   const user = useSelector((state) => state.userSlice);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [category, setCategory] = useState([]);
   const [productSearch, setProductSearch] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState(1);
+  const [selectedMonth, setSelectedMonth] = useState("01");
   // console.log(user);
 
   const dispatch = useDispatch();
@@ -56,34 +57,27 @@ const SalesReport = () => {
   }, []);
 
   const urlProduct = "/transaction/product";
-  const getProductTransaction = async () => {
+  const getAllReport = async () => {
     try {
-      let selectWarehouse;
-      if (user.id_warehouse) {
-        selectWarehouse = user.id_warehouse;
-      } else {
-        selectWarehouse = selectedWarehouse;
-      }
-      let selectCategory = selectedCategory;
-
-      let result = await api.get(urlProduct, {
+      console.log(selectedMonth);
+      const response = await api.get(urlProduct, {
         params: {
-          page,
-          userId: user.id,
+          idWarehouse: selectedWarehouse,
           productSearch,
-          role: user.role,
-          warehouse: selectWarehouse,
-          category: selectCategory,
+          adminWarehouse: userData.id_warehouse,
+          selectedCategory,
+          page,
           month: selectedMonth,
+          order,
+          sort,
         },
       });
-      console.log(result);
-      // setProduct(result.data.result);
-      setTotalPage(result.data.totalPages);
-      console.log(totalPage);
-      dispatch(transactionItemData(result.data.allProduct));
-      setTotalPrice(result.data.total_price);
-      setTransactionByMonth(result.data.total_value_by_month);
+      console.log(response);
+      dispatch(transactionItemData(response.data.result));
+      setTotalPage(response.data.totalPage);
+      setPage(response.data.page);
+      setTransactionByMonth(response.data.totalPriceFiltered);
+      setTotalPrice(response.data.total_price);
     } catch (error) {
       console.log(error);
     }
@@ -122,11 +116,16 @@ const SalesReport = () => {
   }, []);
 
   useEffect(() => {
-    getProductTransaction();
-  }, [page, productSearch, selectedWarehouse, selectedCategory, selectedMonth]);
-  useEffect(() => {
-    setPage(0);
-  }, [selectedWarehouse, selectedCategory, selectedMonth]);
+    getAllReport();
+  }, [
+    page,
+    productSearch,
+    selectedWarehouse,
+    selectedCategory,
+    selectedMonth,
+    sort,
+    order,
+  ]);
 
   const closeDetailModal = () => {
     setIsDetailModalOpen(false);
@@ -137,45 +136,35 @@ const SalesReport = () => {
     setIsDetailModalOpen(true);
   };
 
-  const handleWarehouseChange = (event) => {
-    const selectedValue = event.target.value;
-    console.log(selectedValue);
-    if (user.role === "adminWarehouse") {
-      setSelectedWarehouse(user.id_warehouse);
-    } else {
-      setSelectedWarehouse(selectedValue);
-    }
-  };
   const handleCategoryChange = (event) => {
     const selectedCategoryValue = event.target.value;
     console.log(selectedCategoryValue);
     setSelectedCategory(selectedCategoryValue);
-    console.log(setSelectedMonth);
   };
 
   const handleSorting = (value) => {
     if (value === "1") {
-      setOrder("product_name");
+      setOrder("createdAt");
       setSort("DESC");
     } else if (value === "2") {
-      setOrder("price");
+      setOrder("createdAt");
       setSort("ASC");
     } else if (value === "3") {
       setOrder("price");
-      setSort("DESC");
-    } else {
-      setOrder("product_name");
       setSort("ASC");
+    } else {
+      setOrder("price");
+      setSort("DESC");
     }
   };
 
   const ProductMap = itemValue?.map((pEl) => {
     const date = pEl.Transaction.transaction_date;
     const formattedDate = moment(date).format("DD MMMM YYYY");
-    console.log(pEl);
+    // console.log(pEl);
     // console.log(pEl.Product.Stocks);
     return (
-      <tr key={pEl}>
+      <tr key={pEl.id}>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
           {pEl.Product.product_name}
         </td>
@@ -196,7 +185,7 @@ const SalesReport = () => {
   });
 
   return (
-    <div className={` ${paddingLeft}  py-10 items-center`}>
+    <div className={`mr-5 ml-5 py-10 items-center`}>
       {itemValue ? (
         <div>
           <div className="sm:flex-auto">
@@ -212,12 +201,11 @@ const SalesReport = () => {
             <Stack direction="row">
               <OrderWarehouseDropdown
                 user={user}
-                handleWarehouseChange={handleWarehouseChange}
+                handleWarehouseChange={setSelectedWarehouse}
                 selectedWarehouse={selectedWarehouse}
                 warehouses={warehouses}
               />
               <ProductCategoryDropdown
-                // user={user}
                 handleCategoryChange={handleCategoryChange}
                 selectedCategory={selectedCategory}
                 category={category}
@@ -233,16 +221,16 @@ const SalesReport = () => {
                 style={{ fontSize: "11px" }}
                 onChange={(e) => handleSorting(e.target.value)}
               >
-                <option value="1" style={{ fontSize: "10px", borderRadius: 0 }}>
+                <option value="1" style={{ fontSize: "15px", borderRadius: 0 }}>
                   Newest Date
                 </option>
-                <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
+                <option value="2" style={{ fontSize: "15px", borderRadius: 0 }}>
                   Oldest Date
                 </option>
-                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
+                <option value="3" style={{ fontSize: "15px", borderRadius: 0 }}>
                   Price low - high
                 </option>
-                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
+                <option value="4" style={{ fontSize: "15px", borderRadius: 0 }}>
                   Price high - low
                 </option>
               </Select>

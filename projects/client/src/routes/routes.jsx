@@ -7,9 +7,7 @@ import { ResetPassword } from "../pages/resetPassword";
 import { InputPassword } from "../pages/inputPassword";
 import { TestImage } from "../pages/TestImage";
 import ProductDetail from "../pages/ProductDetail";
-
 import { Transaction } from "../pages/Transactions";
-
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
 import Cart from "../pages/Cart";

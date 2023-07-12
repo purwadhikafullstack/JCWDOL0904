@@ -14,34 +14,23 @@ import ProductSearch from "../../components/admin/ProductSearch";
 import { stockHistoryData } from "../../features/stockHistorySlice";
 
 const StockHistory = () => {
-  const value = useSelector((state) => state.transactionSlice.value);
-  // console.log(value);
   const itemValue = useSelector((state) => state.transactionItemSlice.value);
-  // console.log(itemValue);
   const stockHistoryValue = useSelector(
     (state) => state.stockHistorySlice.value
   );
-  // console.log(stockHistoryValue);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [transactionByMonth, setTransactionByMonth] = useState(0);
-  const [transaction, setTransaction] = useState(null);
-  const [product, setProduct] = useState(null);
   const [paddingLeft, setPaddingLeft] = useState("pl-72");
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState("");
   const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouses, setWarehouses] = useState([]);
-  const [order, setOrder] = useState("product_name");
+  const [order, setOrder] = useState("createdAt");
   const [sort, setSort] = useState("ASC");
   const user = useSelector((state) => state.userSlice);
-  // const [selectedCategory, setSelectedCategory] = useState("");
-  // const [category, setCategory] = useState([]);
   const [productSearch, setProductSearch] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(1);
-  // console.log(user);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -79,6 +68,8 @@ const StockHistory = () => {
           role: user.role,
           warehouse: selectWarehouse,
           month: selectedMonth,
+          sort,
+          order,
         },
       });
       console.log(response);
@@ -109,7 +100,14 @@ const StockHistory = () => {
 
   useEffect(() => {
     getHistoryData();
-  }, [currentPage, productSearch, selectedWarehouse, selectedMonth]);
+  }, [
+    currentPage,
+    productSearch,
+    selectedWarehouse,
+    selectedMonth,
+    sort,
+    order,
+  ]);
 
   useEffect(() => {
     getHistoryData();
@@ -141,16 +139,10 @@ const StockHistory = () => {
 
   const handleSorting = (value) => {
     if (value === "1") {
-      setOrder("product_name");
-      setSort("DESC");
-    } else if (value === "2") {
-      setOrder("price");
-      setSort("ASC");
-    } else if (value === "3") {
-      setOrder("price");
+      setOrder("createdAt");
       setSort("DESC");
     } else {
-      setOrder("product_name");
+      setOrder("CreatedAt");
       setSort("ASC");
     }
   };
@@ -205,7 +197,7 @@ const StockHistory = () => {
             <Stack direction="row">
               <OrderWarehouseDropdown
                 user={user}
-                handleWarehouseChange={handleWarehouseChange}
+                handleWarehouseChange={setSelectedWarehouse}
                 selectedWarehouse={selectedWarehouse}
                 warehouses={warehouses}
               />
@@ -225,12 +217,6 @@ const StockHistory = () => {
                 </option>
                 <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
                   Oldest Date
-                </option>
-                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  Price low - high
-                </option>
-                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  Price high - low
                 </option>
               </Select>
               <Select

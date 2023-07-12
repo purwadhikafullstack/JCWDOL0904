@@ -1,14 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  id: 0,
   fullname: "",
   username: "",
   is_verified: "",
   user_image: "",
   role: "",
   id_warehouse: 0,
-  email: "",,
+  email: "",
 };
 
 export const userSlice = createSlice({
@@ -17,7 +16,6 @@ export const userSlice = createSlice({
   reducers: {
     login: (state, action) => {
       // console.log(state, action);
-      state.id = action.payload.id;
       state.fullname = action.payload.fullname;
       state.username = action.payload.username;
       state.is_verified = action.payload.is_verified;

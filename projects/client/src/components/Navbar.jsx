@@ -14,7 +14,7 @@ import { updateCart } from "../features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { login } from "../features/userSlice";
 import LoginModal from "./loginModal";
-import env from "react-dotenv";
+// import env from "react-dotenv";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
