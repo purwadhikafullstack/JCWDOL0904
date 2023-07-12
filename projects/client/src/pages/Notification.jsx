@@ -1,44 +1,102 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import {api} from "../API/api";
 import {MdError, MdCheckCircle} from "react-icons/md";
 import NotificationDetailModal from "../components/NotificationDetailModal";
 import moment from "moment";
+import {useDispatch} from "react-redux";
+import {unreadCount} from "../features/notificationSlice";
+import io from "socket.io-client";
+import {Input, InputGroup, InputRightElement} from "@chakra-ui/react";
+import {SearchIcon} from "@chakra-ui/icons";
+import Pagination from "../components/admin/Pagination";
+import OrderSearch from "../components/admin/OrderSearch";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
+  const [totalPages, setTotalPages] = useState(0);
+  const [invoiceNumber, setInvoiceNumber] = useState("");
 
-  console.log(notifications);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notification", (updatedNotifications) => {
+      setNotifications(updatedNotifications);
+    });
+
+    return () => {
+      socket.off("notification");
+    };
+  }, []);
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationRead", (updatedNotifications) => {
+      const unread = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      dispatch(unreadCount({unread: unread.length}));
+    });
+    return () => {
+      socket.off("notificationRead");
+    };
+  }, []);
+
+  useEffect(() => {
+    fetchNotification();
+  }, [currentPage, invoiceNumber]);
+
   const fetchNotification = async () => {
     try {
-      let response = await api.get(`/notification/2`);
+      let response = await api.get("/notification", {
+        params: {
+          userId: 2,
+          page: currentPage,
+          invoiceNumber: invoiceNumber,
+        },
+      });
       setNotifications(response.data.notif);
-      console.log(response.data.notif);
+      setTotalPages(response.data.totalPages);
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const openModal = (notificationId) => {
+  const handleSearch = (e) => {
+    setInvoiceNumber(e.target.value);
+    setCurrentPage(0);
+    fetchNotification();
+  };
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
+  const openModal = (notificationId, event) => {
+    event.preventDefault();
     setSelectedNotification(notificationId);
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setSelectedNotification(null);
     setIsModalOpen(false);
   };
-
-  useEffect(() => {
-    fetchNotification();
-  }, []);
-
   return (
     <div className="pt-24 cursor-default">
       <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
         Notifications
       </h1>
+      <div className="max-w-[605px] mt-7 m-auto">
+        <OrderSearch
+          handleSearch={handleSearch}
+          invoiceNumber={invoiceNumber}
+        />
+      </div>
       <div className="flex pt-6 min-h-[650px] justify-center ">
         <ul role="list" className="flex flex-col gap-3">
           {notifications.map((notification) => {
@@ -49,10 +107,10 @@ export default function Notification() {
             return (
               <li
                 key={notification.id}
-                onClick={() => openModal(notification.id)}
+                onClick={(event) => openModal(notification.id, event)}
                 className={`relative py-4 px-4 rounded-full w-[650px] md:w-full sm:w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600  ${
-                  readStatus ? "bg-gray-100" : "bg-gray-200"
-                }`}>
+                  readStatus ? "bg-gray-50" : "bg-gray-200"
+                } hover:bg-gray-100 hover:shadow-md`}>
                 <div className="flex gap-10 items-center space-x-3">
                   <div className="min-w-0 flex-1">
                     <a href="#" className="block focus:outline-none">
@@ -65,7 +123,9 @@ export default function Notification() {
                   <time
                     dateTime={notification.createdAt}
                     className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500 pr-14">
-                    {moment(notification.createdAt).startOf("hour").fromNow()}
+                    {moment(notification.createdAt).format(
+                      "MMMM Do YYYY, h:mm:ss a"
+                    )}
                   </time>
                 </div>
                 {readStatus ? (
@@ -77,6 +137,12 @@ export default function Notification() {
             );
           })}
         </ul>
+      </div>
+      <div className="-mt-12">
+        <Pagination
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
       </div>
       {selectedNotification && (
         <NotificationDetailModal

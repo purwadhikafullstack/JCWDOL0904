@@ -46,6 +46,9 @@ The models/index file will call this method automatically.*/
     total_price: {
       type: DataTypes.INTEGER,
     },
+    ongkir: {
+      type: DataTypes.INTEGER,
+    },
     invoice_number: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
