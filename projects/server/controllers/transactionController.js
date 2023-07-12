@@ -15,22 +15,15 @@ const moment = require("moment");
 module.exports = {
   getAllProductTrans: async (req, res) => {
     try {
-      let page = parseInt(req.query.page);
-      const limit = 10;
-      const role = req.query.role;
+      let idWarehouse = req.query.idWarehouse || null;
       const productSearch = req.query.productSearch || "";
-      const userId = parseInt(req.query.userId);
-      let warehouse = parseInt(req.query.warehouse);
-      let categoryFilter = req.query.category || "";
-      const month = req.query.month;
-
-      let userData = await User.findOne({
-        where: { id: userId },
-      });
-
-      if (userData.id_warehouse) warehouse = userData.id_warehouse;
-
-      if (productSearch) page = 0;
+      const adminWarehouse = req.query.adminWarehouse || null;
+      const selectedCategory = req.query.selectedCategory || null;
+      let page = parseInt(req.query.page);
+      let limit = 5;
+      const month = req.query.month || "01";
+      let orderFilter = req.query.order;
+      let sortFilter = req.query.sort;
 
       let startDate = null;
       let endDate = null;
@@ -38,16 +31,29 @@ module.exports = {
         startDate = moment(month, "MM").startOf("month").format("YYYY-MM-DD");
         endDate = moment(month, "MM").endOf("month").format("YYYY-MM-DD");
       }
-
-      const result = await TransactionItem.findAll({
+      if (adminWarehouse) {
+        idWarehouse = adminWarehouse;
+      }
+      let result = null;
+      result = await TransactionItem.findAndCountAll({
         where: {
-          ...(categoryFilter ? { category: categoryFilter } : {}),
+          ...(selectedCategory ? { category: selectedCategory } : {}),
           ...(month
-            ? { createdAt: { [Op.gte]: startDate, [Op.lte]: endDate } }
+            ? {
+                createdAt: {
+                  [Op.between]: [new Date(startDate), new Date(endDate)],
+                },
+              }
             : {}),
         },
-
         include: [
+          {
+            model: Transaction,
+            ...(idWarehouse
+              ? { where: { id_warehouse: parseInt(idWarehouse) } }
+              : {}),
+            include: [Warehouse],
+          },
           {
             model: Products,
             where: {
@@ -55,217 +61,75 @@ module.exports = {
                 [db.Sequelize.Op.like]: `%${productSearch}%`,
               },
             },
-            include: [
-              {
-                model: TransactionItem,
-                include: [
-                  {
-                    model: Transaction,
-
-                    where: {
-                      ...(warehouse ? { id_warehouse: warehouse } : {}),
-                    },
-
-                    include: [
-                      {
-                        model: Warehouse,
-                      },
-                    ],
-                  },
-                  {
-                    model: Products,
-                  },
-                ],
-              },
-            ],
           },
         ],
+        order: [[orderFilter, sortFilter]],
         offset: page * limit,
-        limit: limit,
       });
 
-      let allProduct = [];
-      result.forEach((el) => {
-        const oneWarehouse = el.Product.TransactionItems.find((element) => {
-          return el.id === element.id;
-        });
-        if (oneWarehouse) {
-          allProduct.push(oneWarehouse);
+      const totalPage = Math.ceil(result.count / limit);
+      if (parseInt(page) >= totalPage) {
+        page = totalPage - 1;
+        if ((page = 0)) {
+          page = 0;
         }
-      });
-
-      const paging = await TransactionItem.findAll({
-        where: {
-          ...(categoryFilter ? { category: categoryFilter } : {}),
-          createdAt: {
-            [Op.gte]: startDate,
-            [Op.lte]: endDate,
-          },
-        },
-
-        include: [
-          {
-            model: Products,
-            where: {
-              product_name: {
-                [db.Sequelize.Op.like]: `%${productSearch}%`,
-              },
-            },
-            include: [
-              {
-                model: TransactionItem,
-                include: [
-                  {
-                    model: Transaction,
-
-                    where: {
-                      ...(warehouse ? { id_warehouse: warehouse } : {}),
-                    },
-
-                    include: [
-                      {
-                        model: Warehouse,
-                      },
-                    ],
-                  },
-                  {
-                    model: Products,
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      });
-
-      let onePrice = [];
-      paging.forEach((el) => {
-        const oneWarehouse = el.Product.TransactionItems.find((element) => {
-          return el.id === element.id;
-        });
-        if (oneWarehouse) {
-          onePrice.push(oneWarehouse);
-        }
-      });
-
-      const transactionByMonth = await TransactionItem.findAll({
-        where: {
-          createdAt: {
-            [Op.gte]: startDate,
-            [Op.lte]: endDate,
-          },
-        },
-        include: [
-          {
-            model: Products,
-            where: {
-              product_name: {
-                [db.Sequelize.Op.like]: `%${productSearch}%`,
-              },
-            },
-            include: [
-              {
-                model: TransactionItem,
-                include: [
-                  {
-                    model: Transaction,
-
-                    where: {
-                      ...(warehouse ? { id_warehouse: warehouse } : {}),
-                    },
-
-                    include: [
-                      {
-                        model: Warehouse,
-                      },
-                    ],
-                  },
-                  {
-                    model: Products,
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      });
-
-      const priceOnly = onePrice.map((el) => {
-        return el.price;
-      });
-
-      let priceFilter = priceOnly.reduce((acc, curr) => {
-        return acc + curr;
-      }, 0);
-
-      const total_price = await TransactionItem.sum("price");
-      const totalPages = Math.ceil(parseInt(onePrice.length) / limit);
-
-      res.status(200).send({
-        allProduct,
-        totalPages,
-        test: allProduct.length,
-        total_price,
-        total_value_by_month: priceFilter,
-        warehouse,
-        userId,
-        month: month,
-        transactionByMonth,
-        priceFilter,
-        priceOnly,
-        onePrice,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  },
-
-  getTimeTransaction: async (req, res) => {
-    try {
-      const { startDate, endDate } = req.query;
-
-      const result = await TransactionItem.findAll({
-        where: {
-          [Op.and]: [
-            startDate && endDate
+        result = await TransactionItem.findAndCountAll({
+          where: {
+            ...(selectedCategory ? { category: selectedCategory } : {}),
+            ...(month
               ? {
                   createdAt: {
-                    [Op.between]: [startDate, endDate],
+                    [Op.between]: [new Date(startDate), new Date(endDate)],
                   },
                 }
-              : {},
-          ],
-        },
-      });
-      res.status(200).send({ result });
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  getMonthlyTransaction: async (req, res) => {
-    try {
-      const month = req.query.month;
-      console.log(month);
-
-      const startDate = moment(month, "MM")
-        .startOf("month")
-        .format("YYYY-MM-DD");
-      const endDate = moment(month, "MM").endOf("month").format("YYYY-MM-DD");
-
-      const result = await TransactionItem.findAll({
-        where: {
-          createdAt: {
-            [Op.gte]: startDate,
-            [Op.lte]: endDate,
+              : {}),
           },
-        },
+          include: [
+            {
+              model: Transaction,
+              ...(idWarehouse
+                ? { where: { id_warehouse: parseInt(idWarehouse) } }
+                : {}),
+              include: [Warehouse],
+            },
+            {
+              model: Products,
+              where: {
+                product_name: {
+                  [db.Sequelize.Op.like]: `%${productSearch}%`,
+                },
+              },
+            },
+          ],
+          order: [[orderFilter, sortFilter]],
+          offset: page * limit,
+        });
+      }
+      console.log(result);
+      const productLimited = result.rows.slice(0, limit);
+      const priceOnly = [];
+      result.rows.forEach((el) => {
+        priceOnly.push(el.price);
       });
-
-      res.status(200).send({ result, test: month });
+      const totalPriceFiltered = priceOnly.reduce((acc, curr) => {
+        return acc + curr;
+      }, 0);
+      const total_price = await TransactionItem.sum("price");
+      res.status(200).send({
+        startDate,
+        result: productLimited,
+        idWarehouse,
+        adminWarehouse,
+        totalPage,
+        page,
+        totalPriceFiltered,
+        total_price,
+      });
     } catch (error) {
       console.log(error);
-      res.status(500).send({ error: "An error occurred" });
+      res.status(400).send({
+        message: "Error!",
+      });
     }
   },
 };

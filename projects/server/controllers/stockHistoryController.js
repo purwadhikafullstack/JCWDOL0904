@@ -9,11 +9,13 @@ module.exports = {
     try {
       let page = parseInt(req.query.page);
       console.log(page);
-      const limit = 5;
+      const limit = 8;
       const productSearch = req.query.productSearch || "";
       if (productSearch) page = 0;
       let warehouse = parseInt(req.query.warehouse);
       const month = req.query.month;
+      let orderFilter = req.query.order;
+      let sortFilter = req.query.sort;
 
       let startDate = null;
       let endDate = null;
@@ -22,7 +24,8 @@ module.exports = {
         endDate = moment(month, "MM").endOf("month").format("YYYY-MM-DD");
       }
 
-      const result = await StockHistory.findAndCountAll({
+      let result = null;
+      result = await StockHistory.findAndCountAll({
         where: {
           ...(month
             ? { createdAt: { [Op.gte]: startDate, [Op.lte]: endDate } }
@@ -38,6 +41,7 @@ module.exports = {
           },
           { model: Warehouse },
         ],
+        order: [[orderFilter, sortFilter]],
         offset: page * limit,
         limit: limit,
       });
@@ -45,15 +49,43 @@ module.exports = {
       const totalRow = result.count;
 
       const totalPage = Math.ceil(totalRow / limit);
+      if (totalPage <= page) {
+        page = Math.abs(totalPage - 1);
+        result = await StockHistory.findAndCountAll({
+          where: {
+            ...(month
+              ? { createdAt: { [Op.gte]: startDate, [Op.lte]: endDate } }
+              : {}),
+            ...(warehouse ? { id_warehouse: warehouse } : {}),
+          },
+          include: [
+            {
+              model: Products,
+              where: {
+                product_name: { [db.Sequelize.Op.like]: `%${productSearch}%` },
+              },
+            },
+            { model: Warehouse },
+          ],
+          order: [[orderFilter, sortFilter]],
+          offset: page * limit,
+          limit: limit,
+        });
+      }
 
       res.status(200).send({
         result,
         totalPage,
         totalRow,
         month: month,
+        orderFilter,
+        sortFilter,
       });
     } catch (error) {
       console.log(error);
+      res.status(400).send({
+        message: "Error!",
+      });
     }
   },
 };

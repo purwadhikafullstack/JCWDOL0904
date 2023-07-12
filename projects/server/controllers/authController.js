@@ -4,11 +4,12 @@ const User = db.User;
 const jwt = require("jsonwebtoken");
 const nodemailer = require("../helpers/nodemailer.js");
 const bcrypt = require("bcrypt");
+const { createToken } = require("../lib/jwt");
 
 module.exports = {
   // user verification
   userVerification: async (req, res) => {
-    const roll = await sequelize.transaction();
+    const transaction = await sequelize.transaction();
     try {
       const { fullname, username, password, confirmPassword } = req.body;
       console.log(fullname);
@@ -54,17 +55,17 @@ module.exports = {
         { is_verified: true, fullname, username, password: hashPass },
         { where: { id: data.id } }
       );
-      await roll.commit();
+      await transaction.commit();
       res.send({
         message: "Verification success",
         data: userPassword,
       });
     } catch (err) {
-      await roll.rollback();
+      await transaction.rollback();
       console.log(err);
-      // res.status(400).send({
-      //   message: "Server Error!",
-      // });
+      res.status(400).send({
+        message: "Server Error!",
+      });
     }
   },
   // user login
@@ -93,16 +94,29 @@ module.exports = {
         password,
         userExist.dataValues.password
       );
+
       console.log(isValid);
       if (!isValid) {
         return res.status(400).send({
           message: "wrong email address or password!",
         });
       }
+
+      const token = createToken({ id: userExist.id });
+
+      await User.update(
+        { login_token: token },
+        {
+          where: {
+            id: userExist.id,
+          },
+        }
+      );
       {
         res.status(200).send({
           message: "Login Success",
-          result: userExist,
+          result: token,
+          data: userExist,
         });
       }
     } catch (err) {
@@ -110,9 +124,10 @@ module.exports = {
       res.status(400).send({ message: "Server error" });
     }
   },
+
   // user forgot password
   requestReset: async (req, res) => {
-    const roll = await sequelize.transaction();
+    const transaction = await sequelize.transaction();
     try {
       const { password, confirmPassword } = req.body;
 
@@ -150,13 +165,13 @@ module.exports = {
         { password: hashPass },
         { where: { id: data.id } }
       );
-      await roll.commit();
+      await transaction.commit();
       res.send({
         message: "Reset Password Success",
         data: userPassword,
       });
     } catch (err) {
-      await roll.rollback();
+      await transaction.rollback();
       console.log(err);
       res.status(400).send({
         message: "Server Error!",
@@ -166,6 +181,7 @@ module.exports = {
 
   // user update password
   updatePassword: async (req, res) => {
+    const transaction = await sequelize.transaction();
     try {
       const { id, password, newPassword, confirmPassword } = req.body;
 
@@ -213,13 +229,13 @@ module.exports = {
         { password: hashPass },
         { where: { id: userExist.dataValues.id } }
       );
-      // await roll.commit();
+      await transaction.commit();
       res.send({
         message: "Change Password Success",
         data: userPassword,
       });
     } catch (err) {
-      // await roll.rollback();
+      await transaction.rollback();
       console.log(err);
       res.status(400).send({
         message: "Server Error!",
