@@ -167,6 +167,7 @@ export default function OrderList() {
               <OrderSearch
                 handleSearch={handleSearch}
                 invoiceNumber={invoiceNumber}
+                placeholder={"Search Invoice Number"}
               />
               <div className="mt-4 sm:mt-0 sm:ml-4">
                 <OrderWarehouseDropdown

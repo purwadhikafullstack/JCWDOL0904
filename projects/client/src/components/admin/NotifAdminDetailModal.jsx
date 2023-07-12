@@ -1,13 +1,9 @@
 import {EnvelopeIcon} from "@heroicons/react/24/outline";
 import {useState} from "react";
 import {useEffect} from "react";
-import {api} from "../API/api";
+import {api} from "../../API/api";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function NotificationDetailModal({
+export default function NotifAdminDetailModal({
   fetchNotification,
   selectedNotification,
   closeModal,
@@ -30,7 +26,6 @@ export default function NotificationDetailModal({
     try {
       const response = await api.post(`/notification/admin`, {
         notificationId: selectedNotification,
-        userId: 2,
       });
       fetchNotification();
       console.log(response);
@@ -54,7 +49,7 @@ export default function NotificationDetailModal({
   };
 
   return (
-    <>
+    <div className="flex items-center justify-center">
       {isOpen && (
         <div className="fixed inset-0 m-auto flex items-center justify-center z-400">
           <div
@@ -62,9 +57,12 @@ export default function NotificationDetailModal({
             onClick={handleOverlayClick}
           />
           <div className="relative bg-white p-6 rounded-xl max-w-2xl mx-auto">
-            <div className="flex items-center justify-center">
-              <span className="rounded-lg inline-flex p-3 ring-4 m-auto ring-white">
-                <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
+            <div className="m-auto flex items-center">
+              <span className="rounded-lg m-auto flex items-center justify-center inline-flex p-3 ring-4 ring-white">
+                <EnvelopeIcon
+                  className="h-6 text-center w-6"
+                  aria-hidden="true"
+                />
               </span>
             </div>
             <div>
@@ -76,13 +74,15 @@ export default function NotificationDetailModal({
                       {notify.title}
                     </p>
                   </h3>
-                  <p className="mt-2 text-sm text-gray-500">{notify.message}</p>
+                  <p className="mt-2 text-center text-sm text-gray-500">
+                    {notify.message}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

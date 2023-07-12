@@ -1,12 +1,12 @@
 import React from "react";
 
-const ShippingSection = ({
+const CheckoutShippingSection = ({
   selectedAddress,
   openAddressModal,
   openAddAddressModal,
 }) => {
   return (
-    <section className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
+    <section className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 sm:mt-2 lg:p-8">
       <div>
         <div className="divide-y divide-gray-200 border-t border-b border-gray-200">
           <button
@@ -67,4 +67,4 @@ const ShippingSection = ({
   );
 };
 
-export default ShippingSection;
+export default CheckoutShippingSection;

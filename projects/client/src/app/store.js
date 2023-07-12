@@ -5,7 +5,9 @@ import warehouseSlice from "../features/warehouseSlice.js";
 import mutationListSlice from "../features/mutationListSlice.js";
 import addressSlice from "../features/addressSlice.js";
 import categorySlice from "../features/categorySlice.js";
+import notificationSlice from "../features/notificationSlice.js";
 import allUserSlice from "../features/allUserSlice.js";
+import adminNotificationSlice from "../features/adminNotificationSlice.js";
 import stockSlice from "../features/stockSlice.js";
 import transactionSlice from "../features/transactionSlice.js";
 import transactionItemSlice from "../features/transactionItemSlice.js";
@@ -20,9 +22,11 @@ export default configureStore({
     addressSlice,
     categorySlice,
     allUserSlice,
-    stockSlice,
     transactionSlice,
     transactionItemSlice,
+    stockSlice,
+    notificationSlice,
+    adminNotificationSlice
     stockHistorySlice,
   },
 });

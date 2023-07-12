@@ -7,7 +7,9 @@ import { ResetPassword } from "../pages/resetPassword";
 import { InputPassword } from "../pages/inputPassword";
 import { TestImage } from "../pages/TestImage";
 import ProductDetail from "../pages/ProductDetail";
+
 import { Transaction } from "../pages/Transactions";
+
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
 import Cart from "../pages/Cart";
@@ -26,6 +28,7 @@ import { PaymentProofModal } from "../components/admin/PaymentProofModal";
 import OrderList from "../pages/admin/OrderList";
 import Notification from "../pages/Notification";
 import NotificationDetailModal from "../components/NotificationDetailModal";
+import AdminNotification from "../pages/admin/AdminNotification";
 import ManageStock from "../pages/admin/ManageStock";
 import SalesReport from "../pages/admin/SalesReport";
 import StockHistory from "../pages/admin/StockHistory";
@@ -294,6 +297,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <ManageUser />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="admin-notification"
+    path="/admin-notification"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <AdminNotification />
       </ProtectedPage>
     }
   />,

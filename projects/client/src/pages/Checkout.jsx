@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import { api } from "../API/api";
+import {useState, useEffect} from "react";
+import {api} from "../API/api";
 import AddressModal from "../components/AddressModal";
-import { AddAddressModal } from "../components/AddAddressModal";
-import { Ekspedisi } from "../components/Ekspedisi";
-import { apiro } from "../API/apiro";
-import { useNavigate } from "react-router-dom";
-import { updateCart } from "../features/cartSlice";
-import { useDispatch } from "react-redux";
+import {AddAddressModal} from "../components/AddAddressModal";
+import {Ekspedisi} from "../components/Ekspedisi";
+import {apiro} from "../API/apiro";
+import {useNavigate} from "react-router-dom";
+import {updateCart} from "../features/cartSlice";
+import {useDispatch} from "react-redux";
 import CartCheckout from "../components/CartCheckout";
-import ShippingSection from "../components/ShippingSection";
-import { CheckoutTotalSection } from "../components/CheckoutTotalSection";
+import {CheckoutTotalSection} from "../components/CheckoutTotalSection";
 import Alert from "../components/SwallAlert";
+import CheckoutShippingSection from "../components/CheckoutShippingSection";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -22,6 +22,7 @@ export default function Checkout() {
   const [warehouseOrigin, setWarehouseOrigin] = useState("");
   const [ongkir, setOngkir] = useState(0);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("");
+  const [isOngkirLoading, setOngkirIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const openAddressModal = () => {
@@ -42,15 +43,27 @@ export default function Checkout() {
     localStorage.setItem("selectedAddress", JSON.stringify(address));
   };
 
+  console.log(`ini cart items`, cartItems);
+
   const addressId = selectedAddress?.id;
   useEffect(() => {
     const fetchOngkir = async () => {
       try {
+        setOngkirIsLoading(true);
         if (warehouseOrigin && selectedAddress) {
+          let totalWeight = 0;
+          cartItems.forEach((cartItem) => {
+            const productWeight = cartItem.Product.weight_g;
+            const quantity = cartItem.quantity;
+            const productTotalWeight = productWeight * quantity;
+            totalWeight += productTotalWeight;
+          });
+          console.log(`ini total weight`, totalWeight);
+
           const response = await apiro.post("rajaongkir/ongkir", {
             origin: warehouseOrigin.warehouse_city_id,
             destination: selectedAddress.address_city_id,
-            weight: 1000,
+            weight: totalWeight,
             courier: selectedDeliveryMethod.name,
           });
           const ongkirValue =
@@ -59,10 +72,13 @@ export default function Checkout() {
         }
       } catch (error) {
         console.log(error);
+        setOngkirIsLoading(false);
+      } finally {
+        setOngkirIsLoading(false);
       }
     };
     fetchOngkir();
-  }, [selectedAddress, warehouseOrigin, selectedDeliveryMethod]);
+  }, [selectedAddress, selectedDeliveryMethod]);
 
   const handleSelectDeliveryMethod = async (method) => {
     setSelectedDeliveryMethod(method);
@@ -120,6 +136,7 @@ export default function Checkout() {
   const handleCheckout = async (e) => {
     e.preventDefault();
     try {
+      setOngkirIsLoading(true);
       const userId = JSON.parse(localStorage.getItem("auth")).id;
       await api.post("/order", {
         cartItems: cartItems,
@@ -127,11 +144,13 @@ export default function Checkout() {
         addressId: selectedAddress.id,
         userId: userId, // Masih hardcode
         totalAmount: totalAmount,
+        ongkir,
         ekspedisiId: selectedDeliveryMethod.id,
       });
       setCartItems([]);
-      dispatch(updateCart({ cart: [] }));
+      dispatch(updateCart({cart: []}));
       localStorage.removeItem("cartItems");
+      localStorage.removeItem("selectedAddress");
       navigate("/transactions");
     } catch (error) {
       Alert({
@@ -140,6 +159,8 @@ export default function Checkout() {
         icon: "error",
       });
       console.log("Error creating order:", error);
+    } finally {
+      setOngkirIsLoading(false);
     }
   };
 
@@ -162,7 +183,7 @@ export default function Checkout() {
             <CartCheckout cartItems={cartItems} />
           </section>
           <section className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
-            <ShippingSection
+            <CheckoutShippingSection
               selectedAddress={selectedAddress}
               openAddressModal={openAddressModal}
               openAddAddressModal={openAddAddressModal}
@@ -174,6 +195,7 @@ export default function Checkout() {
                 totalAmount={totalAmount}
                 handleCheckout={handleCheckout}
                 ongkir={ongkir}
+                isOngkirLoading={isOngkirLoading}
               />
             </div>
             {isAddAddressModalOpen && (
