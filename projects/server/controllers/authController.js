@@ -84,6 +84,19 @@ module.exports = {
         where: { email },
       });
 
+      const dataUser = await User.findOne({
+        attributes: [
+          "email",
+          "fullname",
+          "username",
+          "id_warehouse",
+          "is_verified",
+          "user_image",
+          "role",
+        ],
+        where: { email },
+      });
+
       if (!userExist) {
         return res.status(400).send({
           message: "Email not found, please register!",
@@ -116,7 +129,7 @@ module.exports = {
         res.status(200).send({
           message: "Login Success",
           result: token,
-          data: userExist,
+          data: dataUser,
         });
       }
     } catch (err) {
