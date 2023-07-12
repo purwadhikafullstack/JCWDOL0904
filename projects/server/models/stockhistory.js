@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
           name: "id_product",
         },
       });
-      StockHistory.belongsTo(models.Products, {
+      StockHistory.belongsTo(models.Warehouse, {
         foreignKey: {
           name: "id_warehouse",
         },

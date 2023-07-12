@@ -104,7 +104,7 @@ const ProductDetail = () => {
               </div>
 
               <div className="flex w-full items-center justify-center p-2">
-                <p className=" text-xs lg:text-12 text-center">
+                <p className=" text-xs lg:text-12 text-left">
                   {product.description} ankdawfbalwbfl
                   balwblabwflbawflaawfabnlwfnalfwbalwbfa fkwa f awbfoabfoia fa
                   wfoa foa o

@@ -14,6 +14,7 @@ import ProductSearch from "../../components/admin/ProductSearch";
 
 const SalesReport = () => {
   const value = useSelector((state) => state.transactionSlice.value);
+  const userData = useSelector((state) => state.userSlice);
   // console.log(value);
   const itemValue = useSelector((state) => state.transactionItemSlice.value);
   // console.log(itemValue);
@@ -35,7 +36,7 @@ const SalesReport = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [category, setCategory] = useState([]);
   const [productSearch, setProductSearch] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState(1);
+  const [selectedMonth, setSelectedMonth] = useState("01");
   // console.log(user);
 
   const dispatch = useDispatch();
@@ -56,6 +57,29 @@ const SalesReport = () => {
   }, []);
 
   const urlProduct = "/transaction/product";
+  const getAllReport = async () => {
+    try {
+      console.log(selectedMonth);
+      const response = await api.get("/transaction/report", {
+        params: {
+          idWarehouse: selectedWarehouse,
+          productSearch,
+          adminWarehouse: userData.id_warehouse,
+          selectedCategory,
+          page,
+          month: selectedMonth,
+        },
+      });
+      console.log(response);
+      dispatch(transactionItemData(response.data.result));
+      setTotalPage(response.data.totalPage);
+      // setPage(response.data.page);
+      setTransactionByMonth(response.data.totalPriceFiltered);
+      setTotalPrice(response.data.total_price);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getProductTransaction = async () => {
     try {
       let selectWarehouse;
@@ -121,11 +145,12 @@ const SalesReport = () => {
   }, []);
 
   useEffect(() => {
-    getProductTransaction();
+    // getProductTransaction();
+    getAllReport();
   }, [page, productSearch, selectedWarehouse, selectedCategory, selectedMonth]);
-  useEffect(() => {
-    setPage(0);
-  }, [selectedWarehouse, selectedCategory, selectedMonth]);
+  // useEffect(() => {
+  //   setPage(0);
+  // }, [selectedWarehouse, selectedCategory, selectedMonth]);
 
   const closeDetailModal = () => {
     setIsDetailModalOpen(false);
@@ -136,15 +161,15 @@ const SalesReport = () => {
     setIsDetailModalOpen(true);
   };
 
-  const handleWarehouseChange = (event) => {
-    const selectedValue = event.target.value;
-    console.log(selectedValue);
-    if (user.role === "adminWarehouse") {
-      setSelectedWarehouse(user.id_warehouse);
-    } else {
-      setSelectedWarehouse(selectedValue);
-    }
-  };
+  // const handleWarehouseChange = (event) => {
+  //   const selectedValue = event.target.value;
+  //   console.log(selectedValue);
+  //   if (user.role === "adminWarehouse") {
+  //     setSelectedWarehouse(user.id_warehouse);
+  //   } else {
+  //     setSelectedWarehouse(selectedValue);
+  //   }
+  // };
   const handleCategoryChange = (event) => {
     const selectedCategoryValue = event.target.value;
     console.log(selectedCategoryValue);
@@ -174,7 +199,7 @@ const SalesReport = () => {
     // console.log(pEl);
     // console.log(pEl.Product.Stocks);
     return (
-      <tr key={pEl}>
+      <tr key={pEl.id}>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
           {pEl.Product.product_name}
         </td>
@@ -211,7 +236,7 @@ const SalesReport = () => {
             <Stack direction="row">
               <OrderWarehouseDropdown
                 user={user}
-                handleWarehouseChange={handleWarehouseChange}
+                handleWarehouseChange={setSelectedWarehouse}
                 selectedWarehouse={selectedWarehouse}
                 warehouses={warehouses}
               />
