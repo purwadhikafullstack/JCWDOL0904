@@ -26,7 +26,7 @@ export default configureStore({
     transactionItemSlice,
     stockSlice,
     notificationSlice,
-    adminNotificationSlice
+    adminNotificationSlice,
     stockHistorySlice,
   },
 });
