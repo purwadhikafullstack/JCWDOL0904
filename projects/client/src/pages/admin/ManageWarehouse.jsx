@@ -181,6 +181,10 @@ const ManageWarehouse = () => {
             </h1>
           </div>
           <Select
+            width="150px"
+            marginBottom="5px"
+            fontSize="13px"
+            height="30px"
             value={sort}
             onChange={(e) => setSort(e.target.value)}
             borderRadius="50px"

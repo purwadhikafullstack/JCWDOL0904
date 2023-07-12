@@ -208,7 +208,7 @@ export default function Sidebar(props) {
                   <div className="flex flex-shrink-0 items-center px-4">
                     <img
                       className="h-8 w-auto"
-                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
+                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
                       alt="Your Company"
                     />
                   </div>
@@ -268,7 +268,7 @@ export default function Sidebar(props) {
             <div className="flex h-16 flex-shrink-0 justify-center items-center bg-[#F9FAFB] px-4">
               <img
                 className="h-8 w-auto"
-                src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
+                src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                 alt="Your Company"
               />
             </div>
