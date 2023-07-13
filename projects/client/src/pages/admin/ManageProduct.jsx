@@ -5,24 +5,14 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Text,
-  Image,
   Input,
   Select,
   Stack,
-  Button,
   InputGroup,
   InputRightElement,
-  Box,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import ProductsHome from "../../components/ProductsHome";
-import ReactPaginate from "react-paginate";
-// import "./style/Homepage.css";
 import { api } from "../../API/api";
-import ProductsAdmin from "../../components/admin/ProductsAdmin";
-import { useNavigate } from "react-router-dom";
-import { useMediaQuery } from "@chakra-ui/react";
 import AllProductManage from "../../components/admin/AllProductManage";
 import CreateNewProduct from "../../components/admin/CreateNewProduct";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +20,6 @@ import { AllCategory } from "../../features/categorySlice";
 import Pagination from "../../components/admin/Pagination";
 
 const ManageProduct = () => {
-  // const [coba, setCoba] = useState("hallo");
   const [page, setPage] = useState(0);
   const [sort, setSort] = useState("ASC");
   const [search, setSearch] = useState("");
@@ -38,8 +27,6 @@ const ManageProduct = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState("product_name");
   const [products, setProducts] = useState([]);
-  const [isSmallerThan401] = useMediaQuery("(max-width: 767px)");
-  let objectForProduct = {};
 
   const ReduxCategory = useSelector((state) => state.categorySlice.value);
   const dispatch = useDispatch();
@@ -174,15 +161,9 @@ const ManageProduct = () => {
           </Stack>
           <CreateNewProduct getProducts={fetchProducts} />
         </div>
-        {/* <button>Create Product</button> */}
         <Stack>
           <TabPanels>
-            <TabPanel
-            // display="flex"
-            // flexDirection="column"
-            // justifyContent="center"
-            // maxWidth="100%"
-            >
+            <TabPanel>
               <AllProductManage
                 products={products}
                 category={category}
@@ -191,13 +172,7 @@ const ManageProduct = () => {
             </TabPanel>
             {ReduxCategory?.map((el) => {
               return (
-                <TabPanel
-                  // display="flex"
-                  // flexDirection="row"
-                  // justifyContent="center"
-                  // maxWidth="100%"
-                  key={el.id}
-                >
+                <TabPanel key={el.id}>
                   <AllProductManage
                     products={products}
                     category={category}

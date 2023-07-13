@@ -36,14 +36,12 @@ const EditeCategory = (props) => {
   const { role } = useSelector((state) => state.userSlice);
 
   const handleSubmit = async () => {
-    // console.log(props.wId);
     try {
       setLoad(true);
       let response = await api.patch("/category/update", {
         id: props.Cid,
         cate: categor,
       });
-      // .catch(() => {});
       onClose();
       setLoad(false);
       console.log(response);
@@ -77,10 +75,6 @@ const EditeCategory = (props) => {
 
   return (
     <div className="flex align-middle">
-      {/* <Button leftIcon={<AddIcon />} onClick={onOpen}>
-        Add categor
-      </Button> */}
-
       <IconButton
         onClick={role === "admin" ? onOpen : null}
         variant="link"

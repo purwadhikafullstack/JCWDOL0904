@@ -13,16 +13,13 @@ import {
 } from "@chakra-ui/react";
 import { BeatLoader } from "react-spinners";
 import "./style/ProductDetail.css";
-import UserIsNotLogin from "../components/UserIsNotLogin";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 
 const ProductDetail = () => {
   const navigation = useNavigate();
-  // const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({});
   const [stock, setStock] = useState(0);
-  const [isLogin, SetIsLogin] = useState(false);
   const userLogin = useSelector((state) => state.userSlice);
 
   useEffect(() => {
@@ -38,19 +35,13 @@ const ProductDetail = () => {
   const getOneProduct = async (idP) => {
     try {
       const result = await api.post("/product/detail", { idP });
-      console.log(result.data);
       setStock(result.data.stock);
       setProduct(result.data.productById);
-      console.log(result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   let productId = JSON.parse(localStorage.getItem("idProduct"));
-  console.log(productId);
 
-  // Add to cart
   let addToCart = async (e) => {
     e.preventDefault();
     if (!localStorage.getItem("auth")) {
@@ -63,18 +54,14 @@ const ProductDetail = () => {
       navigation("/");
     } else {
       try {
-        // const users = JSON.parse(localStorage.getItem("auth"));
         let id = userLogin.id;
-        console.log(id);
         await api.post(`/cart/add`, {
           userId: id,
           productId,
           quantity: 1,
         });
         navigation("/cart");
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     }
   };
 
@@ -104,10 +91,8 @@ const ProductDetail = () => {
               </div>
 
               <div className="flex w-full items-center justify-center p-2">
-                <p className=" text-xs lg:text-12 text-center">
-                  {product.description} ankdawfbalwbfl
-                  balwblabwflbawflaawfabnlwfnalfwbalwbfa fkwa f awbfoabfoia fa
-                  wfoa foa o
+                <p className=" text-xs lg:text-12 text-left">
+                  {product.description}
                 </p>
               </div>
 

@@ -208,14 +208,15 @@ module.exports = {
   },
   getAllMutation: async (req, res) => {
     try {
-      let { sort, role, idUser } = req.query;
+      let { sort, role } = req.query;
+      const idUser = req.dataToken;
       let page = req.query.page || 0;
       const site = req.query.site || undefined;
       let status = req.query.status || null;
       let arrange = req.query.arrange || "DESC";
       const search = req.query.search || "";
       const request = req.query.request || "in";
-      console.log(request);
+      console.log(idUser);
       let request_number;
       let product_name;
       if (search && search.lenght > 0) {
@@ -251,15 +252,15 @@ module.exports = {
         const dataUser = await user.findOne({
           where: {
             role,
-            id: idUser,
+            id: idUser.id,
           },
           include: [warehouse],
         });
 
         sort = dataUser.Warehouse.id;
       }
-
-      const result = await stockmovement.findAndCountAll({
+      let result;
+      result = await stockmovement.findAndCountAll({
         where: {
           status,
         },
@@ -298,16 +299,59 @@ module.exports = {
         offset: page * limit,
       });
 
-      allRows = result.rows;
       allCount = result.count;
 
       const totalPage = Math.ceil(allCount / limit);
+      if (parseInt(page) >= totalPage && totalPage > 0) {
+        page = totalPage - 1;
+        console.log("hai");
+        result = await stockmovement.findAndCountAll({
+          where: {
+            status,
+          },
+          order: [["createdAt", arrange]],
+          include: [
+            {
+              model: warehouse,
+              as: "senderWarehouse",
+              where: {
+                ...(request === "out" ? { id: parseInt(sort) } : {}),
+              },
+
+              // where: { id: parseInt(sort) },
+            },
+            {
+              model: warehouse,
+              as: "receiverWarehouse",
+              where: {
+                ...(request === "in" ? { id: parseInt(sort) } : {}),
+              },
+            },
+            {
+              model: product,
+              where: {
+                ...(search
+                  ? {
+                      product_name: {
+                        [db.Sequelize.Op.like]: `%${search}%`,
+                      },
+                    }
+                  : {}),
+              },
+            },
+          ],
+          limit,
+          offset: page * limit,
+        });
+      }
+      allRows = result.rows;
 
       res.status(200).send({
         result: allRows,
         idWarehouse,
         totalPage,
         search,
+        page,
       });
     } catch (error) {
       console.log(error);

@@ -114,6 +114,10 @@ const ManageStock = () => {
       </h1>
       <Stack direction="row">
         <Select
+          width="150px"
+          marginBottom="5px"
+          fontSize="13px"
+          height="30px"
           disabled={AdminLogin.role === "admin" ? false : true}
           defaultValue={ware}
           onChange={(e) => setWare(e.target.value)}
@@ -128,6 +132,10 @@ const ManageStock = () => {
           })}
         </Select>
         <Select
+          width="150px"
+          marginBottom="5px"
+          fontSize="13px"
+          height="30px"
           defaultValue={stockFilter}
           borderRadius="50px"
           onChange={(e) => setStockFilter(e.target.value)}
@@ -140,6 +148,10 @@ const ManageStock = () => {
       </Stack>
       <Stack direction="row">
         <Select
+          width="150px"
+          marginBottom="5px"
+          fontSize="13px"
+          height="30px"
           value={sort}
           borderRadius="50px"
           onChange={(e) => setSort(e.target.value)}
@@ -148,6 +160,10 @@ const ManageStock = () => {
           <option value="DESC">Stock more - less</option>
         </Select>
         <Select
+          width="150px"
+          marginBottom="5px"
+          fontSize="13px"
+          height="30px"
           defaultValue={categoryFilter}
           borderRadius="50px"
           onChange={(e) => setCategoryFilter(e.target.value)}

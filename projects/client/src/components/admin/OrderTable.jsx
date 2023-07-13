@@ -1,8 +1,9 @@
 import React from "react";
-import {api} from "../../API/api";
+import { api } from "../../API/api";
 import Alert from "../SwallAlert";
 import Swal from "sweetalert2";
 import moment from "moment";
+import CancelOrderButton from "./CancelOrderButton";
 
 const OrderTable = ({
   transactionByWarehouse,
@@ -76,37 +77,44 @@ const OrderTable = ({
           <tr>
             <th
               scope="col"
-              className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+              className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+            >
               Invoice Number
             </th>
             <th
               scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
               Payment Proof
             </th>
             <th
               scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
               Total Price
             </th>
             <th
               scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
               Detail
             </th>
             <th
               scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
               Status
             </th>
             <th
               scope="col"
-              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+              className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
               Expired
             </th>
             <th
               scope="col"
-              className="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6">
+              className="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6"
+            >
               <span className="sr-only">Detail</span>
             </th>
           </tr>
@@ -123,7 +131,8 @@ const OrderTable = ({
                   {transaction.payment_proof ? (
                     <button
                       onClick={() => handleViewPaymentProof(transaction.id)}
-                      className="text-indigo-600 hover:text-indigo-900">
+                      className="text-indigo-600 hover:text-indigo-900"
+                    >
                       View
                     </button>
                   ) : (
@@ -137,7 +146,8 @@ const OrderTable = ({
                 <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                   <button
                     onClick={() => handleViewOrderDetail(transaction.id)}
-                    className="text-indigo-600 hover:text-indigo-900">
+                    className="text-indigo-600 hover:text-indigo-900"
+                  >
                     Detail
                   </button>
                 </td>
@@ -152,7 +162,8 @@ const OrderTable = ({
                 ) : (
                   <span
                     className="whitespace-nowrap px-2 py-2 text-sm text-gray-500"
-                    style={{visibility: "hidden"}}>
+                    style={{ visibility: "hidden" }}
+                  >
                     Exp
                   </span>
                 )}
@@ -161,23 +172,26 @@ const OrderTable = ({
                     <button
                       disabled={adminWarehouse}
                       onClick={() => handleConfirmTransaction(transaction.id)}
-                      className="text-white rounded-md bg-black w-14 h-6 text-[10px] mr-[9px] hover:bg-gray-800">
+                      className="text-white rounded-md bg-black w-14 h-6 text-[10px] mr-[9px] hover:bg-gray-800"
+                    >
                       Confirm
                     </button>
                   ) : (
-                    <span style={{visibility: "hidden"}}>Confirm</span>
+                    <span style={{ visibility: "hidden" }}>Confirm</span>
                   )}
                   {transaction.status === "On Process" ? (
                     <button
                       disabled={adminWarehouse}
                       onClick={() => handleSendTransaction(transaction.id)}
-                      className="text-white rounded-md bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800">
+                      className="text-white rounded-md bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800"
+                    >
                       Send
                     </button>
                   ) : (
                     <span
                       className="text-white rounded-md bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800"
-                      style={{visibility: "hidden"}}>
+                      style={{ visibility: "hidden" }}
+                    >
                       Send
                     </span>
                   )}
@@ -185,31 +199,44 @@ const OrderTable = ({
                     <button
                       disabled={adminWarehouse}
                       onClick={() => handleRejectTransaction(transaction.id)}
-                      className="text-white w-14 h-6 text-[10px] rounded-md bg-black hover:bg-gray-800 mr-1">
+                      className="text-white w-14 h-6 text-[10px] rounded-md bg-black hover:bg-gray-800 mr-1"
+                    >
                       Reject
                     </button>
                   ) : (
                     <span
                       className="text-white w-14 h-6 text-[10px] rounded-md bg-black hover:bg-gray-800 mr-1"
-                      style={{visibility: "hidden"}}>
+                      style={{ visibility: "hidden" }}
+                    >
                       Reject
                     </span>
                   )}
                   {transaction.status === "Waiting For Payment Confirmation" ||
                   transaction.status === "Waiting For Payment" ||
                   transaction.status === "On Process" ? (
+                    <CancelOrderButton
+                      runFunction={fetchTransactions}
+                      dataTransaction={transaction}
+                    />
+                  ) : null}
+
+                  {/* {transaction.status === "Waiting For Payment Confirmation" ||
+                  transaction.status === "Waiting For Payment" ||
+                  transaction.status === "On Process" ? (
                     <button
                       disabled={adminWarehouse}
-                      className="text-white -mr-2 rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800">
+                      className="text-white -mr-2 rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800"
+                    >
                       Cancel
                     </button>
                   ) : (
                     <span
                       className="text-white rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800"
-                      style={{visibility: "hidden"}}>
+                      style={{ visibility: "hidden" }}
+                    >
                       Cancel
                     </span>
-                  )}
+                  )} */}
                 </td>
               </tr>
             ))}

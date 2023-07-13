@@ -46,21 +46,27 @@ const EditeStock = (props) => {
             id: props.idStock,
             newStock: stock,
           });
+          Swal.fire({
+            title: "Success",
+            text: "Edite success!",
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
           console.log(response);
           props.runFunction();
           setStock(0);
         } catch (error) {
           console.log(error);
+          Swal.fire({
+            title: "Error!",
+            text: error.response.data.message,
+            icon: "warning",
+            confirmButtonText: "Ok",
+          });
         }
       }
     });
-
-    // setStock(parseInt(props.stockNow));
   };
-
-  // useEffect(() => {
-  //   setStock(0);
-  // }, [onClose]);
 
   return (
     <div className="flex align-middle">
