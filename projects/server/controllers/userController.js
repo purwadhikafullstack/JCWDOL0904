@@ -194,12 +194,20 @@ module.exports = {
   // get user by id
   getUserById: async (req, res) => {
     try {
-      const { id } = req.params;
-      console.log(id);
+      const { id } = req.dataToken;
 
       const user = await User.findOne({
+        attributes: [
+          "fullname",
+          "username",
+          "email",
+          "is_verified",
+          "role",
+          "id_warehouse",
+          "user_image",
+        ],
         where: {
-          id,
+          id: id,
         },
       });
 
@@ -336,4 +344,6 @@ module.exports = {
       console.log(error);
     }
   },
+
+  // keepLogin: async (req, res) => {},
 };

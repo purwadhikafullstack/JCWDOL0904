@@ -34,28 +34,12 @@ export const Login = () => {
         email: inputEmail,
         password: inputPassword,
       });
-      console.log(response);
       if (response.status === 200) {
-        const {
-          id,
-          fullname,
-          username,
-          is_verified,
-          user_image,
-          role,
-          id_warehouse,
-        } = response.data.result;
-        const authData = {
-          id,
-          fullname,
-          username,
-          is_verified,
-          user_image,
-          role,
-          id_warehouse,
-        };
+        // response.data;
+        const authData = {};
+        console.log(response);
         localStorage.setItem("auth", JSON.stringify(authData));
-        console.log(authData);
+        // console.log(authData);
         dispatch(login(authData));
       }
     } catch (err) {

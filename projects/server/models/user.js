@@ -84,6 +84,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      login_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       is_deleted: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

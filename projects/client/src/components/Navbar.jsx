@@ -1,29 +1,29 @@
-import React, {useEffect, useState} from "react";
-import {Fragment} from "react";
-import {Disclosure, Menu, Transition} from "@headlessui/react";
+import React, { useEffect, useState } from "react";
+import { Fragment } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
   XMarkIcon,
   ShoppingCartIcon,
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
-import {Link, Navigate} from "react-router-dom";
-import {useSelector} from "react-redux";
-import {useDispatch} from "react-redux";
-import {updateCart} from "../features/cartSlice";
-import {useNavigate} from "react-router-dom";
-import {login} from "../features/userSlice";
-import {unreadCount} from "../features/notificationSlice";
+import { Link, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { updateCart } from "../features/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { login } from "../features/userSlice";
+import { unreadCount } from "../features/notificationSlice";
 import io from "socket.io-client";
 import LoginModal from "./loginModal";
-import env from "react-dotenv";
+// import env from "react-dotenv";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export const Navbar = () => {
-  const {user_image, id, username, email} = useSelector(
+  const { user_image, id, username, email } = useSelector(
     (state) => state.userSlice
   );
 
@@ -72,7 +72,7 @@ export const Navbar = () => {
     // navigation("/login");
   };
 
-  const {cart} = useSelector((state) => state.cartSlice.value);
+  const { cart } = useSelector((state) => state.cartSlice.value);
   const notificationUnread = useSelector(
     (state) => state.notificationSlice.value.unread
   );
@@ -82,10 +82,10 @@ export const Navbar = () => {
 
   // Dispatch the Redux action to update the cart
   const updateCartData = (cart) => {
-    dispatch(updateCart({cart}));
+    dispatch(updateCart({ cart }));
   };
   const updateUnreadCount = (unread) => {
-    dispatch(unreadCount({unread}));
+    dispatch(unreadCount({ unread }));
   };
 
   // update kembalo cartdata dan unreadCount notifikasi ketika load page
@@ -110,8 +110,9 @@ export const Navbar = () => {
     <Disclosure
       as="nav"
       className="bg-white shadow z-50"
-      style={{position: "fixed", width: "100%"}}>
-      {({open}) => (
+      style={{ position: "fixed", width: "100%" }}
+    >
+      {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
@@ -128,8 +129,9 @@ export const Navbar = () => {
                   </Disclosure.Button>
                 </div>
                 <div
-                  className="flex flex-shrink-0 items-center cursor-pointer "
-                  onClick={() => navigation("/")}>
+                  className="flex flex-shrink-0 items-center cursor-pointer"
+                  onClick={() => navigation("/")}
+                >
                   <img
                     className="block h-8 w-auto lg:hidden "
                     src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
@@ -144,7 +146,8 @@ export const Navbar = () => {
                     {isLogin ? (
                       <button
                         type="button"
-                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500"
+                      >
                         <div className="flex gap-3">
                           <div className="flex">
                             <EnvelopeIcon
@@ -162,7 +165,8 @@ export const Navbar = () => {
                     {isLogin ? (
                       <button
                         type="button"
-                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500"
+                      >
                         <span className="sr-only">View notifications</span>
                         <div className="flex gap-3">
                           <div className="flex">
@@ -199,7 +203,8 @@ export const Navbar = () => {
                   {isLogin ? (
                     <button
                       type="button"
-                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500"
+                    >
                       <div className="flex gap-3">
                         <div className="flex">
                           <EnvelopeIcon
@@ -217,7 +222,8 @@ export const Navbar = () => {
                   {isLogin ? (
                     <button
                       type="button"
-                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500"
+                    >
                       <span className="sr-only">View notifications</span>
                       <div className="flex gap-3">
                         <div className="flex">
@@ -253,66 +259,72 @@ export const Navbar = () => {
                         enterTo="transform opacity-100 scale-100"
                         leave="transition ease-in duration-75"
                         leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95">
+                        leaveTo="transform opacity-0 scale-95"
+                      >
                         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           <Menu.Item>
-                            {({active}) => (
+                            {({ active }) => (
                               <a
                                 href="#"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm"
                                 )}
-                                onClick={() => navigation("/profile")}>
+                                onClick={() => navigation("/profile")}
+                              >
                                 Your Profile
                               </a>
                             )}
                           </Menu.Item>
                           <Menu.Item>
-                            {({active}) => (
+                            {({ active }) => (
                               <a
                                 href="#"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm"
                                 )}
-                                onClick={() => navigation("/transactions")}>
+                                onClick={() => navigation("/transactions")}
+                              >
                                 Transactions
                               </a>
                             )}
                           </Menu.Item>
                           <Menu.Item>
-                            {({active}) => (
+                            {({ active }) => (
                               <a
                                 href="#"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm"
-                                )}>
+                                )}
+                              >
                                 Register
                               </a>
                             )}
                           </Menu.Item>
                           <Menu.Item>
-                            {({active}) => (
+                            {({ active }) => (
                               <a
                                 href="#"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm text-gray-700"
-                                )}>
+                                )}
+                              >
                                 Settings
                               </a>
                             )}
                           </Menu.Item>
                           <Menu.Item>
-                            {({active}) => (
+                            {({ active }) => (
                               <a
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
                                 )}
-                                onClick={() => handleLogOut()}>
+                                onClick={() => handleLogOut()}
+                              >
                                 Sign out
                               </a>
                             )}
@@ -330,7 +342,8 @@ export const Navbar = () => {
               <Disclosure.Button
                 as="a"
                 onClick={() => navigation("/")}
-                className="block border-l-4 border-white bg-black py-2 pl-3 pr-4 text-base font-medium text-white sm:pl-5 sm:pr-6">
+                className="block border-l-4 border-white bg-black py-2 pl-3 pr-4 text-base font-medium text-white sm:pl-5 sm:pr-6"
+              >
                 Dashboard
               </Disclosure.Button>
             </div>
@@ -357,7 +370,8 @@ export const Navbar = () => {
                       navigation("/notification");
                     }}
                     type="button"
-                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2">
+                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2"
+                  >
                     <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
                   </Disclosure.Button>
                   <Disclosure.Button
@@ -365,7 +379,8 @@ export const Navbar = () => {
                       navigation("/cart");
                     }}
                     type="button"
-                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2">
+                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2"
+                  >
                     <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                   </Disclosure.Button>
                 </div>
@@ -374,19 +389,22 @@ export const Navbar = () => {
                 <Disclosure.Button
                   onClick={() => navigation("/profile")}
                   as="a"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                >
                   Your Profile
                 </Disclosure.Button>
                 <Disclosure.Button
                   onClick={() => navigation("/transactions")}
                   as="a"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                >
                   Transactioin
                 </Disclosure.Button>
                 <Disclosure.Button
                   onClick={() => handleLogOut()}
                   as="a"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
+                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6"
+                >
                   Sign out
                 </Disclosure.Button>
               </div>

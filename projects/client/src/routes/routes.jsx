@@ -1,14 +1,14 @@
-import {Route} from "react-router-dom";
+import { Route } from "react-router-dom";
 import Homepage from "../pages/Homepage";
-import {Register} from "../pages/register";
-import {Verification} from "../pages/verification";
-import {Login} from "../pages/Login";
-import {ResetPassword} from "../pages/resetPassword";
-import {InputPassword} from "../pages/inputPassword";
-import {TestImage} from "../pages/TestImage";
+import { Register } from "../pages/register";
+import { Verification } from "../pages/verification";
+import { Login } from "../pages/Login";
+import { ResetPassword } from "../pages/resetPassword";
+import { InputPassword } from "../pages/inputPassword";
+import { TestImage } from "../pages/TestImage";
 import ProductDetail from "../pages/ProductDetail";
 
-import {Transaction} from "../pages/Transactions";
+import { Transaction } from "../pages/Transactions";
 
 import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
@@ -24,13 +24,14 @@ import ManageCategory from "../pages/admin/ManageCategory";
 import MutationList from "../pages/admin/MutationList";
 import ManageProduct from "../pages/admin/ManageProduct";
 import ManageUser from "../pages/admin/ManageUser";
-import {PaymentProofModal} from "../components/admin/PaymentProofModal";
+import { PaymentProofModal } from "../components/admin/PaymentProofModal";
 import OrderList from "../pages/admin/OrderList";
 import Notification from "../pages/Notification";
 import NotificationDetailModal from "../components/NotificationDetailModal";
 import AdminNotification from "../pages/admin/AdminNotification";
 import ManageStock from "../pages/admin/ManageStock";
 import SalesReport from "../pages/admin/SalesReport";
+import StockHistory from "../pages/admin/StockHistory";
 
 const routes = [
   //home
@@ -323,6 +324,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <SalesReport />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="stock-history"
+    path="/stock-history"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <StockHistory />
       </ProtectedPage>
     }
   />,

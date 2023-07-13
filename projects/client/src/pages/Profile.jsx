@@ -43,15 +43,14 @@ export default function Profile() {
   const dispatch = useDispatch();
 
   const handleSubmitProfile = async (e) => {
-    const id = JSON.parse(localStorage.getItem("auth"));
-    console.log(id.id);
+    const token = JSON.parse(localStorage.getItem("auth"));
     const formData = new FormData();
-    formData.append("id", id.id);
     formData.append("user_image", e.target.files[0]);
-
     try {
       const response = await api.post("/upload", formData, {
         headers: {
+          Authorization: token,
+          Accept: "appplication/json",
           "Content-Type": "multipart/form-data",
         },
       });
@@ -63,8 +62,15 @@ export default function Profile() {
 
   const userData = async () => {
     try {
-      const id = JSON.parse(localStorage.getItem("auth"));
-      const response = await api.get(`/user/auth/${id.id})`);
+      let token = JSON.parse(localStorage.getItem("auth"));
+      const response = await api.get("/user/auth", {
+        headers: {
+          Authorization: token,
+          Accept: "appplication/json",
+          "Content-Type": "application/json",
+        },
+      });
+
       dispatch(login(response.data.user));
     } catch (error) {
       console.log(error);
@@ -115,7 +121,6 @@ export default function Profile() {
         } else {
           const response = await api.get(`addresses/${getUser.id}`);
           const addresses = response.data;
-          console.log(addresses);
           if (addresses.length > 0) {
             // Find the address with 'is_default' set to true
             const defaultAddress = addresses.find(

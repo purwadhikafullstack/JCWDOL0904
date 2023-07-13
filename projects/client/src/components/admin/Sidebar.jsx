@@ -77,7 +77,7 @@ const navigation = [
   },
   {
     name: "History",
-    href: "/sales-report",
+    href: "/stock-history",
     icon: ChartBarIcon,
     current: false,
   },
