@@ -11,6 +11,7 @@ import adminNotificationSlice from "../features/adminNotificationSlice.js";
 import stockSlice from "../features/stockSlice.js";
 import transactionSlice from "../features/transactionSlice.js";
 import transactionItemSlice from "../features/transactionItemSlice.js";
+import stockHistorySlice from "../features/stockHistorySlice.js";
 
 export default configureStore({
   reducer: {
@@ -20,11 +21,12 @@ export default configureStore({
     mutationListSlice,
     addressSlice,
     categorySlice,
+    notificationSlice,
     allUserSlice,
+    adminNotificationSlice,
+    stockSlice,
     transactionSlice,
     transactionItemSlice,
-    stockSlice,
-    notificationSlice,
-    adminNotificationSlice
+    stockHistorySlice,
   },
 });

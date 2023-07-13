@@ -4,7 +4,8 @@ const multer = require("../middleware/multer");
 module.exports = {
   uploadProfilePict: async (req, res) => {
     try {
-      const id = req.body.id;
+      const { id } = req.dataToken;
+      // const id = req.body.id;
       console.log(id);
 
       const { file } = req;
@@ -20,6 +21,7 @@ module.exports = {
       res.status(200).send({
         message: "Profile picture updated successfully",
         result,
+        id,
       });
     } catch (err) {
       console.log(err);

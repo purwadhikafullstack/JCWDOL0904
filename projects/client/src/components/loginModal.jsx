@@ -43,29 +43,18 @@ const LoginModal = () => {
         email: inputEmail,
         password: inputPassword,
       });
-      console.log(response);
       if (response.status === 200) {
-        const {
-          id,
-          fullname,
-          username,
-          is_verified,
-          user_image,
-          role,
-          id_warehouse,
-        } = response.data.result;
-        const authData = {
-          id,
-          fullname,
-          username,
-          is_verified,
-          user_image,
-          role,
-          id_warehouse,
-        };
+        const authData = response.data.result;
+        Swal.fire({
+          title: "Success",
+          text: response.data.message,
+          icon: "success",
+          confirmButtonText: "Ok",
+        });
+        console.log(response);
         localStorage.setItem("auth", JSON.stringify(authData));
         console.log(authData);
-        dispatch(login(authData));
+        dispatch(login(response.data.data));
         onClose();
       }
     } catch (err) {
@@ -216,7 +205,10 @@ const LoginModal = () => {
             <p class="text-sm font-light text-gray-500 dark:text-gray-400 my-1 ">
               Dont have an account?{" "}
               <Button
-                onClick={() => navigate("/register")}
+                onClick={() => {
+                  navigate("/register");
+                  onClose();
+                }}
                 class="font-medium text-primary-600 hover:underline dark:text-primary-500"
               >
                 Register here

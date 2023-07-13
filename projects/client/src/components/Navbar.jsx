@@ -16,7 +16,7 @@ import { login } from "../features/userSlice";
 import { unreadCount } from "../features/notificationSlice";
 import io from "socket.io-client";
 import LoginModal from "./loginModal";
-import env from "react-dotenv";
+// import env from "react-dotenv";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -129,7 +129,7 @@ export const Navbar = () => {
                   </Disclosure.Button>
                 </div>
                 <div
-                  className="flex flex-shrink-0 items-center cursor-pointer "
+                  className="flex flex-shrink-0 items-center cursor-pointer"
                   onClick={() => navigation("/")}
                 >
                   <img

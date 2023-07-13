@@ -19,10 +19,10 @@ export default function ProtectedPage({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (needLogin && !user.id) {
+    if (needLogin && !user.email) {
       // console.log();
       nav("/");
-    } else if (guestOnly && user.id) {
+    } else if (guestOnly && user.email) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
         nav("/order");
       } else {
