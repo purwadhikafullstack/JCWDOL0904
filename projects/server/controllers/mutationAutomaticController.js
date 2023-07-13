@@ -18,6 +18,7 @@ module.exports = {
         },
         include: [warehouse],
       });
+      const allWarehouse = await warehouse.findAll();
       const id_warehouse_seller = warehouse_seller.id_warehouse;
       const warehouseSellerData = warehouse_seller.Warehouse;
       const IncludeForMainData = [
@@ -38,14 +39,12 @@ module.exports = {
           ],
         },
       ];
-
       const result = await transaction.findOne({
         where: {
           id,
         },
         include: IncludeForMainData,
       });
-
       const allProduct = result.TransactionItems.map((el) => {
         return {
           id: el.Product.Stocks[0].id,
@@ -57,7 +56,6 @@ module.exports = {
       const allItemRequestQty = result.TransactionItems.map((el) => {
         return { id_product: el.id_product, request_qty: el.quantity };
       });
-
       const mutationNeeded = [];
       const noMutationNeeded = [];
       await Promise.all(
@@ -71,6 +69,7 @@ module.exports = {
               id_product: customer.id_product,
               qty: difference,
               product_name: prod.product_name,
+              qty_origin: prod.stock,
             });
           } else if (prod && customer.request_qty < prod.stock) {
             noMutationNeeded.push({
@@ -81,7 +80,6 @@ module.exports = {
           }
         })
       );
-
       const orderWarehouseAvailable = [
         [
           sequelize.literal(`ST_Distance_Sphere(
@@ -90,154 +88,132 @@ module.exports = {
       )`),
         ],
       ];
-
-      const whereWarehouseAvailable = {
-        id: {
-          [db.Sequelize.Op.not]: id_warehouse_seller,
-        },
-      };
-
-      let warehouseAvailable = [];
-      let stockIsEmpty = [];
+      let stockAvailable = [];
+      let stockWarehouseSender = [];
       await Promise.all(
         mutationNeeded?.map(async (el) => {
+          let stockNeeded = el.qty;
           const includeWarehouseAvailable = [
             {
               model: stocks,
               where: {
                 stock: {
-                  [db.Sequelize.Op.gt]: el.qty - 1,
+                  [db.Sequelize.Op.gt]: 0,
                 },
                 id_product: el.id_product,
               },
             },
           ];
-
-          const nearestWarehouse = await warehouse.findAll({
-            order: orderWarehouseAvailable,
-            where: whereWarehouseAvailable,
-            include: includeWarehouseAvailable,
-            limit: 1,
-          });
-          if (nearestWarehouse.length > 0) {
-            warehouseAvailable.push(nearestWarehouse);
-          } else if (nearestWarehouse.length < 1) {
-            stockIsEmpty.push({
-              id_product: el.id_product,
-              stock: el.qty,
-              product_name: el.product_name,
+          const warehouseIgnore = [id_warehouse_seller];
+          const whereWarehouseAvailable = {
+            id: {
+              [db.Sequelize.Op.notIn]: warehouseIgnore,
+            },
+          };
+          let stockInWarehouseSeller = [el.qty_origin];
+          const startSearch = async () => {
+            if (warehouseIgnore >= allWarehouse.length) {
+              throw new Error(
+                "One of this product stock in this transaction or all product is empty at all warehouse!"
+              );
+            }
+            const nearestWarehouse = await warehouse.findAll({
+              order: orderWarehouseAvailable,
+              where: whereWarehouseAvailable,
+              include: includeWarehouseAvailable,
+              limit: 1,
             });
-          }
-        })
-      );
-
-      if (stockIsEmpty.length > 0) {
-        return res.status(400).send({
-          data: stockIsEmpty,
-          message: "stock is empty on every warehouse",
-        });
-      }
-
-      let stockAvailable = [];
-      warehouseAvailable.forEach((el) => {
-        el.forEach((stock) => {
-          stockAvailable.push(stock.Stocks[0]);
-        });
-      });
-
-      const updateStock = stockAvailable.map((el) => {
-        const mutationItem = mutationNeeded.find(
-          (item) => item.id_product === el.id_product
-        );
-        if (mutationItem) {
-          return {
-            id: el.id,
-            stock: el.stock - mutationItem.qty,
-            id_product: el.id_product,
-          };
-        }
-      });
-
-      await Promise.all(
-        updateStock?.map(async (el) => {
-          await stocks.update(
-            {
-              stock: el.stock,
-            },
-            {
-              where: {
-                id: el.id,
-              },
+            let stockBefore;
+            if (nearestWarehouse.length > 0) {
+              let stockAfterSend;
+              let stockGot;
+              if (nearestWarehouse[0].Stocks[0].stock > stockNeeded) {
+                stockAfterSend =
+                  nearestWarehouse[0].Stocks[0].stock - stockNeeded;
+                stockBefore = stockNeeded;
+                stockInWarehouseSeller.push(stockNeeded);
+                stockGot = stockInWarehouseSeller.reduce((acc, curr) => {
+                  return acc + curr;
+                }, 0);
+              } else {
+                stockAfterSend = 0;
+                stockBefore = nearestWarehouse[0].Stocks[0].stock;
+                stockInWarehouseSeller.push(
+                  nearestWarehouse[0].Stocks[0].stock
+                );
+                stockGot = stockInWarehouseSeller.reduce((acc, curr) => {
+                  return acc + curr;
+                }, 0);
+              }
+              stockAvailable.push({
+                id: nearestWarehouse[0].Stocks[0].id,
+                stock: stockAfterSend,
+                id_product: nearestWarehouse[0].Stocks[0].id_product,
+                id_warehouse: nearestWarehouse[0].Stocks[0].id_warehouse,
+                stockMove: stockBefore,
+                stockIncrease: stockGot,
+              });
+              if (stockAfterSend === 0) {
+                warehouseIgnore.push(
+                  nearestWarehouse[0].Stocks[0].id_warehouse
+                );
+                stockNeeded = stockNeeded - nearestWarehouse[0].Stocks[0].stock;
+                await startSearch();
+              }
             }
-          );
-        })
-      );
-
-      let updateReceiveStock = mutationNeeded?.map((el) => {
-        const receiveItem = allProduct.find(
-          (item) => item.id_product === el.id_product
-        );
-        if (receiveItem) {
-          return {
-            id: receiveItem.id,
-            stock: el.qty + receiveItem.stock,
-            id_product: el.id_product,
           };
-        }
-      });
-
-      await Promise.all(
-        updateReceiveStock?.map(async (el) => {
-          await stocks.update(
-            {
-              stock: el.stock,
-            },
-            {
-              where: {
-                id: el.id,
-              },
-            }
-          );
+          await startSearch();
         })
       );
-
-      await Promise.all(
-        warehouseAvailable.map(async (el) => {
-          const stockNeeded = mutationNeeded.find(
-            (item) => item.id_product === el[0].Stocks[0].id_product
-          );
-          if (stockNeeded) {
+      if (stockAvailable) {
+        await Promise.all(
+          stockAvailable.map(async (el) => {
+            await stocks.update(
+              {
+                stock: el.stock,
+              },
+              { where: { id: el.id } }
+            );
+            await stocks.update(
+              {
+                stock: el.stockIncrease,
+              },
+              {
+                where: {
+                  id_product: el.id_product,
+                  id_warehouse: id_warehouse_seller,
+                },
+              }
+            );
+            await stockhistory.create({
+              status: "out",
+              current_stock: el.stock,
+              quantity: el.stockMove,
+              id_product: el.id_product,
+              id_warehouse: el.id_warehouse,
+            });
             await stockmovement.create({
-              warehouse_sender_id: el[0].id,
               status: "approved",
-              id_product: el[0].Stocks[0].id_product,
-              quantity: stockNeeded.qty,
+              quantity: el.stockMove,
+              id_product: el.id_product,
+              warehouse_sender_id: el.id_warehouse,
               warehouse_receive_id: id_warehouse_seller,
             });
-            const currentStockOut = updateStock.find(
-              (s) => s.id_product === el[0].Stocks[0].id_product
-            );
+          })
+        );
+
+        await Promise.all(
+          stockAvailable.map(async (el) => {
             await stockhistory.create({
-              id_product: el[0].Stocks[0].id_product,
-              quantity: stockNeeded.qty,
-              status: "out",
-              id_warehouse: el[0].id,
-              current_stock: currentStockOut.stock,
-            });
-            const currentStockIn = updateReceiveStock.find(
-              (s) => s.id_product === el[0].Stocks[0].id_product
-            );
-            await stockhistory.create({
-              id_product: el[0].Stocks[0].id_product,
-              quantity: stockNeeded.qty,
-              // reference: request_number,
               status: "in",
+              current_stock: el.stockIncrease,
+              quantity: el.stockMove,
+              id_product: el.id_product,
               id_warehouse: id_warehouse_seller,
-              current_stock: currentStockIn.stock,
             });
-          }
-        })
-      );
+          })
+        );
+      }
 
       res.status(200).send({
         warehouseSellerData,
@@ -246,10 +222,8 @@ module.exports = {
         allItemRequestQty,
         mutationNeeded,
         noMutationNeeded,
-        warehouseAvailable,
         stockAvailable,
-        updateStock,
-        updateReceiveStock,
+        stockWarehouseSender,
       });
     } catch (error) {
       console.log(error);

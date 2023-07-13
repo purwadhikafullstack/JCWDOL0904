@@ -1,6 +1,8 @@
 const db = require("../models");
 const transaction = db.Transaction;
 const stoc = db.Stocks;
+const stockHistory = db.StockHistory;
+const { createNotification } = require("./notificationController");
 module.exports = {
   cancelOrder: async (req, res) => {
     try {
@@ -37,6 +39,14 @@ module.exports = {
                 },
                 { where: { id: dataTransaction.id } }
               );
+
+              await stockHistory.create({
+                status: "in",
+                id_product: element.id_product,
+                id_warehouse: warehouseId,
+                current_stock: stockNow.stock + element.quantity,
+                quantity: element.quantity,
+              });
             }
           })
         );
@@ -67,6 +77,12 @@ module.exports = {
           })
         );
       }
+      await createNotification(
+        `Invoice ${result.invoice_number}`,
+        "Your order is being canceled",
+        result.id_user,
+        "admin"
+      );
       res.status(200).send({
         result,
         coba,
