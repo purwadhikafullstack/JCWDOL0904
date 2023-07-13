@@ -9,15 +9,15 @@ module.exports = {
     try {
       const search = req.query.search || "";
       const site = req.query.site || null;
-      const page = req.query.page || 0;
+      let page = req.query.page || 0;
       const sort = req.query.sort || "DESC";
       const limit = 10;
 
       let allRows = [];
       let allCount = 0;
-
+      let result;
       if (site === "manageW") {
-        const result = await Warehouse.findAndCountAll({
+        result = await Warehouse.findAndCountAll({
           where: {
             warehouse: {
               [db.Sequelize.Op.like]: `%${search}%`,
@@ -35,7 +35,26 @@ module.exports = {
       }
 
       const totalPage = Math.ceil(allCount / limit);
+      if (parseInt(page) >= totalPage && totalPage > 0) {
+        page = totalPage - 1;
+        if (site === "manageW") {
+          result = await Warehouse.findAndCountAll({
+            where: {
+              warehouse: {
+                [db.Sequelize.Op.like]: `%${search}%`,
+              },
+            },
+            order: [["createdAt", sort]],
+            limit,
+            offset: page * limit,
+          });
 
+          allRows = result.rows;
+          allCount = result.count;
+        } else {
+          allRows = await Warehouse.findAll();
+        }
+      }
       res.status(200).send({ result: allRows, totalPage, search });
     } catch (error) {
       console.error(error);
@@ -234,46 +253,6 @@ module.exports = {
       );
       res.status(200).send({
         message: "Update admin warehouse success",
-        // data: result,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  // Change Admin Warehouse
-
-  changeWarehouse: async (req, res) => {
-    try {
-      const { currentWarehouse, id_warehouse, id, role } = req.body;
-      console.log(req.body);
-
-      const findUser = await User.findOne({
-        where: { id },
-      });
-
-      if (role === "adminWarehouse" || role === "user") {
-        return res.status(400).send({
-          message: "You don't have permission!",
-        });
-      }
-
-      if (currentWarehouse === id_warehouse) {
-        res.status(400).send({
-          message: "You select the same warehouse, please select another",
-        });
-      }
-      const result = await User.update(
-        { id_warehouse },
-        {
-          where: {
-            id: findUser.dataValues.id,
-          },
-        }
-      );
-      res.status(200).send({
-        message: "Update admin warehouse success",
-        // data: result,
       });
     } catch (error) {
       console.log(error);

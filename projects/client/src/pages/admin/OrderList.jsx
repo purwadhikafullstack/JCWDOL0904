@@ -71,8 +71,8 @@ export default function OrderList() {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
-
-      setWarehouses(response.data.result.result);
+      console.log(response);
+      setWarehouses(response.data.result);
     } catch (error) {
       console.error(error);
     }

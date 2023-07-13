@@ -58,13 +58,7 @@ const DecreaseStock = (props) => {
         }
       }
     });
-
-    // setStock(parseInt(props.stockNow));
   };
-
-  // useEffect(() => {
-  //   setStock(0);
-  // }, [onClose]);
 
   return (
     <div className="flex align-middle">
