@@ -5,12 +5,10 @@ import {Verification} from "../pages/verification";
 import {Login} from "../pages/Login";
 import {ResetPassword} from "../pages/resetPassword";
 import {InputPassword} from "../pages/inputPassword";
-import {TestImage} from "../pages/TestImage";
 import ProductDetail from "../pages/ProductDetail";
 
 import {Transaction} from "../pages/Transactions";
 
-import Test from "../pages/Test";
 import ProtectedPage from "./protectedPage";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
@@ -31,6 +29,7 @@ import NotificationDetailModal from "../components/NotificationDetailModal";
 import AdminNotification from "../pages/admin/AdminNotification";
 import ManageStock from "../pages/admin/ManageStock";
 import SalesReport from "../pages/admin/SalesReport";
+import {EkspedisiAdmin} from "../pages/admin/EkspedisiAdmin";
 
 const routes = [
   //home
@@ -89,7 +88,6 @@ const routes = [
       </ProtectedPage>
     }
   />,
-  <Route key="image" path="/image" element={<TestImage />} />,
   <Route
     key="detail"
     path="/detail"
@@ -174,15 +172,6 @@ const routes = [
   />,
   // admin
   <Route
-    key="test"
-    path="/test"
-    element={
-      <ProtectedPage needLogin={true} adminOnly={true}>
-        <Test />
-      </ProtectedPage>
-    }
-  />,
-  <Route
     key="manage-warehouse"
     path="/manage-warehouse"
     element={
@@ -215,15 +204,6 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <MutationList />
-      </ProtectedPage>
-    }
-  />,
-  <Route
-    key="cek"
-    path="/cek"
-    element={
-      <ProtectedPage needLogin={true} adminOnly={true}>
-        <TestImage />
       </ProtectedPage>
     }
   />,
@@ -323,6 +303,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <SalesReport />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="ekspedisi"
+    path="/ekspedisi"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <EkspedisiAdmin />
       </ProtectedPage>
     }
   />,

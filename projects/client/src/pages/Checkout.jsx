@@ -1,24 +1,19 @@
 import {useState, useEffect} from "react";
 import {api} from "../API/api";
-import AddressModal from "../components/AddressModal";
-import {AddAddressModal} from "../components/AddAddressModal";
-import {Ekspedisi} from "../components/Ekspedisi";
 import {apiro} from "../API/apiro";
 import {useNavigate} from "react-router-dom";
 import {updateCart} from "../features/cartSlice";
 import {useDispatch} from "react-redux";
-import CartCheckout from "../components/CartCheckout";
-import {CheckoutTotalSection} from "../components/CheckoutTotalSection";
 import Alert from "../components/SwallAlert";
-import CheckoutShippingSection from "../components/CheckoutShippingSection";
+import CheckoutRender from "../components/CheckoutRender";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [totalAmount, setTotalAmount] = useState(0); // Total jumlah pembelian
-  const [subTotal, setSubtotal] = useState(0); // Total jumlah subTotal
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [subTotal, setSubtotal] = useState(0);
   const [warehouseOrigin, setWarehouseOrigin] = useState("");
   const [ongkir, setOngkir] = useState(0);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("");
@@ -27,23 +22,33 @@ export default function Checkout() {
   const navigate = useNavigate();
   const openAddressModal = () => {
     setAddressModalOpen(true);
+    setTimeout(() => {
+      setAddressModalOpen(true);
+    }, 10);
   };
   const closeAddressModal = () => {
     setAddressModalOpen(false);
+    setTimeout(() => {
+      setAddressModalOpen(false);
+    }, 300);
   };
   const openAddAddressModal = () => {
     setAddAddressModalOpen(true);
+    setTimeout(() => {
+      setAddAddressModalOpen(true);
+    }, 10);
   };
   const closeAddAddressModal = () => {
     setAddAddressModalOpen(false);
+    setTimeout(() => {
+      setAddAddressModalOpen(false);
+    }, 300);
   };
   const handleSelectAddress = (address) => {
     setSelectedAddress(address);
     setAddressModalOpen(false);
     localStorage.setItem("selectedAddress", JSON.stringify(address));
   };
-
-  console.log(`ini cart items`, cartItems);
 
   const addressId = selectedAddress?.id;
   useEffect(() => {
@@ -58,8 +63,6 @@ export default function Checkout() {
             const productTotalWeight = productWeight * quantity;
             totalWeight += productTotalWeight;
           });
-          console.log(`ini total weight`, totalWeight);
-
           const response = await apiro.post("rajaongkir/ongkir", {
             origin: warehouseOrigin.warehouse_city_id,
             destination: selectedAddress.address_city_id,
@@ -79,7 +82,6 @@ export default function Checkout() {
     };
     fetchOngkir();
   }, [selectedAddress, selectedDeliveryMethod]);
-
   const handleSelectDeliveryMethod = async (method) => {
     setSelectedDeliveryMethod(method);
   };
@@ -111,7 +113,6 @@ export default function Checkout() {
     };
     fetchShippingAddress();
   }, []);
-
   useEffect(() => {
     const fetchLocalStorageCartItems = () => {
       const storedCartItems = localStorage.getItem("cartItems");
@@ -132,7 +133,6 @@ export default function Checkout() {
     fetchNearestWarehouse();
     fetchLocalStorageCartItems();
   }, [selectedAddress, addressId]);
-
   const handleCheckout = async (e) => {
     e.preventDefault();
     try {
@@ -142,15 +142,17 @@ export default function Checkout() {
         cartItems: cartItems,
         productQty: cartItems.quantity,
         addressId: selectedAddress.id,
-        userId: userId, // Masih hardcode
+        userId: userId,
         totalAmount: totalAmount,
         ongkir,
         ekspedisiId: selectedDeliveryMethod.id,
+        courier: selectedDeliveryMethod.name,
       });
       setCartItems([]);
       dispatch(updateCart({cart: []}));
       localStorage.removeItem("cartItems");
       localStorage.removeItem("selectedAddress");
+      localStorage.removeItem("subTotal");
       navigate("/transactions");
     } catch (error) {
       Alert({
@@ -163,7 +165,6 @@ export default function Checkout() {
       setOngkirIsLoading(false);
     }
   };
-
   useEffect(() => {
     const calculateTotalAmount = () => {
       let subtotal = 0;
@@ -175,46 +176,23 @@ export default function Checkout() {
     calculateTotalAmount();
   }, [cartItems, ongkir]);
   return (
-    <div className="bg-white">
-      <main className="mx-auto max-w-7xl px-4 pt-4 pb-16 sm:px-6 sm:pt-8 sm:pb-24 lg:px-8 xl:px-2 xl:pt-14">
-        <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
-          <h1 className="sr-only">Checkout</h1>
-          <section aria-labelledby="cart-heading" className="lg:col-span-7">
-            <CartCheckout cartItems={cartItems} />
-          </section>
-          <section className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
-            <CheckoutShippingSection
-              selectedAddress={selectedAddress}
-              openAddressModal={openAddressModal}
-              openAddAddressModal={openAddAddressModal}
-            />
-            <Ekspedisi onSelectDeliveryMethod={handleSelectDeliveryMethod} />
-            <div>
-              <CheckoutTotalSection
-                subTotal={subTotal}
-                totalAmount={totalAmount}
-                handleCheckout={handleCheckout}
-                ongkir={ongkir}
-                isOngkirLoading={isOngkirLoading}
-              />
-            </div>
-            {isAddAddressModalOpen && (
-              <div className="modal-overlay">
-                <AddAddressModal closeAddressModal={closeAddAddressModal} />
-              </div>
-            )}
-            <div className="shadow-lg">
-              {isAddressModalOpen && (
-                <AddressModal
-                  selectedAddress={selectedAddress}
-                  onSelectAddress={handleSelectAddress}
-                  closeModal={closeAddressModal}
-                />
-              )}
-            </div>
-          </section>
-        </div>
-      </main>
-    </div>
+    <CheckoutRender
+      cartItems={cartItems}
+      selectedAddress={selectedAddress}
+      openAddressModal={openAddressModal}
+      openAddAddressModal={openAddAddressModal}
+      subTotal={subTotal}
+      totalAmount={totalAmount}
+      handleCheckout={handleCheckout}
+      ongkir={ongkir}
+      isOngkirLoading={isOngkirLoading}
+      isAddressModalOpen={isAddressModalOpen}
+      isAddAddressModalOpen={isAddAddressModalOpen}
+      setSelectedAddress={setSelectedAddress}
+      closeAddressModal={closeAddressModal}
+      handleSelectAddress={handleSelectAddress}
+      closeAddAddressModal={closeAddAddressModal}
+      handleSelectDeliveryMethod={handleSelectDeliveryMethod}
+    />
   );
 }

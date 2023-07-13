@@ -63,6 +63,9 @@ The models/index file will call this method automatically.*/
     transaction_date: {
       type: DataTypes.DATE,
     },
+    courier: {
+      type: DataTypes.STRING,
+    },
     status: {
       type: DataTypes.ENUM('Waiting For Payment', 'Waiting For Payment Confirmation', 'On Process', 'Shipped', 'Order Confirmed', 'Canceled'),
     },

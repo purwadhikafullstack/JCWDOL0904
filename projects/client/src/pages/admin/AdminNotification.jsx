@@ -89,18 +89,20 @@ export default function AdminNotification() {
 
   return (
     <>
-      <div className="pt-10 mb-12 flex items-center justify-center flex-col cursor-default">
-        <h1 className="text-3xl items-center justify-center flex font-bold tracking-tight text-gray-900 sm:text-4xl">
+      <div className="pt-10 cursor-default">
+        <h1 className="text-3xl max-w-[605px] text-center sm:max-w-[605px] md:max-w-[450px] xl:max-w-[800px] 2xl:max-w-[1000px] mt-7 m-auto font-bold tracking-tight text-gray-900 sm:text-4xl">
           Notifications
         </h1>
-        <div className="w-[610px] mt-7 m-auto">
+        <div className="max-w-[605px] sm:max-w-[605px] md:max-w-[450px] xl:max-w-[800px] 2xl:max-w-[1000px] mt-7 m-auto">
           <OrderSearch
             handleSearch={handleSearch}
             invoiceNumber={invoiceNumber}
           />
         </div>
-        <div className="flex pt-6 min-h-[650px] justify-center ">
-          <ul role="list" className="flex flex-col gap-3">
+        <div className="flex pt-6 min-h-[650px] justify-center">
+          <ul
+            role="list"
+            className="flex flex-col gap-3 w-full sm:max-w-[605px] md:max-w-[450px] xl:max-w-[800px] 2xl:max-w-[1000px] mx-auto">
             {notifications.map((notification) => {
               const readStatus =
                 notification.UserNotifications.length > 0
@@ -110,13 +112,15 @@ export default function AdminNotification() {
                 <li
                   key={notification.id}
                   onClick={(event) => openModal(notification.id, event)}
-                  className={`relative py-4 px-4 rounded-full w-[650px] md:w-full sm:w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600  ${
+                  className={`relative py-4 px-4 rounded-full w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600 ${
                     readStatus ? "bg-gray-50" : "bg-gray-200"
                   } hover:bg-gray-100 hover:shadow-md`}>
                   <div className="flex gap-10 items-center space-x-3">
                     <div className="min-w-0 flex-1">
                       <a href="#" className="block focus:outline-none">
-                        <span className="absolute inset-0" aria-hidden="true" />
+                        <span
+                          className="absolute inset-0"
+                          aria-hidden="true"></span>
                         <p className="truncate text-sm font-medium text-gray-900">
                           {notification.title}
                         </p>
@@ -131,32 +135,32 @@ export default function AdminNotification() {
                     </time>
                   </div>
                   {readStatus ? (
-                    <MdCheckCircle className="w-5 h-5 text-green-500  absolute top-4 right-5" />
+                    <MdCheckCircle className="w-5 h-5 text-green-500 absolute top-4 right-5" />
                   ) : (
                     <MdError className="w-5 h-5 text-yellow-500 absolute top-4 right-5" />
                   )}
                 </li>
               );
             })}
-            <div className="-ml-14">
-              <Pagination
-                totalPages={totalPages}
-                handlePageChange={handlePageChange}
-              />
-            </div>
           </ul>
         </div>
-      </div>
-      {selectedNotification && (
-        <div className="m-auto">
-          <NotifAdminDetailModal
-            closeModal={closeModal}
-            isOpen={isModalOpen}
-            fetchNotification={fetchNotification}
-            selectedNotification={selectedNotification}
+        <div className="-mt-12">
+          <Pagination
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
           />
         </div>
-      )}
+        {selectedNotification && (
+          <div className="m-auto sm:rounded-lg">
+            <NotifAdminDetailModal
+              closeModal={closeModal}
+              isOpen={isModalOpen}
+              fetchNotification={fetchNotification}
+              selectedNotification={selectedNotification}
+            />
+          </div>
+        )}
+      </div>
     </>
   );
 }

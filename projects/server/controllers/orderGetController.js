@@ -1,7 +1,5 @@
-const { Transaction, Warehouse, Products, Stocks, TransactionItem, Address, sequelize, Carts, Ekspedisi } = require('../models');
+const { Transaction, Products, TransactionItem, Address, Ekspedisi } = require('../models');
 const db = require("../models");
-const moment = require("moment");
-const { io } = require("../src/index")
 
 module.exports = {
     // User
@@ -45,7 +43,7 @@ module.exports = {
                 where: whereCondition,
                 order: [['createdAt', 'DESC']],
                 limit,
-                offset: page * limit,
+                offset: (page) * limit,
             });
 
             const totalPages = Math.ceil(totalOrders / limit);
@@ -54,7 +52,6 @@ module.exports = {
             console.error(error);
         }
     },
-
     // Admin
     getAllOrders: async (req, res) => {
         try {
@@ -105,7 +102,6 @@ module.exports = {
             console.error(error);
         }
     },
-
     // Admin
     getOrdersByWarehouse: async (req, res) => {
         try {
@@ -160,7 +156,6 @@ module.exports = {
             res.status(500).send({ error: 'Internal server error' });
         }
     },
-
     // Admin (Order Detail)
     getOrderById: async (req, res) => {
         try {

@@ -7,7 +7,6 @@ import {
   ShoppingCartIcon,
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
-import {Link, Navigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {useDispatch} from "react-redux";
 import {updateCart} from "../features/cartSlice";
@@ -16,7 +15,6 @@ import {login} from "../features/userSlice";
 import {unreadCount} from "../features/notificationSlice";
 import io from "socket.io-client";
 import LoginModal from "./loginModal";
-import env from "react-dotenv";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -69,7 +67,6 @@ export const Navbar = () => {
         role: "",
       })
     );
-    // navigation("/login");
   };
 
   const {cart} = useSelector((state) => state.cartSlice.value);
@@ -80,7 +77,6 @@ export const Navbar = () => {
     setUnreads(notificationUnread);
   }, [notificationUnread]);
 
-  // Dispatch the Redux action to update the cart
   const updateCartData = (cart) => {
     dispatch(updateCart({cart}));
   };
@@ -88,7 +84,6 @@ export const Navbar = () => {
     dispatch(unreadCount({unread}));
   };
 
-  // update kembalo cartdata dan unreadCount notifikasi ketika load page
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -101,7 +96,6 @@ export const Navbar = () => {
     }
   }, []);
 
-  // update cart, and notification di local storage setiap cart atau notification ada perubahan
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
     localStorage.setItem("unread", JSON.stringify(notificationUnread));
@@ -116,22 +110,72 @@ export const Navbar = () => {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
-                <div className="-ml-2 mr-2 flex items-center md:hidden">
+                <div className="-ml-2 mr-2 flex items-center justify-between md:hidden">
                   {/* Mobile menu button */}
                   <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                     <span className="sr-only">Open main menu</span>
+
                     {open ? (
                       <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                     ) : (
                       <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                     )}
+                    <img
+                      className="block ml-5 h-8 w-auto md:hidden xl:hidden lg:hidden "
+                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
+                      alt="Your Company"
+                    />
+                    <img
+                      className="hidden h-8 w-auto lg:block"
+                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
+                      alt="Your Company"
+                    />
                   </Disclosure.Button>
+                  <div className="flex ml-[352px] mr-0">
+                    {isLogin ? (
+                      <button
+                        type="button"
+                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                        <div className="flex gap-3">
+                          <div className="flex">
+                            <EnvelopeIcon
+                              onClick={() => {
+                                navigation("/notification");
+                              }}
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                            <p>{unreads}</p>
+                          </div>
+                        </div>
+                      </button>
+                    ) : null}
+                    {isLogin ? (
+                      <button
+                        type="button"
+                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                        <span className="sr-only">View notifications</span>
+                        <div className="flex gap-3">
+                          <div className="flex">
+                            <ShoppingCartIcon
+                              onClick={() => {
+                                navigation("/cart");
+                              }}
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                            <p>{cart.length}</p>
+                          </div>
+                        </div>
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
                 <div
                   className="flex flex-shrink-0 items-center cursor-pointer "
                   onClick={() => navigation("/")}>
                   <img
-                    className="block h-8 w-auto lg:hidden "
+                    className="block h-8 w-auto sm:hidden lg:hidden "
                     src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                     alt="Your Company"
                   />
@@ -140,7 +184,7 @@ export const Navbar = () => {
                     src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                     alt="Your Company"
                   />
-                  <div className="flex ml-40 justify-end md:hidden lg:hidden xl:hidden">
+                  <div className="flex sm:hidden ml-40 justify-end md:hidden lg:hidden xl:hidden">
                     {isLogin ? (
                       <button
                         type="button"
@@ -184,16 +228,7 @@ export const Navbar = () => {
               </div>
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  {isLogin ? null : (
-                    <LoginModal />
-                    // <button
-                    //   type="button"
-                    //   className="relative inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    //   onClick={() => navigation("/login")}
-                    // >
-                    //   <span>Login</span>
-                    // </button>
-                  )}
+                  {isLogin ? null : <LoginModal />}
                 </div>
                 <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
                   {isLogin ? (

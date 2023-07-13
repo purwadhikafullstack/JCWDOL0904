@@ -10,13 +10,11 @@ function classNames(...classes) {
 export const Ekspedisi = ({onSelectDeliveryMethod}) => {
   const [ekspedisi, setEkspedisi] = useState([]);
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState([]);
-  // console.log(selectedDeliveryMethod);
 
   const fetchEkspedisi = async () => {
     try {
-      const response = await api.get("ekspedisi");
+      const response = await api.get("/ekspedisi/user");
       setEkspedisi(response.data);
-      // console.log(response.data);
     } catch (error) {
       console.error(error);
     }

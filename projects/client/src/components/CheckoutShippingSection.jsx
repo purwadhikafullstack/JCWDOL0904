@@ -47,7 +47,9 @@ const CheckoutShippingSection = ({
             </div>
           </div>
         ) : (
-          <div>No shipping addresses found.</div>
+          <div className="mt-4 text-md text-gray-600">
+            No shipping addresses found.
+          </div>
         )}
       </div>
 

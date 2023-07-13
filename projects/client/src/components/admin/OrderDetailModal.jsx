@@ -11,7 +11,6 @@ export default function OrderDetailModal({
   selectedTransaction,
 }) {
   const [transactions, setTransactions] = useState([]);
-  // console.log(transactions);
 
   useEffect(() => {
     fetchTransactions();
@@ -128,7 +127,11 @@ export default function OrderDetailModal({
                           <dd className="mt-2 text-gray-700">
                             <p className="text-gray-900 flex gap-1 items-center">
                               <TruckIcon className="h-4" />
-                              <span>{transaction.Ekspedisi.name} </span>
+                              <span>
+                                {transaction.courier
+                                  ? transaction?.courier
+                                  : null}{" "}
+                              </span>
                             </p>
                             <p className="text-gray-600"> 2–5 business days</p>
                             <dd className=" text-gray-600">
@@ -137,7 +140,6 @@ export default function OrderDetailModal({
                           </dd>
                         </div>
                       </dl>
-
                       <dl className="space-y-6 border-t border-gray-200 pt-5 text-sm">
                         <div className="flex justify-between">
                           <dt className="font-medium text-gray-900">Total</dt>

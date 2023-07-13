@@ -88,14 +88,9 @@ const TransactionSections = ({
                 ))}
               </tbody>
             </div>
-            {/* Billing */}
             <section
               aria-labelledby="summary-heading"
               className="mt-5 shadow-md rounded-lg transition duration-300">
-              <h2 id="summary-heading" className="sr-only">
-                Billing Summary
-              </h2>
-
               <div className="bg-gray-100 py-6 px-4 sm:rounded-lg sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-8">
                 <dl className="grid grid-cols-2 gap-6 text-sm sm:grid-cols-2 md:gap-x-8 lg:col-span-7">
                   <div>
@@ -122,7 +117,7 @@ const TransactionSections = ({
                       <div className="mt-3 items-center  flex">
                         <p className="text-gray-900 justify-center flex gap-1 items-center">
                           <TruckIcon className="h-4 ml-4" />
-                          <span>{transaction.Ekspedisi.name} </span>
+                          <span>{transaction.courier} </span>
                           <p className="text-gray-600"> 2–5 business days</p>
                         </p>
                       </div>

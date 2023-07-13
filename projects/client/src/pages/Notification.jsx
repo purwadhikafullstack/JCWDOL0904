@@ -1,13 +1,9 @@
-import {useEffect, useState, useRef} from "react";
+import {useEffect, useState} from "react";
 import {api} from "../API/api";
 import {MdError, MdCheckCircle} from "react-icons/md";
 import NotificationDetailModal from "../components/NotificationDetailModal";
 import moment from "moment";
 import {useDispatch} from "react-redux";
-import {unreadCount} from "../features/notificationSlice";
-import io from "socket.io-client";
-import {Input, InputGroup, InputRightElement} from "@chakra-ui/react";
-import {SearchIcon} from "@chakra-ui/icons";
 import Pagination from "../components/admin/Pagination";
 import OrderSearch from "../components/admin/OrderSearch";
 
@@ -20,32 +16,6 @@ export default function Notification() {
   const [invoiceNumber, setInvoiceNumber] = useState("");
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const socket = io("http://localhost:8000");
-    socket.on("notification", (updatedNotifications) => {
-      setNotifications(updatedNotifications);
-    });
-
-    return () => {
-      socket.off("notification");
-    };
-  }, []);
-  useEffect(() => {
-    const socket = io("http://localhost:8000");
-    socket.on("notificationRead", (updatedNotifications) => {
-      const unread = updatedNotifications.filter((notification) => {
-        return (
-          notification.UserNotifications.length === 0 ||
-          !notification.UserNotifications[0].read
-        );
-      });
-      dispatch(unreadCount({unread: unread.length}));
-    });
-    return () => {
-      socket.off("notificationRead");
-    };
-  }, []);
 
   useEffect(() => {
     fetchNotification();
@@ -73,6 +43,7 @@ export default function Notification() {
     setCurrentPage(0);
     fetchNotification();
   };
+
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
@@ -82,10 +53,12 @@ export default function Notification() {
     setSelectedNotification(notificationId);
     setIsModalOpen(true);
   };
+
   const closeModal = () => {
     setSelectedNotification(null);
     setIsModalOpen(false);
   };
+
   return (
     <div className="pt-24 cursor-default">
       <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -97,8 +70,10 @@ export default function Notification() {
           invoiceNumber={invoiceNumber}
         />
       </div>
-      <div className="flex pt-6 min-h-[650px] justify-center ">
-        <ul role="list" className="flex flex-col gap-3">
+      <div className="flex pt-6 min-h-[650px] justify-center">
+        <ul
+          role="list"
+          className="flex flex-col gap-3 w-full sm:max-w-[605px] mx-auto">
           {notifications.map((notification) => {
             const readStatus =
               notification.UserNotifications.length > 0
@@ -108,13 +83,15 @@ export default function Notification() {
               <li
                 key={notification.id}
                 onClick={(event) => openModal(notification.id, event)}
-                className={`relative py-4 px-4 rounded-full w-[650px] md:w-full sm:w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600  ${
+                className={`relative py-4 px-4 rounded-full w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600 ${
                   readStatus ? "bg-gray-50" : "bg-gray-200"
                 } hover:bg-gray-100 hover:shadow-md`}>
                 <div className="flex gap-10 items-center space-x-3">
                   <div className="min-w-0 flex-1">
                     <a href="#" className="block focus:outline-none">
-                      <span className="absolute inset-0" aria-hidden="true" />
+                      <span
+                        className="absolute inset-0"
+                        aria-hidden="true"></span>
                       <p className="truncate text-sm font-medium text-gray-900">
                         {notification.title}
                       </p>
@@ -129,7 +106,7 @@ export default function Notification() {
                   </time>
                 </div>
                 {readStatus ? (
-                  <MdCheckCircle className="w-5 h-5 text-green-500  absolute top-4 right-5" />
+                  <MdCheckCircle className="w-5 h-5 text-green-500 absolute top-4 right-5" />
                 ) : (
                   <MdError className="w-5 h-5 text-yellow-500 absolute top-4 right-5" />
                 )}

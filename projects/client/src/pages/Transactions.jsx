@@ -10,7 +10,7 @@ import OrderStatus from "../components/admin/OrderStatus";
 
 export const Transaction = () => {
   const [transactions, setTransactions] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState("");
@@ -89,7 +89,6 @@ export const Transaction = () => {
       console.error(error);
     }
   };
-
   const acceptOrder = async (id) => {
     try {
       const response = await api.put(`/order/${id}/accept`);
@@ -108,7 +107,6 @@ export const Transaction = () => {
       console.error(error);
     }
   };
-
   useEffect(() => {
     const socket = io("http://localhost:8000");
     socket.on("transaction-update", (updatedTransaction) => {
