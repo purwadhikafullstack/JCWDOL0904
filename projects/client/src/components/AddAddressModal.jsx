@@ -58,10 +58,11 @@ export const AddAddressModal = ({closeAddressModal}) => {
       });
       setRecipientName("");
       setPhoneNumber("");
-      setProvincess([]);
-      setCity([]);
+      setProvincess({});
+      setCity({});
       setSubdistrict("");
       setZip("");
+      closeAddressModal();
     } catch (error) {
       Swal.fire({
         title: "Error!",

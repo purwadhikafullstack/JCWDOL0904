@@ -79,13 +79,13 @@ export const CheckoutTotalSection = ({
           <button
             type="submit"
             disabled={isOngkirLoading}
-            className="mt-6 w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            className="mt-6 w-full rounded-full hover:shadow-md transition duration-300 ease-in-out border border-transparent bg-gray-950 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             Checkout
           </button>
         )}
         <button
           onClick={() => navigate("/")}
-          className="mt-6 w-full rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm ">
+          className="mt-3 w-full hover:shadow-md hover:ring-2 hover:ring-black rounded-full border border-transparent transition duration-300 ease-in-out py-2 px-4 text-sm font-medium shadow-sm ">
           Continue Shooping
         </button>
       </form>

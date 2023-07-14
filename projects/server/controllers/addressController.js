@@ -46,7 +46,6 @@ module.exports = {
         zip,
         userId,
       } = req.body;
-      console.log(req.body);
 
       if (
         !recipient_name ||

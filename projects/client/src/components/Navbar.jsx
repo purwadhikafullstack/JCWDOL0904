@@ -1,20 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {Fragment} from "react";
-import {Disclosure, Menu, Transition} from "@headlessui/react";
-import {
-  Bars3Icon,
-  XMarkIcon,
-  ShoppingCartIcon,
-  EnvelopeIcon,
-} from "@heroicons/react/24/outline";
 import {useSelector} from "react-redux";
 import {useDispatch} from "react-redux";
 import {updateCart} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
 import {login} from "../features/userSlice";
-import {unreadCount} from "../features/notificationSlice";
 import io from "socket.io-client";
 import LoginModal from "./loginModal";
+import NavbarRender from "./NavbarRender";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -48,9 +40,8 @@ export const Navbar = () => {
       });
       setUnreads(unread.length);
     });
-
     return () => {
-      socket.off("notificationUpdate");
+      socket.off("notificationRead");
     };
   }, []);
 
@@ -70,18 +61,9 @@ export const Navbar = () => {
   };
 
   const {cart} = useSelector((state) => state.cartSlice.value);
-  const notificationUnread = useSelector(
-    (state) => state.notificationSlice.value.unread
-  );
-  useEffect(() => {
-    setUnreads(notificationUnread);
-  }, [notificationUnread]);
 
   const updateCartData = (cart) => {
     dispatch(updateCart({cart}));
-  };
-  const updateUnreadCount = (unread) => {
-    dispatch(unreadCount({unread}));
   };
 
   useEffect(() => {
@@ -89,346 +71,33 @@ export const Navbar = () => {
     if (storedCart) {
       updateCartData(JSON.parse(storedCart));
     }
-
-    const unreadCount = localStorage.getItem("unread");
-    if (unreadCount) {
-      updateUnreadCount(JSON.parse(unreadCount));
-    }
   }, []);
-
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
-    localStorage.setItem("unread", JSON.stringify(notificationUnread));
-  }, [cart, notificationUnread]);
-  return (
-    <Disclosure
-      as="nav"
-      className="bg-white shadow z-50"
-      style={{position: "fixed", width: "100%"}}>
-      {({open}) => (
-        <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 justify-between">
-              <div className="flex">
-                <div className="-ml-2 mr-2 flex items-center justify-between md:hidden">
-                  {/* Mobile menu button */}
-                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                    <span className="sr-only">Open main menu</span>
+  }, [cart]);
 
-                    {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                    )}
-                    <img
-                      className="block ml-5 h-8 w-auto md:hidden xl:hidden lg:hidden "
-                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
-                      alt="Your Company"
-                    />
-                    <img
-                      className="hidden h-8 w-auto lg:block"
-                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
-                      alt="Your Company"
-                    />
-                  </Disclosure.Button>
-                  <div className="flex ml-[352px] mr-0">
-                    {isLogin ? (
-                      <button
-                        type="button"
-                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
-                        <div className="flex gap-3">
-                          <div className="flex">
-                            <EnvelopeIcon
-                              onClick={() => {
-                                navigation("/notification");
-                              }}
-                              className="h-6 w-6"
-                              aria-hidden="true"
-                            />
-                            <p>{unreads}</p>
-                          </div>
-                        </div>
-                      </button>
-                    ) : null}
-                    {isLogin ? (
-                      <button
-                        type="button"
-                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
-                        <span className="sr-only">View notifications</span>
-                        <div className="flex gap-3">
-                          <div className="flex">
-                            <ShoppingCartIcon
-                              onClick={() => {
-                                navigation("/cart");
-                              }}
-                              className="h-6 w-6"
-                              aria-hidden="true"
-                            />
-                            <p>{cart.length}</p>
-                          </div>
-                        </div>
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-                <div
-                  className="flex flex-shrink-0 items-center cursor-pointer "
-                  onClick={() => navigation("/")}>
-                  <img
-                    className="block h-8 w-auto sm:hidden lg:hidden "
-                    src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
-                    alt="Your Company"
-                  />
-                  <img
-                    className="hidden h-8 w-auto lg:block"
-                    src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
-                    alt="Your Company"
-                  />
-                  <div className="flex sm:hidden ml-40 justify-end md:hidden lg:hidden xl:hidden">
-                    {isLogin ? (
-                      <button
-                        type="button"
-                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
-                        <div className="flex gap-3">
-                          <div className="flex">
-                            <EnvelopeIcon
-                              onClick={() => {
-                                navigation("/notification");
-                              }}
-                              className="h-6 w-6"
-                              aria-hidden="true"
-                            />
-                            <p>{unreads}</p>
-                          </div>
-                        </div>
-                      </button>
-                    ) : null}
-                    {isLogin ? (
-                      <button
-                        type="button"
-                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
-                        <span className="sr-only">View notifications</span>
-                        <div className="flex gap-3">
-                          <div className="flex">
-                            <ShoppingCartIcon
-                              onClick={() => {
-                                navigation("/cart");
-                              }}
-                              className="h-6 w-6"
-                              aria-hidden="true"
-                            />
-                            <p>{cart.length}</p>
-                          </div>
-                        </div>
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-                <div className="hidden md:ml-6 md:flex md:space-x-8"></div>
-              </div>
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  {isLogin ? null : <LoginModal />}
-                </div>
-                <div className="hidden md:ml-4 md:flex md:flex-shrink-0 md:items-center">
-                  {isLogin ? (
-                    <button
-                      type="button"
-                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
-                      <div className="flex gap-3">
-                        <div className="flex">
-                          <EnvelopeIcon
-                            onClick={() => {
-                              navigation("/notification");
-                            }}
-                            className="h-6 w-6"
-                            aria-hidden="true"
-                          />
-                          <p>{unreads}</p>
-                        </div>
-                      </div>
-                    </button>
-                  ) : null}
-                  {isLogin ? (
-                    <button
-                      type="button"
-                      className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
-                      <span className="sr-only">View notifications</span>
-                      <div className="flex gap-3">
-                        <div className="flex">
-                          <ShoppingCartIcon
-                            onClick={() => {
-                              navigation("/cart");
-                            }}
-                            className="h-6 w-6"
-                            aria-hidden="true"
-                          />
-                          <p>{cart.length}</p>
-                        </div>
-                      </div>
-                    </button>
-                  ) : null}
-                  {/* Profile dropdown */}
-                  {isLogin ? (
-                    <Menu as="div" className="relative ml-3">
-                      <div>
-                        <Menu.Button className="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                          <span className="sr-only">Open user menu</span>
-                          <img
-                            className="h-8 w-8 rounded-full"
-                            src={user_image}
-                            alt="usr"
-                          />
-                        </Menu.Button>
-                      </div>
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-200"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95">
-                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          <Menu.Item>
-                            {({active}) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm"
-                                )}
-                                onClick={() => navigation("/profile")}>
-                                Your Profile
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({active}) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm"
-                                )}
-                                onClick={() => navigation("/transactions")}>
-                                Transactions
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({active}) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm"
-                                )}>
-                                Register
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({active}) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}>
-                                Settings
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({active}) => (
-                              <a
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
-                                )}
-                                onClick={() => handleLogOut()}>
-                                Sign out
-                              </a>
-                            )}
-                          </Menu.Item>
-                        </Menu.Items>
-                      </Transition>
-                    </Menu>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </div>
-          <Disclosure.Panel className="md:hidden">
-            <div className="space-y-1 pt-2 pb-3">
-              <Disclosure.Button
-                as="a"
-                onClick={() => navigation("/")}
-                className="block border-l-4 border-white bg-black py-2 pl-3 pr-4 text-base font-medium text-white sm:pl-5 sm:pr-6">
-                Dashboard
-              </Disclosure.Button>
-            </div>
-            <div className="border-t border-gray-200 pt-4 pb-3">
-              <div className="flex items-center px-4 sm:px-6 justify-between">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-10 w-10 rounded-full"
-                    src={user_image}
-                    alt=""
-                  />
-                </div>
-                <div className="ml-3">
-                  <div className="text-base font-medium text-gray-800">
-                    {username}
-                  </div>
-                  <div className="text-sm font-medium text-gray-500">
-                    {email}
-                  </div>
-                </div>
-                <div>
-                  <Disclosure.Button
-                    onClick={() => {
-                      navigation("/notification");
-                    }}
-                    type="button"
-                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2">
-                    <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
-                  </Disclosure.Button>
-                  <Disclosure.Button
-                    onClick={() => {
-                      navigation("/cart");
-                    }}
-                    type="button"
-                    className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2">
-                    <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
-                  </Disclosure.Button>
-                </div>
-              </div>
-              <div className="mt-3 space-y-1">
-                <Disclosure.Button
-                  onClick={() => navigation("/profile")}
-                  as="a"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
-                  Your Profile
-                </Disclosure.Button>
-                <Disclosure.Button
-                  onClick={() => navigation("/transactions")}
-                  as="a"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
-                  Transactioin
-                </Disclosure.Button>
-                <Disclosure.Button
-                  onClick={() => handleLogOut()}
-                  as="a"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800 sm:px-6">
-                  Sign out
-                </Disclosure.Button>
-              </div>
-            </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
+  const notificationUnread = useSelector(
+    (state) => state.notificationSlice.value.unread
+  );
+  useEffect(() => {
+    const Unread = localStorage.getItem("unread");
+    setUnreads(parseInt(Unread));
+    setUnreads(notificationUnread);
+  }, []);
+  useEffect(() => {
+    setUnreads(notificationUnread);
+    localStorage.setItem("unread", unreads.toString());
+  }, [unreads]);
+  return (
+    <NavbarRender
+      isLogin={isLogin}
+      unreads={unreads}
+      cart={cart}
+      user_image={user_image}
+      username={username}
+      email={email}
+      handleLogOut={handleLogOut}
+      navigation={navigation}
+    />
   );
 };

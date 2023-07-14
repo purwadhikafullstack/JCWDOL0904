@@ -74,11 +74,19 @@ function App() {
   const updateUnreadCount = (unread) => {
     dispatch(unreadCount({ unread }));
   };
-
   useEffect(() => {
     const unreadCount = localStorage.getItem("unread");
     if (unreadCount) {
       updateUnreadCount(JSON.parse(unreadCount));
+    }
+  }, []);
+  const updateUnreadAdminCount = (unreadAdmin) => {
+    dispatch(unreadAdminCount({ unreadAdmin }));
+  };
+  useEffect(() => {
+    const unreadCount = localStorage.getItem("adminUnreads");
+    if (unreadCount) {
+      updateUnreadAdminCount(JSON.parse(unreadCount));
     }
   }, []);
 

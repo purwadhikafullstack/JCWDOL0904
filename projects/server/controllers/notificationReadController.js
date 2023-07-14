@@ -45,6 +45,34 @@ module.exports = {
                     ],
                 }
             );
+
+            //read
+            const whereCondition = {
+                id_user: userId,
+                from: 'admin',
+            };
+            const notif = await Notification.findAll({
+                include: [
+                    {
+                        model: UserNotification,
+                    },
+                ],
+                where: whereCondition,
+                order: [['createdAt', 'DESC']],
+                limit: limit,
+                offset: parseInt(page) * parseInt(limit),
+            });
+            const read = await Notification.findAll({
+                where: whereCondition,
+                include: [
+                    {
+                        model: UserNotification,
+                    },
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+            io.emit("notification", notif);
+            io.emit("notificationRead", read);
             res.status(200).send({ message: `Read Notification Success` });
         } catch (error) {
             console.error(error);

@@ -6,6 +6,8 @@ import moment from "moment";
 import {useDispatch} from "react-redux";
 import Pagination from "../components/admin/Pagination";
 import OrderSearch from "../components/admin/OrderSearch";
+import {unreadCount} from "../features/notificationSlice";
+import io from "socket.io-client";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
@@ -58,6 +60,32 @@ export default function Notification() {
     setSelectedNotification(null);
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notification", (updatedNotifications) => {
+      console.log("ini update from socet Admin Notif", updatedNotifications);
+      setNotifications(updatedNotifications);
+    });
+    return () => {
+      socket.off("notification");
+    };
+  }, []);
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationRead", (updatedNotifications) => {
+      const unread = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      dispatch(unreadCount({unread: unread.length}));
+    });
+    return () => {
+      socket.off("notificationRead");
+    };
+  }, []);
 
   return (
     <div className="pt-24 cursor-default">

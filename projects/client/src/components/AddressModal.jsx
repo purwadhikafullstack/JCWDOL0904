@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {api} from "../API/api";
 
 function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
   const [addressList, setAddressList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -25,6 +26,20 @@ function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
     }, 10);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleSelect = (address) => {
     onSelectAddress(address);
   };
@@ -43,11 +58,26 @@ function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
       }`}>
-      <div className="bg-white w-80 pb-4 rounded-lg shadow-lg max-h-[450px] overflow-y-auto transform translate-x-[-50%] translate-y-[-50%] absolute top-1/2 left-1/2">
+      <div
+        ref={modalRef}
+        className="bg-white w-80 pb-4 rounded-lg shadow-lg max-h-[450px] overflow-y-auto transform translate-x-[-50%] translate-y-[-50%] absolute top-1/2 left-1/2">
+        <style>
+          {`
+            .overflow-y-auto::-webkit-scrollbar {
+              width: 0.5em;
+              background-color: transparent;
+            }
+
+            .overflow-y-auto::-webkit-scrollbar-thumb {
+              background-color: #cfcfcf;
+              border-radius: 10px;
+            }
+          `}
+        </style>
         <h2 className="py-7 px-16 text-lg font-medium text-gray-700 text-center border-b">
           Select Address
         </h2>
-        <ul className="divide-y">
+        <ul className="divide-y overflow-y-auto">
           {addressList.map((address) => (
             <li
               key={address.id}
@@ -64,7 +94,7 @@ function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
         </ul>
         <div className="flex justify-center p-4">
           <button
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-black hover:bg-gray-800 transition duration-300 ease-in-out text-white font-bold py-2 px-4 rounded"
             onClick={handleClose}>
             Close
           </button>

@@ -149,9 +149,7 @@ export default function Sidebar(props) {
 
   useEffect(() => {
     const storedAdminUnreads = localStorage.getItem("adminUnreads");
-    if (storedAdminUnreads) {
-      setAdminUnreads(parseInt(storedAdminUnreads));
-    }
+    setAdminUnreads(parseInt(storedAdminUnreads));
     setAdminUnreads(notificationAdminUnread);
   }, []);
   useEffect(() => {
