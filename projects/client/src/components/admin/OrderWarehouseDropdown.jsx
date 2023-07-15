@@ -14,22 +14,20 @@ const OrderWarehouseDropdown = ({
       <select
         id="warehouse"
         name="warehouse"
-        disabled={user.role === "adminWarehouse"}
-        onChange={(e) => handleWarehouseChange(e.target.value)}
+        disabled={isAdminWarehouse}
+        onChange={handleWarehouseChange}
         value={selectedWarehouse}
-        className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-full shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-      >
-        {!isAdminWarehouse && <option value="">All Warehouses</option>}
-        {isAdminWarehouse && adminWarehouse && (
-          <option value={adminWarehouse.id}>{adminWarehouse.warehouse}</option>
-        )}
+        className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-full shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        <option value="">All Warehouses</option>
         {warehouses &&
           warehouses.map((warehouse) => (
             <option
               key={warehouse.id}
               value={warehouse.id}
-              disabled={isAdminWarehouse && warehouse.id !== adminWarehouse?.id}
-            >
+              disabled={
+                user.role === "adminWarehouse" &&
+                warehouse.id !== user.id_warehouse
+              }>
               {warehouse.warehouse}
             </option>
           ))}

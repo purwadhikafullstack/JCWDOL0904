@@ -3,13 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { Routes, Route } from "react-router-dom";
-import { TestImage } from "./pages/TestImage";
 import Sidebar from "./components/admin/Sidebar";
-import { Cek } from "./components/admin/Cek";
 import { useState, useEffect } from "react";
 import Homepage from "./pages/Homepage";
 import ProductDetail from "./pages/ProductDetail";
-import Test from "./pages/Test";
 import Checkout from "./pages/Checkout";
 import { Ekspedisi } from "./components/Ekspedisi";
 import { Verification } from "./pages/verification";
@@ -81,12 +78,51 @@ function App() {
   const updateUnreadCount = (unread) => {
     dispatch(unreadCount({ unread }));
   };
-
   useEffect(() => {
     const unreadCount = localStorage.getItem("unread");
     if (unreadCount) {
       updateUnreadCount(JSON.parse(unreadCount));
     }
+  }, []);
+  const updateUnreadAdminCount = (unreadAdmin) => {
+    dispatch(unreadAdminCount({ unreadAdmin }));
+  };
+  useEffect(() => {
+    const unreadCount = localStorage.getItem("adminUnreads");
+    if (unreadCount) {
+      updateUnreadAdminCount(JSON.parse(unreadCount));
+    }
+  }, []);
+
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationRead", (updatedNotifications) => {
+      const unread = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      dispatch(unreadCount({ unread: unread.length }));
+    });
+    return () => {
+      socket.off("notificationRead");
+    };
+  }, []);
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationAdminRead", (updatedNotifications) => {
+      const unreadAdmin = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      dispatch(unreadAdminCount({ unreadAdmin: unreadAdmin.length }));
+    });
+    return () => {
+      socket.off("notificationAdminRead");
+    };
   }, []);
 
   // const

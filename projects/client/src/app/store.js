@@ -23,10 +23,10 @@ export default configureStore({
     categorySlice,
     notificationSlice,
     allUserSlice,
-    adminNotificationSlice,
-    stockSlice,
     transactionSlice,
     transactionItemSlice,
+    stockSlice,
+    adminNotificationSlice,
     stockHistorySlice,
   },
 });

@@ -14,6 +14,7 @@ import {
   InboxIcon,
   UsersIcon,
   XMarkIcon,
+  TruckIcon,
 } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +48,12 @@ const navigation = [
     name: "Warehouse",
     href: "/manage-warehouse",
     icon: BuildingStorefrontIcon,
+    current: true,
+  },
+  {
+    name: "Ekspedisi",
+    href: "/ekspedisi",
+    icon: TruckIcon,
     current: true,
   },
   {
@@ -141,9 +148,7 @@ export default function Sidebar(props) {
 
   useEffect(() => {
     const storedAdminUnreads = localStorage.getItem("adminUnreads");
-    if (storedAdminUnreads) {
-      setAdminUnreads(parseInt(storedAdminUnreads));
-    }
+    setAdminUnreads(parseInt(storedAdminUnreads));
     setAdminUnreads(notificationAdminUnread);
   }, []);
   useEffect(() => {
@@ -265,7 +270,7 @@ export default function Sidebar(props) {
         <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex min-h-0 flex-1 flex-col bg-black">
-            <div className="flex h-16 flex-shrink-0 justify-center items-center bg-[#F9FAFB] px-4">
+            <div className="flex h-16 flex-shrink-0 justify-center items-center px-4">
               <img
                 className="h-8 w-auto"
                 src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}

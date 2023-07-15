@@ -9,7 +9,6 @@ module.exports = {
                     "key": keyy
                 }
             })
-            // console.log(data)
             res.status(200).send({
                 message: 'Get Province Success',
                 data: data.data.rajaongkir.results
@@ -32,7 +31,6 @@ module.exports = {
                     "key": keyy
                 },
             })
-            // console.log(data);
 
             res.status(200).send({
                 message: 'Get City Success!',
@@ -61,7 +59,7 @@ module.exports = {
                 data: data.data.rajaongkir
             })
         } catch (error) {
-            // console.log(error.message);
+            console.log(error.message);
             res.status(400).send({
                 message: error.message,
             })

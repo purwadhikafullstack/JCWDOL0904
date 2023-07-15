@@ -35,14 +35,16 @@ const ProductDetail = () => {
   const getOneProduct = async (idP) => {
     try {
       const result = await api.post("/product/detail", { idP });
+      console.log(result.data);
       setStock(result.data.stock);
       setProduct(result.data.productById);
     } catch (error) {}
   };
 
   let productId = JSON.parse(localStorage.getItem("idProduct"));
-
   let addToCart = async (e) => {
+    const token = JSON.parse(localStorage.getItem("auth"));
+    console.log(token);
     e.preventDefault();
     if (!localStorage.getItem("auth")) {
       Swal.fire({
@@ -50,16 +52,25 @@ const ProductDetail = () => {
         text: "you are not logged in yet, please login to do transactions and edit your profile",
         icon: "info",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       navigation("/");
     } else {
       try {
-        let id = userLogin.id;
-        await api.post(`/cart/add`, {
-          userId: id,
-          productId,
-          quantity: 1,
-        });
+        await api.post(
+          `/cart`,
+          {
+            productId,
+            quantity: 1,
+          },
+          {
+            headers: {
+              Authorization: token,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
         navigation("/cart");
       } catch (error) {}
     }
@@ -105,7 +116,7 @@ const ProductDetail = () => {
                 <button
                   onClick={(e) => addToCart(e)}
                   type="submit"
-                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-black py-3 px-8 text-base font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  className="flex w-full transition duration-300 ease-in-out items-center justify-center rounded-md border border-transparent bg-black py-3 px-8 text-base font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
                   Add to cart
                 </button>
