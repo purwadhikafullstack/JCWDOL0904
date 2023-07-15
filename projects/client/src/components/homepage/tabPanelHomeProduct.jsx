@@ -18,8 +18,13 @@ import ProductsHome from "../ProductsHome";
 const TabPanelHomeProduct = (props) => {
   return (
     <>
-      <Tabs colorScheme="black" isLazy variant="enclosed">
+      <Tabs colorScheme="black" isLazy>
         <TabList
+          css={{
+            overflowX: "auto",
+            scrollbarWidth: "thin",
+            scrollbarColor: "#CBD5E0 #EDF2F7",
+          }}
           justifyContent="center"
           className="tab-list-home"
           overflowX="scroll"
@@ -28,7 +33,10 @@ const TabPanelHomeProduct = (props) => {
         >
           {props.allCategory?.map((el) => {
             return (
-              <Tab onClick={() => props.fetchProducts(el.id)}>
+              <Tab
+                _selected={{ color: "white", bg: "black" }}
+                onClick={() => props.fetchProducts(el.id)}
+              >
                 {el.category}
               </Tab>
             );

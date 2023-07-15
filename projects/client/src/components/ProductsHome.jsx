@@ -25,7 +25,6 @@ const ProductsHome = ({ products }) => {
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      {/* <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}> */}
       <Grid
         templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
       >

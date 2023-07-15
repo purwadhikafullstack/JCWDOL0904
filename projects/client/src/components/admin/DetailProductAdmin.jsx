@@ -12,28 +12,17 @@ import {
 import React from "react";
 
 const DetailProductAdmin = (props) => {
-  const subtittle = [
-    "cpu speed",
-    "cpu type",
-    "size",
-    "resolution",
-    "color dept",
-    "ram",
-    "storage",
-    "weight",
-    "battery",
-  ];
-  let num = 0;
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <div>
-      <button
-        className=" rounded-md border border-transparent bg-gray-950 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      <Button
+        variant="link"
+        fontWeight="normal"
+        color="blue.500"
         onClick={onOpen}
       >
         Detail
-      </button>
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -82,13 +71,6 @@ const DetailProductAdmin = (props) => {
               </tbody>
             </table>
           </ModalBody>
-
-          {/* <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter> */}
         </ModalContent>
       </Modal>
     </div>

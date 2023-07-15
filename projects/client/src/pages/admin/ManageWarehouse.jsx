@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { InputGroup, InputRightElement, Input, Select } from "@chakra-ui/react";
+import {
+  InputGroup,
+  InputRightElement,
+  Input,
+  Select,
+  Stack,
+} from "@chakra-ui/react";
 import { api } from "../../API/api";
 import { SearchIcon } from "@chakra-ui/icons";
 import AddWarehouse from "../../components/admin/AddWarehouse";
@@ -84,9 +90,9 @@ const ManageWarehouse = () => {
     getWarehouseData();
   }, [page, sort, search]);
   return (
-    <div className="px-4 mt-5 sm:px-6 lg:px-8">
+    <div className="px-4 pt-5 sm:px-6 lg:px-8">
       {value ? (
-        <div className="pr-5">
+        <div className="pr-5 min-h-max flex flex-col justify-between">
           <div className="sm:flex-auto">
             <h1 className="text-xl font-semibold text-gray-900 mb-5">
               Manage Warehouse
@@ -125,6 +131,7 @@ const ManageWarehouse = () => {
             role={role}
             deleteWarehouse={deleteWarehouse}
           />
+
           <Pagination
             totalPages={totalPage}
             handlePageChange={handlePageClick}

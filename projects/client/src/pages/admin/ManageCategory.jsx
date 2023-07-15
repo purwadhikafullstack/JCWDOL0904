@@ -3,8 +3,6 @@ import { api } from "../../API/api";
 import { useDispatch, useSelector } from "react-redux";
 import { AllCategory } from "../../features/categorySlice";
 import {
-  Box,
-  Button,
   ButtonGroup,
   IconButton,
   Input,
@@ -12,21 +10,17 @@ import {
   InputRightElement,
   Select,
   Stack,
-  useMediaQuery,
 } from "@chakra-ui/react";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { DeleteIcon, SearchIcon, SettingsIcon } from "@chakra-ui/icons";
+import { DeleteIcon, SearchIcon } from "@chakra-ui/icons";
 import AddCategory from "../../components/admin/AddCategory";
 import Swal from "sweetalert2";
 import EditeCategory from "../../components/admin/EditeCategory";
-import ReactPaginate from "react-paginate";
 import Pagination from "../../components/admin/Pagination";
 
 const ManageCategory = () => {
   const dispatch = useDispatch();
   const value = useSelector((state) => state.categorySlice.value);
   const { role } = useSelector((state) => state.userSlice);
-  const [isSmallerThan] = useMediaQuery("(max-width: 767px)");
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
@@ -120,26 +114,6 @@ const ManageCategory = () => {
             />
           </ButtonGroup>
         </td>
-        {/* <td className="flex row-auto items-center justify-between w-full p-10">
-          <h1>{el.category}</h1>
-          <ButtonGroup>
-            <EditeCategory
-              Cid={el.id}
-              categoryName={el.category}
-              runFunction={getAllCategory}
-            />
-            <IconButton
-              variant="link"
-              color="red"
-              backgroundColor="#F9FAFB"
-              padding="10px"
-              borderRadius="50px"
-              _hover={{ backgroundColor: "red", color: "white" }}
-              onClick={role === "admin" ? () => deleteCategory(el.id) : null}
-              icon={<DeleteIcon />}
-            />
-          </ButtonGroup>
-        </td> */}
       </tr>
     ) : null;
   });
@@ -149,7 +123,7 @@ const ManageCategory = () => {
       <div className="sm:flex-auto mb-5">
         <h1 className="text-xl font-semibold text-gray-900">Manage Category</h1>
       </div>
-      <Stack direction="row">
+      <Stack direction="column-reverse">
         <InputGroup>
           <InputRightElement
             pointerEvents="none"
@@ -163,6 +137,8 @@ const ManageCategory = () => {
           />
         </InputGroup>
         <Select
+          fontSize="13px"
+          maxW="100px"
           borderRadius="50px"
           value={sort}
           onChange={(e) => setSort(e.target.value)}
@@ -202,9 +178,7 @@ const ManageCategory = () => {
           </div>
         </div>
       </div>
-      {/* <table className="w-full">
-        <tbody>{categoryContainer}</tbody>
-      </table> */}
+
       <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );

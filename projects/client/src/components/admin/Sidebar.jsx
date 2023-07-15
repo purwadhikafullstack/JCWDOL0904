@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   ArrowPathIcon,
+  BanknotesIcon,
   Bars3BottomLeftIcon,
   BellIcon,
   BuildingStorefrontIcon,
@@ -27,8 +28,14 @@ import { unreadAdminCount } from "../../features/adminNotificationSlice";
 const navigation = [
   {
     name: "Dashboard",
-    href: "/order",
+    href: "/dashboard",
     icon: HomeIcon,
+    current: true,
+  },
+  {
+    name: "Transaction",
+    href: "/order",
+    icon: BanknotesIcon,
     current: true,
   },
   {
@@ -55,7 +62,6 @@ const navigation = [
     icon: CalendarIcon,
     current: false,
   },
-  // { name: "Product", href: "#", icon: InboxIcon, current: false },
   {
     name: "Product",
     href: "/manage-product",
@@ -81,11 +87,7 @@ const navigation = [
     current: false,
   },
 ];
-const userNavigation = [
-  // { name: "Your Profile", href: "#" },
-  // { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
+const userNavigation = [{ name: "Sign out", href: "#" }];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -99,7 +101,7 @@ export default function Sidebar(props) {
   const navigator = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    navigator("/order");
+    navigator("/dashboard");
   }, []);
 
   const handleLogOut = (e) => {
@@ -217,7 +219,6 @@ export default function Sidebar(props) {
                       {navigation.map((item) => (
                         <Button
                           key={item.name}
-                          // href={item.href}
                           backgroundColor={
                             buttonActive === item.name ? "#4A5568" : "black"
                           }
@@ -225,18 +226,11 @@ export default function Sidebar(props) {
                           color="white"
                           width="300px"
                           justifyContent="left"
-                          // href={item.href}
                           onClick={() => {
                             navigator(item.href);
                             setButtonActive(item.name);
                             setSidebarOpen(false);
                           }}
-                          // className={classNames(
-                          //   item.current
-                          //     ? "bg-gray-900 text-white"
-                          //     : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                          //   "group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                          // )}
                         >
                           <item.icon
                             className={classNames(
@@ -261,9 +255,7 @@ export default function Sidebar(props) {
           </Dialog>
         </Transition.Root>
 
-        {/* Static sidebar for desktop */}
         <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex min-h-0 flex-1 flex-col bg-black">
             <div className="flex h-16 flex-shrink-0 justify-center items-center bg-[#F9FAFB] px-4">
               <img
@@ -323,11 +315,7 @@ export default function Sidebar(props) {
               <span className="sr-only">Open sidebar</span>
               <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
             </button>
-            <div className=" flex items-end">
-              <h1 className="text-xs font-semibold text-gray-900 mb-5 ml-5 flex align-middle">
-                Welcome, <span className="font-bold"> {username}</span>
-              </h1>
-            </div>
+
             <div className="flex flex-1 justify-end px-4">
               <div className="ml-4 flex items-center md:ml-6">
                 <button

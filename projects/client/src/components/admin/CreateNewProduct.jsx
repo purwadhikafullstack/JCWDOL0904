@@ -1,5 +1,4 @@
 import {
-  Button,
   FormControl,
   FormLabel,
   Input,
@@ -7,15 +6,15 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { api } from "../../API/api";
 import { useSelector } from "react-redux";
+import DropDownCategoryMP from "./manageProduct/DropDownCategoryMP";
+import ButtonCreateProduct from "./manageProduct/ButtonCreateProduct";
 
 const CreateNewProduct = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,9 +33,7 @@ const CreateNewProduct = (props) => {
   const [description, setDescription] = useState("");
   const [Allcategory, setAllCategory] = useState([]);
   const [category, setCategory] = useState("Select category");
-
   const { role } = useSelector((state) => state.userSlice);
-
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
@@ -54,7 +51,6 @@ const CreateNewProduct = (props) => {
       formData.append("weight_g", weight_g);
       formData.append("battery", battery);
       formData.append("description", description);
-
       const response = await api.post("/product/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -65,19 +61,12 @@ const CreateNewProduct = (props) => {
       console.log(error);
     }
   };
-
   const getAllCategory = async () => {
     try {
       const response = await api.get("/category/");
-      // console.log(response.data.result);
-
-      console.log(response.data.result);
       setAllCategory(response.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
-
   const initialStock = async (id) => {
     try {
       const response = await api.post("/product/stock-init", { id });
@@ -86,12 +75,9 @@ const CreateNewProduct = (props) => {
       console.log(error);
     }
   };
-
   useEffect(() => {
     getAllCategory();
-    // console.log(role);
   }, []);
-
   return (
     <div>
       {role === "admin" ? (
@@ -127,28 +113,11 @@ const CreateNewProduct = (props) => {
                 type="file"
                 onChange={(e) => setProduct_image(e.target.files[0])}
               />
-              <FormLabel>Category</FormLabel>
-              <Select
-                placeholder={category}
-                defaultValue={category}
-                onChange={(e) => {
-                  setCategory(e.target.value);
-                  console.log(e.target.value);
-                }}
-              >
-                {Allcategory?.map((el) => {
-                  return (
-                    <option
-                      // hidden={el.category === categor.category}
-                      key={el.id}
-                      value={el.id}
-                    >
-                      {el.category}
-                    </option>
-                  );
-                })}
-              </Select>
-
+              <DropDownCategoryMP
+                category={category}
+                setCategory={setCategory}
+                Allcategory={Allcategory}
+              />
               <FormLabel>Cpu Speed</FormLabel>
               <Input
                 type="text"
@@ -211,24 +180,10 @@ const CreateNewProduct = (props) => {
               />
             </FormControl>
           </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={() => {
-                onClose();
-                handleSubmit();
-              }}
-            >
-              Create
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
+          <ButtonCreateProduct onClose={onClose} handleSubmit={handleSubmit} />
         </ModalContent>
       </Modal>
     </div>
   );
 };
-
 export default CreateNewProduct;

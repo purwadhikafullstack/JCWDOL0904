@@ -32,9 +32,9 @@ import AdminNotification from "../pages/admin/AdminNotification";
 import ManageStock from "../pages/admin/ManageStock";
 import SalesReport from "../pages/admin/SalesReport";
 import StockHistory from "../pages/admin/StockHistory";
+import Dashboard from "../pages/admin/Dashboard";
 
 const routes = [
-  //home
   <Route
     key="home"
     path="/"
@@ -333,6 +333,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <StockHistory />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="dashboard"
+    path="/dashboard"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <Dashboard />
       </ProtectedPage>
     }
   />,

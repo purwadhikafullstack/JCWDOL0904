@@ -4,7 +4,6 @@ const { Warehouse, Stocks } = db;
 const axios = require("axios");
 
 module.exports = {
-  // Get All Warehouse
   getAllWarehouses: async (req, res) => {
     try {
       const search = req.query.search || "";
@@ -62,7 +61,6 @@ module.exports = {
     }
   },
 
-  // Create Warehouse
   createWarehouse: async (req, res) => {
     try {
       const { warehouse, province, city, warehouse_city_id, subdistrict, zip } =
@@ -105,8 +103,6 @@ module.exports = {
 
         res.status(200).send({ newWarehouse });
       } else {
-        // console.error("No results found");
-        // res.status(500).send({ message: "Geocoding error" });
         throw new Error("Geocoding error");
       }
     } catch (error) {
@@ -114,11 +110,9 @@ module.exports = {
       res.status(400).send({
         message: error.message,
       });
-      // res.status(500).json({ error: "Internal server error" });
     }
   },
 
-  // Edit Warehouse
   editeWareHouse: async (req, res) => {
     try {
       const {
@@ -184,7 +178,6 @@ module.exports = {
     }
   },
 
-  // Delete Warehouse
   deleteWareHouse: async (req, res) => {
     try {
       const { id } = req.params;
@@ -220,8 +213,6 @@ module.exports = {
       });
     }
   },
-
-  // Change Admin Warehouse
 
   changeWarehouse: async (req, res) => {
     try {
