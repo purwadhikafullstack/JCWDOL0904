@@ -111,7 +111,7 @@ export default function Notification() {
               <li
                 key={notification.id}
                 onClick={(event) => openModal(notification.id, event)}
-                className={`relative py-4 px-4 rounded-full w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600 ${
+                className={`relative py-4 px-4 transition duration-300 ease-in-out rounded-full w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600 ${
                   readStatus ? "bg-gray-50" : "bg-gray-200"
                 } hover:bg-gray-100 hover:shadow-md`}>
                 <div className="flex gap-10 items-center space-x-3">

@@ -157,7 +157,7 @@ const Cart = () => {
               <button
                 onClick={() => navigate("/checkout")}
                 type="submit"
-                className="w-full rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                className="w-full transition duration-300 ease-in-out  rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Continue to Checkout
               </button>
             </div>

@@ -43,9 +43,9 @@ export const PaymentProofModal = ({
           <div className={`modal ${isModalOpen ? "modal-open" : ""}`}>
             <style>
               {`
-                .modal-overlay {
-                  transition: opacity 0.3s ease-in-out;
-                }
+            .modal-overlay {
+              transition: opacity 0.3s ease-in-out;
+            }
 
                 .overflow-y-auto::-webkit-scrollbar {
                   width: 0.5em;

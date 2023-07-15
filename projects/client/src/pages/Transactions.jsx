@@ -146,7 +146,7 @@ export const Transaction = () => {
   };
   return (
     <>
-      <div className="bg-white min-h-[700px]">
+      <div className="bg-white max-w-4xl flex justify-center items-center m-auto min-h-[700px]">
         <main className="pt-24 mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="m-auto max-w-full">
             <h1 className="text-3xl font-bold mb-4">Transactions</h1>

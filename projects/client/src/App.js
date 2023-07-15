@@ -90,6 +90,37 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationRead", (updatedNotifications) => {
+      const unread = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      dispatch(unreadCount({ unread: unread.length }));
+    });
+    return () => {
+      socket.off("notificationRead");
+    };
+  }, []);
+  useEffect(() => {
+    const socket = io("http://localhost:8000");
+    socket.on("notificationAdminRead", (updatedNotifications) => {
+      const unreadAdmin = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      dispatch(unreadAdminCount({ unreadAdmin: unreadAdmin.length }));
+    });
+    return () => {
+      socket.off("notificationAdminRead");
+    };
+  }, []);
+
   // const
   // const { role } = useSelector((state) => state.userSlice.value);
   // console.log(role);

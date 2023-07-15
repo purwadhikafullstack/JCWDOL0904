@@ -71,9 +71,9 @@ const AddEkspedisiModal = ({isOpen, onClose, fetchEkspedisi}) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-opacity">
-            <option value="POS">POS</option>
-            <option value="JNE">JNE</option>
-            <option value="TIKI">TIKI</option>
+            <option value="pos">pos</option>
+            <option value="jne">jne</option>
+            <option value="tiki">tiki</option>
           </select>
         </div>
 

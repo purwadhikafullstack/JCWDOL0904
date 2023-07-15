@@ -119,6 +119,19 @@ module.exports = {
                     ],
                 }
             );
+
+
+            const read = await Notification.findAll({
+                where: { from: 'user' },
+                include: [
+                    {
+                        model: UserNotification,
+                    },
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+
+            io.emit("notificationAdminRead", read);
             res.status(200).send({ message: `Read Notification Success` });
         } catch (error) {
             console.error(error);

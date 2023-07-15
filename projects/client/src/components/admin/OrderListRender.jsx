@@ -34,26 +34,28 @@ export default function OrderListRender({
       <div className="px-4 mt-5 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
-            <h1 className="text-xl font-semibold text-gray-900">
+            <h1 className="text-xl ml-1 font-semibold text-gray-900">
               Transactions
             </h1>
-            <div className="flex gap-3 pb-3 pt-5">
+            <div className=" gap-3  pb-3 pt-5">
+              <div className="flex flex-row gap-3 mb-4 items-center">
+                <div className="">
+                  <OrderWarehouseDropdown
+                    user={user}
+                    handleWarehouseChange={handleWarehouseChange}
+                    selectedWarehouse={selectedWarehouse}
+                    warehouses={warehouses}
+                  />
+                </div>
+                <OrderStatus
+                  selectedStatus={selectedStatus}
+                  handleStatusChange={handleStatusChange}
+                />
+              </div>
               <OrderSearch
                 handleSearch={handleSearch}
                 invoiceNumber={invoiceNumber}
                 placeholder={"Search Invoice Number"}
-              />
-              <div className="mt-4 sm:mt-0 sm:ml-4">
-                <OrderWarehouseDropdown
-                  user={user}
-                  handleWarehouseChange={handleWarehouseChange}
-                  selectedWarehouse={selectedWarehouse}
-                  warehouses={warehouses}
-                />
-              </div>
-              <OrderStatus
-                selectedStatus={selectedStatus}
-                handleStatusChange={handleStatusChange}
               />
             </div>
           </div>

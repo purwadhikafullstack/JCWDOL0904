@@ -89,7 +89,7 @@ export default function AdminNotification() {
 
   return (
     <>
-      <div className="pt-10 cursor-default">
+      <div className="pt-7 cursor-default">
         <h1 className="text-3xl max-w-[605px] text-center sm:max-w-[605px] md:max-w-[450px] xl:max-w-[800px] 2xl:max-w-[1000px] mt-7 m-auto font-bold tracking-tight text-gray-900 sm:text-4xl">
           Notifications
         </h1>
@@ -112,7 +112,7 @@ export default function AdminNotification() {
                 <li
                   key={notification.id}
                   onClick={(event) => openModal(notification.id, event)}
-                  className={`relative py-4 px-4 rounded-full w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600 ${
+                  className={`relative py-4 px-4 transition duration-300 ease-in-out rounded-full w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600 ${
                     readStatus ? "bg-gray-50" : "bg-gray-200"
                   } hover:bg-gray-100 hover:shadow-md`}>
                   <div className="flex gap-10 items-center space-x-3">

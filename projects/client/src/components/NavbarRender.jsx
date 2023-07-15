@@ -26,13 +26,7 @@ const NavbarRender = ({
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
-                <NavbarMobileMenu
-                  isLogin={isLogin}
-                  navigation={navigation}
-                  unreads={unreads}
-                  cart={cart}
-                  open={open}
-                />
+                <NavbarMobileMenu open={open} />
                 <div
                   className="flex flex-shrink-0 items-center cursor-pointer "
                   onClick={() => navigation("/")}>
@@ -46,18 +40,18 @@ const NavbarRender = ({
                     src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                     alt="Your Company"
                   />
-                  <div className="flex sm:hidden ml-40 justify-end md:hidden lg:hidden xl:hidden">
+                  <div className="flex sm:hidden ml-40 justify-end md:hidden">
                     {isLogin ? (
                       <button
                         type="button"
-                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                        className="rounded-full hidden bg-white p-1 text-gray-400 hover:text-gray-500">
                         <div className="flex gap-3">
                           <div className="flex">
                             <EnvelopeIcon
                               onClick={() => {
                                 navigation("/notification");
                               }}
-                              className="h-6 w-6"
+                              className="h-4 w-4"
                               aria-hidden="true"
                             />
                             <p>{unreads}</p>
@@ -68,7 +62,7 @@ const NavbarRender = ({
                     {isLogin ? (
                       <button
                         type="button"
-                        className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500">
+                        className="rounded-full hidden bg-white p-1 text-gray-400 hover:text-gray-500">
                         <span className="sr-only">View notifications</span>
                         <div className="flex gap-3">
                           <div className="flex">
@@ -76,7 +70,7 @@ const NavbarRender = ({
                               onClick={() => {
                                 navigation("/cart");
                               }}
-                              className="h-6 w-6"
+                              className="h-4 w-4"
                               aria-hidden="true"
                             />
                             <p>{cart.length}</p>
@@ -138,7 +132,10 @@ const NavbarRender = ({
                     }}
                     type="button"
                     className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2">
-                    <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />
+                    <div className="flex">
+                      <EnvelopeIcon className="h-6 w-6" aria-hidden="true" />{" "}
+                      <p>{unreads}</p>
+                    </div>
                   </Disclosure.Button>
                   <Disclosure.Button
                     onClick={() => {
@@ -146,7 +143,13 @@ const NavbarRender = ({
                     }}
                     type="button"
                     className="ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2">
-                    <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
+                    <div className="flex">
+                      <ShoppingCartIcon
+                        className="h-6 w-6"
+                        aria-hidden="true"
+                      />
+                      <p>{cart.length}</p>
+                    </div>
                   </Disclosure.Button>
                 </div>
               </div>

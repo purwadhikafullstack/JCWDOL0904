@@ -12,7 +12,7 @@ export const OrderTableRender = ({
 }) => {
   const adminWarehouse = user.role === "adminWarehouse";
   return (
-    <div className="">
+    <div>
       <table className="min-w-full divide-y divide-gray-300">
         <thead className="bg-gray-50">
           <tr>
@@ -69,7 +69,7 @@ export const OrderTableRender = ({
                       View
                     </button>
                   ) : (
-                    <span className="text-gray-400">Not Uploaded</span>
+                    <span className="text-gray-400">-</span>
                   )}
                 </td>
 
@@ -89,7 +89,11 @@ export const OrderTableRender = ({
                 {transaction.status === "Waiting For Payment" ||
                 transaction.status === "Waiting For Payment Confirmation" ? (
                   <td className="whitespace-nowrap text-xs px-2 py-2 text-sm text-gray-500">
-                    {moment(transaction.expired).format("YYYY-MM-DD HH:mm:ss")}
+                    {transaction.expired ? (
+                      moment(transaction.expired).format("YYYY-MM-DD HH:mm:ss")
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
                   </td>
                 ) : (
                   <span
