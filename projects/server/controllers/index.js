@@ -23,6 +23,9 @@ const notificationController = require("./notificationController.js");
 const notificationReadController = require("./notificationReadController.js")
 const stockControllers = require("./stockControllers.js");
 const migrationController = require("./migrationController.js");
+const stockHistoryController = require("./stockHistoryController.js");
+const reportController = require("./reportController.js");
+const orderCancelController = require("./orderCancelController.js");
 
 module.exports = {
   userController,
@@ -48,5 +51,8 @@ module.exports = {
   notificationController,
   stockControllers,
   migrationController,
+  stockHistoryController,
+  reportController,
+  orderCancelController,
   notificationReadController
 };

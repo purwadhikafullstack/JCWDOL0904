@@ -1,7 +1,6 @@
 import Slider from "react-slick";
 import { useEffect, useState } from "react";
-import { Box, IconButton, useBreakpointValue } from "@chakra-ui/react";
-import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
+import { Box } from "@chakra-ui/react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./css/style.css";
@@ -16,7 +15,7 @@ export default function Carousel() {
     await api
       .get("/promotion")
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         setPromotionImg(result.data.wideSc);
         setPromotionImgSmall(result.data.smallSc);
       })
@@ -61,7 +60,6 @@ export default function Carousel() {
 
   return (
     <Box className="carousel" maxW="100%" paddingTop="65px">
-      {/* Slider */}
       <Slider {...settings}>
         {pic
           ? pic.map((el, index) => (
@@ -77,7 +75,6 @@ export default function Carousel() {
               />
             ))
           : null}
-        {}
       </Slider>
     </Box>
   );

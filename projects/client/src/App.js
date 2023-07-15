@@ -29,9 +29,15 @@ function App() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
-  async function getUser(id) {
+  async function getUser(token) {
     await api
-      .get("/user/auth/" + id)
+      .get("/user/auth/", {
+        headers: {
+          Authorization: token,
+          Accept: "appplication/json",
+          "Content-Type": "application/json",
+        },
+      })
       .then((res) => dispatch(login(res.data.user)));
   }
 
@@ -53,18 +59,16 @@ function App() {
   //app js > useEffect => localstorage => api request user by id => dispatch => globalstate => routes => protectedPage => cek redux => kalau sesaui return login
 
   useEffect(() => {
-    let user = null;
-    let userId = null;
+    let token = null;
     if (localStorage.getItem("auth")) {
-      user = JSON.parse(localStorage.getItem("auth")); //token
-      userId = user.id;
+      token = JSON.parse(localStorage.getItem("auth")); //token
     }
     // console.log(user);
 
     getWarehouse();
     getAllCategory();
-    if (userId) {
-      getUser(userId);
+    if (token) {
+      getUser(token);
     }
     setTimeout(() => {
       setIsLoading(false);
@@ -124,7 +128,7 @@ function App() {
   // const
   // const { role } = useSelector((state) => state.userSlice.value);
   // console.log(role);
-  const role = "";
+  // const role = "";
 
   // useEffect(() => {
   //   (async () => {

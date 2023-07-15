@@ -31,11 +31,12 @@ import { useNavigate } from "react-router-dom";
 import { mutation } from "../../features/mutationListSlice";
 import ReactPaginate from "react-paginate";
 import MigrationModal from "../../components/admin/migrationModal";
+import Pagination from "../../components/admin/Pagination";
 
 const MutationList = () => {
   const navigation = useNavigate();
   const value = useSelector((state) => state.mutationListSlice.value);
-  const { role, id } = useSelector((state) => state.userSlice);
+  const { role } = useSelector((state) => state.userSlice);
   const warehouse = useSelector((state) => state.warehouseSlice.value);
   const [isSmallerThan] = useMediaQuery("(max-width: 767px)");
   const dispatch = useDispatch();
@@ -130,12 +131,12 @@ const MutationList = () => {
   };
 
   const getMutationData = async () => {
+    const token = JSON.parse(localStorage.getItem("auth"));
     await api
       .get("/mutation/data-mutation", {
         params: {
           sort,
           role,
-          idUser: id,
           page,
           site: "mutationList",
           search,
@@ -143,9 +144,14 @@ const MutationList = () => {
           arrange,
           request,
         },
+        headers: {
+          Authorization: token,
+          Accept: "appplication/json",
+          "Content-Type": "application/json",
+        },
       })
       .then((result) => {
-        console.log(result.data);
+        console.log(result);
         dispatch(mutation(result.data.result));
         setTotalPage(result.data.totalPage);
       })
@@ -420,20 +426,7 @@ const MutationList = () => {
           </div>
         </div>
       </div>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        pageCount={totalPage}
-        previousLabel="< previous"
-        renderOnZeroPageCount={null}
-        containerClassName="flex justify-center items-center mb-10"
-        pageLinkClassName="px-2 py-1 rounded-md m-1"
-        previousLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        nextLinkClassName="px-2 py-1 border border-gray-300 rounded-md m-1"
-        activeLinkClassName="px-2 py-1 bg-black text-white rounded-md m-1"
-      />
+      <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );
 };

@@ -1,32 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Text,
-  Image,
-  Input,
-  Select,
-  Stack,
-  Button,
-  InputGroup,
-  InputRightElement,
-  Box,
-  useMediaQuery,
-} from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
-import ProductsHome from "../components/ProductsHome";
-import ReactPaginate from "react-paginate";
+import { Box } from "@chakra-ui/react";
 import Carousel from "../components/Carousel";
 import "./style/Homepage.css";
 import { api } from "../API/api";
-import UserIsNotLogin from "../components/UserIsNotLogin";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { AllCategory } from "../features/categorySlice";
 import Pagination from "../components/admin/Pagination";
+import TabPanelHomeProduct from "../components/homepage/tabPanelHomeProduct";
 
 const Homepage = () => {
   const [page, setPage] = useState(0);
@@ -35,9 +16,7 @@ const Homepage = () => {
   const [category, setCategory] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState("product_name");
-  // const [isLogin, SetIsLogin] = useState(false);
   const [products, setProducts] = useState([]);
-  const [isSmallerThan401] = useMediaQuery("(max-width: 767px)");
 
   const allCategory = useSelector((state) => state.categorySlice.value);
   const dispatch = useDispatch();
@@ -56,13 +35,10 @@ const Homepage = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setProducts(res.data.data);
         setTotalPage(res.data.totalPage);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const getAllCategory = async () => {
@@ -72,31 +48,9 @@ const Homepage = () => {
           site: "home",
         },
       });
-      console.log(response.data.result);
       dispatch(AllCategory(response.data.result));
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
-  // const getUserData = async () => {
-  //   const id = JSON.parse(localStorage.getItem("idUser"));
-  //   // console.log(id);
-  //   if (!id) SetIsLogin(false);
-  //   else {
-  //     await api
-  //       .post("/user/data", {
-  //         id: id,
-  //       })
-  //       .then((result) => {
-  //         console.log(result);
-  //         SetIsLogin(true);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         SetIsLogin(false);
-  //       });
-  //   }
-  // };
 
   const handleSorting = (value) => {
     if (value === "1") {
@@ -130,98 +84,14 @@ const Homepage = () => {
       <Box backgroundColor="black" maxW="100%">
         <Carousel />
       </Box>
-      <Tabs colorScheme="black" isLazy variant="enclosed">
-        <TabList
-          justifyContent="center"
-          className="tab-list-home"
-          overflowX="scroll"
-          overflowY="clip"
-          whiteSpace="nowrap"
-        >
-          {allCategory?.map((el) => {
-            return (
-              <Tab onClick={() => fetchProducts(el.id)}>{el.category}</Tab>
-            );
-          })}
-          {/* <Tab onClick={() => fetchProducts(1)}>Smartphone</Tab>
-          <Tab onClick={() => fetchProducts(2)}>Watch</Tab>
-          <Tab onClick={() => fetchProducts(3)}>Tablet</Tab> */}
-        </TabList>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "10px",
-          }}
-        >
-          <Stack
-            flexDirection="column"
-            alignItems="center"
-            className="con-category"
-          >
-            <InputGroup>
-              <InputRightElement
-                pointerEvents="none"
-                children={<SearchIcon color="#B9BAC4" />}
-              />
-              <Input
-                placeholder="Search here....."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                borderRadius="50px"
-              />
-            </InputGroup>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text fontSize="12px" width="50px">
-                Sort By:
-              </Text>
-              <Select
-                placeholder="By name A~Z"
-                width="120px"
-                display="flex"
-                justifyContent="center"
-                borderRadius="50px"
-                style={{ fontSize: "11px" }}
-                onChange={(e) => handleSorting(e.target.value)}
-              >
-                <option value="1" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By name Z~A
-                </option>
-                <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By price low~high
-                </option>
-                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By price high~low
-                </option>
-              </Select>
-            </div>
-          </Stack>
-        </div>
-
-        <TabPanels
-          className="card-con"
-          style={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
-          {allCategory?.map((el) => {
-            return el.category !== "no category" ? (
-              <TabPanel
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                maxWidth="100%"
-              >
-                <ProductsHome products={products} category={el.id} />
-              </TabPanel>
-            ) : null;
-          })}
-        </TabPanels>
-      </Tabs>
+      <TabPanelHomeProduct
+        allCategory={allCategory}
+        handleSorting={handleSorting}
+        fetchProducts={fetchProducts}
+        setSearch={setSearch}
+        products={products}
+        search={search}
+      />
       <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );

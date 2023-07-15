@@ -30,6 +30,7 @@ import AdminNotification from "../pages/admin/AdminNotification";
 import ManageStock from "../pages/admin/ManageStock";
 import SalesReport from "../pages/admin/SalesReport";
 import {EkspedisiAdmin} from "../pages/admin/EkspedisiAdmin";
+import StockHistory from "../pages/admin/StockHistory";
 
 const routes = [
   //home
@@ -303,6 +304,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <SalesReport />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="stock-history"
+    path="/stock-history"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <StockHistory />
       </ProtectedPage>
     }
   />,

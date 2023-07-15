@@ -105,6 +105,9 @@ module.exports = {
                     {
                         model: User,
                     },
+                    {
+                        model: User,
+                    },
                 ],
             });
 

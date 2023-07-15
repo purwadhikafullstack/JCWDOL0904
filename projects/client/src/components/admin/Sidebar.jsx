@@ -1,4 +1,18 @@
-import {Fragment, useState} from "react";
+/*
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+*/
+import {Fragment, useEffect, useState} from "react";
 import {Dialog, Menu, Transition} from "@headlessui/react";
 import {
   ArrowPathIcon,
@@ -19,12 +33,9 @@ import {
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
 import {useNavigate} from "react-router-dom";
 import {Button} from "@chakra-ui/react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../features/userSlice";
-import {io} from "socket.io-client";
-import {useEffect} from "react";
-import {useSelector} from "react-redux";
-import {unreadAdminCount} from "../../features/adminNotificationSlice";
+// import env from "react-dotenv";
 
 const navigation = [
   {
@@ -84,7 +95,7 @@ const navigation = [
   },
   {
     name: "History",
-    href: "/sales-report",
+    href: "/stock-history",
     icon: ChartBarIcon,
     current: false,
   },
@@ -209,7 +220,7 @@ export default function Sidebar(props) {
                   <div className="flex flex-shrink-0 items-center px-4">
                     <img
                       className="h-8 w-auto"
-                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
+                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
                       alt="Your Company"
                     />
                   </div>
@@ -269,7 +280,7 @@ export default function Sidebar(props) {
             <div className="flex h-16 flex-shrink-0 justify-center items-center px-4">
               <img
                 className="h-8 w-auto"
-                src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
+                src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                 alt="Your Company"
               />
             </div>
@@ -332,7 +343,6 @@ export default function Sidebar(props) {
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
-                  onClick={() => navigator("/admin-notification")}
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                   <span className="sr-only">View notifications</span>
                   <div className="flex">

@@ -33,6 +33,7 @@ const checkExpiredOrders = async () => {
 
             await createNotification(`Invoice ${order.invoice_number}`, 'Your order is canceled, the payment time is expired.', order.id_user, "admin");
         }
+        // Create a notification for the user
     } catch (error) {
         console.error('Error checking expired orders:', error);
     }
@@ -95,6 +96,7 @@ module.exports = {
                     if (totalStock < quantity) {
                         return res.status(400).send({ error: `Product with ID ${Product.id} is out of stock` });
                     }
+
 
                     return TransactionItem.create({
                         quantity,

@@ -155,6 +155,7 @@ module.exports = {
                 ],
             });
 
+
             res.status(200).send({ notify });
         } catch (error) {
             console.error(error);

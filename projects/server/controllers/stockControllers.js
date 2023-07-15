@@ -27,8 +27,8 @@ module.exports = {
         sto = { [Op.gt]: 100 };
       }
       console.log(sto);
-
-      const result = await product.findAndCountAll({
+      let result;
+      result = await product.findAndCountAll({
         order: [[stoc, "stock", sort]],
         where: {
           product_name: { [Op.like]: `%${search}%` },
@@ -46,8 +46,6 @@ module.exports = {
         // limit,
         offset: page * limit,
       });
-      const limitedData = result.rows.slice(0, limit);
-
       const forPage = await product.findAll({
         where: {
           product_name: { [Op.like]: `%${search}%` },
@@ -65,6 +63,28 @@ module.exports = {
       });
 
       const totalPage = Math.ceil(forPage.length / limit);
+      if (page >= totalPage && totalPage > 0) {
+        page = totalPage - 1;
+        result = await product.findAndCountAll({
+          order: [[stoc, "stock", sort]],
+          where: {
+            product_name: { [Op.like]: `%${search}%` },
+            ...(categoryFilter ? { id_category: categoryFilter } : {}),
+          },
+          include: [
+            {
+              model: stoc,
+              where:
+                sto || sto === 0
+                  ? { id_warehouse: ware, stock: sto }
+                  : { id_warehouse: ware },
+            },
+          ],
+          // limit,
+          offset: page * limit,
+        });
+      }
+      const limitedData = result.rows.slice(0, limit);
       res.status(200).send({ result: limitedData, totalPage, categoryFilter });
     } catch (error) {
       console.log(error);

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import {api} from "../API/api";
 import {MdError, MdCheckCircle} from "react-icons/md";
 import NotificationDetailModal from "../components/NotificationDetailModal";
@@ -55,7 +55,6 @@ export default function Notification() {
     setSelectedNotification(notificationId);
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setSelectedNotification(null);
     setIsModalOpen(false);
@@ -142,6 +141,12 @@ export default function Notification() {
             );
           })}
         </ul>
+      </div>
+      <div className="-mt-12">
+        <Pagination
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
       </div>
       <div className="-mt-12">
         <Pagination

@@ -1,11 +1,18 @@
 import {useState, useEffect} from "react";
 import {api} from "../API/api";
+import AddressModal from "../components/AddressModal";
+import {AddAddressModal} from "../components/AddAddressModal";
+import {Ekspedisi} from "../components/Ekspedisi";
 import {apiro} from "../API/apiro";
 import {useNavigate} from "react-router-dom";
 import {updateCart} from "../features/cartSlice";
 import {useDispatch} from "react-redux";
+import CartCheckout from "../components/CartCheckout";
+import ShippingSection from "../components/ShippingSection";
+import {CheckoutTotalSection} from "../components/CheckoutTotalSection";
 import Alert from "../components/SwallAlert";
 import CheckoutRender from "../components/CheckoutRender";
+import CheckoutShippingSection from "../components/CheckoutShippingSection";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -49,6 +56,8 @@ export default function Checkout() {
     setAddressModalOpen(false);
     localStorage.setItem("selectedAddress", JSON.stringify(address));
   };
+
+  console.log(`ini cart items`, cartItems);
 
   const addressId = selectedAddress?.id;
   useEffect(() => {
