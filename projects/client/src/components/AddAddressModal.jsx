@@ -39,17 +39,26 @@ export const AddAddressModal = ({closeAddressModal}) => {
     e.preventDefault();
     try {
       setIsloading(true);
-      const id = JSON.parse(localStorage.getItem("auth"));
-      let response = await api.post("addresses", {
-        recipient_name: recipientName,
-        phone_number: parseInt(phoneNumber),
-        province: provincess.province,
-        city: city.city,
-        address_city_id: parseInt(city.id),
-        subdistrict,
-        zip: parseInt(zip),
-        userId: id,
-      });
+      const token = JSON.parse(localStorage.getItem("auth"));
+      let response = await api.post(
+        "addresses",
+        {
+          recipient_name: recipientName,
+          phone_number: parseInt(phoneNumber),
+          province: provincess.province,
+          city: city.city,
+          address_city_id: parseInt(city.id),
+          subdistrict,
+          zip: parseInt(zip),
+        },
+        {
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
       Swal.fire({
         title: "Success",
         text: response.data.message,

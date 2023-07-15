@@ -4,10 +4,11 @@ const { Carts, Products, User, Category, Stocks, Warehouse } = db;
 module.exports = {
   addToCart: async (req, res) => {
     try {
-      const { userId, productId, quantity } = req.body;
+      const { id } = req.dataToken;
+      const { productId, quantity } = req.body;
 
       const cartItem = await Carts.findOne({
-        where: { id_user: userId, id_product: productId },
+        where: { id_user: id, id_product: productId },
       });
 
       if (cartItem) {
@@ -29,7 +30,7 @@ module.exports = {
         await cartItem.save();
       } else {
         await Carts.create({
-          id_user: userId,
+          id_user: id,
           id_product: productId,
           quantity,
         });
@@ -101,13 +102,13 @@ module.exports = {
       return res.status(500).send({ error: "Unable to update cart item" });
     }
   },
-  getAllCartItems: async (req, res) => {
+  getCartItemByUser: async (req, res) => {
     try {
-      const userId = req.query.userId;
+      const { id } = req.dataToken;
 
       const cartItems = await Carts.findAndCountAll({
         where: {
-          id_user: userId
+          id_user: id
         },
         include: [
           {

@@ -8,7 +8,6 @@ import {useNavigate} from "react-router-dom";
 import {updateCart} from "../features/cartSlice";
 import {useDispatch} from "react-redux";
 import CartCheckout from "../components/CartCheckout";
-import ShippingSection from "../components/ShippingSection";
 import {CheckoutTotalSection} from "../components/CheckoutTotalSection";
 import Alert from "../components/SwallAlert";
 import CheckoutRender from "../components/CheckoutRender";
@@ -95,7 +94,6 @@ export default function Checkout() {
     setSelectedDeliveryMethod(method);
   };
 
-  const getUser = JSON.parse(localStorage.getItem("auth"));
   useEffect(() => {
     const fetchShippingAddress = async () => {
       try {
@@ -103,7 +101,14 @@ export default function Checkout() {
         if (storedSelectedAddress) {
           setSelectedAddress(JSON.parse(storedSelectedAddress));
         } else {
-          const response = await api.get(`/addresses/${getUser.id}`);
+          const token = JSON.parse(localStorage.getItem("auth"));
+          const response = await api.get(`/addresses`, {
+            headers: {
+              Authorization: token,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          });
           const addresses = response.data;
           if (addresses.length > 0) {
             const defaultAddress = addresses.find(
@@ -143,20 +148,29 @@ export default function Checkout() {
     fetchLocalStorageCartItems();
   }, [selectedAddress, addressId]);
   const handleCheckout = async (e) => {
+    const token = JSON.parse(localStorage.getItem("auth"));
     e.preventDefault();
     try {
       setOngkirIsLoading(true);
-      const userId = JSON.parse(localStorage.getItem("auth")).id;
-      await api.post("/order", {
-        cartItems: cartItems,
-        productQty: cartItems.quantity,
-        addressId: selectedAddress.id,
-        userId: userId,
-        totalAmount: totalAmount,
-        ongkir,
-        ekspedisiId: selectedDeliveryMethod.id,
-        courier: selectedDeliveryMethod.name,
-      });
+      await api.post(
+        "/order",
+        {
+          cartItems: cartItems,
+          productQty: cartItems.quantity,
+          addressId: selectedAddress.id,
+          totalAmount: totalAmount,
+          ongkir,
+          ekspedisiId: selectedDeliveryMethod.id,
+          courier: selectedDeliveryMethod.name,
+        },
+        {
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setCartItems([]);
       dispatch(updateCart({cart: []}));
       localStorage.removeItem("cartItems");

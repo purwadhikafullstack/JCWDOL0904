@@ -17,9 +17,13 @@ const Cart = () => {
 
   const fetchCartItems = async () => {
     try {
-      const userId = JSON.parse(localStorage.getItem("auth")).id;
+      const token = JSON.parse(localStorage.getItem("auth"));
       const response = await api.get(`/cart`, {
-        params: {userId},
+        headers: {
+          Authorization: token,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       });
       setCartItems(response.data.cartItems);
       let sum = 0;

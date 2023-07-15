@@ -43,7 +43,8 @@ setInterval(checkExpiredOrders, 11000);
 module.exports = {
     createOrder: async (req, res) => {
         try {
-            const { cartItems, addressId, userId, ekspedisiId, totalAmount, courier, ongkir } = req.body;
+            const { id } = req.dataToken;
+            const { cartItems, addressId, ekspedisiId, totalAmount, courier, ongkir } = req.body;
             if (!ekspedisiId) {
                 return res.status(400).send({ error: 'An expedition must be selected' });
             }
@@ -77,7 +78,7 @@ module.exports = {
                 status: 'Waiting For Payment',
                 id_address: addressId,
                 id_ekspedisi: ekspedisiId,
-                id_user: userId,
+                id_user: id,
                 id_warehouse: nearestWarehouse.id,
                 expired: expirationDate,
                 courier
@@ -109,10 +110,10 @@ module.exports = {
             );
             await Carts.destroy({
                 where: {
-                    id_user: userId,
+                    id_user: id,
                 },
             });
-            await createNotification(`Invoice ${transaction.invoice_number}`, 'New order', userId, "user");
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'New order', id, "user");
             return res.status(201).send({ transaction, transactionItems });
         } catch (error) {
             console.error(error);

@@ -42,8 +42,9 @@ const ProductDetail = () => {
   };
 
   let productId = JSON.parse(localStorage.getItem("idProduct"));
-
   let addToCart = async (e) => {
+    const token = JSON.parse(localStorage.getItem("auth"));
+    console.log(token);
     e.preventDefault();
     if (!localStorage.getItem("auth")) {
       Swal.fire({
@@ -56,13 +57,20 @@ const ProductDetail = () => {
       navigation("/");
     } else {
       try {
-        let id = userLogin.id;
-        console.log(id);
-        await api.post(`/cart`, {
-          userId: id,
-          productId,
-          quantity: 1,
-        });
+        await api.post(
+          `/cart`,
+          {
+            productId,
+            quantity: 1,
+          },
+          {
+            headers: {
+              Authorization: token,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
         navigation("/cart");
       } catch (error) {}
     }

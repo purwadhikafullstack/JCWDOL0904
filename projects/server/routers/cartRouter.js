@@ -1,9 +1,10 @@
 const router = require("express").Router()
 const { cartController } = require("../controllers")
+const { tokenVerify } = require("../middleware/verifyToken");
 
 router.delete("/:cartItemId", cartController.deleteCart)
-router.post("/", cartController.addToCart)
+router.post("/", tokenVerify, cartController.addToCart)
 router.patch("/", cartController.updateCartQty)
-router.get("/", cartController.getAllCartItems)
+router.get("/", tokenVerify, cartController.getCartItemByUser)
 
 module.exports = router

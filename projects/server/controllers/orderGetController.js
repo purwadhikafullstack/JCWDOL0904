@@ -5,15 +5,15 @@ module.exports = {
     // User
     getAllOrderByUser: async (req, res) => {
         try {
-            const userId = req.query.userId;
+            const { id } = req.dataToken;
             let page = Number(req.query.page);
             const limit = 5;
             const invoiceNumber = req.query.invoiceNumber;
             const status = req.query.status;
 
             const whereCondition = {};
-            if (userId) {
-                whereCondition.id_user = userId;
+            if (id) {
+                whereCondition.id_user = id;
             }
             if (status) {
                 whereCondition.status = status;

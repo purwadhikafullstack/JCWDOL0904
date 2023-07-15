@@ -51,11 +51,12 @@ module.exports = {
     },
     getNotificationByUser: async (req, res) => {
         try {
-            const { userId, page, invoiceNumber } = req.query;
+            const { id } = req.dataToken;
+            const { page, invoiceNumber } = req.query;
             const limit = 9;
             let whereCondition = {};
-            if (userId) {
-                whereCondition.id_user = userId;
+            if (id) {
+                whereCondition.id_user = id;
                 whereCondition.from = 'admin';
             }
             if (invoiceNumber) {

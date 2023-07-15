@@ -2,8 +2,6 @@ import React from "react";
 import {useNavigate} from "react-router-dom";
 import {PulseLoader} from "react-spinners";
 import {css} from "@emotion/react";
-import {PulseLoader} from "react-spinners";
-import {css} from "@emotion/react";
 
 export const CheckoutTotalSection = ({
   handleCheckout,

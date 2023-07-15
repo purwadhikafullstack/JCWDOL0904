@@ -35,7 +35,7 @@ import {useNavigate} from "react-router-dom";
 import {Button} from "@chakra-ui/react";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../features/userSlice";
-// import env from "react-dotenv";
+import io from "socket.io-client";
 
 const navigation = [
   {
@@ -343,6 +343,7 @@ export default function Sidebar(props) {
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
+                  onClick={() => navigator("/admin-notification")}
                   className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                   <span className="sr-only">View notifications</span>
                   <div className="flex">

@@ -18,15 +18,20 @@ export const Transaction = () => {
   useEffect(() => {
     fetchTransactions();
   }, [currentPage, invoiceNumber, selectedStatus]);
+
   const fetchTransactions = async () => {
     try {
-      const userId = JSON.parse(localStorage.getItem("auth")).id;
+      const token = JSON.parse(localStorage.getItem("auth"));
       const response = await api.get("/order/user", {
         params: {
-          userId,
           page: currentPage,
           invoiceNumber: invoiceNumber,
           status: selectedStatus,
+        },
+        headers: {
+          Authorization: token,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       setTransactions(response.data.orders);

@@ -24,14 +24,20 @@ export default function Notification() {
   }, [currentPage, invoiceNumber]);
 
   const fetchNotification = async () => {
+    const token = JSON.parse(localStorage.getItem("auth"));
     try {
       let response = await api.get("/notification", {
         params: {
-          userId: 2,
           page: currentPage,
           invoiceNumber: invoiceNumber,
         },
+        headers: {
+          Authorization: token,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       });
+
       setNotifications(response.data.notif);
       setTotalPages(response.data.totalPages);
       console.log(response);
@@ -141,12 +147,6 @@ export default function Notification() {
             );
           })}
         </ul>
-      </div>
-      <div className="-mt-12">
-        <Pagination
-          totalPages={totalPages}
-          handlePageChange={handlePageChange}
-        />
       </div>
       <div className="-mt-12">
         <Pagination

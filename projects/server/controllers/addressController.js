@@ -5,11 +5,10 @@ const { sequelize } = require("../models");
 const OpenCageGeocoder = require("opencage-api-client");
 
 module.exports = {
-  getAllAddresses: async (req, res) => {
+  getAddressByUser: async (req, res) => {
     try {
-      const userId = req.params.userId;
-      console.log(userId);
-      const addresses = await address.findAll({ where: { id_user: userId } });
+      const { id } = req.dataToken;
+      const addresses = await address.findAll({ where: { id_user: id } });
       res.status(200).send(addresses);
     } catch (error) {
       console.error(error);
@@ -36,6 +35,7 @@ module.exports = {
   // e115d475b4d64403bef4b85a159facaf
   createAddress: async (req, res) => {
     try {
+      const { id } = req.dataToken;
       const {
         recipient_name,
         phone_number,
@@ -44,7 +44,6 @@ module.exports = {
         address_city_id,
         subdistrict,
         zip,
-        userId,
       } = req.body;
 
       if (
@@ -78,7 +77,7 @@ module.exports = {
           zip,
           latitude,
           longitude,
-          id_user: userId.id,
+          id_user: id,
         });
 
         res.status(200).send({
