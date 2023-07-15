@@ -6,7 +6,8 @@ module.exports = {
     return queryInterface.bulkInsert("transactions", [
       {
         total_price: 6399000,
-        invoice_number: 11111,
+        ongkir: 14000,
+        invoice_number: "f940dcfa-2eeb-4979-b56f-d236wc23279c",
         payment_proof: null,
         transaction_date: "2023-06-28",
         expired: new Date(),
@@ -20,7 +21,8 @@ module.exports = {
       },
       {
         total_price: 6399000,
-        invoice_number: 22222,
+        ongkir: 14000,
+        invoice_number: "f94qzs3a-2eeb-4979-b56f-d2362ec1279c",
         payment_proof: null,
         transaction_date: "2023-06-29",
         expired: new Date(),
@@ -34,7 +36,8 @@ module.exports = {
       },
       {
         total_price: 6399000,
-        invoice_number: 33333,
+        ongkir: 18000,
+        invoice_number: "f940dcfa-2eeb-4979-y5fk-d2362ec1279c",
         payment_proof: null,
         transaction_date: "2023-06-30",
         expired: new Date(),
@@ -48,7 +51,8 @@ module.exports = {
       },
       {
         total_price: 6399000,
-        invoice_number: 44444,
+        ongkir: 14000,
+        invoice_number: "f940dcfa-2eeb-4979-b56f-d23623fm979c",
         payment_proof: null,
         transaction_date: "2023-07-01",
         expired: new Date(),
@@ -62,7 +66,8 @@ module.exports = {
       },
       {
         total_price: 6399000,
-        invoice_number: 55555,
+        ongkir: 18000,
+        invoice_number: "f940dcfa-bf49-4979-b56f-d2362ec1279c",
         payment_proof: null,
         transaction_date: "2023-07-02",
         expired: new Date(),

@@ -10,7 +10,7 @@ const checkExpiredOrders = async () => {
             where: {
                 status: 'Waiting For Payment',
                 expired: {
-                    [db.Sequelize.Op.lte]: moment().toDate(), // Find orders with expired date less than or equal to the current date and time
+                    [db.Sequelize.Op.lte]: moment().toDate(),
                 },
             },
             include: [
@@ -43,18 +43,19 @@ setInterval(checkExpiredOrders, 11000);
 module.exports = {
     createOrder: async (req, res) => {
         try {
-            const { cartItems, addressId, userId, ekspedisiId, totalAmount, category, ongkir } = req.body;
+            const { id } = req.dataToken;
+            const { cartItems, addressId, ekspedisiId, totalAmount, courier, ongkir } = req.body;
             if (!ekspedisiId) {
-                return res.status(400).json({ error: 'An expedition must be selected' });
+                return res.status(400).send({ error: 'An expedition must be selected' });
             }
 
             let cart = await Carts.count()
             if (cart == 0) {
-                return res.status(400).json({ error: 'The product in the cart is empty' });
+                return res.status(400).send({ error: 'The product in the cart is empty' });
             }
             const address = await Address.findByPk(addressId);
             if (!address) {
-                return res.status(404).json({ error: 'Address not found' });
+                return res.status(404).send({ error: 'Address not found' });
             }
             const nearestWarehouse = await Warehouse.findOne({
                 order: [
@@ -69,7 +70,7 @@ module.exports = {
             });
 
             const expirationDate = new Date();
-            expirationDate.setSeconds(expirationDate.getSeconds() + 30); // Set expiration to 30 seconds from now
+            expirationDate.setSeconds(expirationDate.getSeconds() + 30);
             const transaction = await Transaction.create({
                 total_price: totalAmount,
                 ongkir: ongkir,
@@ -77,9 +78,10 @@ module.exports = {
                 status: 'Waiting For Payment',
                 id_address: addressId,
                 id_ekspedisi: ekspedisiId,
-                id_user: userId,
+                id_user: id,
                 id_warehouse: nearestWarehouse.id,
                 expired: expirationDate,
+                courier
             });
             const transactionItems = await Promise.all(
                 cartItems.map(async (cartItem) => {
@@ -88,7 +90,6 @@ module.exports = {
                     if (!product) {
                         return res.status(404).send({ error: `Product with ID ${Product.id} not found` });
                     }
-                    // Check if the product is out of stock
                     const stocks = await Stocks.findAll({
                         where: { id_product: Product.id },
                     });
@@ -96,6 +97,7 @@ module.exports = {
                     if (totalStock < quantity) {
                         return res.status(400).send({ error: `Product with ID ${Product.id} is out of stock` });
                     }
+
 
                     return TransactionItem.create({
                         quantity,
@@ -108,10 +110,10 @@ module.exports = {
             );
             await Carts.destroy({
                 where: {
-                    id_user: userId,
+                    id_user: id,
                 },
             });
-            await createNotification(`Invoice ${transaction.invoice_number}`, 'New order', userId, "user");
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'New order', id, "user");
             return res.status(201).send({ transaction, transactionItems });
         } catch (error) {
             console.error(error);
@@ -159,7 +161,7 @@ module.exports = {
             }
 
             await transaction.update({ status: "Order Confirmed" });
-            await createNotification(`Invoice ${transaction.invoice_number}`, 'Canceled by the user', transaction.id_user, "user");
+            await createNotification(`Invoice ${transaction.invoice_number}`, 'The order has been received by the user', transaction.id_user, "user");
             res.status(200).send({ message: 'Transaction confirmed successfully' });
         } catch (error) {
             console.log(error);
