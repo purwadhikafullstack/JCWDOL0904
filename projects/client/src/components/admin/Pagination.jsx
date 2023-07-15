@@ -1,8 +1,8 @@
-import { useMediaQuery } from "@chakra-ui/react";
+import {useMediaQuery} from "@chakra-ui/react";
 import React from "react";
 import ReactPaginate from "react-paginate";
 
-const Pagination = ({ totalPages, handlePageChange }) => {
+const Pagination = ({totalPages, handlePageChange}) => {
   const [isSmallerThan] = useMediaQuery("(max-width: 767px)");
   return (
     <div className="mt-6 flex justify-center">

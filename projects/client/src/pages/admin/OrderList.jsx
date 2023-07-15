@@ -1,21 +1,15 @@
-import { useEffect, useState } from "react";
-import { api } from "../../API/api";
-import { PaymentProofModal } from "../../components/admin/PaymentProofModal";
-import { useSelector } from "react-redux";
-import OrderDetailModal from "../../components/admin/OrderDetailModal";
+import {useEffect, useState} from "react";
+import {api} from "../../API/api";
+import {useSelector} from "react-redux";
 import io from "socket.io-client";
-import Pagination from "../../components/admin/Pagination";
-import OrderTable from "../../components/admin/OrderTable";
-import OrderStatus from "../../components/admin/OrderStatus";
-import OrderWarehouseDropdown from "../../components/admin/OrderWarehouseDropdown";
-import OrderSearch from "../../components/admin/OrderSearch";
 import Alert from "../../components/SwallAlert";
+import OrderListRender from "../../components/admin/OrderListRender";
 
 export default function OrderList() {
   const [transactionByWarehouse, setTransactionByWarehouse] = useState([]);
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouses, setWarehouses] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState("");
@@ -53,7 +47,7 @@ export default function OrderList() {
           },
         });
       }
-      const { orders, totalPages } = response.data;
+      const {orders, totalPages} = response.data;
       setTransactionByWarehouse(orders);
       setTotalPages(totalPages);
     } catch (error) {
@@ -156,67 +150,27 @@ export default function OrderList() {
   }, []);
 
   return (
-    <>
-      <div className="px-4 mt-5 sm:px-6 lg:px-8">
-        <div className="sm:flex sm:items-center">
-          <div className="sm:flex-auto">
-            <h1 className="text-xl font-semibold text-gray-900">
-              Transactions
-            </h1>
-            <div className="flex gap-3 pb-3 pt-5">
-              <OrderSearch
-                handleSearch={handleSearch}
-                invoiceNumber={invoiceNumber}
-                placeholder={"Search Invoice Number"}
-              />
-              <div className="mt-4 sm:mt-0 sm:ml-4">
-                <OrderWarehouseDropdown
-                  user={user}
-                  handleWarehouseChange={handleWarehouseChange}
-                  selectedWarehouse={selectedWarehouse}
-                  warehouses={warehouses}
-                />
-              </div>
-              <OrderStatus
-                selectedStatus={selectedStatus}
-                handleStatusChange={handleStatusChange}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="mt-6 flex flex-col justify-end xl ml-auto">
-          <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-              <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                <OrderTable
-                  transactionByWarehouse={transactionByWarehouse}
-                  handleViewPaymentProof={handleViewPaymentProof}
-                  handleViewOrderDetail={handleViewOrderDetail}
-                  handleRejectTransaction={handleRejectTransaction}
-                  fetchTransactions={fetchTransactions}
-                  user={user}
-                />
-              </div>
-            </div>
-            <div className="mt-6 flex justify-center">
-              <Pagination
-                totalPages={totalPages}
-                handlePageChange={handlePageChange}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <PaymentProofModal
-        isOpen={isModalOpen}
-        closeModal={closeModal}
-        selectedTransaction={selectedTransaction}
-      />
-      <OrderDetailModal
-        isDetailModalOpen={isDetailModalOpen}
-        closeDetailModal={closeDetailModal}
-        selectedTransaction={selectedTransaction}
-      />
-    </>
+    <OrderListRender
+      transactionByWarehouse={transactionByWarehouse}
+      handleSearch={handleSearch}
+      invoiceNumber={invoiceNumber}
+      handleWarehouseChange={handleWarehouseChange}
+      selectedWarehouse={selectedWarehouse}
+      warehouses={warehouses}
+      selectedStatus={selectedStatus}
+      handleStatusChange={handleStatusChange}
+      handleViewPaymentProof={handleViewPaymentProof}
+      handleViewOrderDetail={handleViewOrderDetail}
+      handleRejectTransaction={handleRejectTransaction}
+      fetchTransactions={fetchTransactions}
+      user={user}
+      totalPages={totalPages}
+      handlePageChange={handlePageChange}
+      isModalOpen={isModalOpen}
+      closeModal={closeModal}
+      selectedTransaction={selectedTransaction}
+      isDetailModalOpen={isDetailModalOpen}
+      closeDetailModal={closeDetailModal}
+    />
   );
 }

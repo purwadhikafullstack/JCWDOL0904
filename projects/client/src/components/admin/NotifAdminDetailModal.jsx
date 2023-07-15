@@ -56,7 +56,7 @@ export default function NotifAdminDetailModal({
             className="absolute inset-0 bg-gray-900 bg-opacity-50"
             onClick={handleOverlayClick}
           />
-          <div className="relative bg-white p-6 rounded-xl max-w-2xl mx-auto">
+          <div className="relative bg-white p-6 rounded-xl sm:rounded-2xl max-w-2xl mx-auto">
             <div className="m-auto flex items-center">
               <span className="rounded-lg m-auto flex items-center justify-center inline-flex p-3 ring-4 ring-white">
                 <EnvelopeIcon
@@ -68,9 +68,12 @@ export default function NotifAdminDetailModal({
             <div>
               {notification.map((notify) => (
                 <div key={notify.id} className="mt-2">
-                  <h3 className="text-lg font-medium">
+                  <h3 className="text-lg text-center font-medium">
                     <p className="focus:outline-none">
-                      <span className="absolute inset-0" aria-hidden="true" />
+                      <span
+                        className="absolute text-center align-middle inset-0"
+                        aria-hidden="true"
+                      />
                       {notify.title}
                     </p>
                   </h3>

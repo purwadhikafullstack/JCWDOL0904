@@ -38,10 +38,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       current_stock: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      current_stock: {
-        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },

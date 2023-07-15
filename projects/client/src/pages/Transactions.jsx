@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { api } from "../API/api";
+import {useEffect, useState} from "react";
+import {api} from "../API/api";
 import io from "socket.io-client";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
+import {Input, InputGroup, InputRightElement} from "@chakra-ui/react";
+import {SearchIcon} from "@chakra-ui/icons";
 import Pagination from "../components/admin/Pagination";
 import TransactionSections from "../components/TransactionsSection";
 import Alert from "../components/SwallAlert";
@@ -10,7 +10,7 @@ import OrderStatus from "../components/admin/OrderStatus";
 
 export const Transaction = () => {
   const [transactions, setTransactions] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState("");
@@ -18,15 +18,20 @@ export const Transaction = () => {
   useEffect(() => {
     fetchTransactions();
   }, [currentPage, invoiceNumber, selectedStatus]);
+
   const fetchTransactions = async () => {
     try {
-      const userId = JSON.parse(localStorage.getItem("auth")).id;
+      const token = JSON.parse(localStorage.getItem("auth"));
       const response = await api.get("/order/user", {
         params: {
-          userId,
           page: currentPage,
           invoiceNumber: invoiceNumber,
           status: selectedStatus,
+        },
+        headers: {
+          Authorization: token,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       setTransactions(response.data.orders);
@@ -53,7 +58,7 @@ export const Transaction = () => {
         `/order/upload-payment-proof/${transactionId}`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {"Content-Type": "multipart/form-data"},
         }
       );
       Alert({
@@ -89,7 +94,6 @@ export const Transaction = () => {
       console.error(error);
     }
   };
-
   const acceptOrder = async (id) => {
     try {
       const response = await api.put(`/order/${id}/accept`);
@@ -108,7 +112,6 @@ export const Transaction = () => {
       console.error(error);
     }
   };
-
   useEffect(() => {
     const socket = io("http://localhost:8000");
     socket.on("transaction-update", (updatedTransaction) => {
@@ -148,7 +151,7 @@ export const Transaction = () => {
   };
   return (
     <>
-      <div className="bg-white min-h-[700px]">
+      <div className="bg-white max-w-4xl flex justify-center items-center m-auto min-h-[700px]">
         <main className="pt-24 mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="m-auto max-w-full">
             <h1 className="text-3xl font-bold mb-4">Transactions</h1>
