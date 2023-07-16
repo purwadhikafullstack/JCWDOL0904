@@ -7,6 +7,10 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  FormLabel,
+  InputGroup,
+  Input,
+  InputRightElement,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { api } from "../API/api";
@@ -19,7 +23,7 @@ import { login } from "../features/userSlice";
 
 const LoginModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [showPassword, setShowPassword] = useState(false);
   const url = "/auth/login";
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -30,12 +34,6 @@ const LoginModal = () => {
       .min(8, "Password must contain at least 8 characters")
       .required("Please input your password"),
   });
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  };
 
   const loginAccount = async (inputEmail, inputPassword) => {
     try {
@@ -50,10 +48,9 @@ const LoginModal = () => {
           text: response.data.message,
           icon: "success",
           confirmButtonText: "Ok",
+          confirmButtonColor: "black",
         });
-        console.log(response);
         localStorage.setItem("auth", JSON.stringify(authData));
-        console.log(authData);
         dispatch(login(response.data.data));
         onClose();
       }
@@ -66,6 +63,10 @@ const LoginModal = () => {
         confirmButtonText: "Ok",
       });
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
@@ -96,17 +97,11 @@ const LoginModal = () => {
               {(props) => (
                 <Form>
                   <div>
-                    <label
-                      htmlFor="email"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white py-1"
-                    >
-                      Your email
-                    </label>
-                    <input
+                    <FormLabel>Email</FormLabel>
+                    <Input
                       type="email"
                       name="email"
                       id="email"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Email"
                       required=""
                       onChange={props.handleChange} //setstate
@@ -115,71 +110,31 @@ const LoginModal = () => {
                     />
                     <ErrorMessage name="email" component="div" />
                   </div>
-                  <div>
-                    <label
-                      htmlFor="password"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white py-1"
-                    >
-                      Password
-                    </label>
-                    <div className="relative">
-                      <input
+                  <div className="relative">
+                    <FormLabel>Password</FormLabel>
+                    <InputGroup>
+                      <Input
                         type={showPassword ? "text" : "password"}
                         name="password"
                         id="password"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Password"
                         required=""
                         as={Field}
                         onChange={props.handleChange} //setstate
                         value={props.values.password} //manggil state
                       />
-                      <button
-                        type="button"
-                        onClick={togglePasswordVisibility}
-                        className="absolute inset-y-0 right-0 px-3 flex items-center"
-                      >
-                        {showPassword ? (
-                          <svg
-                            className="w-4 h-4 text-gray-500 dark:text-gray-300 cursor-pointer"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              d="M15.5 9A3.5 3.5 0 1 1 12 5.5v0a3.5 3.5 0 0 1 3.5 3.5z"
-                              fill="none"
-                            />
-                            <path
-                              d="M12 18.5v.5m0 0v-.5m0 .5h6m0-9h-9m0 0H7m0 0H6.5"
-                              fill="none"
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            className="w-4 h-4 text-gray-500 dark:text-gray-300 cursor-pointer"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              d="M12 18.5v.5m0 0v-.5m0 .5h6m0-9h-6m0 0H5.5a1.5 1.5 0 0 0 0 3H12m0 0a1.5 1.5 0 0 0 0-3h-2.5a1.5 1.5 0 0 0 0 3H12m0 0a1.5 1.5 0 0 0 0-3h2.5a1.5 1.5 0 0 0 0 3H12z"
-                              fill="none"
-                            />
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                    <ErrorMessage name="password" component="div" />
+                      <InputRightElement width="4.5rem">
+                        <Button
+                          h="1.75rem"
+                          size="sm"
+                          onClick={togglePasswordVisibility}
+                        >
+                          {showPassword ? "Hide" : "Show"}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
                   </div>
+                  <ErrorMessage name="password" component="div" />
                   <p className="text-sm font-light text-gray-500 dark:text-gray-400 m-2">
                     Forgot password?{" "}
                     <button

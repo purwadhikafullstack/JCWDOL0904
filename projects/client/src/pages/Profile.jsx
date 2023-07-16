@@ -1,37 +1,15 @@
 import { useRef, useState } from "react";
-import { BanknotesIcon, BuildingOfficeIcon } from "@heroicons/react/20/solid";
+import { BuildingOfficeIcon } from "@heroicons/react/20/solid";
 import { api } from "../API/api";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { AddAddressModal } from "../components/AddAddressModal";
-import { PasswordChangeModal } from "../components/PasswordChange";
+import { PasswordChangeModal } from "../components/PasswordChangeModal";
 import { login } from "../features/userSlice";
 import DeleteAddressModal from "../components/DeleteAddressModal";
-import Swal from "sweetalert2";
-
-const transactions = [
-  {
-    id: 1,
-    name: "Payment to Molly Sanders",
-    href: "#",
-    amount: "$20,000",
-    currency: "USD",
-    status: "success",
-    date: "July 11, 2020",
-    datetime: "2020-07-11",
-  },
-  // More transactions...
-];
-const statusStyles = {
-  success: "bg-green-100 text-green-800",
-  processing: "bg-yellow-100 text-yellow-800",
-  failed: "bg-gray-100 text-gray-800",
-};
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { ChangeUsernameModal } from "../components/changeUsernameModal";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import UserTransactionData from "../components/userTransaction";
 
 export default function Profile() {
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
@@ -39,6 +17,8 @@ export default function Profile() {
     useState(false);
   const [isSelectedDeleteAddress, setSelectedDeletedAddress] = useState(null);
   const [isDeleteAddressModalOpen, setDeleteAddressModalOpen] = useState(false);
+  const [isChangeUsernameModalOpen, setChangeUsernameModalOpen] =
+    useState(false);
   const inputFileRef = useRef("");
   const dispatch = useDispatch();
 
@@ -50,7 +30,7 @@ export default function Profile() {
       const response = await api.post("/upload", formData, {
         headers: {
           Authorization: token,
-          Accept: "appplication/json",
+          Accept: "application/json",
           "Content-Type": "multipart/form-data",
         },
       });
@@ -77,8 +57,6 @@ export default function Profile() {
     }
   };
 
-  let navigate = useNavigate();
-
   const openAddAddressModal = () => {
     setAddAddressModalOpen(true);
   };
@@ -99,18 +77,22 @@ export default function Profile() {
     setDeleteAddressModalOpen(false);
   };
 
+  const openChangeUsernameModal = () => {
+    setChangeUsernameModalOpen(true);
+  };
+  const closeChangeUsernameModal = () => {
+    setChangeUsernameModalOpen(false);
+  };
+
   const handleSelectDeleteAddress = (address) => {
     setSelectedDeletedAddress(address);
     setDeleteAddressModalOpen(false);
-    // console.log(address);
     localStorage.setItem("selectedAddress", JSON.stringify(address));
   };
 
   const { username, user_image } = useSelector((state) => state.userSlice);
 
-  const [addressList, setAddressList] = useState([]);
-
-  const getUser = JSON.parse(localStorage.getItem("auth"));
+  const token = JSON.parse(localStorage.getItem("auth"));
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -119,18 +101,22 @@ export default function Profile() {
         if (storedSelectedAddress) {
           setSelectedDeletedAddress(JSON.parse(storedSelectedAddress));
         } else {
-          const response = await api.get(`addresses/${getUser.id}`);
+          const response = await api.get("addresses/", {
+            headers: {
+              Authorization: token,
+              Accept: "appplication/json",
+              "Content-Type": "application/json",
+            },
+          });
           const addresses = response.data;
           if (addresses.length > 0) {
-            // Find the address with 'is_default' set to true
             const defaultAddress = addresses.find(
               (address) => address.is_default === true
             );
-
             if (defaultAddress) {
               setSelectedDeletedAddress(defaultAddress);
             } else {
-              setSelectedDeletedAddress(addresses[0]); // Set the first address as the selected address
+              setSelectedDeletedAddress(addresses[0]);
             }
           } else {
             setSelectedDeletedAddress(null);
@@ -140,17 +126,15 @@ export default function Profile() {
         console.error(error);
       }
     };
-
     fetchAddresses();
   }, []);
 
   return (
     <>
-      <div className="min-h-full pt-20">
+      <div className="min-h-screen pt-20">
         <main className="flex-1 pb-8">
-          {/* Page header */}
           <div className="bg-white shadow">
-            <div className="px-4 sm:px-6 lg:mx-auto lg:max-w-6xl lg:px-8">
+            <div className="px-4 sm:px-6 lg:mx-auto lg:px-8">
               <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center">
@@ -166,7 +150,6 @@ export default function Profile() {
                       ref={inputFileRef}
                       hidden
                     />
-
                     <div>
                       <div className="flex items-center">
                         <img
@@ -176,6 +159,13 @@ export default function Profile() {
                         />
                         <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
                           Welcome, {username}
+                          <button
+                            className=" h-4 w-4 text-gray-500 hover:text-gray-700 transition-colors duration-300 ease-in-out cursor-pointer"
+                            type="button"
+                            onClick={openChangeUsernameModal}
+                          >
+                            <PencilSquareIcon />
+                          </button>
                         </h1>
                       </div>
                       <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
@@ -235,119 +225,21 @@ export default function Profile() {
             </div>
           </div>
           <div className="mt-8">
-            <h2 className="mx-auto mt-8 max-w-6xl px-4 text-lg font-medium leading-6 text-gray-900 sm:px-6 lg:px-8">
-              Recent activity
-            </h2>
-            {/* Activity table (small breakpoint and up) */}
-            <div className="hidden sm:block">
+            <div className="sm:block">
               <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
                 <div className="mt-2 flex flex-col">
-                  <div className="min-w-full overflow-hidden overflow-x-auto align-middle shadow sm:rounded-lg">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead>
-                        <tr>
-                          <th
-                            className="bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900"
-                            scope="col"
-                          >
-                            Transaction
-                          </th>
-                          <th
-                            className="bg-gray-50 px-6 py-3 text-right text-sm font-semibold text-gray-900"
-                            scope="col"
-                          >
-                            Amount
-                          </th>
-                          <th
-                            className="hidden bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900 md:block"
-                            scope="col"
-                          >
-                            Status
-                          </th>
-                          <th
-                            className="bg-gray-50 px-6 py-3 text-right text-sm font-semibold text-gray-900"
-                            scope="col"
-                          >
-                            Date
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200 bg-white">
-                        {transactions.map((transaction) => (
-                          <tr key={transaction.id} className="bg-white">
-                            <td className="w-full max-w-0 whitespace-nowrap px-6 py-4 text-sm text-gray-900">
-                              <div className="flex">
-                                <a
-                                  href={transaction.href}
-                                  className="group inline-flex space-x-2 truncate text-sm"
-                                >
-                                  <BanknotesIcon
-                                    className="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                                    aria-hidden="true"
-                                  />
-                                  <p className="truncate text-gray-500 group-hover:text-gray-900">
-                                    {transaction.name}
-                                  </p>
-                                </a>
-                              </div>
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500">
-                              <span className="font-medium text-gray-900">
-                                {transaction.amount}
-                              </span>
-                              {transaction.currency}
-                            </td>
-                            <td className="hidden whitespace-nowrap px-6 py-4 text-sm text-gray-500 md:block">
-                              <span
-                                className={classNames(
-                                  statusStyles[transaction.status],
-                                  "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
-                                )}
-                              >
-                                {transaction.status}
-                              </span>
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500">
-                              <time dateTime={transaction.datetime}>
-                                {transaction.date}
-                              </time>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    {/* Pagination */}
-                    <nav
-                      className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
-                      aria-label="Pagination"
-                    >
-                      <div className="hidden sm:block">
-                        <p className="text-sm text-gray-700">
-                          Showing <span className="font-medium">1</span> to{" "}
-                          <span className="font-medium">10</span> of{" "}
-                          <span className="font-medium">20</span> results
-                        </p>
-                      </div>
-                      <div className="flex flex-1 justify-between sm:justify-end">
-                        <a
-                          href="#"
-                          className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                        >
-                          Previous
-                        </a>
-                        <a
-                          href="#"
-                          className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                        >
-                          Next
-                        </a>
-                      </div>
-                    </nav>
-                  </div>
+                  <div className=""></div>
                   {isPasswordChangeModalOpen && (
                     <div className="modal-overlay">
                       <PasswordChangeModal
                         closeAddressModal={closePasswordChangeModal}
+                      />
+                    </div>
+                  )}
+                  {isChangeUsernameModalOpen && (
+                    <div className="modal-overlay">
+                      <ChangeUsernameModal
+                        closeAddressModal={closeChangeUsernameModal}
                       />
                     </div>
                   )}
@@ -370,6 +262,7 @@ export default function Profile() {
                 </div>
               </div>
             </div>
+            <UserTransactionData />
           </div>
         </main>
       </div>

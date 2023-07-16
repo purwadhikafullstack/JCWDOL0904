@@ -1,17 +1,3 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 import {Fragment, useEffect, useState} from "react";
 import {Dialog, Menu, Transition} from "@headlessui/react";
 import {
@@ -29,13 +15,16 @@ import {
   UsersIcon,
   XMarkIcon,
   TruckIcon,
+  BookOpenIcon,
 } from "@heroicons/react/24/outline";
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
 import {useNavigate} from "react-router-dom";
 import {Button} from "@chakra-ui/react";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../features/userSlice";
-import io from "socket.io-client";
+// import env from "react-dotenv";
+import {io} from "socket.io-client";
+import {unreadAdminCount} from "../../features/adminNotificationSlice";
 
 const navigation = [
   {
@@ -96,7 +85,7 @@ const navigation = [
   {
     name: "History",
     href: "/stock-history",
-    icon: ChartBarIcon,
+    icon: BookOpenIcon,
     current: false,
   },
 ];

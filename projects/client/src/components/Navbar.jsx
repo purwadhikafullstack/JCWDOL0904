@@ -1,9 +1,19 @@
 import React, {useEffect, useState} from "react";
+import {Fragment} from "react";
+import {Disclosure, Menu, Transition} from "@headlessui/react";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ShoppingCartIcon,
+  EnvelopeIcon,
+} from "@heroicons/react/24/outline";
+import {Link, Navigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {useDispatch} from "react-redux";
 import {updateCart} from "../features/cartSlice";
 import {useNavigate} from "react-router-dom";
 import {login} from "../features/userSlice";
+import {unreadCount} from "../features/notificationSlice";
 import io from "socket.io-client";
 import NavbarRender from "./NavbarRender";
 
@@ -60,9 +70,18 @@ export const Navbar = () => {
   };
 
   const {cart} = useSelector((state) => state.cartSlice.value);
+  const notificationUnread = useSelector(
+    (state) => state.notificationSlice.value.unread
+  );
+  useEffect(() => {
+    setUnreads(notificationUnread);
+  }, [notificationUnread]);
 
   const updateCartData = (cart) => {
     dispatch(updateCart({cart}));
+  };
+  const updateUnreadCount = (unread) => {
+    dispatch(unreadCount({unread}));
   };
 
   useEffect(() => {

@@ -132,4 +132,27 @@ module.exports = {
       });
     }
   },
+
+  getTransactionById: async (req, res) => {
+    try {
+      const { id } = req.dataToken;
+
+      const findUserId = await User.findOne({
+        where: { id: id },
+      });
+
+      const result = await Transaction.findAll({
+        where: { id_user: findUserId.id },
+        order: [["transaction_date", "DESC"]],
+        limit: 1,
+      });
+
+      res.status(200).send({
+        result: result.length > 0 ? result : [],
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ error: "Server error" });
+    }
+  },
 };

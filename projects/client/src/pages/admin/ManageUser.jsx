@@ -12,7 +12,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { api } from "../../API/api";
-import { SettingsIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
+import { DeleteIcon } from "@chakra-ui/icons";
 import EditUser from "../../components/admin/EditUserModal";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +22,7 @@ import EditWarehouse from "../../components/admin/EditAdminWarehouseModal";
 
 const ManageWarehouse = () => {
   const value = useSelector((state) => state.allUserSlice.value);
+  console.log(value);
   const dispatch = useDispatch();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -49,9 +50,9 @@ const ManageWarehouse = () => {
 
   const url = "user/data/all";
   const getUserData = async () => {
+    const id = JSON.parse(localStorage.getItem("auth"));
     try {
       await api.get(url).then((result) => {
-        // console.log(result);
         dispatch(allUserData(result.data));
       });
     } catch (err) {
@@ -60,20 +61,28 @@ const ManageWarehouse = () => {
   };
 
   const deleteUser = async (id) => {
-    console.log(id);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "black",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes!",
+      dangerMode: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
+        const token = JSON.parse(localStorage.getItem("auth"));
+        console.log(id);
         try {
-          const response = await api.delete(`/user/data/delete/${id}`);
-          console.log(response);
+          const response = await api.delete("/user/data/delete", {
+            headers: {
+              Authorization: token,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            data: { id },
+          });
           getUserData();
           Swal.fire({
             title: "Success",
@@ -101,8 +110,8 @@ const ManageWarehouse = () => {
   let count = 0;
   const allUser = value.map((el) => {
     if (!el.is_deleted) {
-      console.log(el);
       count++;
+      console.log(el);
       return (
         <tr key={el.id}>
           <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
@@ -132,6 +141,7 @@ const ManageWarehouse = () => {
               />
               <EditWarehouse
                 uId={el.id}
+                role={el.role}
                 warehouse={el.Warehouse}
                 runFunction={getUserData}
               />
@@ -152,7 +162,7 @@ const ManageWarehouse = () => {
 
   return (
     <div className="px-4 mt-5 sm:px-6 lg:px-8">
-      <h1>Manage User </h1>
+      <h1 className="text-xl font-semibold text-gray-900 mb-2 ">Manage User</h1>
       <div>
         <AddAdmin />
       </div>

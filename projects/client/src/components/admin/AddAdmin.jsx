@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -11,18 +11,14 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Input,
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
-import { SettingsIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
-import { apiro } from "../../API/apiro";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
 
-const AddAdmin = (props) => {
+const AddAdmin = () => {
   const [email, setEmail] = useState("");
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
@@ -32,19 +28,27 @@ const AddAdmin = (props) => {
   const [isLoad, setLoad] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const url = "/user/register";
+  const url = "/user/register-admin";
   const handleSubmit = async () => {
-    const id = JSON.parse(localStorage.getItem("auth"));
-    const role = id ? id.role : null;
-    console.log(role);
+    const token = JSON.parse(localStorage.getItem("auth"));
     try {
-      let response = await api.post(url, {
-        email,
-        fullname,
-        username,
-        password,
-        role: role,
-      });
+      let response = await api.post(
+        url,
+        {
+          email,
+          fullname,
+          username,
+          password,
+        },
+        {
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
       onClose();
       setLoad(false);
       Swal.fire({
@@ -72,7 +76,6 @@ const AddAdmin = (props) => {
   return (
     <div>
       <Button
-        leftIcon={<AddIcon />}
         backgroundColor="black"
         color="white"
         onClick={onOpen}

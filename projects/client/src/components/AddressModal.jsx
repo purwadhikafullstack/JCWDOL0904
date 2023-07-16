@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect} from "react";
 import {api} from "../API/api";
 
 function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
@@ -100,7 +100,7 @@ function AddressModal({selectedAddress, onSelectAddress, closeModal}) {
         </ul>
         <div className="flex justify-center p-4">
           <button
-            className="bg-black hover:bg-gray-800 transition duration-300 ease-in-out text-white font-bold py-2 px-4 rounded"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
             onClick={handleClose}>
             Close
           </button>

@@ -97,6 +97,7 @@ module.exports = {
   deleteAddress: async (req, res) => {
     try {
       const id = req.params.id;
+      // console.log(id);
 
       // Delete the address from the database
       const deletedRows = await address.destroy({ where: { id: id } });
@@ -117,7 +118,8 @@ module.exports = {
     try {
       const { id, id_user } = req.body;
 
-      //   console.log(userId);
+      console.log(id, id_user);
+
       await address.update(
         { is_default: false },
         { where: { id_user: id_user } }
@@ -131,7 +133,7 @@ module.exports = {
       await transaction.commit();
       const addressResult = await address.findByPk(id);
 
-      res.status(200).send(addressResult);
+      res.status(200).send(addressResult, id, id_user);
     } catch (error) {
       console.error(error);
       await transaction.rollback();
