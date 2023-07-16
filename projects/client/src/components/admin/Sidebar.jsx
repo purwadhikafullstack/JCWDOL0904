@@ -12,8 +12,8 @@
   }
   ```
 */
-import {Fragment, useEffect, useState} from "react";
-import {Dialog, Menu, Transition} from "@headlessui/react";
+import { Fragment, useEffect, useState } from "react";
+import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   ArrowPathIcon,
   Bars3BottomLeftIcon,
@@ -29,12 +29,13 @@ import {
   UsersIcon,
   XMarkIcon,
   TruckIcon,
+  BookOpenIcon,
 } from "@heroicons/react/24/outline";
-import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
-import {useNavigate} from "react-router-dom";
-import {Button} from "@chakra-ui/react";
-import {useDispatch, useSelector} from "react-redux";
-import {login} from "../../features/userSlice";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../features/userSlice";
 import io from "socket.io-client";
 
 const navigation = [
@@ -96,14 +97,14 @@ const navigation = [
   {
     name: "History",
     href: "/stock-history",
-    icon: ChartBarIcon,
+    icon: BookOpenIcon,
     current: false,
   },
 ];
 const userNavigation = [
   // { name: "Your Profile", href: "#" },
   // { name: "Settings", href: "#" },
-  {name: "Sign out", href: "#"},
+  { name: "Sign out", href: "#" },
 ];
 
 function classNames(...classes) {
@@ -114,7 +115,7 @@ export default function Sidebar(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminUnreads, setAdminUnreads] = useState(0);
   const [buttonActive, setButtonActive] = useState(navigation[0].name);
-  const {user_image, username} = useSelector((state) => state.userSlice);
+  const { user_image, username } = useSelector((state) => state.userSlice);
   const navigator = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -174,7 +175,8 @@ export default function Sidebar(props) {
           <Dialog
             as="div"
             className="relative z-40 md:hidden"
-            onClose={setSidebarOpen}>
+            onClose={setSidebarOpen}
+          >
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -182,7 +184,8 @@ export default function Sidebar(props) {
               enterTo="opacity-100"
               leave="transition-opacity ease-linear duration-300"
               leaveFrom="opacity-100"
-              leaveTo="opacity-0">
+              leaveTo="opacity-0"
+            >
               <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
             </Transition.Child>
 
@@ -194,7 +197,8 @@ export default function Sidebar(props) {
                 enterTo="translate-x-0"
                 leave="transition ease-in-out duration-300 transform"
                 leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full">
+                leaveTo="-translate-x-full"
+              >
                 <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-black pt-5 pb-4">
                   <Transition.Child
                     as={Fragment}
@@ -203,12 +207,14 @@ export default function Sidebar(props) {
                     enterTo="opacity-100"
                     leave="ease-in-out duration-300"
                     leaveFrom="opacity-100"
-                    leaveTo="opacity-0">
+                    leaveTo="opacity-0"
+                  >
                     <div className="absolute top-0 right-0 -mr-12 pt-2">
                       <button
                         type="button"
                         className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                        onClick={() => setSidebarOpen(false)}>
+                        onClick={() => setSidebarOpen(false)}
+                      >
                         <span className="sr-only">Close sidebar</span>
                         <XMarkIcon
                           className="h-6 w-6 text-white"
@@ -233,7 +239,7 @@ export default function Sidebar(props) {
                           backgroundColor={
                             buttonActive === item.name ? "#4A5568" : "black"
                           }
-                          _hover={{backgroundColor: "#4A5568"}}
+                          _hover={{ backgroundColor: "#4A5568" }}
                           color="white"
                           width="300px"
                           justifyContent="left"
@@ -293,7 +299,7 @@ export default function Sidebar(props) {
                     backgroundColor={
                       buttonActive === item.name ? "#4A5568" : "black"
                     }
-                    _hover={{backgroundColor: "#4A5568"}}
+                    _hover={{ backgroundColor: "#4A5568" }}
                     color="white"
                     width="230px"
                     justifyContent="left"
@@ -330,7 +336,8 @@ export default function Sidebar(props) {
             <button
               type="button"
               className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
-              onClick={() => setSidebarOpen(true)}>
+              onClick={() => setSidebarOpen(true)}
+            >
               <span className="sr-only">Open sidebar</span>
               <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
             </button>
@@ -344,7 +351,8 @@ export default function Sidebar(props) {
                 <button
                   type="button"
                   onClick={() => navigator("/admin-notification")}
-                  className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                  className="rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
                   <span className="sr-only">View notifications</span>
                   <div className="flex">
                     <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -371,18 +379,20 @@ export default function Sidebar(props) {
                     enterTo="transform opacity-100 scale-100"
                     leave="transition ease-in duration-75"
                     leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95">
+                    leaveTo="transform opacity-0 scale-95"
+                  >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
-                          {({active}) => (
+                          {({ active }) => (
                             <a
                               // href={item.href}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm text-gray-700 cursor-pointer"
                               )}
-                              onClick={(e) => handleLogOut(e)}>
+                              onClick={(e) => handleLogOut(e)}
+                            >
                               {item.name}
                             </a>
                           )}

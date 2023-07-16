@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -11,18 +11,14 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Input,
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
-import { SettingsIcon, DeleteIcon, AddIcon } from "@chakra-ui/icons";
-import { apiro } from "../../API/apiro";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
 
-const AddAdmin = (props) => {
+const AddAdmin = () => {
   const [email, setEmail] = useState("");
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
@@ -66,7 +62,6 @@ const AddAdmin = (props) => {
       setUsername("");
       setPassword("");
     } catch (error) {
-      // console.log(error);
       onClose();
       setLoad(false);
       Swal.fire({
@@ -81,7 +76,6 @@ const AddAdmin = (props) => {
   return (
     <div>
       <Button
-        leftIcon={<AddIcon />}
         backgroundColor="black"
         color="white"
         onClick={onOpen}

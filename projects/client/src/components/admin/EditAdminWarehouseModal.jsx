@@ -27,12 +27,11 @@ const EditWarehouse = (props) => {
   const [warehouses, setWarehouses] = useState([]);
 
   const url = "/warehouses/data";
+  console.log(props.uId);
 
   const getWarehouseData = async () => {
     try {
-      console.log("test");
       let response = await api.get(url);
-      console.log(response);
       setWarehouses(response.data.result);
     } catch (error) {
       console.log(error);
@@ -40,13 +39,24 @@ const EditWarehouse = (props) => {
   };
 
   const urlUpdate = "/warehouses/update/admin";
+  const token = JSON.parse(localStorage.getItem("auth"));
   const handleSubmit = async () => {
     try {
-      let response = await api.post(urlUpdate, {
-        currentWarehouse: currentWarehouse.id,
-        id_warehouse: selectedWarehouse.id,
-        id: props.uId,
-      });
+      let response = await api.post(
+        urlUpdate,
+        {
+          currentWarehouse: currentWarehouse.id,
+          id_warehouse: selectedWarehouse.id,
+          id: props.uId,
+        },
+        {
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(response);
       Swal.fire({
         title: "Success",
@@ -75,7 +85,11 @@ const EditWarehouse = (props) => {
   return (
     <div className="flex align-middle">
       <Button
-        onClick={props.role === "user" ? null : () => onOpen()}
+        onClick={
+          props.role === "user" || props.role === "admin"
+            ? null
+            : () => onOpen()
+        }
         variant="link"
         color="black"
       >
@@ -108,7 +122,6 @@ const EditWarehouse = (props) => {
                   className="block w-full border h-7 pl-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   onChange={(e) => {
                     const selected = JSON.parse(e.target.value);
-                    console.log(selected);
                     setSelectedWarehouse(selected);
                   }}
                 >

@@ -24,7 +24,6 @@ const UserTransactionData = () => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       dispatch(transactionData(response.data.result));
     } catch (error) {
       console.log(error);

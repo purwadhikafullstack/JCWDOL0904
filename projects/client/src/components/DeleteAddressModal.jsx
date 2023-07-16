@@ -14,7 +14,7 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
   const fetchAddresses = async () => {
     try {
       const token = JSON.parse(localStorage.getItem("auth"));
-      const response = await api.get("addresses/all-address", {
+      const response = await api.get("addresses/", {
         headers: {
           Authorization: token,
           Accept: "appplication/json",
@@ -57,13 +57,10 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
   const handleSelect = async (address) => {
     console.log(address);
     try {
-      const response = await api.patch(
-        `addresses/change-address/${address.id}`,
-        {
-          id: address.id,
-          id_user: address.id_user,
-        }
-      );
+      const response = await api.patch(`addresses/${address.id}`, {
+        id: address.id,
+        id_user: address.id_user,
+      });
       console.log(response);
       onSelectAddress(response.data);
     } catch (error) {

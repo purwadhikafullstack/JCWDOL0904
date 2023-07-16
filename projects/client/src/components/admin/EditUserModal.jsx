@@ -18,6 +18,7 @@ import {
 import { SettingsIcon } from "@chakra-ui/icons";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
 const EditUser = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -25,23 +26,31 @@ const EditUser = (props) => {
   const [fullname, setFullname] = useState(props.fullname);
   const [username, setUsername] = useState(props.username);
   const [password, setPassword] = useState("");
-
+  const value = useSelector((state) => state.userSlice);
   const [showPassword, setShowPassword] = useState(false);
 
   const url = "/user/data/update";
+  const token = JSON.parse(localStorage.getItem("auth"));
   const handleSubmit = async () => {
-    const id = JSON.parse(localStorage.getItem("auth"));
-    const role = id ? id.role : null;
-    console.log(role);
     try {
       setLoad(true);
-      let response = await api.post(url, {
-        id: props.uId,
-        fullname,
-        username,
-        password,
-        role: role,
-      });
+      let response = await api.post(
+        url,
+        {
+          id: props.uId,
+          fullname,
+          username,
+          password,
+          role: value.role,
+        },
+        {
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
       onClose();
       setLoad(false);
       props.runFunction();
@@ -89,7 +98,7 @@ const EditUser = (props) => {
                 value={fullname}
                 onChange={(e) => setFullname(e.target.value)}
               />
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Input Admin Password</FormLabel>
               <InputGroup>
                 <Input
                   type={showPassword ? "text" : "password"}

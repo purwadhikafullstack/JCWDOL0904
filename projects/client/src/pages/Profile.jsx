@@ -101,7 +101,7 @@ export default function Profile() {
         if (storedSelectedAddress) {
           setSelectedDeletedAddress(JSON.parse(storedSelectedAddress));
         } else {
-          const response = await api.get("addresses/all-address", {
+          const response = await api.get("addresses/", {
             headers: {
               Authorization: token,
               Accept: "appplication/json",
@@ -131,7 +131,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className="min-h-full pt-20">
+      <div className="min-h-screen pt-20">
         <main className="flex-1 pb-8">
           <div className="bg-white shadow">
             <div className="px-4 sm:px-6 lg:mx-auto lg:px-8">

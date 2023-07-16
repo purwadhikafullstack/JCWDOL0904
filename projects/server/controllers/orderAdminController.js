@@ -157,20 +157,6 @@ module.exports = {
             .status(404)
             .send({ error: `Product with ID ${item.id_product} not found` });
         }
-
-        const totalStock = await Stocks.sum("stock", {
-          where: { id_product: item.id_product },
-        });
-        if (totalStock <= 0) {
-          return res.status(400).send({
-            error: `Product with ID ${item.id_product} is out of stock`,
-          });
-        }
-        if (item.quantity > totalStock) {
-          return res.status(400).send({
-            error: `Insufficient stock for product with ID ${item.id_product}`,
-          });
-        }
       }
 
       const expirationDate = new Date();
@@ -188,7 +174,6 @@ module.exports = {
         "admin"
       );
       io.emit("notification", notification);
-      sendEmailNotification(order.User, "Your order has been shipped");
 
       const timeoutDuration = order.expired_confirmed - new Date();
       setTimeout(async () => {

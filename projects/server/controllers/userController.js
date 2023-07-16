@@ -1,6 +1,7 @@
 const db = require("../models");
-const { Op } = require("sequelize");
+const { Op, Transaction } = require("sequelize");
 const User = db.User;
+const transaction = db.Transaction;
 const Warehouse = db.Warehouse;
 const jwt = require("jsonwebtoken");
 const nodemailer = require("../helpers/nodemailer");
@@ -86,6 +87,7 @@ module.exports = {
     }
   },
 
+  // Add Admin
   addAdmin: async (req, res) => {
     try {
       const { email, fullname, username, password } = req.body;
@@ -208,15 +210,39 @@ module.exports = {
     try {
       const { id } = req.body;
       const dataRole = req.dataToken;
+      // console.log(id);
 
+      const noDeleteAdmin = await User.findOne({
+        where: { id: id },
+      });
+
+      if (noDeleteAdmin.role === "admin") {
+        return res.status(400).send({
+          message: "You can't delete admin!",
+        });
+      }
       const data = await User.findOne({
         where: { id: dataRole.id },
       });
-      console.log(data);
 
       if (data.role === "adminWarehouse" || data.role === "user") {
         return res.status(400).send({
           message: "You don't have permission!",
+        });
+      }
+
+      const userStatus = await transaction.findOne({
+        where: {
+          id_user: id,
+          status: { [Op.notIn]: ["Order Confirmed", "Canceled"] },
+        },
+      });
+      console.log(userStatus);
+
+      if (userStatus) {
+        return res.status(400).send({
+          message:
+            "User cannot be deleted unless their status is 'cancel' or 'order confirm'!",
         });
       }
       const result = await User.destroy({
@@ -296,6 +322,18 @@ module.exports = {
   updateUserData: async (req, res) => {
     try {
       const { id, username, fullname, password, role } = req.body;
+      const dataToken = req.dataToken;
+      // console.log(dataToken);
+
+      const findAdminPassword = await User.findOne({
+        where: { id: dataToken.id },
+      });
+
+      const isValid = await bcrypt.compare(
+        password,
+        findAdminPassword.dataValues.password
+      );
+      console.log(isValid);
 
       if (role === "adminWarehouse" || role === "user") {
         return res.status(400).send({
@@ -305,27 +343,18 @@ module.exports = {
 
       if (!username || !fullname || !password) {
         return res.status(400).send({
-          message: "Please input all your data",
+          message: "Please input all data",
         });
       }
 
-      const passwordRegex =
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
-
-      if (!passwordRegex.test(password)) {
-        return res.status(400).send({
-          message:
-            "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number",
+      let result;
+      if (isValid) {
+        result = await User.update({ username, fullname }, { where: { id } });
+      } else {
+        res.status(400).send({
+          message: "Please input correct password",
         });
       }
-
-      const salt = await bcrypt.genSalt(10);
-      const hashPass = await bcrypt.hash(password, salt);
-
-      const result = await User.update(
-        { username, fullname, password: hashPass },
-        { where: { id } }
-      );
 
       res.status(200).send({
         message: "Update data success",
@@ -374,7 +403,7 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
-      // res.status(400).send(error);
+      res.status(400).send(error);
     }
   },
 };
