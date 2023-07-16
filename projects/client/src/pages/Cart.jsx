@@ -119,7 +119,7 @@ const Cart = () => {
             <ul
               role="list"
               className="divide-y divide-gray-200 border-t border-b border-gray-200">
-              {cartItems.map((item) => {
+              {cartItems?.map((item) => {
                 return (
                   <div>
                     {cartItems && (

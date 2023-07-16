@@ -7,6 +7,10 @@ module.exports = {
       const { id } = req.dataToken;
       const { productId, quantity } = req.body;
 
+      if (!productId) {
+        return res.status(404).send({ message: "Product not found" });
+      }
+
       const cartItem = await Carts.findOne({
         where: { id_user: id, id_product: productId },
       });

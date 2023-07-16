@@ -16,7 +16,9 @@ module.exports = {
                     {
                         model: TransactionItem,
                         include: {
-                            model: Products,
+                            model: Products, paranoid: false, where: {
+                                [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                            }
                         },
                     },
                 ],
