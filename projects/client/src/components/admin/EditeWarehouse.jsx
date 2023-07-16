@@ -5,13 +5,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody,
   ModalCloseButton,
   Button,
   useDisclosure,
-  FormControl,
-  FormLabel,
-  Input,
   IconButton,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
@@ -19,6 +15,7 @@ import { apiro } from "../../API/apiro";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
+import ModalEditeWarehouse from "./manageWarehouse/ModalEditeWarehouse";
 
 const EditeWarehouse = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,18 +27,15 @@ const EditeWarehouse = (props) => {
   const [subdistrict, setSubsdistrict] = useState("");
   const [zip, setZip] = useState("");
   const [isLoad, setLoad] = useState(false);
-
   const { role } = useSelector((state) => state.userSlice);
-
   const getAllProvince = async () => {
     try {
       const response = await apiro.get("/rajaongkir/province");
       console.log(response.data.data);
+
       setProvinces(response.data.data);
       runGetCity(response.data.data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   const fetchAddressesCity = async (id) => {
     let provId;
@@ -52,11 +46,8 @@ const EditeWarehouse = (props) => {
     }
     try {
       const response = await apiro.get(`rajaongkir/city?province_id=${provId}`);
-      console.log(response.data.data.results);
       setCities(response.data.data.results);
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   };
 
   const handleSubmit = async () => {
@@ -82,7 +73,6 @@ const EditeWarehouse = (props) => {
       });
       onClose();
       setLoad(false);
-      console.log(response);
       props.runFunction();
       Swal.fire({
         title: "Success",
@@ -103,13 +93,11 @@ const EditeWarehouse = (props) => {
         icon: "warning",
         confirmButtonText: "Ok",
       });
-      console.log(error);
     }
   };
 
   const runGetCity = (value) => {
     const result = value?.find((el) => el.province === props.province);
-    console.log(result);
     if (provincess.id) {
       fetchAddressesCity();
     } else {
@@ -125,10 +113,6 @@ const EditeWarehouse = (props) => {
       fetchAddressesCity();
     }
   }, [provinces, provincess]);
-
-  useEffect(() => {
-    console.log(city, provincess);
-  }, [provincess, city]);
 
   useEffect(() => {
     setProvincess({ province: props.province });
@@ -152,90 +136,20 @@ const EditeWarehouse = (props) => {
         <ModalContent>
           <ModalHeader>Update Warehouse</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Warehouse Name</FormLabel>
-              <Input
-                type="text"
-                value={warehouse}
-                onChange={(e) => setWarehouse(e.target.value)}
-              />
-              <FormLabel>Province</FormLabel>
-              <div className="mt-1">
-                <select
-                  id="province"
-                  name="province"
-                  value={provincess}
-                  placeholder="Select a province"
-                  autoComplete="province"
-                  className="block w-full border h-7 pl-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  onChange={(e) => {
-                    console.log(JSON.parse(e.target.value));
-                    setProvincess(JSON.parse(e.target.value));
-                  }}
-                >
-                  <option className="text-gray-800 font-medium">
-                    {provincess ? provincess.province : "Select province"}
-                  </option>
-                  {provinces?.map((province) => {
-                    return (
-                      <option
-                        className="text-gray-500"
-                        key={province.province_id}
-                        value={JSON.stringify({
-                          id: province.province_id,
-                          province: province.province,
-                        })}
-                      >
-                        {province.province}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <FormLabel>City</FormLabel>
-              <div className="mt-1">
-                <select
-                  id="province"
-                  name="province"
-                  value={city}
-                  autoComplete="province"
-                  className="block w-full pl-2 h-7 border rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  onChange={(e) => {
-                    setCity(JSON.parse(e.target.value));
-                  }}
-                >
-                  <option>{city ? city.city : "Select a City"}</option>
-                  {cities.map((city) => (
-                    <option
-                      className="text-gray-500"
-                      key={city.city_id}
-                      value={JSON.stringify({
-                        city: city.city_name,
-                        id: city.city_id,
-                        type: city.type,
-                      })}
-                    >
-                      {`${city.type} ${city.city_name}`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <FormLabel>Subdistrict</FormLabel>
-              <Input
-                type="text"
-                value={subdistrict}
-                onChange={(e) => setSubsdistrict(e.target.value)}
-              />
-              <FormLabel>Zip</FormLabel>
-              <Input
-                type="number"
-                value={zip}
-                onChange={(e) => setZip(e.target.value)}
-              />
-            </FormControl>
-          </ModalBody>
-
+          <ModalEditeWarehouse
+            warehouse={warehouse}
+            setWarehouse={setWarehouse}
+            provincess={provincess}
+            setProvincess={setProvincess}
+            provinces={provinces}
+            city={city}
+            setCity={setCity}
+            cities={cities}
+            subdistrict={subdistrict}
+            setSubsdistrict={setSubsdistrict}
+            zip={zip}
+            setZip={setZip}
+          />
           <ModalFooter>
             {isLoad ? (
               <Button variant="ghost" isLoading></Button>

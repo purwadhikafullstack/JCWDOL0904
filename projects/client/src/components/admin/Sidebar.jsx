@@ -1,4 +1,18 @@
-import {Fragment, useState} from "react";
+/*
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+*/
+import {Fragment, useEffect, useState} from "react";
 import {Dialog, Menu, Transition} from "@headlessui/react";
 import {
   ArrowPathIcon,
@@ -14,16 +28,14 @@ import {
   InboxIcon,
   UsersIcon,
   XMarkIcon,
+  TruckIcon,
 } from "@heroicons/react/24/outline";
 import {MagnifyingGlassIcon} from "@heroicons/react/20/solid";
 import {useNavigate} from "react-router-dom";
 import {Button} from "@chakra-ui/react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../features/userSlice";
-import {io} from "socket.io-client";
-import {useEffect} from "react";
-import {useSelector} from "react-redux";
-import {unreadAdminCount} from "../../features/adminNotificationSlice";
+import io from "socket.io-client";
 
 const navigation = [
   {
@@ -48,6 +60,12 @@ const navigation = [
     name: "Warehouse",
     href: "/manage-warehouse",
     icon: BuildingStorefrontIcon,
+    current: true,
+  },
+  {
+    name: "Ekspedisi",
+    href: "/ekspedisi",
+    icon: TruckIcon,
     current: true,
   },
   {
@@ -142,9 +160,7 @@ export default function Sidebar(props) {
 
   useEffect(() => {
     const storedAdminUnreads = localStorage.getItem("adminUnreads");
-    if (storedAdminUnreads) {
-      setAdminUnreads(parseInt(storedAdminUnreads));
-    }
+    setAdminUnreads(parseInt(storedAdminUnreads));
     setAdminUnreads(notificationAdminUnread);
   }, []);
   useEffect(() => {
@@ -204,7 +220,7 @@ export default function Sidebar(props) {
                   <div className="flex flex-shrink-0 items-center px-4">
                     <img
                       className="h-8 w-auto"
-                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
+                      src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
                       alt="Your Company"
                     />
                   </div>
@@ -261,10 +277,10 @@ export default function Sidebar(props) {
         <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex min-h-0 flex-1 flex-col bg-black">
-            <div className="flex h-16 flex-shrink-0 justify-center items-center bg-[#F9FAFB] px-4">
+            <div className="flex h-16 flex-shrink-0 justify-center items-center px-4">
               <img
                 className="h-8 w-auto"
-                src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
+                src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
                 alt="Your Company"
               />
             </div>

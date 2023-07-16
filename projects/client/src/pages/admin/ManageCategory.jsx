@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { api } from "../../API/api";
-import { useDispatch, useSelector } from "react-redux";
-import { AllCategory } from "../../features/categorySlice";
+import React, {useEffect, useState} from "react";
+import {api} from "../../API/api";
+import {useDispatch, useSelector} from "react-redux";
+import {AllCategory} from "../../features/categorySlice";
 import {
   Box,
   Button,
@@ -14,8 +14,8 @@ import {
   Stack,
   useMediaQuery,
 } from "@chakra-ui/react";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { DeleteIcon, SearchIcon, SettingsIcon } from "@chakra-ui/icons";
+import {TrashIcon} from "@heroicons/react/24/outline";
+import {DeleteIcon, SearchIcon, SettingsIcon} from "@chakra-ui/icons";
 import AddCategory from "../../components/admin/AddCategory";
 import Swal from "sweetalert2";
 import EditeCategory from "../../components/admin/EditeCategory";
@@ -25,7 +25,7 @@ import Pagination from "../../components/admin/Pagination";
 const ManageCategory = () => {
   const dispatch = useDispatch();
   const value = useSelector((state) => state.categorySlice.value);
-  const { role } = useSelector((state) => state.userSlice);
+  const {role} = useSelector((state) => state.userSlice);
   const [isSmallerThan] = useMediaQuery("(max-width: 767px)");
 
   const [search, setSearch] = useState("");
@@ -114,7 +114,7 @@ const ManageCategory = () => {
               backgroundColor="#F9FAFB"
               padding="10px"
               borderRadius="50px"
-              _hover={{ backgroundColor: "red", color: "white" }}
+              _hover={{backgroundColor: "red", color: "white"}}
               onClick={role === "admin" ? () => deleteCategory(el.id) : null}
               icon={<DeleteIcon />}
             />
@@ -165,8 +165,7 @@ const ManageCategory = () => {
         <Select
           borderRadius="50px"
           value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        >
+          onChange={(e) => setSort(e.target.value)}>
           <option value="DESC">A - Z</option>
           <option value="ASC">Z - A</option>
         </Select>
@@ -182,14 +181,12 @@ const ManageCategory = () => {
                   <tr className="flex justify-between ">
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Category
                     </th>
                     <th
                       scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900 mr-10"
-                    >
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900 mr-10">
                       Action
                     </th>
                   </tr>

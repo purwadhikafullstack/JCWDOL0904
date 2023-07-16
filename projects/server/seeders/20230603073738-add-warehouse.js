@@ -5,7 +5,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Warehouses", [
       {
-        warehouse: "Warehouse 1",
+        warehouse: "Bandung",
         province: "Jawa Barat",
         city: "Kota Bandung",
         warehouse_city_id: 23,
@@ -17,7 +17,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        warehouse: "Warehouse 2",
+        warehouse: "Surabaya",
         province: "Jawa Timur",
         city: "Surabaya",
         warehouse_city_id: 444,
@@ -29,7 +29,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        warehouse: "Warehouse 3",
+        warehouse: "DI Yogyakarta",
         province: "DI Yogyakarta",
         city: "Gunung Kidul",
         warehouse_city_id: 135,

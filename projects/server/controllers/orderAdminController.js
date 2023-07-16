@@ -1,14 +1,11 @@
 const {
   Transaction,
-  Warehouse,
   Products,
   Stocks,
   TransactionItem,
   Address,
-  sequelize,
   User,
   Ekspedisi,
-  Notification,
   StockHistory,
 } = require("../models");
 const db = require("../models");
@@ -39,21 +36,19 @@ module.exports = {
           .status(400)
           .send({ message: "Transaction is already in process" });
       }
-
       if (transaction.status !== "Waiting For Payment Confirmation") {
         return res
           .status(404)
           .send({ message: "Transaction not eligible for confirmation" });
       }
 
-      // Deduct stock from the warehouse and create stock history
       const transactionItems = transaction.TransactionItems;
       const promises = transactionItems.map(async (item) => {
         const product = item.Product;
         const stock = await Stocks.findOne({
           where: {
             id_product: product.id,
-            id_warehouse: transaction.id_warehouse, // Assuming warehouse ID is stored in the transaction
+            id_warehouse: transaction.id_warehouse,
           },
         });
 
@@ -63,22 +58,21 @@ module.exports = {
           );
         }
 
-        // Deduct stock quantity
-        stock.stock -= item.quantity;
+        const deductedStock = Math.max(stock.stock - item.quantity, 0);
+        stock.stock = deductedStock;
         await stock.save();
 
-        // Create stock history
         await StockHistory.create({
           quantity: item.quantity,
           status: "out",
           id_product: product.id,
-          current_stock: stock.stock - item.quantity,
+          current_stock: deductedStock,
+          id_warehouse: transaction.id_warehouse,
         });
       });
 
       await Promise.all(promises);
 
-      // Create a notification for the user
       await createNotification(
         `Invoice ${transaction.invoice_number}`,
         "Your order is being processed",
@@ -113,7 +107,6 @@ module.exports = {
       await transaction.update({ expired: expirationDate });
       await transaction.update({ payment_proof: null });
 
-      // Create a notification for the user
       await createNotification(
         `Invoice ${transaction.invoice_number}`,
         "Your order is rejected, please update proof of payment",
@@ -135,6 +128,9 @@ module.exports = {
           {
             model: TransactionItem,
             include: [Products],
+          },
+          {
+            model: User,
           },
           {
             model: User,
@@ -184,6 +180,7 @@ module.exports = {
         expired_confirmed: expirationDate,
       });
 
+      // Create a notification for the user
       let notification = await createNotification(
         `Invoice ${order.invoice_number}`,
         "Your order has been shipped",
@@ -191,6 +188,7 @@ module.exports = {
         "admin"
       );
       io.emit("notification", notification);
+      sendEmailNotification(order.User, "Your order has been shipped");
 
       const timeoutDuration = order.expired_confirmed - new Date();
       setTimeout(async () => {
