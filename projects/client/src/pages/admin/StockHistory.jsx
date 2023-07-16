@@ -33,21 +33,6 @@ const StockHistory = () => {
   const [selectedMonth, setSelectedMonth] = useState(1);
 
   const dispatch = useDispatch();
-  useEffect(() => {
-    const updatePaddingLeft = () => {
-      if (window.innerWidth < 401) {
-        setPaddingLeft("");
-      } else {
-        setPaddingLeft("pl-72");
-      }
-    };
-    window.addEventListener("DOMContentLoaded", updatePaddingLeft);
-    window.addEventListener("resize", updatePaddingLeft);
-    return () => {
-      window.removeEventListener("DOMContentLoaded", updatePaddingLeft);
-      window.removeEventListener("resize", updatePaddingLeft);
-    };
-  }, []);
 
   const urlHistory = "stock-history/history";
   const getHistoryData = async () => {
@@ -58,7 +43,6 @@ const StockHistory = () => {
       } else {
         selectWarehouse = selectedWarehouse;
       }
-      // console.log(selectedWarehouse);
       console.log(selectedMonth);
       let response = await api.get(urlHistory, {
         params: {
@@ -181,7 +165,7 @@ const StockHistory = () => {
   });
 
   return (
-    <div className={` ${paddingLeft}  py-10 items-center`}>
+    <div className="mr-10 ml-10 py-10 items-center justify-center">
       {itemValue ? (
         <div>
           <div className="sm:flex-auto">
@@ -244,7 +228,7 @@ const StockHistory = () => {
               </Select>
             </Stack>
           </div>
-          <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
+          <div className="mt-6 flex flex-col justify-center xl">
             <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">

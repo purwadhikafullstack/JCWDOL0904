@@ -7,9 +7,10 @@ const OpenCageGeocoder = require("opencage-api-client");
 module.exports = {
   getAllAddresses: async (req, res) => {
     try {
-      const userId = req.params.userId;
-      console.log(userId);
-      const addresses = await address.findAll({ where: { id_user: userId } });
+      // const userId = req.params.userId;
+      const { id } = req.dataToken;
+      console.log(id);
+      const addresses = await address.findAll({ where: { id_user: id } });
       res.status(200).send(addresses);
     } catch (error) {
       console.error(error);
@@ -44,9 +45,8 @@ module.exports = {
         address_city_id,
         subdistrict,
         zip,
-        userId,
       } = req.body;
-      console.log(req.body);
+      const { id } = req.dataToken;
 
       if (
         !recipient_name ||
@@ -79,7 +79,7 @@ module.exports = {
           zip,
           latitude,
           longitude,
-          id_user: userId.id,
+          id_user: id,
         });
 
         res.status(200).send({
@@ -99,6 +99,7 @@ module.exports = {
   deleteAddress: async (req, res) => {
     try {
       const id = req.params.id;
+      // console.log(id);
 
       // Delete the address from the database
       const deletedRows = await address.destroy({ where: { id: id } });
@@ -119,7 +120,8 @@ module.exports = {
     try {
       const { id, id_user } = req.body;
 
-      //   console.log(userId);
+      console.log(id, id_user);
+
       await address.update(
         { is_default: false },
         { where: { id_user: id_user } }
@@ -133,7 +135,7 @@ module.exports = {
       await transaction.commit();
       const addressResult = await address.findByPk(id);
 
-      res.status(200).send(addressResult);
+      res.status(200).send(addressResult, id, id_user);
     } catch (error) {
       console.error(error);
       await transaction.rollback();

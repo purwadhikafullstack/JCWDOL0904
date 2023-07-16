@@ -32,19 +32,27 @@ const AddAdmin = (props) => {
   const [isLoad, setLoad] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const url = "/user/register";
+  const url = "/user/register-admin";
   const handleSubmit = async () => {
-    const id = JSON.parse(localStorage.getItem("auth"));
-    const role = id ? id.role : null;
-    console.log(role);
+    const token = JSON.parse(localStorage.getItem("auth"));
     try {
-      let response = await api.post(url, {
-        email,
-        fullname,
-        username,
-        password,
-        role: role,
-      });
+      let response = await api.post(
+        url,
+        {
+          email,
+          fullname,
+          username,
+          password,
+        },
+        {
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
       onClose();
       setLoad(false);
       Swal.fire({
@@ -58,6 +66,7 @@ const AddAdmin = (props) => {
       setUsername("");
       setPassword("");
     } catch (error) {
+      // console.log(error);
       onClose();
       setLoad(false);
       Swal.fire({

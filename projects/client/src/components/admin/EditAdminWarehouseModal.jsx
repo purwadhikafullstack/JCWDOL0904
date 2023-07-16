@@ -11,18 +11,11 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Input,
-  InputGroup,
-  InputRightElement,
 } from "@chakra-ui/react";
-import { SettingsIcon, DeleteIcon, AddIcon, EditIcon } from "@chakra-ui/icons";
-import { apiro } from "../../API/apiro";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
 import { HomeIcon } from "@heroicons/react/24/outline";
-import { current } from "@reduxjs/toolkit";
 
 const EditWarehouse = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,15 +41,13 @@ const EditWarehouse = (props) => {
 
   const urlUpdate = "/warehouses/update/admin";
   const handleSubmit = async () => {
-    const id = JSON.parse(localStorage.getItem("auth"));
-    const role = id ? id.role : null;
     try {
       let response = await api.post(urlUpdate, {
         currentWarehouse: currentWarehouse.id,
         id_warehouse: selectedWarehouse.id,
         id: props.uId,
-        role: role,
       });
+      console.log(response);
       Swal.fire({
         title: "Success",
         text: response.data.message,
@@ -83,7 +74,11 @@ const EditWarehouse = (props) => {
 
   return (
     <div className="flex align-middle">
-      <Button onClick={onOpen} variant="link" color="black">
+      <Button
+        onClick={props.role === "user" ? null : () => onOpen()}
+        variant="link"
+        color="black"
+      >
         <HomeIcon width="20px" />
       </Button>
 
@@ -145,7 +140,6 @@ const EditWarehouse = (props) => {
             ) : (
               <Button
                 variant="ghost"
-                // leftIcon={<EditIcon />}
                 backgroundColor="black"
                 color="white"
                 _hover={{ backgroundColor: "#3c3c3c" }}

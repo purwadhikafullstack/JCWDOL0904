@@ -45,17 +45,26 @@ export const AddAddressModal = ({ closeAddressModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const id = JSON.parse(localStorage.getItem("auth"));
-      let response = await api.post("addresses", {
-        recipient_name: recipientName,
-        phone_number: parseInt(phoneNumber),
-        province: provincess.province,
-        city: city.city,
-        address_city_id: parseInt(city.id),
-        subdistrict,
-        zip: parseInt(zip),
-        userId: id,
-      });
+      const token = JSON.parse(localStorage.getItem("auth"));
+      let response = await api.post(
+        "/addresses/create-address",
+        {
+          recipient_name: recipientName,
+          phone_number: parseInt(phoneNumber),
+          province: provincess.province,
+          city: city.city,
+          address_city_id: parseInt(city.id),
+          subdistrict,
+          zip: parseInt(zip),
+        },
+        {
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(response);
       Swal.fire({
         title: "Success",

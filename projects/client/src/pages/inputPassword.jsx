@@ -4,6 +4,13 @@ import { api } from "../API/api";
 import Swal from "sweetalert2";
 import { Field, ErrorMessage, Formik, Form } from "formik";
 import * as Yup from "yup";
+import {
+  Button,
+  FormLabel,
+  InputGroup,
+  Input,
+  InputRightElement,
+} from "@chakra-ui/react";
 
 const url = "/auth/resetpassword";
 const urlToken = "/auth/tokencheck";
@@ -13,6 +20,7 @@ export const InputPassword = () => {
   let { token } = useParams();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const tokenVerify = async () => {
     try {
@@ -71,8 +79,13 @@ export const InputPassword = () => {
     tokenVerify();
   });
   const togglePasswordVisibility = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
+    setShowPassword(!showPassword);
   };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <section class="bg-gray-50 dark:bg-gray-900">
       <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -92,129 +105,63 @@ export const InputPassword = () => {
               {(props) => (
                 <Form>
                   <div>
-                    <label
-                      for="email"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Please input your new password
-                    </label>
-                    <div class="relative">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        id="password"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Password"
-                        required=""
-                        onChange={props.handleChange}
-                        value={props.values.password}
-                        as={Field}
-                      />
-                      <button
-                        type="button"
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2"
-                        onClick={togglePasswordVisibility}
-                      >
-                        {showPassword ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 text-gray-500"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
+                    <div className="relative">
+                      <FormLabel>Password</FormLabel>
+                      <InputGroup>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          name="password"
+                          id="password"
+                          placeholder="Password"
+                          required=""
+                          onChange={props.handleChange}
+                          value={props.values.password}
+                          as={Field}
+                        />
+                        <InputRightElement width="4.5rem">
+                          <Button
+                            h="1.75rem"
+                            size="sm"
+                            onClick={togglePasswordVisibility}
                           >
-                            <path
-                              fill-rule="evenodd"
-                              d="M9.999 3C5.141 3 1.274 6.499 1.05 6.736a1 1 0 0 0 0 1.414C1.274 8.501 5.14 12 9.999 12c4.858 0 8.725-3.499 8.95-3.736a1 1 0 0 0 0-1.414C18.724 6.498 14.858 3 9.999 3zm0 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0-6a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 text-gray-500"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M10 12a2 2 0 100-4 2 2 0 000 4z"
-                              clip-rule="evenodd"
-                            />
-                            <path
-                              fill-rule="evenodd"
-                              d="M10 3C4.477 3 0 6.462 0 10s4.477 7 10 7 10-3.462 10-7-4.477-7-10-7zm0 12a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </button>
+                            {showPassword ? "Hide" : "Show"}
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
                     </div>
                     <ErrorMessage name="password" component="div" />
                   </div>
                   <div>
-                    <label
-                      for="email"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Confirm Password
-                    </label>
-                    <div class="relative">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        name="confirmPassword"
-                        id="confirmPassword"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Confirm Password"
-                        required=""
-                        onChange={props.handleChange}
-                        value={props.values.confirmPassword}
-                        as={Field}
-                      />
-                      <button
-                        type="button"
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2"
-                        onClick={togglePasswordVisibility}
-                      >
-                        {showPassword ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 text-gray-500"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
+                    <div className="relative">
+                      <FormLabel className="p-1">Confirm Password</FormLabel>
+                      <InputGroup>
+                        <Input
+                          type={showConfirmPassword ? "text" : "password"}
+                          name="confirmPassword"
+                          id="confirmPassword"
+                          placeholder="Confirm Password"
+                          required=""
+                          onChange={props.handleChange}
+                          value={props.values.confirmPassword}
+                          as={Field}
+                        />
+                        <InputRightElement width="4.5rem">
+                          <Button
+                            h="1.75rem"
+                            size="sm"
+                            onClick={toggleConfirmPasswordVisibility}
                           >
-                            <path
-                              fill-rule="evenodd"
-                              d="M9.999 3C5.141 3 1.274 6.499 1.05 6.736a1 1 0 0 0 0 1.414C1.274 8.501 5.14 12 9.999 12c4.858 0 8.725-3.499 8.95-3.736a1 1 0 0 0 0-1.414C18.724 6.498 14.858 3 9.999 3zm0 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0-6a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 text-gray-500"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M10 12a2 2 0 100-4 2 2 0 000 4z"
-                              clip-rule="evenodd"
-                            />
-                            <path
-                              fill-rule="evenodd"
-                              d="M10 3C4.477 3 0 6.462 0 10s4.477 7 10 7 10-3.462 10-7-4.477-7-10-7zm0 12a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
-                        )}
-                      </button>
+                            {showConfirmPassword ? "Hide" : "Show"}
+                          </Button>
+                        </InputRightElement>
+                      </InputGroup>
                     </div>
                     <ErrorMessage name="confirmPassword" component="div" />
                   </div>
                   <div class="flex items-start"></div>
                   <button
                     type="submit"
-                    class="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    class="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 mt-5 "
                   >
                     OK
                   </button>

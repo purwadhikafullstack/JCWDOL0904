@@ -51,7 +51,6 @@ const ManageWarehouse = () => {
   const getUserData = async () => {
     try {
       await api.get(url).then((result) => {
-        // console.log(result);
         dispatch(allUserData(result.data));
       });
     } catch (err) {
@@ -60,19 +59,28 @@ const ManageWarehouse = () => {
   };
 
   const deleteUser = async (id) => {
-    console.log(id);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "black",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes!",
+      dangerMode: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
+        const token = JSON.parse(localStorage.getItem("auth"));
+        console.log(id);
         try {
-          const response = await api.delete(`/user/data/delete/${id}`);
+          const response = await api.delete("/user/data/delete", {
+            headers: {
+              Authorization: token,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            data: { id }, // Corrected placement of the `params` object
+          });
           console.log(response);
           getUserData();
           Swal.fire({
@@ -101,7 +109,7 @@ const ManageWarehouse = () => {
   let count = 0;
   const allUser = value.map((el) => {
     if (!el.is_deleted) {
-      console.log(el);
+      // console.log(el.role);
       count++;
       return (
         <tr key={el.id}>
@@ -132,6 +140,7 @@ const ManageWarehouse = () => {
               />
               <EditWarehouse
                 uId={el.id}
+                role={el.role}
                 warehouse={el.Warehouse}
                 runFunction={getUserData}
               />

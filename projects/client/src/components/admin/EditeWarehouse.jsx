@@ -11,12 +11,10 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Input,
   IconButton,
 } from "@chakra-ui/react";
-import { SettingsIcon, DeleteIcon, AddIcon, EditIcon } from "@chakra-ui/icons";
+import { SettingsIcon } from "@chakra-ui/icons";
 import { apiro } from "../../API/apiro";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
@@ -32,7 +30,6 @@ const EditeWarehouse = (props) => {
   const [subdistrict, setSubsdistrict] = useState("");
   const [zip, setZip] = useState("");
   const [isLoad, setLoad] = useState(false);
-  const [idProvince, setIdProvince] = useState(0);
 
   const { role } = useSelector((state) => state.userSlice);
 
@@ -40,13 +37,6 @@ const EditeWarehouse = (props) => {
     try {
       const response = await apiro.get("/rajaongkir/province");
       console.log(response.data.data);
-      // const result = response.data.data.find(
-      //   (el) => el.province === "DI Yogyakarta"
-      // );
-      // console.log(result);
-      // jawa barat =9
-      // jawa timur = 11
-      // ID Yogyakarta =
       setProvinces(response.data.data);
       runGetCity(response.data.data);
     } catch (error) {
@@ -61,7 +51,6 @@ const EditeWarehouse = (props) => {
       provId = id;
     }
     try {
-      // console.log(provincess.id);
       const response = await apiro.get(`rajaongkir/city?province_id=${provId}`);
       console.log(response.data.data.results);
       setCities(response.data.data.results);
@@ -71,7 +60,6 @@ const EditeWarehouse = (props) => {
   };
 
   const handleSubmit = async () => {
-    // console.log(props.wId);
     console.log({
       warehouse,
       province: provincess.province,
@@ -133,7 +121,6 @@ const EditeWarehouse = (props) => {
     getAllProvince();
   }, []);
   useEffect(() => {
-    // console.log(result);
     if (provincess.id) {
       fetchAddressesCity();
     }
@@ -144,9 +131,6 @@ const EditeWarehouse = (props) => {
   }, [provincess, city]);
 
   useEffect(() => {
-    // const result = provinces?.find((el) => props.province === el.province);
-    // // console.log(result.province_id);
-    // {result ? ) :null}
     setProvincess({ province: props.province });
     setCity({ city: props.city, id: props.warehouse_city_id });
     setWarehouse(props.warehouse);
@@ -156,17 +140,6 @@ const EditeWarehouse = (props) => {
 
   return (
     <div className="flex align-middle">
-      {/* <Button leftIcon={<AddIcon />} onClick={onOpen}>
-        Add Warehouse
-      </Button> */}
-      {/* <Button
-        onClick={onOpen}
-        
-        disabled={role === "admin" ? false : true}
-      >
-        <SettingsIcon />
-      </Button> */}
-
       <IconButton
         onClick={role === "admin" ? onOpen : null}
         variant="link"
@@ -269,7 +242,6 @@ const EditeWarehouse = (props) => {
             ) : (
               <Button
                 variant="ghost"
-                // leftIcon={<EditIcon />}
                 backgroundColor="black"
                 color="white"
                 _hover={{ backgroundColor: "#3c3c3c" }}

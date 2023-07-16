@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -11,14 +11,11 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Input,
   InputGroup,
   InputRightElement,
 } from "@chakra-ui/react";
-import { SettingsIcon, DeleteIcon, AddIcon, EditIcon } from "@chakra-ui/icons";
-import { apiro } from "../../API/apiro";
+import { SettingsIcon } from "@chakra-ui/icons";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
 
@@ -118,7 +115,6 @@ const EditUser = (props) => {
             ) : (
               <Button
                 variant="ghost"
-                // leftIcon={<EditIcon />}
                 backgroundColor="black"
                 color="white"
                 _hover={{ backgroundColor: "#3c3c3c" }}

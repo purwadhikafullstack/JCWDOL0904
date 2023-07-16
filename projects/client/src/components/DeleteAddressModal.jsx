@@ -13,8 +13,14 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
 
   const fetchAddresses = async () => {
     try {
-      const getAddress = JSON.parse(localStorage.getItem("auth"));
-      const response = await api.get(`addresses/${getAddress.id}`);
+      const token = JSON.parse(localStorage.getItem("auth"));
+      const response = await api.get("addresses/all-address", {
+        headers: {
+          Authorization: token,
+          Accept: "appplication/json",
+          "Content-Type": "application/json",
+        },
+      });
       // console.log(response);
       // await api.patch(`addresses/${getAddress.id}`);
       setAddressList(response.data);
@@ -39,7 +45,7 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.delete(`addresses/${id}`);
+          await api.delete(`addresses/delete-address/${id}`);
           fetchAddresses();
         } catch (error) {
           console.error(error);
@@ -51,10 +57,13 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
   const handleSelect = async (address) => {
     console.log(address);
     try {
-      const response = await api.patch(`addresses/${address}`, {
-        id: address.id,
-        id_user: address.id_user,
-      });
+      const response = await api.patch(
+        `addresses/change-address/${address.id}`,
+        {
+          id: address.id,
+          id_user: address.id_user,
+        }
+      );
       console.log(response);
       onSelectAddress(response.data);
     } catch (error) {
@@ -104,7 +113,7 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
 
         <div className="flex justify-center p-4">
           <button
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-gray-950 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
             onClick={handleClose}
           >
             Close

@@ -93,6 +93,7 @@ module.exports = {
           "is_verified",
           "user_image",
           "role",
+          "password",
         ],
         where: { email },
       });
@@ -196,16 +197,14 @@ module.exports = {
   updatePassword: async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
-      const { id, password, newPassword, confirmPassword } = req.body;
+      const { password, newPassword, confirmPassword } = req.body;
+      const { id } = req.dataToken;
 
       const userExist = await User.findOne({
         where: { id },
       });
 
-      const isValid = await bcrypt.compare(
-        password,
-        userExist.dataValues.password
-      );
+      const isValid = await bcrypt.compare(password, userExist.password);
 
       if (!isValid) {
         return res.status(400).send({
@@ -240,12 +239,13 @@ module.exports = {
 
       const userPassword = await User.update(
         { password: hashPass },
-        { where: { id: userExist.dataValues.id } }
+        { where: { id: userExist.id } }
       );
       await transaction.commit();
       res.send({
         message: "Change Password Success",
         data: userPassword,
+        userExist,
       });
     } catch (err) {
       await transaction.rollback();
