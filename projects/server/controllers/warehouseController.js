@@ -225,14 +225,19 @@ module.exports = {
 
   changeWarehouse: async (req, res) => {
     try {
-      const { currentWarehouse, id_warehouse, id, role } = req.body;
-      console.log(req.body);
+      const { currentWarehouse, id_warehouse } = req.body;
+      // console.log(id);
+      const dataRole = req.dataToken;
+      console.log(dataRole);
 
       const findUser = await User.findOne({
-        where: { id },
+        where: { id: dataRole.id },
       });
+      // console.log(findUser);
 
-      if (role === "adminWarehouse" || role === "user") {
+      // console.log(id);
+
+      if (findUser.role === "adminWarehouse" || findUser.role === "user") {
         return res.status(400).send({
           message: "You don't have permission!",
         });
@@ -243,6 +248,7 @@ module.exports = {
           message: "You select the same warehouse, please select another",
         });
       }
+
       const result = await User.update(
         { id_warehouse },
         {
@@ -253,6 +259,8 @@ module.exports = {
       );
       res.status(200).send({
         message: "Update admin warehouse success",
+        data: result,
+        findUser,
       });
     } catch (error) {
       console.log(error);

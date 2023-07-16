@@ -40,21 +40,6 @@ const SalesReport = () => {
   // console.log(user);
 
   const dispatch = useDispatch();
-  useEffect(() => {
-    const updatePaddingLeft = () => {
-      if (window.innerWidth < 401) {
-        setPaddingLeft("");
-      } else {
-        setPaddingLeft("pl-72");
-      }
-    };
-    window.addEventListener("DOMContentLoaded", updatePaddingLeft);
-    window.addEventListener("resize", updatePaddingLeft);
-    return () => {
-      window.removeEventListener("DOMContentLoaded", updatePaddingLeft);
-      window.removeEventListener("resize", updatePaddingLeft);
-    };
-  }, []);
 
   const urlProduct = "/transaction/product";
   const getAllReport = async () => {
@@ -67,12 +52,14 @@ const SalesReport = () => {
           adminWarehouse: userData.id_warehouse,
           selectedCategory,
           page,
+          adminWarehouse: userData.id_warehouse,
+          selectedCategory,
+          page,
           month: selectedMonth,
           order,
           sort,
         },
       });
-      console.log(response);
       dispatch(transactionItemData(response.data.result));
       setTotalPage(response.data.totalPage);
       setPage(response.data.page);
@@ -86,7 +73,6 @@ const SalesReport = () => {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
-      // console.log(response.data.result);
       setWarehouses(response.data.result);
     } catch (error) {
       console.error(error);
@@ -96,7 +82,6 @@ const SalesReport = () => {
   const fetchCategory = async () => {
     try {
       const response = await api.get("/category");
-      // console.log(response.data.result);
       setCategory(response.data.result);
     } catch (error) {
       console.error(error);
@@ -138,7 +123,6 @@ const SalesReport = () => {
 
   const handleCategoryChange = (event) => {
     const selectedCategoryValue = event.target.value;
-    console.log(selectedCategoryValue);
     setSelectedCategory(selectedCategoryValue);
   };
 
@@ -161,8 +145,6 @@ const SalesReport = () => {
   const ProductMap = itemValue?.map((pEl) => {
     const date = pEl.Transaction.transaction_date;
     const formattedDate = moment(date).format("DD MMMM YYYY");
-    // console.log(pEl);
-    // console.log(pEl.Product.Stocks);
     return (
       <tr key={pEl.id}>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
@@ -185,7 +167,7 @@ const SalesReport = () => {
   });
 
   return (
-    <div className={`mr-5 ml-5 py-10 items-center`}>
+    <div className="mr-10 ml-10 py-10 items-center justify-center">
       {itemValue ? (
         <div>
           <div className="sm:flex-auto">
@@ -259,7 +241,7 @@ const SalesReport = () => {
               </Select>
             </Stack>
           </div>
-          <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
+          <div className="mt-6 flex flex-col justify-end xl">
             <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
@@ -307,7 +289,7 @@ const SalesReport = () => {
               </div>
             </div>
           </div>
-          <div className="mt-6 flex flex-col justify-end max-w-5xl xl">
+          <div className="mt-6 flex flex-col justify-end xl">
             <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
@@ -315,15 +297,15 @@ const SalesReport = () => {
                     <tfoot>
                       <tr>
                         <td
-                          colSpan="2"
+                          colSpan="6"
                           className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-semibold text-left text-gray-900"
                         >
                           ALLTransaction:
                         </td>
                         <td></td>
                         <td
-                          colSpan="2"
-                          className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold"
+                          className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-bold text-gray-900"
+                          colSpan="5"
                         >
                           {`Rp ${parseInt(totalPrice).toLocaleString()}`}
                         </td>
@@ -339,8 +321,8 @@ const SalesReport = () => {
                         </td>
                         <td></td>
                         <td
-                          colSpan="2"
-                          className="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold"
+                          className="whitespace-nowrap px-2 py-2 pr-4 text-sm font-bold text-right text-gray-900"
+                          colSpan="4"
                         >
                           {`Rp ${parseInt(
                             transactionByMonth

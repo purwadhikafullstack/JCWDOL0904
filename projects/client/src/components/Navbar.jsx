@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {useDispatch} from "react-redux";
-import {updateCart} from "../features/cartSlice";
-import {useNavigate} from "react-router-dom";
-import {login} from "../features/userSlice";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { updateCart } from "../features/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { login } from "../features/userSlice";
 import io from "socket.io-client";
 import NavbarRender from "./NavbarRender";
 
@@ -12,7 +12,7 @@ function classNames(...classes) {
 }
 
 export const Navbar = () => {
-  const {user_image, id, username, email} = useSelector(
+  const { user_image, id, username, email } = useSelector(
     (state) => state.userSlice
   );
 
@@ -59,10 +59,10 @@ export const Navbar = () => {
     );
   };
 
-  const {cart} = useSelector((state) => state.cartSlice.value);
+  const { cart } = useSelector((state) => state.cartSlice.value);
 
   const updateCartData = (cart) => {
-    dispatch(updateCart({cart}));
+    dispatch(updateCart({ cart }));
   };
 
   useEffect(() => {
