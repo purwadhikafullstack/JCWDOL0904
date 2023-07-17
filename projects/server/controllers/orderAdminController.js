@@ -12,6 +12,7 @@ const db = require("../models");
 const moment = require("moment");
 const { io } = require("../src/index");
 const { createNotification } = require("./notificationController");
+const { Op } = require("sequelize");
 
 module.exports = {
   confirmOrder: async (req, res) => {

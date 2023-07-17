@@ -70,12 +70,6 @@ export const Navbar = () => {
   };
 
   const {cart} = useSelector((state) => state.cartSlice.value);
-  const notificationUnread = useSelector(
-    (state) => state.notificationSlice.value.unread
-  );
-  useEffect(() => {
-    setUnreads(notificationUnread);
-  }, [notificationUnread]);
 
   const updateCartData = (cart) => {
     dispatch(updateCart({cart}));

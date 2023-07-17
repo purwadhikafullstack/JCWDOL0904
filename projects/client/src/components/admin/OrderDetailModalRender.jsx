@@ -9,13 +9,13 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
           isClosing ? "closing" : ""
         }`}>
         {transactions.map((transaction) => (
-          <div key={transaction.id} className="space-y-4">
+          <div key={transaction?.id} className="space-y-4">
             <div>
               <p className="mt-2 text-2xl font-bold tracking-tight">
                 Order detail
               </p>
               <p className="mt-1 text-sm text-gray-600">
-                {moment(transaction.createdAt).format(
+                {moment(transaction?.createdAt).format(
                   "MMMM Do YYYY, h:mm:ss a"
                 )}
               </p>
@@ -30,12 +30,12 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
                   className="flex flex-col border-b border-gray-200 py-5">
                   <div>
                     <h4 className="font-medium text-gray-900">
-                      <a href={transactionItem.Product.product_name}>
-                        {transactionItem.Product.product_name}
+                      <a href={transactionItem.Product?.product_name}>
+                        {transactionItem.Product?.product_name}
                       </a>
                     </h4>
                     <p className="mt-2 text-sm text-gray-600">
-                      {transactionItem.Product.description}
+                      {transactionItem.Product?.description}
                     </p>
                   </div>
                   <div className="mt-6 flex flex-1 items-end">
@@ -49,7 +49,7 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
                       <div className="flex pl-4 sm:pl-6">
                         <dt className="font-medium text-gray-900">Price</dt>
                         <dd className="ml-2 text-gray-700">
-                          Rp. {transactionItem.price.toLocaleString("id-ID")}
+                          Rp. {transactionItem.price?.toLocaleString("id-ID")}
                         </dd>
                       </div>
                     </dl>
@@ -66,14 +66,14 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
                     <dd className="mt-2 text-gray-700">
                       <address className="not-italic">
                         <span className="block">
-                          {transaction.Address.recipient_name}
+                          {transaction.Address?.recipient_name}
                         </span>
                         <div>
-                          <span>{transaction.Address.city}, </span>
+                          <span>{transaction.Address?.city}, </span>
                           <span>{transaction.Address.province}</span>
                         </div>
-                        <span>{transaction.Address.subdistrict}, </span>
-                        <span>{transaction.Address.zip}</span>
+                        <span>{transaction.Address?.subdistrict}, </span>
+                        <span>{transaction.Address?.zip}</span>
                       </address>
                     </dd>
                   </div>
@@ -90,7 +90,7 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
                       </p>
                       <p className="text-gray-600">2–5 business days</p>
                       <dd className="text-gray-600">
-                        Rp. {transaction.ongkir.toLocaleString("id-ID")}
+                        Rp. {transaction.ongkir?.toLocaleString("id-ID")}
                       </dd>
                     </dd>
                   </div>
@@ -99,7 +99,7 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
                   <div className="flex justify-between">
                     <dt className="font-medium text-gray-900">Total</dt>
                     <dd className="text-gray-900">
-                      Rp. {transaction.total_price.toLocaleString("id-ID")}
+                      Rp. {transaction?.total_price?.toLocaleString("id-ID")}
                     </dd>
                   </div>
                 </dl>

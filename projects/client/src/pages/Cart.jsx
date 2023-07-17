@@ -10,8 +10,7 @@ import Alert from "../components/SwallAlert";
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [loading, setLoading] = useState(false);
-
+  console.log(cartItems);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -28,7 +27,7 @@ const Cart = () => {
       setCartItems(response.data.cartItems);
       let sum = 0;
       response.data.cartItems.forEach(
-        (e) => (sum += e.quantity * e.Product.price)
+        (e) => (sum += e.quantity * e.Product?.price)
       );
       setTotalPrice(sum);
       dispatch(
@@ -50,13 +49,14 @@ const Cart = () => {
       console.error(error);
     }
   };
+
   useEffect(() => {
     fetchCartItems();
+    removeDeletedCarts();
   }, []);
 
   const updateCartProduct = async (cartItemId, action, quantity) => {
     try {
-      setLoading(true);
       const response = await api.patch(`/cart`, {
         cartItemId,
         action,
@@ -80,8 +80,20 @@ const Cart = () => {
         icon: "error",
       });
       console.error(error);
-    } finally {
-      setLoading(false);
+    }
+  };
+  const removeDeletedCarts = async () => {
+    try {
+      const deletedCarts = cartItems.filter((item) => item.Product === null);
+      if (deletedCarts.length > 0) {
+        const cartItemIds = deletedCarts.map((item) => item.id);
+        console.log(cartItemIds);
+        await api.put(`/cart/item`, {cartItemIds});
+        localStorage.removeItem("cartItems");
+        fetchCartItems();
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
   const deleteCartItem = async (cartItemId) => {
@@ -104,6 +116,10 @@ const Cart = () => {
         }
       }
     });
+  };
+  const handleContinueToCheckout = () => {
+    removeDeletedCarts();
+    navigate("/checkout");
   };
   return (
     <div className="bg-white min-h-[700px] pt-10">
@@ -152,14 +168,14 @@ const Cart = () => {
                   Order total
                 </dt>
                 <dd className="text-base font-medium text-gray-900">
-                  Rp. {totalPrice.toLocaleString("id-ID")}
+                  Rp. {totalPrice ? totalPrice.toLocaleString("id-ID") : 0}
                 </dd>
               </div>
             </dl>
 
             <div className="mt-6">
               <button
-                onClick={() => navigate("/checkout")}
+                onClick={handleContinueToCheckout}
                 type="submit"
                 className="w-full transition duration-300 ease-in-out  rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Continue to Checkout

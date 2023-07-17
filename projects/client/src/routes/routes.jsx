@@ -5,7 +5,6 @@ import {Verification} from "../pages/verification";
 import {Login} from "../pages/Login";
 import {ResetPassword} from "../pages/resetPassword";
 import {InputPassword} from "../pages/inputPassword";
-import {TestImage} from "../pages/TestImage";
 import ProductDetail from "../pages/ProductDetail";
 
 import {Transaction} from "../pages/Transactions";

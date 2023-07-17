@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../models");
 const { Carts, Products, User, Category, Stocks, Warehouse } = db;
 
@@ -140,7 +141,6 @@ module.exports = {
     try {
       const { cartItemId } = req.params;
       const cartItem = await Carts.findByPk(cartItemId);
-      console.log(cartItem);
       if (cartItem) {
         await Carts.destroy({ where: { id: cartItemId } });
         return res.status(200).send({ message: "Cart item deleted successfully" });
@@ -152,4 +152,29 @@ module.exports = {
       return res.status(500).send({ error: "Unable to delete cart item" });
     }
   },
+  removeCartItem: async (req, res) => {
+    try {
+      const { cartItemIds } = req.body;
+      console.log(`ini cart itemIds`, cartItemIds);
+      const cartItems = await Carts.findAll({
+        where: {
+          id: cartItemIds
+        }
+      });
+
+      if (cartItems.length > 0) {
+        await Carts.destroy({
+          where: {
+            id: cartItemIds
+          }
+        });
+        return res.status(200).send({ message: "Cart items deleted successfully" });
+      }
+
+      return res.status(400).send({ message: "Cart items not found" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ error: "Unable to remove cart items" });
+    }
+  }
 };
