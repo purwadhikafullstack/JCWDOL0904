@@ -379,6 +379,11 @@ module.exports = {
         throw new Error("Please input all data!");
       }
 
+      const cekProduct = await product.findOne({
+        where: { product_name },
+      });
+      if (cekProduct) throw new Error("Name already exist!");
+
       const formatData = product_image.split(".").reverse();
 
       if (formatData[0] !== "png") {
