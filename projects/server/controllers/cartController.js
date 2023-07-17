@@ -155,7 +155,6 @@ module.exports = {
   removeCartItem: async (req, res) => {
     try {
       const { cartItemIds } = req.body;
-      console.log(`ini cart itemIds`, cartItemIds);
       const cartItems = await Carts.findAll({
         where: {
           id: cartItemIds
