@@ -32,9 +32,7 @@ module.exports = {
 
       if (site === "home") limit = 9;
 
-      // console.log(site);
       const SORT = [[order, sort]];
-      // console.log(SORT);
 
       if (search) page = 0;
 
@@ -82,6 +80,7 @@ module.exports = {
         },
         include: [stocks],
       });
+      if (!productById) throw new Error("someone deleted the product!");
 
       const stock = productById.Stocks.reduce((acc, curr) => {
         return acc + curr.stock;
@@ -93,7 +92,9 @@ module.exports = {
         stock,
       });
     } catch (error) {
-      res.status(400).send(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   manualMutation: async (req, res) => {
@@ -224,7 +225,6 @@ module.exports = {
         productData,
       });
     } catch (error) {
-      console.log(error.code);
       res.status(400).send({
         message: error.message,
       });
@@ -305,6 +305,23 @@ module.exports = {
     try {
       const { id } = req.params;
 
+      const cekStock = await stocks.findAll({
+        where: {
+          id_product: id,
+        },
+      });
+      cekStock.forEach((el) => {
+        if (el.stock !== 0) {
+          throw new Error("This product still has a stock!");
+        }
+      });
+
+      console.log(cekStock);
+      const stockDelete = await stocks.destroy({
+        where: {
+          id_product: id,
+        },
+      });
       const result = await product.destroy({
         where: {
           id,
@@ -314,7 +331,9 @@ module.exports = {
         message: "success, deleted!",
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   createNewProduct: async (req, res) => {
@@ -382,11 +401,6 @@ module.exports = {
 
       const allWarehouse = await warehouse.findAll();
 
-      // allWarehouse.forEach((el) => {
-      //   const idUser = el.Stocks.find((users) => el.id === users.id_warehouse);
-      //   dataForStock.push({ id_warehouse: el.id, id_user: idUser.id_user });
-      // });
-
       await Promise.all(
         allWarehouse.forEach(async (el) => {
           const dataStock = await stocks.findOne({
@@ -406,13 +420,14 @@ module.exports = {
         })
       );
 
-      // const stockW1 = await stocks.create({})
-
       res.status(200).send({
         allWarehouse,
       });
     } catch (error) {
       console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
 };

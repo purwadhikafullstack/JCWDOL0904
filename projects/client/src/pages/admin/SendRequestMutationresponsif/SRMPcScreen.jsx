@@ -78,7 +78,15 @@ const SRMPcScreen = () => {
       const result = await api.post("/product/detail", { idP });
       setStocks(result.data.productById.Stocks);
       setProduct(result.data.productById);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: error.response.data.message,
+        icon: "error",
+      });
+      navigation("/mutation-list");
+    }
   };
 
   useEffect(() => {

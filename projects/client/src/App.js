@@ -38,7 +38,10 @@ function App() {
           "Content-Type": "application/json",
         },
       })
-      .then((res) => dispatch(login(res.data.user)));
+      .then((res) => dispatch(login(res.data.user)))
+      .catch((err) => {
+        localStorage.removeItem("auth");
+      });
   }
 
   async function getWarehouse() {

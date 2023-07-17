@@ -8,7 +8,6 @@ import {
   InputRightElement,
   Select,
   Stack,
-  useMediaQuery,
 } from "@chakra-ui/react";
 import EditeStock from "../../components/admin/EditeStock";
 import { dataStock } from "../../features/stockSlice";

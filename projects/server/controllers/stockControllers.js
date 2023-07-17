@@ -2,6 +2,7 @@ const db = require("../models");
 const stoc = db.Stocks;
 const product = db.Products;
 const stockHistory = db.StockHistory;
+const ware = db.Warehouse;
 const { Op } = require("sequelize");
 
 module.exports = {
@@ -96,6 +97,13 @@ module.exports = {
       const currentStock = await stoc.findOne({
         where: { id },
       });
+      const cekWarehouse = await ware.findOne({
+        where: {
+          id: currentStock.id_warehouse,
+        },
+      });
+
+      if (!cekWarehouse) throw new Error("Someone has deleted the warehouse!");
       const stockIncrease = await stoc.update(
         {
           stock: newStock + currentStock.stock,
@@ -113,6 +121,9 @@ module.exports = {
       res.status(200).send({ currentStock, historyStock });
     } catch (error) {
       console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   decreaseStock: async (req, res) => {
@@ -121,6 +132,16 @@ module.exports = {
       const currentStock = await stoc.findOne({
         where: { id },
       });
+
+      const cekWarehouse = await ware.findOne({
+        where: {
+          id: currentStock.id_warehouse,
+        },
+      });
+
+      if (!cekWarehouse) throw new Error("Someone has deleted the warehouse!");
+      if (currentStock.stock < newStock)
+        throw new Error("You subtracking too many stock!");
 
       const stockDecrease = await stoc.update(
         {
@@ -140,6 +161,9 @@ module.exports = {
       res.status(200).send({ stockDecrease, historyStock });
     } catch (error) {
       console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   initialDataStock: async (req, res) => {
@@ -147,13 +171,15 @@ module.exports = {
       const { id } = req.body;
       const allProduct = await product.findAll();
 
-      allProduct.forEach(async (el) => {
-        await stoc.create({
-          stock: 0,
-          id_product: el.id,
-          id_warehouse: id,
-        });
-      });
+      await Promise.all(
+        allProduct.forEach(async (el) => {
+          await stoc.create({
+            stock: 0,
+            id_product: el.id,
+            id_warehouse: id,
+          });
+        })
+      );
 
       res.status(200).send({ allProduct });
     } catch (error) {

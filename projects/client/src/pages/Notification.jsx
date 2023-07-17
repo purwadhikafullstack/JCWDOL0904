@@ -16,7 +16,7 @@ export default function Notification() {
   const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
   const [totalPages, setTotalPages] = useState(0);
   const [invoiceNumber, setInvoiceNumber] = useState("");
-  const userData = useSelector((state) => state.userSlice);
+  // const userData = useSelector((state) => state.userSlice);
 
   const dispatch = useDispatch();
 

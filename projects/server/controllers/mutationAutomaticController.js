@@ -109,6 +109,7 @@ module.exports = {
             id: {
               [db.Sequelize.Op.notIn]: warehouseIgnore,
             },
+            status: "active",
           };
           let stockInWarehouseSeller = [el.qty_origin];
           const startSearch = async () => {

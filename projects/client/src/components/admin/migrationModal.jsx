@@ -38,11 +38,15 @@ const MigrationModal = (props) => {
           });
           console.log(response);
           props.runFunction();
-          Swal.fire(`${warehouseId}`);
+          Swal.fire("Confirmed!", "Mutation has been confirmed.", "success");
         } catch (error) {
           console.log(error);
+          Swal.fire({
+            title: "Error!",
+            text: error.response.data.message,
+            icon: "error",
+          });
         }
-        // console.log(warehouseId, warehouseIdReceive);
       }
     });
   };

@@ -13,33 +13,39 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-import ProductsHome from "../ProductsHome";
+import ProductsAdmin from "../ProductsAdmin";
 
-const TabPanelHomeProduct = (props) => {
+const TabManageMutation = (props) => {
   return (
     <>
-      <Tabs colorScheme="black" isLazy>
+      <Tabs colorScheme="black" isLazy variant="enclosed">
         <TabList
-          css={{
-            overflowX: "auto",
-            scrollbarWidth: "thin",
-            scrollbarColor: "#CBD5E0 #EDF2F7",
-          }}
-          justifyContent="center"
           className="tab-list-home"
+          paddingTop="10px"
           overflowX="scroll"
           overflowY="clip"
-          whiteSpace="nowrap"
         >
-          {props.allCategory?.map((el) => {
-            return (
+          {props.ReduxCategory.map((el) => {
+            return el.category !== "no category" ? (
               <Tab
-                _selected={{ color: "white", bg: "black" }}
+                key={el.id}
                 onClick={() => props.fetchProducts(el.id)}
+                fontSize="12px"
               >
                 {el.category}
               </Tab>
-            );
+            ) : null;
+          })}
+          {props.ReduxCategory.map((el) => {
+            return el.category === "no category" ? (
+              <Tab
+                key={el.id}
+                onClick={() => props.fetchProducts(el.id)}
+                fontSize="12px"
+              >
+                {el.category}
+              </Tab>
+            ) : null;
           })}
         </TabList>
         <div
@@ -51,7 +57,7 @@ const TabPanelHomeProduct = (props) => {
         >
           <Stack
             flexDirection="column"
-            alignItems="end"
+            alignItems="center"
             className="con-category"
           >
             <InputGroup>
@@ -73,8 +79,9 @@ const TabPanelHomeProduct = (props) => {
                 alignItems: "center",
               }}
             >
+              <Text fontSize="12px" width="50px"></Text>
               <Select
-                placeholder=" Name A-Z"
+                placeholder="By name A~Z"
                 width="120px"
                 display="flex"
                 justifyContent="center"
@@ -82,13 +89,13 @@ const TabPanelHomeProduct = (props) => {
                 onChange={(e) => props.handleSorting(e.target.value)}
               >
                 <option value="1" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  Name Z-A
+                  By name Z~A
                 </option>
                 <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  Price low-high
+                  By price low~high
                 </option>
                 <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  Price high-low
+                  By price high~low
                 </option>
               </Select>
             </div>
@@ -99,15 +106,27 @@ const TabPanelHomeProduct = (props) => {
           className="card-con"
           style={{ display: "flex", justifyContent: "center", width: "100%" }}
         >
-          {props.allCategory?.map((el) => {
-            return el.category !== "no category" ? (
+          {props.ReduxCategory?.map((el) => {
+            return el.category !== "no catagory" ? (
               <TabPanel
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
                 maxWidth="100%"
               >
-                <ProductsHome products={props.products} category={el.id} />
+                <ProductsAdmin products={props.products} category={el.id} />
+              </TabPanel>
+            ) : null;
+          })}
+          {props.ReduxCategory?.map((el) => {
+            return el.category === "no catagory" ? (
+              <TabPanel
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                maxWidth="100%"
+              >
+                <ProductsAdmin products={props.products} category={el.id} />
               </TabPanel>
             ) : null;
           })}
@@ -117,4 +136,4 @@ const TabPanelHomeProduct = (props) => {
   );
 };
 
-export default TabPanelHomeProduct;
+export default TabManageMutation;

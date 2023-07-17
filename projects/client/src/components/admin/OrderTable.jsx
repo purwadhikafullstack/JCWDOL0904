@@ -13,6 +13,7 @@ const OrderTable = ({
   handleRejectTransaction,
   fetchTransactions,
   user,
+  handleCantelOrder,
 }) => {
   const handleSendTransaction = async (transactionId) => {
     try {
@@ -79,6 +80,7 @@ const OrderTable = ({
       user={user}
       handleConfirmTransaction={handleConfirmTransaction}
       handleSendTransaction={handleSendTransaction}
+      handleCantelOrder={handleCantelOrder}
     />
   );
 };

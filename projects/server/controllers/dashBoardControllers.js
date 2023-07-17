@@ -14,13 +14,17 @@ module.exports = {
     try {
       const adminData = req.dataToken;
       const dataAdmin = await user.findOne({
-        where: { id: adminData.id },
+        paranoid: false,
+        where: {
+          id: adminData.id,
+          [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+        },
       });
 
       const result = await transaksi.findAndCountAll({
         where: {
           status: {
-            [Op.notIn]: ["Order Confirm", "Cancelled"],
+            [Op.notIn]: ["Order Confirmed", "Canceled"],
           },
           ...(dataAdmin.id_warehouse
             ? { id_warehouse: dataAdmin.id_warehouse }
@@ -82,7 +86,11 @@ module.exports = {
       let warehous = req.body.warehouseprice || null;
       const adminData = req.dataToken;
       const dataAdmin = await user.findOne({
-        where: { id: adminData.id },
+        paranoid: false,
+        where: {
+          id: adminData.id,
+          [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+        },
       });
 
       if (dataAdmin.id_warehouse) warehous = dataAdmin.id_warehouse;
@@ -112,7 +120,12 @@ module.exports = {
       });
 
       const userPrice = [];
-      const userData = await user.findAll();
+      const userData = await user.findAll({
+        paranoid: false,
+        where: {
+          [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+        },
+      });
       userData.forEach((el) => {
         if (countQty[`${el.id}`]) {
           userPrice.push({
