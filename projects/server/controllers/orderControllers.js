@@ -88,7 +88,14 @@ module.exports = {
                     const { Product, quantity } = cartItem;
                     const product = await Products.findByPk(Product.id);
                     if (!product) {
-                        return res.status(404).send({ error: `Product with ID ${Product.id} not found` });
+                        res.status(404).send({
+                            error: `A few items in your cart are currently unavailable. Please update your order.`
+                        });
+                        await Carts.destroy({
+                            where: {
+                                id_user: id,
+                            },
+                        });
                     }
                     const stocks = await Stocks.findAll({
                         where: { id_product: Product.id },

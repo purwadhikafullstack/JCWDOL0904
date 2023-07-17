@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { apiro } from "../API/apiro";
-import { api } from "../API/api";
+import React, {useState, useEffect} from "react";
+import {apiro} from "../API/apiro";
+import {api} from "../API/api";
+import {XMarkIcon} from "@heroicons/react/24/outline";
 import Swal from "sweetalert2";
 import AddAddressModalRender from "./AddAddressModalRender";
 
-export const AddAddressModal = ({ closeAddressModal }) => {
+export const AddAddressModal = ({closeAddressModal}) => {
   const [provinces, setProvinces] = useState([]);
   const [provincess, setProvincess] = useState([]);
   const [cities, setCities] = useState([]);

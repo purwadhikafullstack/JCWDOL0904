@@ -1,9 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { updateCart } from "../features/cartSlice";
-import { useNavigate } from "react-router-dom";
-import { login } from "../features/userSlice";
+import React, {useEffect, useState} from "react";
+import {Fragment} from "react";
+import {Disclosure, Menu, Transition} from "@headlessui/react";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ShoppingCartIcon,
+  EnvelopeIcon,
+} from "@heroicons/react/24/outline";
+import {Link, Navigate} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
+import {updateCart} from "../features/cartSlice";
+import {useNavigate} from "react-router-dom";
+import {login} from "../features/userSlice";
+import {unreadCount} from "../features/notificationSlice";
 import io from "socket.io-client";
 import NavbarRender from "./NavbarRender";
 
@@ -12,7 +22,7 @@ function classNames(...classes) {
 }
 
 export const Navbar = () => {
-  const { user_image, id, username, email } = useSelector(
+  const {user_image, id, username, email} = useSelector(
     (state) => state.userSlice
   );
 
@@ -59,10 +69,13 @@ export const Navbar = () => {
     );
   };
 
-  const { cart } = useSelector((state) => state.cartSlice.value);
+  const {cart} = useSelector((state) => state.cartSlice.value);
 
   const updateCartData = (cart) => {
-    dispatch(updateCart({ cart }));
+    dispatch(updateCart({cart}));
+  };
+  const updateUnreadCount = (unread) => {
+    dispatch(unreadCount({unread}));
   };
 
   useEffect(() => {

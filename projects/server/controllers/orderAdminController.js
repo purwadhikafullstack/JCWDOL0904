@@ -12,6 +12,7 @@ const db = require("../models");
 const moment = require("moment");
 const { io } = require("../src/index");
 const { createNotification } = require("./notificationController");
+const { Op } = require("sequelize");
 
 module.exports = {
   confirmOrder: async (req, res) => {
@@ -25,21 +26,19 @@ module.exports = {
           {
             model: TransactionItem,
             include: {
-              model: Products,
+              model: Products, paranoid: false, where: {
+                [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+              }
             },
           },
         ],
       });
 
-      if (transaction.status === "On Process") {
-        return res
-          .status(400)
-          .send({ message: "Transaction is already in process" });
+      if (transaction.status === 'On Process') {
+        return res.status(400).send({ message: 'Transaction is already in process' });
       }
-      if (transaction.status !== "Waiting For Payment Confirmation") {
-        return res
-          .status(404)
-          .send({ message: "Transaction not eligible for confirmation" });
+      if (transaction.status !== 'Waiting For Payment Confirmation') {
+        return res.status(404).send({ message: 'Transaction not eligible for confirmation' });
       }
 
       const transactionItems = transaction.TransactionItems;
@@ -53,9 +52,7 @@ module.exports = {
         });
 
         if (!stock || stock.stock < item.quantity) {
-          throw new Error(
-            `Insufficient stock for product ${product.product_name}`
-          );
+          throw new Error(`Insufficient stock for product ${product.product_name}`);
         }
 
         const deductedStock = Math.max(stock.stock - item.quantity, 0);
@@ -64,7 +61,7 @@ module.exports = {
 
         await StockHistory.create({
           quantity: item.quantity,
-          status: "out",
+          status: 'out',
           id_product: product.id,
           current_stock: deductedStock,
           id_warehouse: transaction.id_warehouse,
@@ -73,18 +70,13 @@ module.exports = {
 
       await Promise.all(promises);
 
-      await createNotification(
-        `Invoice ${transaction.invoice_number}`,
-        "Your order is being processed",
-        transaction.id_user,
-        "admin"
-      );
-      await transaction.update({ status: "On Process" });
+      await createNotification(`Invoice ${transaction.invoice_number}`, 'Your order is being processed', transaction.id_user, "admin");
+      await transaction.update({ status: 'On Process' });
 
-      res.status(200).send({ message: "Transaction confirmed successfully" });
+      res.status(200).send({ message: 'Transaction confirmed successfully' });
     } catch (error) {
       console.log(error);
-      res.status(500).send({ message: "Failed to confirm transaction" });
+      res.status(500).send({ message: 'Failed to confirm transaction' });
     }
   },
   rejectOrder: async (req, res) => {
@@ -108,7 +100,7 @@ module.exports = {
       await transaction.update({ payment_proof: null });
 
       await createNotification(
-        `Invoice ${transaction.invoice_number}`,
+        `Invoice ${transaction.invoice_number} `,
         "Your order is rejected, please update proof of payment",
         transaction.id_user,
         "admin"
@@ -168,7 +160,7 @@ module.exports = {
 
       // Create a notification for the user
       let notification = await createNotification(
-        `Invoice ${order.invoice_number}`,
+        `Invoice ${order.invoice_number} `,
         "Your order has been shipped",
         order.id_user,
         "admin"
@@ -202,13 +194,13 @@ module.exports = {
           await order.update({ status: "Order Confirmed" });
           io.emit("orderConfirmed", order.toJSON());
           await createNotification(
-            `Invoice ${order.invoice_number}`,
+            `Invoice ${order.invoice_number} `,
             "Order has been received",
             order.id_user,
             "admin"
           );
           await createNotification(
-            `Invoice ${order.invoice_number}`,
+            `Invoice ${order.invoice_number} `,
             "Order has been received",
             order.id_user,
             "user"

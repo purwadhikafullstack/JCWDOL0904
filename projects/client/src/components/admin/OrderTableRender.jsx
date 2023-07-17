@@ -65,7 +65,7 @@ export const OrderTableRender = ({
                   {transaction.payment_proof ? (
                     <button
                       onClick={() => handleViewPaymentProof(transaction.id)}
-                      className="text-indigo-600 hover:text-indigo-900">
+                      className="text-indigo-600 transition duration-300 ease-in-out hover:text-indigo-900">
                       View
                     </button>
                   ) : (
@@ -79,7 +79,7 @@ export const OrderTableRender = ({
                 <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                   <button
                     onClick={() => handleViewOrderDetail(transaction.id)}
-                    className="text-indigo-600 hover:text-indigo-900">
+                    className="text-indigo-600 transition duration-300 ease-in-out hover:text-indigo-900">
                     Detail
                   </button>
                 </td>
@@ -107,7 +107,7 @@ export const OrderTableRender = ({
                     <button
                       disabled={adminWarehouse}
                       onClick={() => handleConfirmTransaction(transaction.id)}
-                      className="text-white rounded-md bg-black w-14 h-6 text-[10px] mr-[9px] hover:bg-gray-800">
+                      className="text-white rounded-md transition duration-300 ease-in-out bg-black w-14 h-6 text-[10px] mr-[9px] hover:bg-gray-800">
                       Confirm
                     </button>
                   ) : (
@@ -117,7 +117,7 @@ export const OrderTableRender = ({
                     <button
                       disabled={adminWarehouse}
                       onClick={() => handleSendTransaction(transaction.id)}
-                      className="text-white rounded-md bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800">
+                      className="text-white rounded-md transition duration-300 ease-in-out bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800">
                       Send
                     </button>
                   ) : (
@@ -131,12 +131,12 @@ export const OrderTableRender = ({
                     <button
                       disabled={adminWarehouse}
                       onClick={() => handleRejectTransaction(transaction.id)}
-                      className="text-white w-14 h-6 text-[10px] rounded-md bg-black hover:bg-gray-800 mr-1">
+                      className="text-white w-14 h-6 text-[10px] transition duration-300 ease-in-out rounded-md bg-black hover:bg-gray-800 mr-1">
                       Reject
                     </button>
                   ) : (
                     <span
-                      className="text-white w-14 h-6 text-[10px] rounded-md bg-black hover:bg-gray-800 mr-1"
+                      className="text-white w-14 h-6 text-[10px] transition duration-300 ease-in-out rounded-md bg-black hover:bg-gray-800 mr-1"
                       style={{visibility: "hidden"}}>
                       Reject
                     </span>
@@ -146,12 +146,12 @@ export const OrderTableRender = ({
                   transaction.status === "On Process" ? (
                     <button
                       disabled={adminWarehouse}
-                      className="text-white -mr-2 rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800">
+                      className="text-white -mr-2 transition duration-300 ease-in-out rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800">
                       Cancel
                     </button>
                   ) : (
                     <span
-                      className="text-white rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800"
+                      className="text-white rounded-md transition duration-300 ease-in-out w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800"
                       style={{visibility: "hidden"}}>
                       Cancel
                     </span>

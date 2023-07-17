@@ -45,6 +45,7 @@ export default function CheckoutRender({
                 handleCheckout={handleCheckout}
                 ongkir={ongkir}
                 isOngkirLoading={isOngkirLoading}
+                cartItems={cartItems}
               />
             </div>
             {isAddAddressModalOpen && (
