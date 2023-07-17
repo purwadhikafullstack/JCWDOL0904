@@ -1,19 +1,9 @@
 import "./App.css";
-import { useDispatch, useSelector } from "react-redux";
-import { Navbar } from "./components/Navbar";
-import { Footer } from "./components/Footer";
+import { useDispatch } from "react-redux";
+
 import { Routes, Route } from "react-router-dom";
-import Sidebar from "./components/admin/Sidebar";
 import { useState, useEffect } from "react";
-import Homepage from "./pages/Homepage";
-import ProductDetail from "./pages/ProductDetail";
-import Checkout from "./pages/Checkout";
-import { Ekspedisi } from "./components/Ekspedisi";
-import { Verification } from "./pages/verification";
-import { Register } from "./pages/register";
-import { ResetPassword } from "./pages/resetPassword";
-import { InputPassword } from "./pages/inputPassword";
-import Profile from "./pages/Profile";
+
 import routes from "./routes/routes";
 import { api } from "./API/api";
 import { login } from "./features/userSlice";
@@ -25,7 +15,6 @@ import { io } from "socket.io-client";
 import { unreadCount } from "./features/notificationSlice";
 
 function App() {
-  const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -59,14 +48,12 @@ function App() {
       console.log(error);
     }
   };
-  //app js > useEffect => localstorage => api request user by id => dispatch => globalstate => routes => protectedPage => cek redux => kalau sesaui return login
 
   useEffect(() => {
     let token = null;
     if (localStorage.getItem("auth")) {
-      token = JSON.parse(localStorage.getItem("auth")); //token
+      token = JSON.parse(localStorage.getItem("auth"));
     }
-    // console.log(user);
 
     getWarehouse();
     getAllCategory();
@@ -128,11 +115,6 @@ function App() {
     };
   }, []);
 
-  // const
-  // const { role } = useSelector((state) => state.userSlice.value);
-  // console.log(role);
-  // const role = "";
-
   // useEffect(() => {
   //   (async () => {
   //     const {data} = await axios.get(
@@ -143,36 +125,6 @@ function App() {
   // }, []);
   return (
     <>
-      {/* {role == "user" ? (
-        <div className="App">
-          <Navbar />
-          <Routes>
-            <Route path="/home" element={<Homepage />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/verification/:token" element={<Verification />} />
-            <Route path="/request" element={<ResetPassword />} />
-            <Route path="/inputpassword/:token" element={<InputPassword />} />
-            <Route path="/" element={<Login />} />
-            <Route path="/image" element={<TestImage />} />
-            <Route path="/detail" element={<ProductDetail />} />
-            <Route path="/test" element={<Test />} />
-            <Route path="/cart2" element={<Cart />} />
-            <Route path="/cart" element={<Cart2 />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/tr" element={<Example />} />
-            <Route path="/trans" element={<Transaction />} />
-          </Routes>
-          {/* <Footer /> */}
-      {/* </div >
-      ) : (
-        <div className="App">
-          <Sidebar />
-          <Routes>
-            <Route path="/cek" element={<Cek />} />
-          </Routes>
-        </div>
-      )
-      } */}
       {isLoading ? (
         <div
           style={{

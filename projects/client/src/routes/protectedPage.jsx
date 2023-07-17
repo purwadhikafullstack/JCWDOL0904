@@ -9,9 +9,9 @@ import { Spinner } from "@chakra-ui/react";
 
 export default function ProtectedPage({
   needLogin = false,
-  guestOnly = false, //true
+  guestOnly = false,
   children,
-  adminOnly = false, //true
+  adminOnly = false,
 }) {
   const user = useSelector((state) => state.userSlice);
   const nav = useNavigate();
@@ -41,7 +41,6 @@ export default function ProtectedPage({
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
-    // login => role="user" => routes khusus admin =>
   }, [user, needLogin]);
 
   return isLoading ? (
@@ -62,7 +61,6 @@ export default function ProtectedPage({
   ) : user.role == "admin" || user.role === "adminWarehouse" ? (
     <>
       <Sidebar mainPage={children} />
-      {/* {children} */}
     </>
   ) : (
     <div className="App">
