@@ -6,7 +6,6 @@ const DropDownCategoryMP = (props) => {
     <>
       <FormLabel>Category</FormLabel>
       <Select
-        placeholder={props.category}
         defaultValue={props.category}
         onChange={(e) => {
           props.setCategory(e.target.value);
@@ -21,8 +20,6 @@ const DropDownCategoryMP = (props) => {
           );
         })}
       </Select>
-
-      <FormLabel>Cpu Speed</FormLabel>
     </>
   );
 };

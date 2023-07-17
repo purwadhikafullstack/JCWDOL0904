@@ -39,9 +39,7 @@ const ProductsHome = ({ products }) => {
                 cursor="pointer"
                 width="200px"
                 height="330px"
-                // backgroundColor="white"
                 className="bg-white hover:bg-gray-200"
-                // _hover={{ backgroundColor: "#4a5568" }}
               >
                 <CardBody>
                   <Image
@@ -52,7 +50,14 @@ const ProductsHome = ({ products }) => {
                     height="150px"
                   />
                   <Stack mt="6" spacing="3" alignItems="center">
-                    <Heading fontSize="12px" className="text-center">
+                    <Heading
+                      maxWidth="150px"
+                      noOfLines={2}
+                      overflow="hidden"
+                      textOverflow="ellipsis"
+                      fontSize="12px"
+                      className="text-center"
+                    >
                       {el.product_name}
                     </Heading>
                     <Text

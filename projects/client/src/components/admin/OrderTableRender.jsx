@@ -10,6 +10,7 @@ export const OrderTableRender = ({
   handleConfirmTransaction,
   handleSendTransaction,
   handleCantelOrder,
+  isConfirmLoading,
 }) => {
   const adminWarehouse = user.role === "adminWarehouse";
   return (
@@ -116,11 +117,17 @@ export const OrderTableRender = ({
                 <td className="whitespace-nowrap py-2 text-right text-sm font-medium sm:pr-6">
                   {transaction.status === "Waiting For Payment Confirmation" ? (
                     <button
-                      disabled={adminWarehouse}
+                      disabled={adminWarehouse || isConfirmLoading}
                       onClick={() => handleConfirmTransaction(transaction.id)}
-                      className="text-white rounded-md transition duration-300 ease-in-out bg-black w-14 h-6 text-[10px] mr-[9px] hover:bg-gray-800"
+                      className={`text-white rounded-md transition duration-300 ease-in-out bg-black w-14 h-6 text-[10px] mr-[9px] hover:bg-gray-800 ${
+                        isConfirmLoading ? "opacity-50 cursor-not-allowed" : ""
+                      } ${
+                        adminWarehouse || isConfirmLoading
+                          ? "disabled-button"
+                          : ""
+                      }`}
                     >
-                      Confirm
+                      {isConfirmLoading ? "Confirming..." : "Confirm"}
                     </button>
                   ) : (
                     <span style={{ visibility: "hidden" }}>Confirm</span>
@@ -163,10 +170,9 @@ export const OrderTableRender = ({
                     <button
                       disabled={adminWarehouse}
                       className="text-white -mr-2 transition duration-300 ease-in-out rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800"
-                    >
                       onClick={() => handleCantelOrder(transaction)}
-                      className="text-white -mr-2 rounded-md w-14 h-6
-                      text-[10px] bg-red-700 hover:bg-red-800" > Cancel
+                    >
+                      Cancel
                     </button>
                   ) : (
                     <span

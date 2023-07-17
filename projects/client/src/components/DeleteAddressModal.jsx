@@ -1,13 +1,18 @@
-import React, {useState, useEffect} from "react";
-import {api} from "../API/api";
-import {useDispatch, useSelector} from "react-redux";
-import {addressData} from "../features/addressSlice";
-import {TrashIcon} from "@heroicons/react/24/outline";
-import {Button, Center} from "@chakra-ui/react";
-import {Link} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { api } from "../API/api";
+import { useDispatch, useSelector } from "react-redux";
+import { addressData } from "../features/addressSlice";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { Button, Center } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
-function DeleteAddressModal({selectedAddress, onSelectAddress, closeModal}) {
+function DeleteAddressModal({
+  selectedAddress,
+  onSelectAddress,
+  closeModal,
+  setSelectedDeletedAddress,
+}) {
   const [addressList, setAddressList] = useState([]);
   const dispatch = useDispatch();
 
@@ -21,8 +26,7 @@ function DeleteAddressModal({selectedAddress, onSelectAddress, closeModal}) {
           "Content-Type": "application/json",
         },
       });
-      // console.log(response);
-      // await api.patch(`addresses/${getAddress.id}`);
+
       setAddressList(response.data);
     } catch (error) {
       console.error(error);
@@ -45,8 +49,10 @@ function DeleteAddressModal({selectedAddress, onSelectAddress, closeModal}) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.delete(`addresses/delete-address/${id}`);
+          await api.delete(`addresses/${id}`);
           fetchAddresses();
+          localStorage.removeItem("selectedAddress");
+          setSelectedDeletedAddress(false);
         } catch (error) {
           console.error(error);
         }
@@ -83,7 +89,8 @@ function DeleteAddressModal({selectedAddress, onSelectAddress, closeModal}) {
             <li
               key={address.id}
               className="p-4 cursor-pointer hover:bg-gray-100 flex justify-center items-center"
-              onClick={() => handleSelect(address)}>
+              onClick={() => handleSelect(address)}
+            >
               <div>
                 <p className="text-lg font-semibold text-gray-800">
                   {address.province}
@@ -99,7 +106,8 @@ function DeleteAddressModal({selectedAddress, onSelectAddress, closeModal}) {
                 size="xs"
                 marginLeft="20px"
                 justifyContent="center"
-                onClick={() => handleDelete(address.id)}>
+                onClick={() => handleDelete(address.id)}
+              >
                 <TrashIcon color="red" />
               </Button>
             </li>
@@ -109,7 +117,8 @@ function DeleteAddressModal({selectedAddress, onSelectAddress, closeModal}) {
         <div className="flex justify-center p-4">
           <button
             className="bg-gray-950 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
-            onClick={handleClose}>
+            onClick={handleClose}
+          >
             Close
           </button>
         </div>

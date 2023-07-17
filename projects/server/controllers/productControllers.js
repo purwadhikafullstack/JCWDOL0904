@@ -267,6 +267,11 @@ module.exports = {
       ) {
         throw new Error("Please input all data!");
       }
+
+      const cekProductName = await product.findOne({
+        where: { product_name: `%${product_name}` },
+      });
+      if (cekProductName) throw new Error("Name Already exist!");
       const result = await product.update(
         {
           product_name,
@@ -353,7 +358,26 @@ module.exports = {
         battery,
         description,
       } = req.body;
+
       const product_image = req.file.originalname;
+      if (
+        !product_name ||
+        !description ||
+        !price ||
+        !categor ||
+        !cpu_speed ||
+        !cpu_type ||
+        !size ||
+        !resolution ||
+        !colorDept ||
+        !ram ||
+        !storage ||
+        !weight_g ||
+        !battery ||
+        !product_image
+      ) {
+        throw new Error("Please input all data!");
+      }
 
       const formatData = product_image.split(".").reverse();
 
@@ -384,15 +408,20 @@ module.exports = {
       if (!result && result.lenght < 1) {
         throw new Error("something went wrong!");
       }
-      console.log(req.file);
       res.status(200).send({
         result,
       });
     } catch (error) {
       console.log(error);
-      res.status(400).send({
-        message: error.massage,
-      });
+      if (error.message || error.message.lenght > 0) {
+        res.status(400).send({
+          message: error.message,
+        });
+      } else {
+        res.status(400).send({
+          message: "Your input data is wrong!",
+        });
+      }
     }
   },
   addInitialStock: async (req, res) => {

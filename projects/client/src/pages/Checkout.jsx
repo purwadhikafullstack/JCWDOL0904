@@ -200,6 +200,7 @@ export default function Checkout() {
         text: error.response.data.error,
         icon: "error",
       });
+      dispatch(updateCart({ cart: [] }));
       console.log("Error creating order:", error);
     } finally {
       setOngkirIsLoading(false);

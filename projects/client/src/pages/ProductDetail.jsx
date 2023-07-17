@@ -10,11 +10,13 @@ import {
   Tr,
   Td,
   TableContainer,
+  Text,
 } from "@chakra-ui/react";
 import { BeatLoader } from "react-spinners";
 import "./style/ProductDetail.css";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
+import Alert from "../components/SwallAlert";
 
 const ProductDetail = () => {
   const navigation = useNavigate();
@@ -44,7 +46,6 @@ const ProductDetail = () => {
   let productId = JSON.parse(localStorage.getItem("idProduct"));
   let addToCart = async (e) => {
     const token = JSON.parse(localStorage.getItem("auth"));
-    console.log(token);
     e.preventDefault();
     if (!localStorage.getItem("auth")) {
       Swal.fire({
@@ -72,7 +73,13 @@ const ProductDetail = () => {
           }
         );
         navigation("/cart");
-      } catch (error) {}
+      } catch (error) {
+        Alert({
+          title: "Failed!",
+          text: error.response.data.message,
+          icon: "error",
+        });
+      }
     }
   };
 
@@ -85,7 +92,11 @@ const ProductDetail = () => {
         <div className="wrap-product-detail">
           <div className="con-info">
             <div className="flex w-full items-center justify-center p-2">
-              <h1
+              <Text
+                maxWidth="500px"
+                noOfLines={2}
+                overflow="hidden"
+                textOverflow="ellipsis"
                 style={{
                   padding: "10px",
                   fontSize: "30px",
@@ -93,7 +104,7 @@ const ProductDetail = () => {
                 }}
               >
                 {product.product_name}
-              </h1>
+              </Text>
             </div>
             <section aria-labelledby="information-heading">
               <div className="flex items-center">
@@ -130,9 +141,9 @@ const ProductDetail = () => {
             </div>
           </div>
           <Image
+            width="200px"
             src={product.product_image}
             alt={product.product_image}
-            className=""
           />
         </div>
         <div>

@@ -74,17 +74,12 @@ const EditeProduct = ({ runFunction, category, productData, idProduct }) => {
       runFunction();
       getAllCategory();
 
-      //   props.runFunction();
       Swal.fire({
         title: "Success",
         text: "Data has been updated!",
         icon: "success",
         confirmButtonText: "Ok",
       });
-      //   setProvincess([]);
-      //   setCity([]);
-      //   setSubsdistrict("");
-      //   setZip("");
     } catch (error) {
       onClose();
       setLoad(false);

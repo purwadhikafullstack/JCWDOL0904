@@ -6,7 +6,6 @@ module.exports = {
     return queryInterface.bulkInsert("Warehouses", [
       {
         warehouse: "Bandung",
-        status: "active",
         province: "Jawa Barat",
         city: "Kota Bandung",
         warehouse_city_id: 23,
@@ -19,7 +18,6 @@ module.exports = {
       },
       {
         warehouse: "Surabaya",
-        status: "active",
         province: "Jawa Timur",
         city: "Surabaya",
         warehouse_city_id: 444,
@@ -32,7 +30,6 @@ module.exports = {
       },
       {
         warehouse: "DI Yogyakarta",
-        status: "active",
         province: "DI Yogyakarta",
         city: "Gunung Kidul",
         warehouse_city_id: 135,

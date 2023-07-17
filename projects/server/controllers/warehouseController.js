@@ -221,17 +221,18 @@ module.exports = {
 
   changeWarehouse: async (req, res) => {
     try {
-      const { currentWarehouse, id_warehouse } = req.body;
-      // console.log(id);
+      const { id, currentWarehouse, id_warehouse } = req.body;
       const dataRole = req.dataToken;
-      console.log(dataRole);
+      console.log(id);
 
       const findUser = await User.findOne({
         where: { id: dataRole.id },
       });
-      // console.log(findUser);
 
-      // console.log(id);
+      const findUserId = await User.findOne({
+        where: { id: id },
+      });
+      console.log(findUserId);
 
       if (findUser.role === "adminWarehouse" || findUser.role === "user") {
         return res.status(400).send({
@@ -249,7 +250,7 @@ module.exports = {
         { id_warehouse },
         {
           where: {
-            id: findUser.dataValues.id,
+            id: findUserId.id,
           },
         }
       );

@@ -4,7 +4,7 @@ const { tokenVerify } = require("../middleware/verifyToken");
 
 router.post("/", tokenVerify, addressController.createAddress);
 router.get("/", tokenVerify, addressController.getAddressByUser);
-router.delete("/delete-address/:id", addressController.deleteAddress);
+router.delete("/:id", addressController.deleteAddress);
 router.patch("/:id", addressController.changeDefaultAddress);
 
 module.exports = router;
