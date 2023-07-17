@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { Transaction, Products, TransactionItem, Address, Ekspedisi } = require('../models');
 const db = require("../models");
 
@@ -31,10 +32,16 @@ module.exports = {
                 include: [
                     {
                         model: TransactionItem,
-                        include: [Products],
+                        include: [{
+                            model: Products, paranoid: false, where: {
+                                [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                            }
+                        }],
                     },
                     {
-                        model: Address,
+                        model: Address, paranoid: false, where: {
+                            [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                        }
                     },
                     {
                         model: Ekspedisi,
@@ -81,10 +88,16 @@ module.exports = {
                 include: [
                     {
                         model: TransactionItem,
-                        include: [Products],
+                        include: [{
+                            model: Products, paranoid: false, where: {
+                                [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                            }
+                        }],
                     },
                     {
-                        model: Address,
+                        model: Address, paranoid: false, where: {
+                            [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                        }
                     },
                     {
                         model: Ekspedisi,
@@ -134,10 +147,16 @@ module.exports = {
                 include: [
                     {
                         model: TransactionItem,
-                        include: [Products],
+                        include: [{
+                            model: Products, paranoid: false, where: {
+                                [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                            }
+                        }],
                     },
                     {
-                        model: Address,
+                        model: Address, paranoid: false, where: {
+                            [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                        }
                     },
                     {
                         model: Ekspedisi,
@@ -165,10 +184,16 @@ module.exports = {
                 include: [
                     {
                         model: TransactionItem,
-                        include: [Products],
+                        include: [{
+                            model: Products, paranoid: false, where: {
+                                [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                            }
+                        }],
                     },
                     {
-                        model: Address,
+                        model: Address, paranoid: false, where: {
+                            [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+                        }
                     },
                     {
                         model: Ekspedisi,

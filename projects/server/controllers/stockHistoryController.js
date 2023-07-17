@@ -35,7 +35,9 @@ module.exports = {
         include: [
           {
             model: Products,
+            paranoid: false,
             where: {
+              [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
               product_name: { [db.Sequelize.Op.like]: `%${productSearch}%` },
             },
           },

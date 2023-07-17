@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
 import { api } from "../API/api";
-import AddressModal from "../components/AddressModal";
-import { AddAddressModal } from "../components/AddAddressModal";
-import { Ekspedisi } from "../components/Ekspedisi";
 import { apiro } from "../API/apiro";
 import { useNavigate } from "react-router-dom";
 import { updateCart } from "../features/cartSlice";
 import { useDispatch } from "react-redux";
-import CartCheckout from "../components/CartCheckout";
-import { CheckoutTotalSection } from "../components/CheckoutTotalSection";
 import Alert from "../components/SwallAlert";
 import CheckoutRender from "../components/CheckoutRender";
-import CheckoutShippingSection from "../components/CheckoutShippingSection";
 
 export default function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -56,8 +50,6 @@ export default function Checkout() {
     localStorage.setItem("selectedAddress", JSON.stringify(address));
   };
 
-  console.log(`ini cart items`, cartItems);
-
   const addressId = selectedAddress?.id;
   useEffect(() => {
     const fetchOngkir = async () => {
@@ -66,7 +58,7 @@ export default function Checkout() {
         if (warehouseOrigin && selectedAddress) {
           let totalWeight = 0;
           cartItems.forEach((cartItem) => {
-            const productWeight = cartItem.Product.weight_g;
+            const productWeight = cartItem?.Product?.weight_g;
             const quantity = cartItem.quantity;
             const productTotalWeight = productWeight * quantity;
             totalWeight += productTotalWeight;
@@ -128,12 +120,6 @@ export default function Checkout() {
     fetchShippingAddress();
   }, []);
   useEffect(() => {
-    const fetchLocalStorageCartItems = () => {
-      const storedCartItems = localStorage.getItem("cartItems");
-      if (storedCartItems) {
-        setCartItems(JSON.parse(storedCartItems));
-      }
-    };
     const subTotal = JSON.parse(localStorage.getItem("subTotal"));
     setSubtotal(subTotal);
     const fetchNearestWarehouse = async () => {
@@ -145,8 +131,39 @@ export default function Checkout() {
       }
     };
     fetchNearestWarehouse();
-    fetchLocalStorageCartItems();
+    fetchCartItems();
+    removeDeletedCarts();
   }, [selectedAddress, addressId]);
+  const fetchCartItems = async () => {
+    try {
+      const token = JSON.parse(localStorage.getItem("auth"));
+      const response = await api.get(`/cart`, {
+        headers: {
+          Authorization: token,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      setCartItems(response.data.cartItems);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const removeDeletedCarts = async () => {
+    try {
+      const deletedCarts = cartItems.filter((item) => item.Product === null);
+      if (deletedCarts.length > 0) {
+        const cartItemIds = deletedCarts.map((item) => item.id);
+        console.log(cartItemIds);
+        await api.put(`/cart/item`, { cartItemIds });
+        localStorage.removeItem("cartItems");
+        fetchCartItems();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCheckout = async (e) => {
     const token = JSON.parse(localStorage.getItem("auth"));
     e.preventDefault();
@@ -192,12 +209,13 @@ export default function Checkout() {
     const calculateTotalAmount = () => {
       let subtotal = 0;
       for (const item of cartItems) {
-        subtotal += item.Product.price * item.quantity;
+        subtotal += item.Product?.price * item?.quantity;
       }
       setTotalAmount(subtotal + ongkir);
     };
     calculateTotalAmount();
   }, [cartItems, ongkir]);
+
   return (
     <CheckoutRender
       cartItems={cartItems}

@@ -35,6 +35,7 @@ export const Transaction = () => {
         },
       });
       setTransactions(response.data.orders);
+      console.log(response);
       setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error(error);

@@ -1,20 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { api } from "../API/api";
-import { useDispatch, useSelector } from "react-redux";
-import { addressData } from "../features/addressSlice";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { Button, Center } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {api} from "../API/api";
+import {useDispatch, useSelector} from "react-redux";
+import {addressData} from "../features/addressSlice";
+import {TrashIcon} from "@heroicons/react/24/outline";
+import {Button, Center} from "@chakra-ui/react";
+import {Link} from "react-router-dom";
 import Swal from "sweetalert2";
 
-function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
+function DeleteAddressModal({selectedAddress, onSelectAddress, closeModal}) {
   const [addressList, setAddressList] = useState([]);
   const dispatch = useDispatch();
 
   const fetchAddresses = async () => {
     try {
-      const getAddress = JSON.parse(localStorage.getItem("auth"));
-      const response = await api.get(`addresses/${getAddress.id}`);
+      const token = JSON.parse(localStorage.getItem("auth"));
+      const response = await api.get("addresses/", {
+        headers: {
+          Authorization: token,
+          Accept: "appplication/json",
+          "Content-Type": "application/json",
+        },
+      });
       // console.log(response);
       // await api.patch(`addresses/${getAddress.id}`);
       setAddressList(response.data);
@@ -39,7 +45,7 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.delete(`addresses/${id}`);
+          await api.delete(`addresses/delete-address/${id}`);
           fetchAddresses();
         } catch (error) {
           console.error(error);
@@ -51,7 +57,7 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
   const handleSelect = async (address) => {
     console.log(address);
     try {
-      const response = await api.patch(`addresses/${address}`, {
+      const response = await api.patch(`addresses/${address.id}`, {
         id: address.id,
         id_user: address.id_user,
       });
@@ -77,8 +83,7 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
             <li
               key={address.id}
               className="p-4 cursor-pointer hover:bg-gray-100 flex justify-center items-center"
-              onClick={() => handleSelect(address)}
-            >
+              onClick={() => handleSelect(address)}>
               <div>
                 <p className="text-lg font-semibold text-gray-800">
                   {address.province}
@@ -94,8 +99,7 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
                 size="xs"
                 marginLeft="20px"
                 justifyContent="center"
-                onClick={() => handleDelete(address.id)}
-              >
+                onClick={() => handleDelete(address.id)}>
                 <TrashIcon color="red" />
               </Button>
             </li>
@@ -104,9 +108,8 @@ function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
 
         <div className="flex justify-center p-4">
           <button
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleClose}
-          >
+            className="bg-gray-950 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
+            onClick={handleClose}>
             Close
           </button>
         </div>

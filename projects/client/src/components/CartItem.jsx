@@ -3,9 +3,9 @@ import {XMarkIcon, CreditCardIcon} from "@heroicons/react/20/solid";
 import Alert from "./SwallAlert";
 
 export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
-  const subtotal = item.quantity * item.Product.price;
-  const [inputQuantity, setInputQuantity] = useState(item.quantity);
-  const stock = item.Product.Stocks.reduce((totalStock, stockItem) => {
+  const subtotal = item?.quantity * item?.Product?.price;
+  const [inputQuantity, setInputQuantity] = useState(item?.quantity);
+  const stock = item?.Product?.Stocks.reduce((totalStock, stockItem) => {
     return totalStock + stockItem.stock;
   }, 0);
   console.log(item);
@@ -14,7 +14,7 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
     if (inputQuantity > 1) {
       const newQuantity = inputQuantity - 1;
       setInputQuantity(newQuantity);
-      updateCartProduct(item.id, "decrease");
+      updateCartProduct(item?.id, "decrease");
     }
   };
 
@@ -22,7 +22,7 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
     if (inputQuantity < stock) {
       const newQuantity = inputQuantity + 1;
       setInputQuantity(newQuantity);
-      updateCartProduct(item.id, "increase");
+      updateCartProduct(item?.id, "increase");
     } else {
       Alert({
         title: "Failed!",
@@ -35,10 +35,10 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
     const newQuantity = parseInt(e.target.value, 10);
     if (isNaN(newQuantity) || newQuantity < 1) {
       setInputQuantity(1);
-      updateCartProduct(item.id, "input", 1);
+      updateCartProduct(item?.id, "input", 1);
     } else if (newQuantity > stock) {
       setInputQuantity(stock);
-      updateCartProduct(item.id, "input", stock);
+      updateCartProduct(item?.id, "input", stock);
       Alert({
         title: "Failed!",
         text: "Insufficient Stock",
@@ -46,21 +46,21 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
       });
     } else {
       setInputQuantity(newQuantity);
-      updateCartProduct(item.id, "input", newQuantity);
+      updateCartProduct(item?.id, "input", newQuantity);
     }
   };
   const handleDelete = () => {
-    deleteCartItem(item.id);
+    deleteCartItem(item?.id);
   };
 
   return (
     <>
       {item ? (
-        <li key={item.id} className="flex py-6 sm:py-10">
+        <li key={item?.id} className="flex py-6 sm:py-10">
           <div className="flex-shrink-0">
             <img
-              src={item.Product.product_image}
-              alt={item.name}
+              src={item?.Product?.product_image}
+              alt={item?.name}
               className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
             />
           </div>
@@ -71,20 +71,20 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
                 <div className="flex justify-between">
                   <h3 className="text-sm">
                     <a
-                      href={item.href}
+                      href={item?.href}
                       className="font-medium text-gray-700 hover:text-gray-800">
-                      {item.Product.product_name}
+                      {item?.Product?.product_name}
                     </a>
                   </h3>
                 </div>
                 <div className="mt-1 flex text-sm">
-                  <p className="text-gray-500">{item.size}</p>
+                  <p className="text-gray-500">{item?.size}</p>
                   <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">
-                    Rp. {item.Product.price.toLocaleString("id-ID")}
+                    Rp. {item?.Product?.price.toLocaleString("id-ID")}
                   </p>
                 </div>
                 <p className="mt-1 text-sm font-medium text-gray-900">
-                  {item.price}
+                  {item?.price}
                 </p>
               </div>
 

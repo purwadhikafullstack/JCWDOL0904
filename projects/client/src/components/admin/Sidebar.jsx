@@ -14,6 +14,7 @@ import {
   UsersIcon,
   XMarkIcon,
   TruckIcon,
+  BookOpenIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
@@ -89,7 +90,7 @@ const navigation = [
   {
     name: "History",
     href: "/stock-history",
-    icon: ChartBarIcon,
+    icon: BookOpenIcon,
     current: false,
   },
 ];
