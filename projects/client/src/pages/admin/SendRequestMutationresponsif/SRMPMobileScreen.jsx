@@ -34,18 +34,29 @@ const SRMPMobileSreen = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            const token = JSON.parse(localStorage.getItem("auth"));
             const id = product.id;
             const warehouse_sender_id = wSender.id;
             const warehouse_receive_id = adminWarehouseReceive.id_warehouse;
             const status = "pending";
             const qty = parseInt(quantity);
-            const response = await api.post("/mutation/manual-mutation", {
-              id,
-              warehouse_sender_id,
-              warehouse_receive_id,
-              qty,
-              status,
-            });
+            const response = await api.post(
+              "/mutation/manual-mutation",
+              {
+                id,
+                warehouse_sender_id,
+                warehouse_receive_id,
+                qty,
+                status,
+              },
+              {
+                headers: {
+                  Authorization: token,
+                  Accept: "appplication/json",
+                  "Content-Type": "application/json",
+                },
+              }
+            );
             Swal.fire(
               "Sended!",
               "Your request has been sended.",
@@ -103,8 +114,6 @@ const SRMPMobileSreen = () => {
   useEffect(() => {
     let warehouseFiltered;
     if (adminWarehouseReceive && value) {
-      console.log(value);
-      console.log(wReceiver);
       warehouseFiltered = value.filter(
         (el) => el.id !== adminWarehouseReceive.id_warehouse
       );

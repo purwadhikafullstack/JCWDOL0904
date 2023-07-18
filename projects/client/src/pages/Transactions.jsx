@@ -114,7 +114,7 @@ export const Transaction = () => {
     }
   };
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("transaction-update", (updatedTransaction) => {
       setTransactions((prevTransactions) => {
         const updatedTransactions = prevTransactions.map((transaction) => {
@@ -131,7 +131,7 @@ export const Transaction = () => {
     };
   }, []);
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("orderConfirmed", (updatedOrder) => {
       setTransactions((prevTransactions) => {
         const updatedTransactions = prevTransactions.map((transaction) => {

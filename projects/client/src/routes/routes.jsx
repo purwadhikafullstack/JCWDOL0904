@@ -2,7 +2,6 @@ import { Route } from "react-router-dom";
 import Homepage from "../pages/Homepage";
 import { Register } from "../pages/register";
 import { Verification } from "../pages/verification";
-import { Login } from "../pages/Login";
 import { ResetPassword } from "../pages/resetPassword";
 import { InputPassword } from "../pages/inputPassword";
 import ProductDetail from "../pages/ProductDetail";
@@ -76,16 +75,6 @@ const routes = [
     element={
       <ProtectedPage guestOnly={true}>
         <Verification />
-      </ProtectedPage>
-    }
-  />,
-
-  <Route
-    key="login"
-    path="/"
-    element={
-      <ProtectedPage guestOnly={true}>
-        <Login />
       </ProtectedPage>
     }
   />,

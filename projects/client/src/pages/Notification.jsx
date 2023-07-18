@@ -41,9 +41,8 @@ export default function Notification() {
 
       setNotifications(response.data.notif);
       setTotalPages(response.data.totalPages);
-      console.log(response);
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 
@@ -68,7 +67,7 @@ export default function Notification() {
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notification", (updatedNotifications) => {
       console.log("ini update from socet Admin Notif", updatedNotifications);
       setNotifications(updatedNotifications);
@@ -78,7 +77,7 @@ export default function Notification() {
     };
   }, []);
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notificationRead", (updatedNotifications) => {
       const unread = updatedNotifications.filter((notification) => {
         return (

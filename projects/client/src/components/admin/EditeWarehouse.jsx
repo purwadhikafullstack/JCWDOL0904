@@ -31,8 +31,6 @@ const EditeWarehouse = (props) => {
   const getAllProvince = async () => {
     try {
       const response = await apiro.get("/rajaongkir/province");
-      console.log(response.data.data);
-
       setProvinces(response.data.data);
       runGetCity(response.data.data);
     } catch (error) {}
@@ -51,15 +49,6 @@ const EditeWarehouse = (props) => {
   };
 
   const handleSubmit = async () => {
-    console.log({
-      warehouse,
-      province: provincess.province,
-      city: city.city,
-      warehouse_city_id: city.id,
-      subdistrict,
-      zip: parseInt(zip),
-      id: props.wId,
-    });
     try {
       setLoad(true);
       let response = await api.post("/warehouses/update", {

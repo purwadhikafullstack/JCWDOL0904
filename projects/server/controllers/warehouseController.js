@@ -85,7 +85,6 @@ module.exports = {
       const response = await axios.get(
         `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=e115d475b4d64403bef4b85a159facaf`
       );
-      console.log(response);
       if (response.status === 200 && response.data.results.length > 0) {
         const { geometry } = response.data.results[0];
         const { lat: latitude, lng: longitude } = geometry;
@@ -212,7 +211,6 @@ module.exports = {
         message: "delete success",
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send({
         message: error.message,
       });
@@ -223,7 +221,6 @@ module.exports = {
     try {
       const { id, currentWarehouse, id_warehouse } = req.body;
       const dataRole = req.dataToken;
-      console.log(id);
 
       const findUser = await User.findOne({
         where: { id: dataRole.id },
@@ -232,7 +229,6 @@ module.exports = {
       const findUserId = await User.findOne({
         where: { id: id },
       });
-      console.log(findUserId);
 
       if (findUser.role === "adminWarehouse" || findUser.role === "user") {
         return res.status(400).send({

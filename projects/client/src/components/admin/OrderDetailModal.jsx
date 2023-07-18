@@ -1,7 +1,7 @@
-import {useEffect} from "react";
-import {api} from "../../API/api";
-import {useCallback} from "react";
-import {useState} from "react";
+import { useEffect } from "react";
+import { api } from "../../API/api";
+import { useCallback } from "react";
+import { useState } from "react";
 import OrderDetailModalRender from "./OrderDetailModalRender";
 
 export default function OrderDetailModal({
@@ -21,7 +21,7 @@ export default function OrderDetailModal({
       const response = await api.get(`/order/detail/${transactionId}`);
       setTransactions(response.data.orders);
     } catch (error) {
-      console.error(error);
+      console.log({ message: "Something went wrong" });
     }
   }, []);
 
@@ -52,7 +52,8 @@ export default function OrderDetailModal({
         <div
           className={`fixed inset-0 flex items-center justify-center z-50 ${
             isClosing ? "closing" : ""
-          }`}>
+          }`}
+        >
           <style>
             {`
               .modal-overlay {
@@ -116,7 +117,8 @@ export default function OrderDetailModal({
           <div className="modal modal-open">
             <div
               className="modal-overlay fixed inset-0 bg-black opacity-50 -z-10"
-              onClick={handleOverlayClick}></div>
+              onClick={handleOverlayClick}
+            ></div>
             <OrderDetailModalRender
               isClosing={isClosing}
               transactions={transactions}

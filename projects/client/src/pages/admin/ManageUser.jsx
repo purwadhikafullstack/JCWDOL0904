@@ -20,43 +20,19 @@ import { allUserData } from "../../features/allUserSlice";
 import AddAdmin from "../../components/admin/AddAdmin";
 import EditWarehouse from "../../components/admin/EditAdminWarehouseModal";
 
-const ManageWarehouse = () => {
+const ManageUser = () => {
   const value = useSelector((state) => state.allUserSlice.value);
-  console.log(value);
+  const user = useSelector((state) => state.userSlice);
   const dispatch = useDispatch();
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [paddingLeft, setPaddingLeft] = useState("pl-72");
-
-  useEffect(() => {
-    const updatePaddingLeft = () => {
-      if (window.innerWidth < 401) {
-        setPaddingLeft("");
-      } else {
-        setPaddingLeft("pl-72");
-      }
-    };
-
-    // Memanggil fungsi saat halaman dimuat dan saat ukuran layar berubah
-    window.addEventListener("DOMContentLoaded", updatePaddingLeft);
-    window.addEventListener("resize", updatePaddingLeft);
-
-    // Membersihkan event listener saat komponen unmount
-    return () => {
-      window.removeEventListener("DOMContentLoaded", updatePaddingLeft);
-      window.removeEventListener("resize", updatePaddingLeft);
-    };
-  }, []);
-
   const url = "user/data/all";
   const getUserData = async () => {
-    const id = JSON.parse(localStorage.getItem("auth"));
     try {
       await api.get(url).then((result) => {
         dispatch(allUserData(result.data));
       });
     } catch (err) {
-      console.log(err);
+      console.log({ message: "Something went wrong" });
     }
   };
 
@@ -73,7 +49,6 @@ const ManageWarehouse = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const token = JSON.parse(localStorage.getItem("auth"));
-        console.log(id);
         try {
           const response = await api.delete("/user/data/delete", {
             headers: {
@@ -89,6 +64,7 @@ const ManageWarehouse = () => {
             text: response.data.message,
             icon: "success",
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
         } catch (error) {
           Swal.fire({
@@ -96,70 +72,69 @@ const ManageWarehouse = () => {
             text: error.response.data.message,
             icon: "warning",
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
-          console.log(error);
         }
       }
     });
   };
-
   useEffect(() => {
     getUserData();
   }, []);
-
   let count = 0;
-  const allUser = value.map((el) => {
-    if (!el.is_deleted) {
-      count++;
-      console.log(el);
-      return (
-        <tr key={el.id}>
-          <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
-            {count}
-          </td>
-          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-            {el.email}
-          </td>
-          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-            {el.username}
-          </td>
-          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-            {el.role}
-          </td>
-          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-            <Stack
-              direction="row"
-              spacing={0}
-              display="flex"
-              alignContent="center"
-            >
-              <EditUser
-                uId={el.id}
-                username={el.username}
-                fullname={el.fullname}
-                runFunction={getUserData}
-              />
-              <EditWarehouse
-                uId={el.id}
-                role={el.role}
-                warehouse={el.Warehouse}
-                runFunction={getUserData}
-              />
-              <Button
-                variant="link"
-                color="red"
-                width="40px"
-                onClick={() => deleteUser(el.id)}
+  let allUser = null;
+  if (user.role === "admin") {
+    allUser = value.map((el) => {
+      if (!el.is_deleted) {
+        count++;
+        return (
+          <tr key={el.id}>
+            <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
+              {count}
+            </td>
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+              {el.email}
+            </td>
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              {el.username}
+            </td>
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              {el.role}
+            </td>
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              <Stack
+                direction="row"
+                spacing={0}
+                display="flex"
+                alignContent="center"
               >
-                <DeleteIcon />
-              </Button>
-            </Stack>
-          </td>
-        </tr>
-      );
-    }
-  });
-
+                <EditUser
+                  uId={el.id}
+                  username={el.username}
+                  fullname={el.fullname}
+                  runFunction={getUserData}
+                />
+                <EditWarehouse
+                  uId={el.id}
+                  role={el.role}
+                  warehouse={el.Warehouse}
+                  runFunction={getUserData}
+                />
+                <Button
+                  variant="link"
+                  color="red"
+                  width="40px"
+                  onClick={() => deleteUser(el.id)}
+                >
+                  <DeleteIcon />
+                </Button>
+              </Stack>
+            </td>
+          </tr>
+        );
+      }
+    });
+  } else allUser = [];
   return (
     <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <h1 className="text-xl font-semibold text-gray-900 mb-2 ">Manage User</h1>
@@ -173,35 +148,19 @@ const ManageWarehouse = () => {
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                    >
+                    <th className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
                       No
                     </th>
-
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
+                    <th className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Email
                     </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
+                    <th className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Username
                     </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
+                    <th className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Role
                     </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
+                    <th className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Action
                     </th>
                   </tr>
@@ -214,14 +173,12 @@ const ManageWarehouse = () => {
           </div>
         </div>
       </div>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
           <ModalBody></ModalBody>
-
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
@@ -233,5 +190,4 @@ const ManageWarehouse = () => {
     </div>
   );
 };
-
-export default ManageWarehouse;
+export default ManageUser;

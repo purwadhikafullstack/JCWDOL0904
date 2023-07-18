@@ -42,21 +42,30 @@ const EditeStock = (props) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await api.patch("/stock/update", {
-            id: props.idStock,
-            newStock: stock,
-          });
+          const token = JSON.parse(localStorage.getItem("auth"));
+          const response = await api.patch(
+            "/stock/update",
+            {
+              id: props.idStock,
+              newStock: stock,
+            },
+            {
+              headers: {
+                Authorization: token,
+                Accept: "appplication/json",
+                "Content-Type": "application/json",
+              },
+            }
+          );
           Swal.fire({
             title: "Success",
             text: "Edite success!",
             icon: "success",
             confirmButtonText: "Ok",
           });
-          console.log(response);
           props.runFunction();
           setStock(0);
         } catch (error) {
-          console.log(error);
           Swal.fire({
             title: "Error!",
             text: error.response.data.message,

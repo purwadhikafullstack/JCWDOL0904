@@ -9,7 +9,6 @@ const DropDownCategoryMP = (props) => {
         defaultValue={props.category}
         onChange={(e) => {
           props.setCategory(e.target.value);
-          console.log(e.target.value);
         }}
       >
         {props.Allcategory?.map((el) => {

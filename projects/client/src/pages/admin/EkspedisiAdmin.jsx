@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {api} from "../../API/api";
-import {Button, ButtonGroup, IconButton, Stack} from "@chakra-ui/react";
-import {DeleteIcon} from "@chakra-ui/icons";
+import React, { useEffect, useState } from "react";
+import { api } from "../../API/api";
+import { Button, ButtonGroup, IconButton, Stack } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 import Swal from "sweetalert2";
 import Alert from "../../components/SwallAlert";
 import Pagination from "../../components/admin/Pagination";
@@ -23,7 +23,7 @@ export const EkspedisiAdmin = () => {
       setEkspedisi(response.data.data);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
   useEffect(() => {
@@ -56,7 +56,7 @@ export const EkspedisiAdmin = () => {
         icon: "success",
       });
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
       Alert({
         title: "Failed!",
         text: error.response.data.message,
@@ -92,7 +92,8 @@ export const EkspedisiAdmin = () => {
               "&:hover": {
                 backgroundColor: "#3c3c3c",
               },
-            }}>
+            }}
+          >
             Add Ekspedisi
           </Button>
         </Stack>
@@ -111,12 +112,14 @@ export const EkspedisiAdmin = () => {
                     <tr className="flex justify-between ">
                       <th
                         scope="col"
-                        className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                        className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
                         Ekspedisi
                       </th>
                       <th
                         scope="col"
-                        className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900 mr-10">
+                        className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900 mr-10"
+                      >
                         Action
                       </th>
                     </tr>

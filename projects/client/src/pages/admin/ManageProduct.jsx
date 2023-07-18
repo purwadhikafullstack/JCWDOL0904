@@ -42,12 +42,11 @@ const ManageProduct = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setProducts(res.data.data);
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
-        console.log(err);
+        console.log({ message: "Something went wrong" });
       });
   };
   const handleSorting = (value) => {

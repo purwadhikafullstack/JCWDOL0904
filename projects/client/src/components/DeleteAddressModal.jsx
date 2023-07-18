@@ -26,7 +26,6 @@ function DeleteAddressModal({
           "Content-Type": "application/json",
         },
       });
-
       setAddressList(response.data);
     } catch (error) {
       console.error(error);
@@ -52,7 +51,6 @@ function DeleteAddressModal({
           await api.delete(`addresses/${id}`);
           fetchAddresses();
           localStorage.removeItem("selectedAddress");
-          setSelectedDeletedAddress(false);
         } catch (error) {
           console.error(error);
         }
@@ -61,13 +59,11 @@ function DeleteAddressModal({
   };
 
   const handleSelect = async (address) => {
-    console.log(address);
     try {
       const response = await api.patch(`addresses/${address.id}`, {
         id: address.id,
         id_user: address.id_user,
       });
-      console.log(response);
       onSelectAddress(response.data);
     } catch (error) {
       console.log(error);

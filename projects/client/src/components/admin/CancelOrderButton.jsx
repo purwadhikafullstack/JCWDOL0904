@@ -28,10 +28,8 @@ const CancelOrderButton = (props) => {
             confirmButtonText: "Ok",
           });
           props.runFunction();
-          console.log(response);
           setIsLoading(false);
         } catch (error) {
-          console.log(error);
           Swal.fire({
             title: "Error!",
             text: "something went wrong!",

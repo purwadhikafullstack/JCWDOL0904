@@ -72,10 +72,8 @@ const Homepage = () => {
   };
 
   useEffect(() => {
-    // getUserData();
     getAllCategory();
     fetchProducts(category);
-    // console.log(isLogin);
   }, [page, search, sort, order]);
 
   return (

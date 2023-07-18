@@ -24,10 +24,6 @@ const ManageWarehouse = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [sort, setSort] = useState("DESC");
 
-  useEffect(() => {
-    console.log(value);
-  }, []);
-
   const handlePageClick = (event) => {
     setPage(event.selected);
   };
@@ -43,12 +39,11 @@ const ManageWarehouse = () => {
         },
       })
       .then((result) => {
-        console.log(result);
         dispatch(data(result.data.result));
         setTotalPage(result.data.totalPage);
       })
       .catch((err) => {
-        console.log(err);
+        console.log({ message: "Something went wrong" });
       });
   };
 
@@ -65,7 +60,6 @@ const ManageWarehouse = () => {
       if (result.isConfirmed) {
         try {
           const response = await api.delete(`/warehouses/delete/${id}`);
-          console.log(response);
           getWarehouseData();
           Swal.fire({
             title: "Success",
@@ -80,7 +74,6 @@ const ManageWarehouse = () => {
             icon: "warning",
             confirmButtonText: "Ok",
           });
-          console.log(error);
         }
       }
     });

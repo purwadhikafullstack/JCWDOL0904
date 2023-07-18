@@ -28,23 +28,35 @@ const ManageStock = () => {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("ASC");
+  const [adminWare, setAdminWare] = useState(null);
   const AdminLogin = useSelector((state) => state.userSlice);
 
   const getProducts = async () => {
     try {
+      const token = JSON.parse(localStorage.getItem("auth"));
       console.log(stockFilter);
-      const response = await api.get("/stock/all", {
-        params: {
-          ware,
-          page,
-          stockFilter,
-          search,
-          categoryFilter,
-          sort,
-        },
-      });
+      const response = await api.get(
+        "/stock/all",
+
+        {
+          params: {
+            ware,
+            page,
+            stockFilter,
+            search,
+            categoryFilter,
+            sort,
+          },
+          headers: {
+            Authorization: token,
+            Accept: "appplication/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setTotalPage(response.data.totalPage);
       dispatch(dataStock(response.data.result));
+      setAdminWare(response.data.adminWarehouse);
     } catch (error) {}
   };
   const getAllCategory = async () => {
@@ -110,7 +122,11 @@ const ManageStock = () => {
           borderRadius="50px"
         >
           {warehouses?.map((el) => {
-            return (
+            return adminWare ? (
+              <option key={el.id} value={el.id}>
+                {adminWare.warehouse}
+              </option>
+            ) : (
               <option key={el.id} value={el.id}>
                 {el.warehouse}
               </option>

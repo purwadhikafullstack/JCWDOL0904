@@ -91,7 +91,6 @@ app.use("/api/dashboard", dashboardRouter);
 
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_SIZE") {
-    console.log("test");
     res.status(500).send({
       // result: "fail",
       // error: { code: 1001, message: "File is too big" },

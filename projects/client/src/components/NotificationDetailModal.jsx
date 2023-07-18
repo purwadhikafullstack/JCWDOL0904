@@ -1,7 +1,7 @@
-import {EnvelopeIcon} from "@heroicons/react/24/outline";
-import {useState} from "react";
-import {useEffect} from "react";
-import {api} from "../API/api";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import { useEffect } from "react";
+import { api } from "../API/api";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -18,9 +18,8 @@ export default function NotificationDetailModal({
   const fetchNotificationDetail = async (id) => {
     try {
       const response = await api.get(`/notification/${id}/detail`);
-      const {notify} = response.data;
+      const { notify } = response.data;
       setNotification(notify);
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -33,7 +32,6 @@ export default function NotificationDetailModal({
         userId: 2,
       });
       fetchNotification();
-      console.log(response);
     } catch (error) {
       console.error(error);
     }

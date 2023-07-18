@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from "react";
-import {apiro} from "../API/apiro";
-import {api} from "../API/api";
-import {XMarkIcon} from "@heroicons/react/24/outline";
+import React, { useState, useEffect } from "react";
+import { apiro } from "../API/apiro";
+import { api } from "../API/api";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import Swal from "sweetalert2";
 import AddAddressModalRender from "./AddAddressModalRender";
 
-export const AddAddressModal = ({closeAddressModal}) => {
+export const AddAddressModal = ({ closeAddressModal }) => {
   const [provinces, setProvinces] = useState([]);
   const [provincess, setProvincess] = useState([]);
   const [cities, setCities] = useState([]);
@@ -65,6 +65,7 @@ export const AddAddressModal = ({closeAddressModal}) => {
         text: response.data.message,
         icon: "success",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       setRecipientName("");
       setPhoneNumber("");
@@ -79,8 +80,8 @@ export const AddAddressModal = ({closeAddressModal}) => {
         text: error.response.data.message,
         icon: "warning",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
-      console.log(error);
     } finally {
       setIsloading(false);
     }

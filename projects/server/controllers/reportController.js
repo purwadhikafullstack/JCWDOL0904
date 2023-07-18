@@ -127,17 +127,15 @@ module.exports = {
       }, 0);
       const total_price = await transactionItem.sum("price");
       res.status(200).send({
-        // startDate,
         result: productLimited,
-        // idWarehouse,
-        // adminWarehouse,
+        idWarehouse,
+        adminWarehouse,
         totalPage,
-        // page,
+        page,
         totalPriceFiltered,
         total_price,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send(error);
     }
   },

@@ -8,13 +8,11 @@ module.exports = {
     token = token.split(" ")[1];
     try {
       const verified = jwt.verify(token, "galaxy");
-      console.log(verified);
       res.status(200).send({
         message: "Token is valid",
         user: verified.id,
       });
     } catch (err) {
-      console.log(err);
       res.status(400).send({
         message: "Invalid or expired token",
       });

@@ -15,7 +15,6 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      // console.log(state, action);
       state.fullname = action.payload.fullname;
       state.username = action.payload.username;
       state.is_verified = action.payload.is_verified;

@@ -1,9 +1,7 @@
 const db = require("../models");
 const warehous = db.Warehouse;
 const stoc = db.Stocks;
-const produc = db.Products;
 const stockMovement = db.StockMovement;
-const stockHistory = db.StockHistory;
 
 module.exports = {
   migrationStock: async (req, res) => {
@@ -31,11 +29,17 @@ module.exports = {
         where: { id: result.warehouse_sender_id },
         include: [stoc],
       });
+
+      if (!getWarehouseDataSender) {
+        throw new Error("Someone has deleted the warehouse!");
+      }
       const getWarehouseDataReceive = await warehous.findOne({
         where: { id: result.warehouse_receive_id },
         include: [stoc],
       });
-
+      if (!getWarehouseDataReceive) {
+        throw new Error("Someone has deleted the warehouse!");
+      }
       let getAllStockReceive = [];
       let getAllStockSender = [];
       getWarehouseDataSender.Stocks.forEach((el) => {
@@ -62,7 +66,9 @@ module.exports = {
         allDifferentproduct,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   createMigration: async (req, res) => {
@@ -102,7 +108,9 @@ module.exports = {
         allproduct,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
 };
