@@ -19,7 +19,6 @@ module.exports = {
 
       next();
     } catch (error) {
-      console.log(error);
       res.status(401).send({
         isError: true,
         message: "Invalid Token",

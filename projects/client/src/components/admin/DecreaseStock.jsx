@@ -46,10 +46,21 @@ const DecreaseStock = (props) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await api.patch("/stock/decrease", {
-            id: props.idStock,
-            newStock: stock,
-          });
+          const token = JSON.parse(localStorage.getItem("auth"));
+          const response = await api.patch(
+            "/stock/decrease",
+            {
+              id: props.idStock,
+              newStock: stock,
+            },
+            {
+              headers: {
+                Authorization: token,
+                Accept: "appplication/json",
+                "Content-Type": "application/json",
+              },
+            }
+          );
           props.runFunction();
           setStock(0);
         } catch (error) {

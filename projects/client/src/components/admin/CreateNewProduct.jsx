@@ -25,7 +25,6 @@ const CreateNewProduct = (props) => {
   const [category, setCategory] = useState("Select category");
   const { role } = useSelector((state) => state.userSlice);
   const handleSubmit = async () => {
-    console.log(file);
     try {
       if (!file) {
         return Alert({

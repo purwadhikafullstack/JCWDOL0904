@@ -17,7 +17,6 @@ export const ResetPassword = () => {
   const resetPassword = async (values) => {
     try {
       let result = await api.post(url, { email: values.email });
-      console.log(result);
       Swal.fire({
         title: "Success",
         text: result.data.message,

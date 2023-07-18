@@ -74,7 +74,8 @@ export default function Checkout() {
           setOngkir(ongkirValue);
         }
       } catch (error) {
-        console.log(error);
+        navigate("/404");
+        console.log({ message: "Something went wrong" });
         setOngkirIsLoading(false);
       } finally {
         setOngkirIsLoading(false);
@@ -127,7 +128,7 @@ export default function Checkout() {
         let response = await api.get(`nearest-warehouse/${addressId}`);
         setWarehouseOrigin(response.data);
       } catch (error) {
-        console.log(error);
+        console.log({ message: "Something went wrong" });
       }
     };
     fetchNearestWarehouse();
@@ -154,7 +155,6 @@ export default function Checkout() {
       const deletedCarts = cartItems.filter((item) => item.Product === null);
       if (deletedCarts.length > 0) {
         const cartItemIds = deletedCarts.map((item) => item.id);
-        console.log(cartItemIds);
         await api.put(`/cart/item`, { cartItemIds });
         localStorage.removeItem("cartItems");
         fetchCartItems();
@@ -201,7 +201,8 @@ export default function Checkout() {
         icon: "error",
       });
       dispatch(updateCart({ cart: [] }));
-      console.log("Error creating order:", error);
+      navigate("/");
+      console.log("Error creating order");
     } finally {
       setOngkirIsLoading(false);
     }

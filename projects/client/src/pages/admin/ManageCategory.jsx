@@ -41,11 +41,10 @@ const ManageCategory = () => {
           site: "manageC",
         },
       });
-      console.log(response);
       dispatch(AllCategory(response.data.result));
       setTotalPage(response.data.totalpage);
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 
@@ -71,7 +70,6 @@ const ManageCategory = () => {
             confirmButtonText: "Ok",
           });
           getAllCategory();
-          console.log(response);
         } catch (error) {
           Swal.fire({
             title: "Error!",
@@ -79,7 +77,7 @@ const ManageCategory = () => {
             icon: "warning",
             confirmButtonText: "Ok",
           });
-          console.log(error);
+          console.log({ message: "Something went wrong" });
         }
       }
     });

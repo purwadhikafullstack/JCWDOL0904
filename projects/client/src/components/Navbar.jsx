@@ -37,7 +37,7 @@ export const Navbar = () => {
   }, [localStorage.getItem("auth")]);
 
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notificationRead", (updatedNotifications) => {
       console.log("This is an update from the socket", updatedNotifications);
 
@@ -73,9 +73,6 @@ export const Navbar = () => {
 
   const updateCartData = (cart) => {
     dispatch(updateCart({ cart }));
-  };
-  const updateUnreadCount = (unread) => {
-    dispatch(unreadCount({ unread }));
   };
   const updateUnreadCount = (unread) => {
     dispatch(unreadCount({ unread }));

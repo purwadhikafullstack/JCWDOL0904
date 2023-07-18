@@ -15,7 +15,6 @@ export default function Carousel() {
     await api
       .get("/promotion")
       .then((result) => {
-        // console.log(result);
         setPromotionImg(result.data.wideSc);
         setPromotionImgSmall(result.data.smallSc);
       })

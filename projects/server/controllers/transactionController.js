@@ -124,7 +124,6 @@ module.exports = {
           offset: page * limit,
         });
       }
-      console.log(result);
       const productLimited = result.rows.slice(0, limit);
       const priceOnly = [];
       result.rows.forEach((el) => {
@@ -135,7 +134,6 @@ module.exports = {
       }, 0);
       const total_price = await TransactionItem.sum("price");
       res.status(200).send({
-        startDate,
         result: productLimited,
         idWarehouse,
         adminWarehouse,
@@ -143,12 +141,8 @@ module.exports = {
         page,
         totalPriceFiltered,
         total_price,
-        startDate,
-        endDate,
-        month,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send({
         message: "Error!",
       });
@@ -173,7 +167,6 @@ module.exports = {
         result: result.length > 0 ? result : [],
       });
     } catch (error) {
-      console.log(error);
       res.status(500).send({ error: "Server error" });
     }
   },

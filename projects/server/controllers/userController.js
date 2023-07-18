@@ -92,7 +92,6 @@ module.exports = {
     try {
       const { email, fullname, username, password } = req.body;
       const { id } = req.dataToken;
-      console.log(email, fullname, username, password, id);
 
       const dataRole = await User.findOne({
         where: { id },
@@ -172,7 +171,6 @@ module.exports = {
       });
       res.json(result);
     } catch (error) {
-      console.log(error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
@@ -210,7 +208,6 @@ module.exports = {
     try {
       const { id } = req.body;
       const dataRole = req.dataToken;
-      // console.log(id);
 
       const noDeleteAdmin = await User.findOne({
         where: { id: id },
@@ -237,7 +234,6 @@ module.exports = {
           status: { [Op.notIn]: ["Order Confirmed", "Canceled"] },
         },
       });
-      console.log(userStatus);
 
       if (userStatus) {
         return res.status(400).send({
@@ -329,7 +325,6 @@ module.exports = {
     try {
       const { id, username, fullname, password, role } = req.body;
       const dataToken = req.dataToken;
-      // console.log(dataToken);
 
       const findAdminPassword = await User.findOne({
         where: { id: dataToken.id },
@@ -339,7 +334,6 @@ module.exports = {
         password,
         findAdminPassword.dataValues.password
       );
-      console.log(isValid);
 
       if (role === "adminWarehouse" || role === "user") {
         return res.status(400).send({
@@ -375,7 +369,6 @@ module.exports = {
     try {
       let username = req.body.username;
       const { id } = req.dataToken;
-      console.log(id);
 
       let result = await User.update(
         {
@@ -408,7 +401,6 @@ module.exports = {
         changeUsername,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send(error);
     }
   },

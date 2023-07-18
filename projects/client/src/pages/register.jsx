@@ -15,7 +15,6 @@ export const Register = () => {
 
   const registerAccount = async (values) => {
     try {
-      console.log(values);
       let result = await api.post(url, { email: values.email });
       Swal.fire({
         title: "Success",

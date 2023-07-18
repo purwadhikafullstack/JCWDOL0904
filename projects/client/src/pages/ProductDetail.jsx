@@ -37,10 +37,11 @@ const ProductDetail = () => {
   const getOneProduct = async (idP) => {
     try {
       const result = await api.post("/product/detail", { idP });
-      console.log(result.data);
       setStock(result.data.stock);
       setProduct(result.data.productById);
-    } catch (error) {}
+    } catch (error) {
+      console.log({ message: "Something went wrong" });
+    }
   };
 
   let productId = JSON.parse(localStorage.getItem("idProduct"));

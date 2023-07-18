@@ -42,7 +42,6 @@ function App() {
   const getAllCategory = async () => {
     try {
       const response = await api.get("/category");
-      // console.log(response);
       dispatch(AllCategory(response.data.result));
     } catch (error) {
       console.log(error);
@@ -85,7 +84,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notificationRead", (updatedNotifications) => {
       const unread = updatedNotifications.filter((notification) => {
         return (
@@ -100,7 +99,7 @@ function App() {
     };
   }, []);
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notificationAdminRead", (updatedNotifications) => {
       const unreadAdmin = updatedNotifications.filter((notification) => {
         return (

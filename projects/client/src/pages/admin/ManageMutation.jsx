@@ -33,7 +33,6 @@ const ManageMutation = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setProducts(res.data.data);
         setTotalPage(res.data.totalPage);
       })

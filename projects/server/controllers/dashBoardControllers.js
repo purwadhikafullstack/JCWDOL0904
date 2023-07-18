@@ -35,7 +35,9 @@ module.exports = {
 
       res.status(200).send({ result: result.count });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "Something went wrong",
+      });
     }
   },
   countAllMutation: async (req, res) => {
@@ -78,7 +80,9 @@ module.exports = {
 
       res.status(200).send({ result });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "Something went wrong",
+      });
     }
   },
   countAllUserBuy: async (req, res) => {
@@ -138,7 +142,9 @@ module.exports = {
 
       res.status(200).send({ result, userPrice });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "Something went wrong",
+      });
     }
   },
 };

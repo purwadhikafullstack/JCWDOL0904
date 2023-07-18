@@ -1,12 +1,12 @@
-import {useEffect, useState} from "react";
-import {MdError, MdCheckCircle} from "react-icons/md";
+import { useEffect, useState } from "react";
+import { MdError, MdCheckCircle } from "react-icons/md";
 import NotificationDetailModal from "../../components/NotificationDetailModal";
 import moment from "moment";
-import {useDispatch} from "react-redux";
-import {unreadCount} from "../../features/notificationSlice";
+import { useDispatch } from "react-redux";
+import { unreadCount } from "../../features/notificationSlice";
 import io from "socket.io-client";
-import {api} from "../../API/api";
-import {unreadAdminCount} from "../../features/adminNotificationSlice";
+import { api } from "../../API/api";
+import { unreadAdminCount } from "../../features/adminNotificationSlice";
 import NotifAdminDetailModal from "../../components/admin/NotifAdminDetailModal";
 import Pagination from "../../components/admin/Pagination";
 import OrderSearch from "../../components/admin/OrderSearch";
@@ -22,7 +22,7 @@ export default function AdminNotification() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notificationAdmin", (updatedNotifications) => {
       console.log("ini update from socet Admin Notif", updatedNotifications);
       setNotifications(updatedNotifications);
@@ -32,7 +32,7 @@ export default function AdminNotification() {
     };
   }, []);
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notificationAdminRead", (updatedNotifications) => {
       const unreadAdmin = updatedNotifications.filter((notification) => {
         return (
@@ -40,7 +40,7 @@ export default function AdminNotification() {
           !notification.UserNotifications[0].read
         );
       });
-      dispatch(unreadAdminCount({unreadAdmin: unreadAdmin.length}));
+      dispatch(unreadAdminCount({ unreadAdmin: unreadAdmin.length }));
     });
     return () => {
       socket.off("notificationAdminRead");
@@ -51,7 +51,6 @@ export default function AdminNotification() {
     fetchNotification();
   }, [currentPage, invoiceNumber]);
 
-  console.log(notifications);
   const fetchNotification = async () => {
     try {
       let response = await api.get("/notification/admin", {
@@ -62,9 +61,8 @@ export default function AdminNotification() {
       });
       setNotifications(response.data.notif);
       setTotalPages(response.data.totalPages);
-      console.log(response);
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
   const handleSearch = (e) => {
@@ -102,7 +100,8 @@ export default function AdminNotification() {
         <div className="flex pt-6 min-h-[650px] justify-center">
           <ul
             role="list"
-            className="flex flex-col gap-3 w-full sm:max-w-[605px] md:max-w-[450px] xl:max-w-[800px] 2xl:max-w-[1000px] mx-auto">
+            className="flex flex-col gap-3 w-full sm:max-w-[605px] md:max-w-[450px] xl:max-w-[800px] 2xl:max-w-[1000px] mx-auto"
+          >
             {notifications.map((notification) => {
               const readStatus =
                 notification.UserNotifications.length > 0
@@ -114,13 +113,15 @@ export default function AdminNotification() {
                   onClick={(event) => openModal(notification.id, event)}
                   className={`relative py-4 px-4 transition duration-300 ease-in-out rounded-full w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600 ${
                     readStatus ? "bg-gray-50" : "bg-gray-200"
-                  } hover:bg-gray-100 hover:shadow-md`}>
+                  } hover:bg-gray-100 hover:shadow-md`}
+                >
                   <div className="flex gap-10 items-center space-x-3">
                     <div className="min-w-0 flex-1">
                       <a href="#" className="block focus:outline-none">
                         <span
                           className="absolute inset-0"
-                          aria-hidden="true"></span>
+                          aria-hidden="true"
+                        ></span>
                         <p className="truncate text-sm font-medium text-gray-900">
                           {notification.title}
                         </p>
@@ -128,7 +129,8 @@ export default function AdminNotification() {
                     </div>
                     <time
                       dateTime={notification.createdAt}
-                      className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500 pr-14">
+                      className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500 pr-14"
+                    >
                       {moment(notification.createdAt).format(
                         "MMMM Do YYYY, h:mm:ss a"
                       )}

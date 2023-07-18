@@ -88,7 +88,9 @@ module.exports = {
         endDate,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "Something went wrong",
+      });
     }
   },
 };

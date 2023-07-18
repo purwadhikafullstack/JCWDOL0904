@@ -59,13 +59,11 @@ function DeleteAddressModal({
   };
 
   const handleSelect = async (address) => {
-    console.log(address);
     try {
       const response = await api.patch(`addresses/${address.id}`, {
         id: address.id,
         id_user: address.id_user,
       });
-      console.log(response);
       onSelectAddress(response.data);
     } catch (error) {
       console.log(error);

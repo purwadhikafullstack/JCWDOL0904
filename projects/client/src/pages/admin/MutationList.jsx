@@ -23,8 +23,9 @@ const MutationList = () => {
   const [search, setSearch] = useState("");
   const [totalPage, setTotalPage] = useState(0);
   const [sort, setSort] = useState(1);
-  const [isAdmin, setIsAdmin] = useState();
+  const [isAdmin, setIsAdmin] = useState(false);
   const [request, setRequest] = useState("in");
+  const [adminWarehouse, setAdminWarehouse] = useState([]);
   const swalCheckingObject = {
     title: "Are you sure?",
     text: "You won't be able to revert this!",
@@ -39,18 +40,28 @@ const MutationList = () => {
   };
 
   const rejectMutation = async (id) => {
+    const token = JSON.parse(localStorage.getItem("auth"));
     Swal.fire(swalCheckingObject).then(async (result) => {
       try {
         if (result.isConfirmed) {
-          const response = await api.patch("/mutation/rejected", {
-            id,
-          });
+          const response = await api.patch(
+            "/mutation/rejected",
+            {
+              id,
+            },
+            {
+              headers: {
+                Authorization: token,
+                Accept: "appplication/json",
+                "Content-Type": "application/json",
+              },
+            }
+          );
           console.log(response);
           getMutationData();
           Swal.fire("Rejected!", "Mutation has been rejected.", "success");
         }
       } catch (error) {
-        console.log(error);
         swalErrorCatch(error.response.data.message);
         getMutationData();
       }
@@ -66,15 +77,25 @@ const MutationList = () => {
   ) => {
     Swal.fire(swalCheckingObject).then(async (result) => {
       try {
+        const token = JSON.parse(localStorage.getItem("auth"));
         if (result.isConfirmed) {
-          const response = await api.patch("/mutation/proceed", {
-            id,
-            warehouse_sender_id,
-            warehouse_receive_id,
-            qty,
-            id_product,
-          });
-          console.log(response);
+          const response = await api.patch(
+            "/mutation/proceed",
+            {
+              id,
+              warehouse_sender_id,
+              warehouse_receive_id,
+              qty,
+              id_product,
+            },
+            {
+              headers: {
+                Authorization: token,
+                Accept: "appplication/json",
+                "Content-Type": "application/json",
+              },
+            }
+          );
           getMutationData();
           Swal.fire("Confirmed!", "Mutation has been confirmed.", "success");
         }
@@ -119,13 +140,11 @@ const MutationList = () => {
         },
       })
       .then((result) => {
-        console.log(result);
         dispatch(mutation(result.data.result));
         setTotalPage(result.data.totalPage);
+        setAdminWarehouse(result.data.dataAdmin);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -142,10 +161,6 @@ const MutationList = () => {
       />
     );
   });
-
-  useEffect(() => {
-    console.log(status);
-  }, [status]);
 
   const handleSorting = (value) => {
     setSort(parseInt(value));
@@ -166,8 +181,8 @@ const MutationList = () => {
         setRequest={setRequest}
         arrange={arrange}
         setArrange={setArrange}
+        adminWarehouse={adminWarehouse}
       />
-
       <SearchAndAddMi
         navigation={navigation}
         search={search}
@@ -176,11 +191,9 @@ const MutationList = () => {
         getMutationData={getMutationData}
         warehouse={warehouse}
       />
-
       <MutationListTable allMutation={allMutation} />
       <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );
 };
-
 export default MutationList;

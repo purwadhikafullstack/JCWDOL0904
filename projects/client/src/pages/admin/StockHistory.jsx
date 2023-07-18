@@ -59,7 +59,7 @@ const StockHistory = () => {
       setTotalPage(response.data.totalPage);
       dispatch(stockHistoryData(response.data.result.rows));
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 

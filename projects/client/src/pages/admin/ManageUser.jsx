@@ -22,18 +22,17 @@ import EditWarehouse from "../../components/admin/EditAdminWarehouseModal";
 
 const ManageUser = () => {
   const value = useSelector((state) => state.allUserSlice.value);
-  console.log(value);
+  const user = useSelector((state) => state.userSlice);
   const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const url = "user/data/all";
   const getUserData = async () => {
-    const id = JSON.parse(localStorage.getItem("auth"));
     try {
       await api.get(url).then((result) => {
         dispatch(allUserData(result.data));
       });
     } catch (err) {
-      console.log(err);
+      console.log({ message: "Something went wrong" });
     }
   };
 
@@ -82,58 +81,60 @@ const ManageUser = () => {
   useEffect(() => {
     getUserData();
   }, []);
-
   let count = 0;
-  const allUser = value.map((el) => {
-    if (!el.is_deleted) {
-      count++;
-      return (
-        <tr key={el.id}>
-          <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
-            {count}
-          </td>
-          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-            {el.email}
-          </td>
-          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-            {el.username}
-          </td>
-          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-            {el.role}
-          </td>
-          <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-            <Stack
-              direction="row"
-              spacing={0}
-              display="flex"
-              alignContent="center"
-            >
-              <EditUser
-                uId={el.id}
-                username={el.username}
-                fullname={el.fullname}
-                runFunction={getUserData}
-              />
-              <EditWarehouse
-                uId={el.id}
-                role={el.role}
-                warehouse={el.Warehouse}
-                runFunction={getUserData}
-              />
-              <Button
-                variant="link"
-                color="red"
-                width="40px"
-                onClick={() => deleteUser(el.id)}
+  let allUser = null;
+  if (user.role === "admin") {
+    allUser = value.map((el) => {
+      if (!el.is_deleted) {
+        count++;
+        return (
+          <tr key={el.id}>
+            <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
+              {count}
+            </td>
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+              {el.email}
+            </td>
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              {el.username}
+            </td>
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              {el.role}
+            </td>
+            <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+              <Stack
+                direction="row"
+                spacing={0}
+                display="flex"
+                alignContent="center"
               >
-                <DeleteIcon />
-              </Button>
-            </Stack>
-          </td>
-        </tr>
-      );
-    }
-  });
+                <EditUser
+                  uId={el.id}
+                  username={el.username}
+                  fullname={el.fullname}
+                  runFunction={getUserData}
+                />
+                <EditWarehouse
+                  uId={el.id}
+                  role={el.role}
+                  warehouse={el.Warehouse}
+                  runFunction={getUserData}
+                />
+                <Button
+                  variant="link"
+                  color="red"
+                  width="40px"
+                  onClick={() => deleteUser(el.id)}
+                >
+                  <DeleteIcon />
+                </Button>
+              </Stack>
+            </td>
+          </tr>
+        );
+      }
+    });
+  } else allUser = [];
   return (
     <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <h1 className="text-xl font-semibold text-gray-900 mb-2 ">Manage User</h1>
@@ -189,5 +190,4 @@ const ManageUser = () => {
     </div>
   );
 };
-
 export default ManageUser;

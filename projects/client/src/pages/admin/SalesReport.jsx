@@ -37,7 +37,6 @@ const SalesReport = () => {
       const endDate = selectedDateRange
         ? moment(selectedDateRange.endDate).format("YYYY-MM-DD HH:mm:ss")
         : null;
-      console.log(startDate, endDate);
       const response = await api.get(urlProduct, {
         params: {
           idWarehouse: selectedWarehouse,
@@ -57,7 +56,7 @@ const SalesReport = () => {
       setTransactionByMonth(response.data.totalPriceFiltered);
       setTotalPrice(response.data.total_price);
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 

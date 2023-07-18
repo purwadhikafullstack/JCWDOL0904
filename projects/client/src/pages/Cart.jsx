@@ -10,7 +10,6 @@ import Alert from "../components/SwallAlert";
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  console.log(cartItems);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -86,13 +85,12 @@ const Cart = () => {
       const deletedCarts = cartItems.filter((item) => item.Product === null);
       if (deletedCarts.length > 0) {
         const cartItemIds = deletedCarts.map((item) => item.id);
-        console.log(cartItemIds);
         await api.put(`/cart/item`, { cartItemIds });
         localStorage.removeItem("cartItems");
         fetchCartItems();
       }
     } catch (error) {
-      console.error(error);
+      console.log({ message: "Something went wrong" });
     }
   };
   const deleteCartItem = async (cartItemId) => {

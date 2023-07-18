@@ -65,6 +65,7 @@ export const AddAddressModal = ({ closeAddressModal }) => {
         text: response.data.message,
         icon: "success",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       setRecipientName("");
       setPhoneNumber("");
@@ -79,8 +80,8 @@ export const AddAddressModal = ({ closeAddressModal }) => {
         text: error.response.data.message,
         icon: "warning",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
-      console.log(error);
     } finally {
       setIsloading(false);
     }

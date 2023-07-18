@@ -54,7 +54,7 @@ export default function Profile() {
 
       dispatch(login(response.data.user));
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 

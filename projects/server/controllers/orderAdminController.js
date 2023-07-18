@@ -91,7 +91,6 @@ module.exports = {
 
       res.status(200).send({ message: "Transaction confirmed successfully" });
     } catch (error) {
-      console.log(error);
       res.status(500).send({ message: "Failed to confirm transaction" });
     }
   },

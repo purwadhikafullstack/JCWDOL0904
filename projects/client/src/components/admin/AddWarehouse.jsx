@@ -95,16 +95,6 @@ const AddWarehouse = (props) => {
     }
   };
 
-  const inititalStock = async (id_warehouse) => {
-    try {
-      const response = await api.post("/warehouses/initial-stock", {
-        id_warehouse,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     getAllProvince();
   }, []);
@@ -113,10 +103,6 @@ const AddWarehouse = (props) => {
       fetchAddressesCity();
     }
   }, [provinces, provincess]);
-
-  useEffect(() => {
-    console.log(city, provincess);
-  }, [provincess, city]);
 
   return (
     <div>
