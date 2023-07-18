@@ -24,13 +24,14 @@ module.exports = {
       const month = req.query.month || "01";
       let orderFilter = req.query.order;
       let sortFilter = req.query.sort;
+      let startDate = req.query.startDate || moment().format("YYYY-MM-DD");
+      let endDate = req.query.endDate || moment().format("YYYY-MM-DD");
 
-      let startDate = null;
-      let endDate = null;
-      if (month) {
-        startDate = moment(month, "MM").startOf("month").format("YYYY-MM-DD");
-        endDate = moment(month, "MM").endOf("month").format("YYYY-MM-DD");
+      if (endDate) {
+        const nextDay = moment(endDate).add(1, "days");
+        endDate = nextDay.format("YYYY-MM-DD");
       }
+
       if (adminWarehouse) {
         idWarehouse = adminWarehouse;
       }
@@ -38,10 +39,10 @@ module.exports = {
       result = await TransactionItem.findAndCountAll({
         where: {
           ...(selectedCategory ? { category: selectedCategory } : {}),
-          ...(month
+          ...(startDate && endDate
             ? {
                 createdAt: {
-                  [Op.between]: [new Date(startDate), new Date(endDate)],
+                  [Op.between]: [startDate, endDate],
                 },
               }
             : {}),
@@ -76,10 +77,10 @@ module.exports = {
         result = await TransactionItem.findAndCountAll({
           where: {
             ...(selectedCategory ? { category: selectedCategory } : {}),
-            ...(month
+            ...(startDate && endDate
               ? {
                   createdAt: {
-                    [Op.between]: [new Date(startDate), new Date(endDate)],
+                    [Op.between]: [startDate, endDate],
                   },
                 }
               : {}),
@@ -124,6 +125,9 @@ module.exports = {
         page,
         totalPriceFiltered,
         total_price,
+        startDate,
+        endDate,
+        month,
       });
     } catch (error) {
       console.log(error);

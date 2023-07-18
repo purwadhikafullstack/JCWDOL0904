@@ -50,11 +50,10 @@ const DecreaseStock = (props) => {
             id: props.idStock,
             newStock: stock,
           });
-          console.log(response);
           props.runFunction();
           setStock(0);
         } catch (error) {
-          console.log(error);
+          console.log({ message: "Something went wrong" });
         }
       }
     });

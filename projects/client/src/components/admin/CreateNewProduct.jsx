@@ -58,7 +58,6 @@ const CreateNewProduct = (props) => {
       const response = await api.post("/product/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response.data.result.id);
       initialStock(response.data.result.id);
       props.getProducts();
     } catch (error) {
@@ -69,12 +68,9 @@ const CreateNewProduct = (props) => {
   const getAllCategory = async () => {
     try {
       const response = await api.get("/category/");
-      // console.log(response.data.result);
-
-      console.log(response.data.result);
       setAllCategory(response.data.result);
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 

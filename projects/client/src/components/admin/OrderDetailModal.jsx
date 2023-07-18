@@ -21,7 +21,7 @@ export default function OrderDetailModal({
       const response = await api.get(`/order/detail/${transactionId}`);
       setTransactions(response.data.orders);
     } catch (error) {
-      console.error(error);
+      console.log({ message: "Something went wrong" });
     }
   }, []);
 

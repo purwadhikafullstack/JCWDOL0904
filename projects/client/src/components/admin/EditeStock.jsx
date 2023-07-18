@@ -52,11 +52,9 @@ const EditeStock = (props) => {
             icon: "success",
             confirmButtonText: "Ok",
           });
-          console.log(response);
           props.runFunction();
           setStock(0);
         } catch (error) {
-          console.log(error);
           Swal.fire({
             title: "Error!",
             text: error.response.data.message,

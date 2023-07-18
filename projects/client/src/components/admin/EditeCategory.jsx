@@ -44,7 +44,6 @@ const EditeCategory = (props) => {
       });
       onClose();
       setLoad(false);
-      console.log(response);
       props.runFunction();
       Swal.fire({
         title: "Success",
@@ -65,7 +64,6 @@ const EditeCategory = (props) => {
         icon: "warning",
         confirmButtonText: "Ok",
       });
-      console.log(error);
     }
   };
 

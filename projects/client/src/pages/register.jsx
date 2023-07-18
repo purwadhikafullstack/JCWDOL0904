@@ -2,7 +2,6 @@ import { React, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { api } from "../API/api";
-import { Button } from "@chakra-ui/react";
 import { Field, ErrorMessage, Formik, Form } from "formik";
 import * as Yup from "yup";
 
@@ -10,7 +9,6 @@ const url = "/user/register";
 
 export const Register = () => {
   let navigate = useNavigate();
-  let email = useRef();
   const registerSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
   });

@@ -31,10 +31,9 @@ const AddWarehouse = (props) => {
   const getAllProvince = async () => {
     try {
       const response = await apiro.get("/rajaongkir/province");
-      console.log(response.data.data);
       setProvinces(response.data.data);
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Server Error" });
     }
   };
   const fetchAddressesCity = async () => {
@@ -42,10 +41,9 @@ const AddWarehouse = (props) => {
       const response = await apiro.get(
         `rajaongkir/city?province_id=${provincess.id}`
       );
-      console.log(response.data.data.results);
       setCities(response.data.data.results);
     } catch (error) {
-      console.error(error);
+      console.log({ message: "Server Error" });
     }
   };
 
@@ -68,8 +66,6 @@ const AddWarehouse = (props) => {
       }
 
       props.runFunction();
-      console.log(response);
-      console.log(result);
       onClose();
       setLoad(false);
       Swal.fire({
@@ -91,7 +87,6 @@ const AddWarehouse = (props) => {
         icon: "warning",
         confirmButtonText: "Ok",
       });
-      console.log(error);
     }
   };
 

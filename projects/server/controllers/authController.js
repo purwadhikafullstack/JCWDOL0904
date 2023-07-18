@@ -150,7 +150,6 @@ module.exports = {
           message: "Please complete your data",
         });
       }
-
       if (password !== confirmPassword) {
         return res.status(400).send({
           message: "Passwords does not match",

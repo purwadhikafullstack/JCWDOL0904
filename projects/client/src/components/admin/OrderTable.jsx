@@ -1,8 +1,8 @@
 import React from "react";
-import {api} from "../../API/api";
+import { api } from "../../API/api";
 import Alert from "../SwallAlert";
 import Swal from "sweetalert2";
-import {OrderTableRender} from "./OrderTableRender";
+import { OrderTableRender } from "./OrderTableRender";
 import moment from "moment";
 import CancelOrderButton from "./CancelOrderButton";
 
@@ -29,7 +29,7 @@ const OrderTable = ({
         text: error.response.data.message,
         icon: "error",
       });
-      console.error(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 

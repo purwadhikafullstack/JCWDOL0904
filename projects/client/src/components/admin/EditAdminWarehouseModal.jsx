@@ -57,7 +57,6 @@ const EditWarehouse = (props) => {
           },
         }
       );
-      console.log(response);
       Swal.fire({
         title: "Success",
         text: response.data.message,
@@ -74,7 +73,6 @@ const EditWarehouse = (props) => {
         confirmButtonText: "Ok",
       });
       onClose();
-      console.log(error);
     }
   };
 

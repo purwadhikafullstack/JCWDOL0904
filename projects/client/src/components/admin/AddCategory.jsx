@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -15,28 +15,26 @@ import {
   FormHelperText,
   Input,
 } from "@chakra-ui/react";
-import {AddIcon} from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 
-import {api} from "../../API/api";
+import { api } from "../../API/api";
 import Swal from "sweetalert2";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 const AddCategory = (props) => {
-  const {isOpen, onOpen, onClose} = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [categor, setCategor] = useState("");
   const [isLoad, setLoad] = useState(false);
 
-  const {role} = useSelector((state) => state.userSlice);
+  const { role } = useSelector((state) => state.userSlice);
 
   const handleSubmit = async () => {
     try {
       setLoad(true);
-      console.log(categor);
       let response = await api.post("/category/add", {
         cate: categor,
       });
       props.runFunction();
-      console.log(response);
       onClose();
       setLoad(false);
       Swal.fire({
@@ -55,7 +53,6 @@ const AddCategory = (props) => {
         icon: "warning",
         confirmButtonText: "Ok",
       });
-      console.log(error);
     }
   };
 
@@ -67,7 +64,8 @@ const AddCategory = (props) => {
           backgroundColor="black"
           color="white"
           onClick={onOpen}
-          _hover={{backgroundColor: "#3c3c3c"}}>
+          _hover={{ backgroundColor: "#3c3c3c" }}
+        >
           Add Category
         </Button>
       ) : null}
@@ -170,8 +168,9 @@ const AddCategory = (props) => {
                 // leftIcon={<AddIcon />}
                 backgroundColor="black"
                 color="white"
-                _hover={{background: "#3c3c3c"}}
-                onClick={() => handleSubmit()}>
+                _hover={{ background: "#3c3c3c" }}
+                onClick={() => handleSubmit()}
+              >
                 Add
               </Button>
             )}

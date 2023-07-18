@@ -40,9 +40,8 @@ const MigrationModal = (props) => {
           props.runFunction();
           Swal.fire(`${warehouseId}`);
         } catch (error) {
-          console.log(error);
+          console.log({ message: "Something went wrong" });
         }
-        // console.log(warehouseId, warehouseIdReceive);
       }
     });
   };

@@ -1,21 +1,5 @@
 import { DeleteIcon } from "@chakra-ui/icons";
-import {
-  Card,
-  CardBody,
-  Divider,
-  Text,
-  Heading,
-  Stack,
-  Image,
-  Flex,
-  Grid,
-  GridItem,
-  CardFooter,
-  Button,
-  IconButton,
-  Input,
-  Tooltip,
-} from "@chakra-ui/react";
+import { Stack, Image, Button, Input, Tooltip } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditeProduct from "./EditeProduct";
@@ -23,7 +7,6 @@ import { api } from "../../API/api";
 import Swal from "sweetalert2";
 import DetailProductAdmin from "./DetailProductAdmin";
 import { useSelector } from "react-redux";
-// import "../pages/style/Homepage.css";
 
 const AllProductManage = ({ products, runFunction, category }) => {
   const fileInputRef = useRef(null);
@@ -38,7 +21,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
 
   const changePic = async (file, id) => {
     try {
-      console.log(id);
       const formData = new FormData();
       formData.append("file", file);
       formData.append("id", id);
@@ -48,7 +30,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response);
       runFunction();
     } catch (error) {
       console.log(error);
@@ -87,7 +68,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
             icon: "warning",
             confirmButtonText: "Ok",
           });
-          console.log(error);
         }
       }
     });

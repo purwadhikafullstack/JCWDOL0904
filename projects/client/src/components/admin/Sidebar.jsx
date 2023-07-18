@@ -1,17 +1,3 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
@@ -31,7 +17,6 @@ import {
   TruckIcon,
   BookOpenIcon,
 } from "@heroicons/react/24/outline";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -75,7 +60,6 @@ const navigation = [
     icon: CalendarIcon,
     current: false,
   },
-  // { name: "Product", href: "#", icon: InboxIcon, current: false },
   {
     name: "Product",
     href: "/manage-product",
@@ -101,11 +85,7 @@ const navigation = [
     current: false,
   },
 ];
-const userNavigation = [
-  // { name: "Your Profile", href: "#" },
-  // { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-];
+const userNavigation = [{ name: "Sign out", href: "#" }];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

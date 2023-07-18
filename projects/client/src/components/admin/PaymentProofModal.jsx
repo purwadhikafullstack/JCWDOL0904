@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {api} from "../../API/api";
+import { useEffect, useState } from "react";
+import { api } from "../../API/api";
 import moment from "moment";
 
 export const PaymentProofModal = ({
@@ -14,11 +14,11 @@ export const PaymentProofModal = ({
   const fetchPaymentProof = async (transactionId) => {
     try {
       const response = await api.get(`/order/${transactionId}/payment-proof`);
-      const {payment_proof, expired} = response.data;
+      const { payment_proof, expired } = response.data;
       setPaymentProof(payment_proof);
       setExpired(expired);
     } catch (error) {
-      console.error(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 
@@ -63,7 +63,8 @@ export const PaymentProofModal = ({
               className={`modal-overlay overflow-y-auto fixed inset-0 bg-black ${
                 isModalOpen ? "opacity-50" : "opacity-0"
               }`}
-              onClick={handleOverlayClick}></div>
+              onClick={handleOverlayClick}
+            ></div>
             <div className="bg-white rounded-lg shadow-sm max-w-sm mx-auto absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <div className="modal-header flex justify-between items-center bg-gray-200 rounded-t-lg py-3 px-6">
                 <h2 className="text-lg text-gray-800 font-bold">

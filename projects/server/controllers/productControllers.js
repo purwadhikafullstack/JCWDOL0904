@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../models");
 const { sequelize } = require("../models");
 const dotenv = require("dotenv");
@@ -32,9 +33,7 @@ module.exports = {
 
       if (site === "home") limit = 9;
 
-      // console.log(site);
       const SORT = [[order, sort]];
-      // console.log(SORT);
 
       if (search) page = 0;
 
@@ -82,6 +81,7 @@ module.exports = {
         },
         include: [stocks],
       });
+      if (!productById) throw new Error("someone deleted the product!");
 
       const stock = productById.Stocks.reduce((acc, curr) => {
         return acc + curr.stock;
@@ -93,7 +93,9 @@ module.exports = {
         stock,
       });
     } catch (error) {
-      res.status(400).send(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   manualMutation: async (req, res) => {
@@ -224,7 +226,6 @@ module.exports = {
         productData,
       });
     } catch (error) {
-      console.log(error.code);
       res.status(400).send({
         message: error.message,
       });
@@ -267,6 +268,11 @@ module.exports = {
       ) {
         throw new Error("Please input all data!");
       }
+
+      const cekProduct = await product.findOne({
+        where: { product_name, id: { [Op.ne]: id } },
+      });
+      if (cekProduct) throw new Error("Name already exist!");
       const result = await product.update(
         {
           product_name,
@@ -305,6 +311,23 @@ module.exports = {
     try {
       const { id } = req.params;
 
+      const cekStock = await stocks.findAll({
+        where: {
+          id_product: id,
+        },
+      });
+      cekStock.forEach((el) => {
+        if (el.stock !== 0) {
+          throw new Error("This product still has a stock!");
+        }
+      });
+
+      console.log(cekStock);
+      const stockDelete = await stocks.destroy({
+        where: {
+          id_product: id,
+        },
+      });
       const result = await product.destroy({
         where: {
           id,
@@ -314,7 +337,9 @@ module.exports = {
         message: "success, deleted!",
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   createNewProduct: async (req, res) => {
@@ -334,7 +359,31 @@ module.exports = {
         battery,
         description,
       } = req.body;
+
       const product_image = req.file.originalname;
+      if (
+        !product_name ||
+        !description ||
+        !price ||
+        !categor ||
+        !cpu_speed ||
+        !cpu_type ||
+        !size ||
+        !resolution ||
+        !colorDept ||
+        !ram ||
+        !storage ||
+        !weight_g ||
+        !battery ||
+        !product_image
+      ) {
+        throw new Error("Please input all data!");
+      }
+
+      const cekProduct = await product.findOne({
+        where: { product_name },
+      });
+      if (cekProduct) throw new Error("Name already exist!");
 
       const formatData = product_image.split(".").reverse();
 
@@ -365,15 +414,20 @@ module.exports = {
       if (!result && result.lenght < 1) {
         throw new Error("something went wrong!");
       }
-      console.log(req.file);
       res.status(200).send({
         result,
       });
     } catch (error) {
       console.log(error);
-      res.status(400).send({
-        message: error.massage,
-      });
+      if (error.message || error.message.lenght > 0) {
+        res.status(400).send({
+          message: error.message,
+        });
+      } else {
+        res.status(400).send({
+          message: "Your input data is wrong!",
+        });
+      }
     }
   },
   addInitialStock: async (req, res) => {
@@ -381,11 +435,6 @@ module.exports = {
       const { id } = req.body;
 
       const allWarehouse = await warehouse.findAll();
-
-      // allWarehouse.forEach((el) => {
-      //   const idUser = el.Stocks.find((users) => el.id === users.id_warehouse);
-      //   dataForStock.push({ id_warehouse: el.id, id_user: idUser.id_user });
-      // });
 
       await Promise.all(
         allWarehouse.forEach(async (el) => {
@@ -406,13 +455,14 @@ module.exports = {
         })
       );
 
-      // const stockW1 = await stocks.create({})
-
       res.status(200).send({
         allWarehouse,
       });
     } catch (error) {
       console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
 };

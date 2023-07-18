@@ -14,7 +14,7 @@ const ProductCategoryDropdown = ({
         // disabled={user.role === "adminWarehouse"}
         onChange={handleCategoryChange}
         value={selectedCategory}
-        className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-full shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-full shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
       >
         <option value="">Select Category</option>
         {category &&

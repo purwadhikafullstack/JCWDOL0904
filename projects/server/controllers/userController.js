@@ -277,6 +277,12 @@ module.exports = {
 
       let user = await User.findOne({ where: { email } });
 
+      if (!user) {
+        return res.status(400).send({
+          message: "Cant find email, please register",
+        });
+      }
+
       let payload = { id: user.id };
       let token = jwt.sign(payload, "galaxy", {
         expiresIn: "5m",
