@@ -22,7 +22,6 @@ const ModalAddWarehouse = (props) => {
               autoComplete="province"
               className="block w-full border h-7 pl-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               onChange={(e) => {
-                console.log(JSON.parse(e.target.value));
                 props.setProvincess(JSON.parse(e.target.value));
               }}
             >

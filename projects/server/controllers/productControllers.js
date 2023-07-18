@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../models");
 const { sequelize } = require("../models");
 const dotenv = require("dotenv");
@@ -56,8 +57,6 @@ module.exports = {
           limit: limit,
           offset: page * limit,
         });
-
-      console.log(page);
       result = {
         data: updatedRows,
         totalProduct: updatedCount,
@@ -66,7 +65,9 @@ module.exports = {
       };
       res.status(200).send({ message: "success", ...result });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -138,8 +139,6 @@ module.exports = {
         result,
       });
     } catch (error) {
-      console.log(error);
-
       res.status(400).send({
         message: error.message,
       });
@@ -150,7 +149,6 @@ module.exports = {
       let { sort, role, idUser } = req.query;
       let dataUser = [];
       let idWarehouse = null;
-      console.log(req.query);
       if (role == "adminWarehouse") {
         dataUser = await user.findOne({
           where: {
@@ -188,24 +186,21 @@ module.exports = {
         idWarehouse,
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
   updateImageProduct: async (req, res) => {
     try {
-      console.log(req.file);
       const picData = req.file.originalname;
       const id = req.body.id;
-
       const formatData = picData.split(".").reverse();
-      console.log(formatData);
-
       if (formatData[0] != "png") {
         throw new Error("Error, your format picture is not png!");
       }
-
       const filePath = req.file.path;
-      const fileName = process.env.IMAGE_URL + filePath.split("\\")[2];
+      const fileName = filePath.split("\\")[2];
 
       const productData = await product.update(
         {
@@ -217,8 +212,6 @@ module.exports = {
           },
         }
       );
-
-      console.log(fileName, id);
       res.status(200).send({
         message: "success",
         fileName,
@@ -248,7 +241,6 @@ module.exports = {
         weight_g,
         battery,
       } = req.body;
-      console.log(categor);
       if (
         !id ||
         !product_name ||
@@ -268,10 +260,10 @@ module.exports = {
         throw new Error("Please input all data!");
       }
 
-      const cekProductName = await product.findOne({
-        where: { product_name: `%${product_name}` },
+      const cekProduct = await product.findOne({
+        where: { product_name, id: { [Op.ne]: id } },
       });
-      if (cekProductName) throw new Error("Name Already exist!");
+      if (cekProduct) throw new Error("Name already exist!");
       const result = await product.update(
         {
           product_name,
@@ -300,7 +292,6 @@ module.exports = {
         result,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send({
         message: error.message,
       });
@@ -320,8 +311,6 @@ module.exports = {
           throw new Error("This product still has a stock!");
         }
       });
-
-      console.log(cekStock);
       const stockDelete = await stocks.destroy({
         where: {
           id_product: id,
@@ -391,7 +380,7 @@ module.exports = {
       }
 
       const filePath = req.file.path;
-      const fileName = process.env.IMAGE_URL + filePath.split("\\")[2];
+      const fileName = filePath.split("\\")[2];
 
       const result = await product.create({
         product_name,
@@ -417,7 +406,6 @@ module.exports = {
         result,
       });
     } catch (error) {
-      console.log(error);
       if (error.message || error.message.lenght > 0) {
         res.status(400).send({
           message: error.message,
@@ -458,7 +446,6 @@ module.exports = {
         allWarehouse,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send({
         message: error.message,
       });

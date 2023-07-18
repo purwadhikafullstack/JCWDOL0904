@@ -15,7 +15,6 @@ import {
 
 export const PasswordChangeModal = ({ closeAddressModal }) => {
   let navigate = useNavigate();
-
   const newPasswordSchema = Yup.object().shape({
     password: Yup.string()
       .min(8, "Password must contain at least 8 characters")
@@ -27,11 +26,9 @@ export const PasswordChangeModal = ({ closeAddressModal }) => {
       .min(8, "Password must contain at least 8 characters")
       .required("confirm password is required"),
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -41,13 +38,11 @@ export const PasswordChangeModal = ({ closeAddressModal }) => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
-  const url = "/auth/updatepassword";
   const PasswordUpdate = async (values) => {
     try {
       const token = JSON.parse(localStorage.getItem("auth"));
       let response = await api.post(
-        url,
+        "/auth/updatepassword",
         {
           password: values.password,
           newPassword: values.newPassword,
@@ -68,7 +63,7 @@ export const PasswordChangeModal = ({ closeAddressModal }) => {
         confirmButtonText: "Ok",
         confirmButtonColor: "black",
       });
-      navigate("/");
+      handleClose();
     } catch (err) {
       Swal.fire({
         title: "error",
@@ -86,8 +81,7 @@ export const PasswordChangeModal = ({ closeAddressModal }) => {
     <div className="fixed  inset-0 flex pt-20 items-center justify-center z-10 bg-gray-800 bg-opacity-50">
       <div className="border-t relative pt-5 bg-white px-4 sm:px-6 md:px-8 py-16 rounded-xl max-w-lg">
         <XMarkIcon
-          className="top-2 absolute right-2 h-6 w-6 text-gray-500 hover:text-gray-700 transition-colors duration-300 ease-in-out cursor-pointer"
-          aria-hidden="true"
+          className="top-2 absolute right-2 h-6 w-6 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
           onClick={handleClose}
         />
         <h2 className="text-lg font-medium text-gray-500 mt-4">
@@ -109,30 +103,28 @@ export const PasswordChangeModal = ({ closeAddressModal }) => {
                   <div className="flex justify-center">
                     <FormLabel>Please Input Your Current Password</FormLabel>
                   </div>
-                  <div className="relative">
-                    <FormLabel>Password</FormLabel>
-                    <InputGroup>
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        id="password"
-                        placeholder="Password"
-                        required=""
-                        onChange={props.handleChange}
-                        value={props.values.password}
-                        as={Field}
-                      />
-                      <InputRightElement width="4.5rem">
-                        <Button
-                          h="1.75rem"
-                          size="sm"
-                          onClick={togglePasswordVisibility}
-                        >
-                          {showPassword ? "Hide" : "Show"}
-                        </Button>
-                      </InputRightElement>
-                    </InputGroup>
-                  </div>
+                  <FormLabel>Password</FormLabel>
+                  <InputGroup>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      id="password"
+                      placeholder="Password"
+                      required=""
+                      onChange={props.handleChange}
+                      value={props.values.password}
+                      as={Field}
+                    />
+                    <InputRightElement width="4.5rem">
+                      <Button
+                        h="1.75rem"
+                        size="sm"
+                        onClick={togglePasswordVisibility}
+                      >
+                        {showPassword ? "Hide" : "Show"}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
                   <ErrorMessage name="password" component="div" />
                 </div>
                 <div>

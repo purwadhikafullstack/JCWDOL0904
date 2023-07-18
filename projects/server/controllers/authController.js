@@ -12,7 +12,6 @@ module.exports = {
     const transaction = await sequelize.transaction();
     try {
       const { fullname, username, password, confirmPassword } = req.body;
-      console.log(fullname);
       if (!fullname || !username || !password || !confirmPassword) {
         return res.status(400).send({
           message: "Please complete your data",
@@ -38,7 +37,6 @@ module.exports = {
       let token = req.headers.authorization;
       token = token.split(" ")[1];
       const data = jwt.verify(token, "galaxy");
-      console.log(data);
 
       const user = await User.findOne({ where: { id: data.id } });
 
@@ -62,7 +60,6 @@ module.exports = {
       });
     } catch (err) {
       await transaction.rollback();
-      console.log(err);
       res.status(400).send({
         message: "Server Error!",
       });
@@ -72,7 +69,6 @@ module.exports = {
   userLogin: async (req, res) => {
     try {
       const { email, password } = req.body;
-      console.log(email, password);
 
       if (!email || !password) {
         return res.status(400).send({
@@ -108,8 +104,6 @@ module.exports = {
         password,
         userExist.dataValues.password
       );
-
-      console.log(isValid);
       if (!isValid) {
         return res.status(400).send({
           message: "wrong email address or password!",
@@ -134,7 +128,6 @@ module.exports = {
         });
       }
     } catch (err) {
-      console.log(err);
       res.status(400).send({ message: "Server error" });
     }
   },
@@ -150,7 +143,6 @@ module.exports = {
           message: "Please complete your data",
         });
       }
-
       if (password !== confirmPassword) {
         return res.status(400).send({
           message: "Passwords does not match",
@@ -170,7 +162,6 @@ module.exports = {
       let token = req.headers.authorization;
       token = token.split(" ")[1];
       const data = jwt.verify(token, "galaxy");
-      console.log(data);
 
       const salt = await bcrypt.genSalt(10);
       const hashPass = await bcrypt.hash(password, salt);
@@ -186,7 +177,6 @@ module.exports = {
       });
     } catch (err) {
       await transaction.rollback();
-      console.log(err);
       res.status(400).send({
         message: "Server Error!",
       });
@@ -249,7 +239,6 @@ module.exports = {
       });
     } catch (err) {
       await transaction.rollback();
-      console.log(err);
       res.status(400).send({
         message: "Server Error!",
       });

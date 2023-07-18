@@ -35,7 +35,6 @@ const EditeCategory = (props) => {
       });
       onClose();
       setLoad(false);
-      console.log(response);
       props.runFunction();
       Swal.fire({
         title: "Success",

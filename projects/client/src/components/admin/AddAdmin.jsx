@@ -48,7 +48,6 @@ const AddAdmin = () => {
           },
         }
       );
-      console.log(response);
       onClose();
       setLoad(false);
       Swal.fire({

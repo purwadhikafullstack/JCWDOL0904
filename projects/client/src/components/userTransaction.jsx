@@ -26,7 +26,13 @@ const UserTransactionData = () => {
       });
       dispatch(transactionData(response.data.result));
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "error",
+        text: "Something went wrong",
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
     }
   };
 

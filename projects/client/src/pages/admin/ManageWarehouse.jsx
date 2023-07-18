@@ -24,10 +24,6 @@ const ManageWarehouse = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [sort, setSort] = useState("DESC");
 
-  useEffect(() => {
-    console.log(value);
-  }, []);
-
   const handlePageClick = (event) => {
     setPage(event.selected);
   };
@@ -43,12 +39,15 @@ const ManageWarehouse = () => {
         },
       })
       .then((result) => {
-        console.log(result);
         dispatch(data(result.data.result));
         setTotalPage(result.data.totalPage);
       })
       .catch((err) => {
-        console.log(err);
+        Alert({
+          title: "Failed!",
+          text: "Something went wrong",
+          icon: "error",
+        });
       });
   };
 
@@ -65,7 +64,6 @@ const ManageWarehouse = () => {
       if (result.isConfirmed) {
         try {
           const response = await api.delete(`/warehouses/delete/${id}`);
-          console.log(response);
           getWarehouseData();
           Swal.fire({
             title: "Success",
@@ -80,7 +78,6 @@ const ManageWarehouse = () => {
             icon: "warning",
             confirmButtonText: "Ok",
           });
-          console.log(error);
         }
       }
     });
@@ -148,7 +145,7 @@ const ManageWarehouse = () => {
           }}
         >
           <img
-            src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_2.png`}
+            src={`${process.env.REACT_APP_API_BASE}logo_galaxy_2.png`}
             className="w-32 h-28 align-middle rounded-full animate-bounce"
           />
         </div>

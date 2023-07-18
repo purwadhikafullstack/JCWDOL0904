@@ -37,10 +37,15 @@ const ProductDetail = () => {
   const getOneProduct = async (idP) => {
     try {
       const result = await api.post("/product/detail", { idP });
-      console.log(result.data);
       setStock(result.data.stock);
       setProduct(result.data.productById);
-    } catch (error) {}
+    } catch (error) {
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
+    }
   };
 
   let productId = JSON.parse(localStorage.getItem("idProduct"));
@@ -142,7 +147,7 @@ const ProductDetail = () => {
           </div>
           <Image
             width="200px"
-            src={product.product_image}
+            src={`${process.env.REACT_APP_API_BASE}${product.product_image}`}
             alt={product.product_image}
           />
         </div>

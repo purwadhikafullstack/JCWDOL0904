@@ -26,8 +26,7 @@ const MigrationModal = (props) => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "black",
       confirmButtonText: "Yes, Mutation All Stock!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -36,11 +35,9 @@ const MigrationModal = (props) => {
             warehouse_sender_id: parseInt(warehouseId),
             warehouse_receive_id: parseInt(warehouseIdReceive),
           });
-          console.log(response);
           props.runFunction();
           Swal.fire("Confirmed!", "Mutation has been confirmed.", "success");
         } catch (error) {
-          console.log(error);
           Swal.fire({
             title: "Error!",
             text: error.response.data.message,
@@ -75,10 +72,8 @@ const MigrationModal = (props) => {
             <FormLabel>Warehouse sender</FormLabel>
             <Select
               placeholder={warehouseId ? null : "select warehouse"}
-              //   defaultValue={categor.category ? categor.category : null}
               onChange={(e) => {
                 setwarehouseId(e.target.value);
-                console.log(e.target.value);
               }}
             >
               {props.allWarehouse?.map((el) => {
@@ -99,7 +94,6 @@ const MigrationModal = (props) => {
               placeholder={warehouseIdReceive ? null : "select warehouse"}
               onChange={(e) => {
                 setwarehouseIdReceive(e.target.value);
-                console.log(e.target.value);
               }}
             >
               {props.allWarehouse?.map((el) => {

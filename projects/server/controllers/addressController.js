@@ -94,13 +94,11 @@ module.exports = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
   // Delete an address
   deleteAddress: async (req, res) => {
     try {
       const id = req.params.id;
-      // console.log(id);
-
-      // Delete the address from the database
       const deletedRows = await address.destroy({ where: { id: id } });
 
       if (deletedRows > 0) {
@@ -118,9 +116,6 @@ module.exports = {
     const transaction = await sequelize.transaction();
     try {
       const { id, id_user } = req.body;
-
-      console.log(id, id_user);
-
       await address.update(
         { is_default: false },
         { where: { id_user: id_user } }

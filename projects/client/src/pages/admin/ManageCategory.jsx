@@ -16,6 +16,7 @@ import AddCategory from "../../components/admin/AddCategory";
 import Swal from "sweetalert2";
 import EditeCategory from "../../components/admin/EditeCategory";
 import Pagination from "../../components/admin/Pagination";
+import Alert from "../../components/SwallAlert";
 
 const ManageCategory = () => {
   const dispatch = useDispatch();
@@ -41,11 +42,14 @@ const ManageCategory = () => {
           site: "manageC",
         },
       });
-      console.log(response);
       dispatch(AllCategory(response.data.result));
       setTotalPage(response.data.totalpage);
     } catch (error) {
-      console.log(error);
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 
@@ -71,7 +75,6 @@ const ManageCategory = () => {
             confirmButtonText: "Ok",
           });
           getAllCategory();
-          console.log(response);
         } catch (error) {
           Swal.fire({
             title: "Error!",
@@ -79,7 +82,11 @@ const ManageCategory = () => {
             icon: "warning",
             confirmButtonText: "Ok",
           });
-          console.log(error);
+          Alert({
+            title: "Failed!",
+            text: "Something went wrong",
+            icon: "error",
+          });
         }
       }
     });

@@ -76,14 +76,15 @@ module.exports = {
         html: tempResult,
       };
       let response = nodemailer.sendMail(mail);
-      console.log(response);
 
       res.status(200).send({
         message: "Register success, please check your email",
         result,
       });
     } catch (err) {
-      console.log(err);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -92,7 +93,6 @@ module.exports = {
     try {
       const { email, fullname, username, password } = req.body;
       const { id } = req.dataToken;
-      console.log(email, fullname, username, password, id);
 
       const dataRole = await User.findOne({
         where: { id },
@@ -137,7 +137,9 @@ module.exports = {
         message: "Register new Admin Success",
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -172,7 +174,6 @@ module.exports = {
       });
       res.json(result);
     } catch (error) {
-      console.log(error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
@@ -210,7 +211,6 @@ module.exports = {
     try {
       const { id } = req.body;
       const dataRole = req.dataToken;
-      // console.log(id);
 
       const noDeleteAdmin = await User.findOne({
         where: { id: id },
@@ -237,7 +237,6 @@ module.exports = {
           status: { [Op.notIn]: ["Order Confirmed", "Canceled"] },
         },
       });
-      console.log(userStatus);
 
       if (userStatus) {
         return res.status(400).send({
@@ -254,7 +253,9 @@ module.exports = {
         message: "Delete User data Success",
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -276,6 +277,12 @@ module.exports = {
       }
 
       let user = await User.findOne({ where: { email } });
+
+      if (!user) {
+        return res.status(400).send({
+          message: "Cant find email, please register",
+        });
+      }
 
       let payload = { id: user.id };
       let token = jwt.sign(payload, "galaxy", {
@@ -307,14 +314,15 @@ module.exports = {
       };
 
       let response = nodemailer.sendMail(mail);
-      console.log(response);
 
       res.status(200).send({
         message: "Please check your email",
         user,
       });
     } catch (err) {
-      console.log(err);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -323,7 +331,6 @@ module.exports = {
     try {
       const { id, username, fullname, password, role } = req.body;
       const dataToken = req.dataToken;
-      // console.log(dataToken);
 
       const findAdminPassword = await User.findOne({
         where: { id: dataToken.id },
@@ -333,7 +340,6 @@ module.exports = {
         password,
         findAdminPassword.dataValues.password
       );
-      console.log(isValid);
 
       if (role === "adminWarehouse" || role === "user") {
         return res.status(400).send({
@@ -361,7 +367,9 @@ module.exports = {
         result,
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -369,7 +377,6 @@ module.exports = {
     try {
       let username = req.body.username;
       const { id } = req.dataToken;
-      console.log(id);
 
       let result = await User.update(
         {
@@ -402,7 +409,6 @@ module.exports = {
         changeUsername,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send(error);
     }
   },

@@ -1,8 +1,7 @@
-import { React, useRef } from "react";
+import { React } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { api } from "../API/api";
-import { Button } from "@chakra-ui/react";
 import { Field, ErrorMessage, Formik, Form } from "formik";
 import * as Yup from "yup";
 
@@ -18,7 +17,6 @@ export const ResetPassword = () => {
   const resetPassword = async (values) => {
     try {
       let result = await api.post(url, { email: values.email });
-      console.log(result);
       Swal.fire({
         title: "Success",
         text: result.data.message,

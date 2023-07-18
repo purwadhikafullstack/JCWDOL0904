@@ -14,6 +14,7 @@ import { api } from "../../API/api";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import ModalAddWarehouse from "./manageWarehouse/ModalAddWarehouse";
+import Alert from "../SwallAlert";
 
 const AddWarehouse = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,10 +32,13 @@ const AddWarehouse = (props) => {
   const getAllProvince = async () => {
     try {
       const response = await apiro.get("/rajaongkir/province");
-      console.log(response.data.data);
       setProvinces(response.data.data);
     } catch (error) {
-      console.log(error);
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
     }
   };
   const fetchAddressesCity = async () => {
@@ -42,10 +46,15 @@ const AddWarehouse = (props) => {
       const response = await apiro.get(
         `rajaongkir/city?province_id=${provincess.id}`
       );
-      console.log(response.data.data.results);
       setCities(response.data.data.results);
     } catch (error) {
-      console.error(error);
+      Swal.fire({
+        title: "error",
+        text: "Something went wrong",
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
     }
   };
 
@@ -62,7 +71,6 @@ const AddWarehouse = (props) => {
       });
       let result;
       inititalStock(response.data.newWarehouse.id);
-      console.log(response);
       props.runFunction();
       onClose();
       setLoad(false);
@@ -85,7 +93,6 @@ const AddWarehouse = (props) => {
         icon: "warning",
         confirmButtonText: "Ok",
       });
-      console.log(error);
     }
   };
 
@@ -94,9 +101,14 @@ const AddWarehouse = (props) => {
       const response = await api.post("/warehouses/initial-stock", {
         id_warehouse,
       });
-      console.log(response);
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "error",
+        text: "Something went wrong",
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
     }
   };
 
@@ -108,10 +120,6 @@ const AddWarehouse = (props) => {
       fetchAddressesCity();
     }
   }, [provinces, provincess]);
-
-  useEffect(() => {
-    console.log(city, provincess);
-  }, [provincess, city]);
 
   return (
     <div>

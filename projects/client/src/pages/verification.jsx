@@ -16,9 +16,7 @@ const url = "/auth/verification";
 
 export const Verification = () => {
   let navigate = useNavigate();
-
   let { token } = useParams();
-
   const verificationSchema = Yup.object().shape({
     fullname: Yup.string().required("Fullname is required"),
     username: Yup.string().required("Username is required"),
@@ -36,7 +34,6 @@ export const Verification = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };

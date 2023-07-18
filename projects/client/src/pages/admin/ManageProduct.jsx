@@ -42,12 +42,15 @@ const ManageProduct = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         setProducts(res.data.data);
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
-        console.log(err);
+        Alert({
+          title: "Failed!",
+          text: "Something went wrong",
+          icon: "error",
+        });
       });
   };
   const handleSorting = (value) => {

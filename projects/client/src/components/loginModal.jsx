@@ -12,7 +12,7 @@ import {
   Input,
   InputRightElement,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { api } from "../API/api";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -27,14 +27,12 @@ const LoginModal = () => {
   const url = "/auth/login";
   let navigate = useNavigate();
   let dispatch = useDispatch();
-
   const loginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string()
       .min(8, "Password must contain at least 8 characters")
       .required("Please input your password"),
   });
-
   const loginAccount = async (inputEmail, inputPassword) => {
     try {
       let response = await api.post(url, {
@@ -55,16 +53,16 @@ const LoginModal = () => {
         onClose();
       }
     } catch (err) {
-      onClose();
       Swal.fire({
         title: "Error!",
         text: err.response.data.message,
         icon: "error",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
+      onClose();
     }
   };
-
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
@@ -74,10 +72,14 @@ const LoginModal = () => {
       <button
         className="relative inline-flex items-center rounded-md border border-transparent bg-black px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         onClick={onOpen}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
       >
         Login
       </button>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -104,38 +106,54 @@ const LoginModal = () => {
                       id="email"
                       placeholder="Email"
                       required=""
-                      onChange={props.handleChange} //setstate
-                      value={props.values.email} //manggil state
+                      onChange={props.handleChange}
+                      value={props.values.email}
                       as={Field}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          loginAccount(
+                            props.values.email,
+                            props.values.password
+                          );
+                        }
+                      }}
                     />
                     <ErrorMessage name="email" component="div" />
                   </div>
-                  <div className="relative">
-                    <FormLabel>Password</FormLabel>
-                    <InputGroup>
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        id="password"
-                        placeholder="Password"
-                        required=""
-                        as={Field}
-                        onChange={props.handleChange} //setstate
-                        value={props.values.password} //manggil state
-                      />
-                      <InputRightElement width="4.5rem">
-                        <Button
-                          h="1.75rem"
-                          size="sm"
-                          onClick={togglePasswordVisibility}
-                        >
-                          {showPassword ? "Hide" : "Show"}
-                        </Button>
-                      </InputRightElement>
-                    </InputGroup>
-                  </div>
+                  <FormLabel>Password</FormLabel>
+                  <InputGroup>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      id="password"
+                      placeholder="Password"
+                      required=""
+                      as={Field}
+                      onChange={props.handleChange}
+                      value={props.values.password}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          loginAccount(
+                            props.values.email,
+                            props.values.password
+                          );
+                        }
+                      }}
+                    />
+                    <InputRightElement width="4.5rem">
+                      <Button
+                        h="1.75rem"
+                        size="sm"
+                        onClick={togglePasswordVisibility}
+                      >
+                        {showPassword ? "Hide" : "Show"}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
                   <ErrorMessage name="password" component="div" />
-                  <p className="text-sm font-light text-gray-500 dark:text-gray-400 m-2">
+                  <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                     Forgot password?{" "}
                     <button
                       onClick={() => {
@@ -147,10 +165,9 @@ const LoginModal = () => {
                       Click here
                     </button>
                   </p>
-                  <div className="flex items-start"></div>
                   <button
                     type="submit"
-                    className="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    className="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 mt-2 mb-2 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                   >
                     Log in
                   </button>
@@ -175,5 +192,4 @@ const LoginModal = () => {
     </div>
   );
 };
-
 export default LoginModal;

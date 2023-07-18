@@ -7,7 +7,6 @@ module.exports = {
   cancelOrder: async (req, res) => {
     try {
       const { dataTransaction } = req.body;
-      console.log(dataTransaction);
       const warehouseId = dataTransaction.id_warehouse;
       const result = await transaction.findOne({
         where: { id: dataTransaction.id },
@@ -94,7 +93,9 @@ module.exports = {
         halo,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
 };

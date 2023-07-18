@@ -12,7 +12,7 @@ const CardAndInput = (props) => {
           <Card width="200px" height="250pxpx">
             <CardBody>
               <Image
-                src={`${props.product.product_image}`}
+                src={`${process.env.REACT_APP_API_BASE}${props.product.product_image}`}
                 alt={`${props.product.product_name}`}
                 borderRadius="lg"
                 width="150px"

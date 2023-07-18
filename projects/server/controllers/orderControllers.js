@@ -87,9 +87,9 @@ module.exports = {
         order: [
           [
             sequelize.literal(`ST_Distance_Sphere(
-                  POINT(${address.longitude}, ${address.latitude}),
-                  POINT(Warehouse.longitude, Warehouse.latitude)
-                )`),
+              POINT(${address.longitude}, ${address.latitude}),
+              POINT(Warehouse.longitude, Warehouse.latitude)
+            )`),
           ],
         ],
         limit: 1,
@@ -109,18 +109,16 @@ module.exports = {
         expired: expirationDate,
         courier,
       });
+
+      let unavailableProduct = false;
       const transactionItems = await Promise.all(
         cartItems.map(async (cartItem) => {
           const { Product, quantity } = cartItem;
           const product = await Products.findByPk(Product.id);
           if (!product) {
-            res.status(404).send({
+            unavailableProduct = true;
+            return res.status(404).send({
               error: `A few items in your cart are currently unavailable. Please update your order.`,
-            });
-            await Carts.destroy({
-              where: {
-                id_user: id,
-              },
             });
           }
           const stocks = await Stocks.findAll({
@@ -134,6 +132,15 @@ module.exports = {
             return res.status(400).send({
               error: `${Product.product_name} is out of stock`,
             });
+          }
+
+          if (unavailableProduct) {
+            await Carts.destroy({
+              where: {
+                id_user: id,
+              },
+            });
+            return;
           }
 
           return TransactionItem.create({
@@ -195,7 +202,6 @@ module.exports = {
       await transaction.update({ status: "Canceled" });
       res.status(200).send({ message: "Transaction canceled successfully" });
     } catch (error) {
-      console.error(error);
       res.status(500).send({ message: "Error canceling transaction" });
     }
   },
@@ -229,7 +235,9 @@ module.exports = {
       );
       res.status(200).send({ message: "Transaction confirmed successfully" });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 };

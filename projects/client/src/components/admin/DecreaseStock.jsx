@@ -46,11 +46,21 @@ const DecreaseStock = (props) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await api.patch("/stock/decrease", {
-            id: props.idStock,
-            newStock: stock,
-          });
-          console.log(response);
+          const token = JSON.parse(localStorage.getItem("auth"));
+          const response = await api.patch(
+            "/stock/decrease",
+            {
+              id: props.idStock,
+              newStock: stock,
+            },
+            {
+              headers: {
+                Authorization: token,
+                Accept: "appplication/json",
+                "Content-Type": "application/json",
+              },
+            }
+          );
           props.runFunction();
           setStock(0);
         } catch (error) {
@@ -60,7 +70,6 @@ const DecreaseStock = (props) => {
             text: error.response.data.message,
             confirmButtonText: "Ok",
           });
-          console.log(error);
         }
       }
     });
@@ -106,7 +115,6 @@ const DecreaseStock = (props) => {
             ) : (
               <Button
                 variant="ghost"
-                // leftIcon={<EditIcon />}
                 backgroundColor="black"
                 color="white"
                 _hover={{ backgroundColor: "#3c3c3c" }}

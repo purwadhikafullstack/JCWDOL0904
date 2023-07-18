@@ -69,7 +69,6 @@ const EditUser = (props) => {
         icon: "warning",
         confirmButtonText: "Ok",
       });
-      console.log(error);
     }
   };
 

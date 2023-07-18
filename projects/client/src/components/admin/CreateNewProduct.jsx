@@ -25,7 +25,6 @@ const CreateNewProduct = (props) => {
   const [category, setCategory] = useState("Select category");
   const { role } = useSelector((state) => state.userSlice);
   const handleSubmit = async () => {
-    console.log(file);
     try {
       if (!file) {
         return Alert({
@@ -71,7 +70,7 @@ const CreateNewProduct = (props) => {
     } catch (error) {
       Alert({
         title: "Failed!",
-        text: error.response.data.message,
+        text: "Something went wrong",
         icon: "error",
       });
     }
@@ -83,13 +82,24 @@ const CreateNewProduct = (props) => {
       if (response.data.result[0].id) {
         setCategory(response.data.result[0].id);
       }
-    } catch (error) {}
+    } catch (error) {
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
+    }
   };
   const initialStock = async (id) => {
     try {
       const response = await api.post("/product/stock-init", { id });
-      console.log(response);
-    } catch (error) {}
+    } catch (error) {
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
+    }
   };
   useEffect(() => {
     getAllCategory();

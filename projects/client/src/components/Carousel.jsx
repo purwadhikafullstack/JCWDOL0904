@@ -15,12 +15,17 @@ export default function Carousel() {
     await api
       .get("/promotion")
       .then((result) => {
-        // console.log(result);
         setPromotionImg(result.data.wideSc);
         setPromotionImgSmall(result.data.smallSc);
       })
       .catch((err) => {
-        console.log(err);
+        Swal.fire({
+          title: "error",
+          text: "Something went wrong",
+          icon: "error",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "black",
+        });
       });
   };
 

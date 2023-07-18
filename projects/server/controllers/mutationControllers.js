@@ -13,6 +13,18 @@ module.exports = {
   rejectMutation: async (req, res) => {
     try {
       const { id } = req.body;
+      const dataToken = req.dataToken;
+
+      const findAdmin = await user.findOne({
+        where: { id: dataToken.id },
+      });
+
+      if (!findAdmin)
+        return res.status(400).send({
+          message: "Your account is not found!",
+          title: "Error!",
+          icon: "error",
+        });
 
       const getStockmovementData = await stockmovement.findOne({
         where: {
@@ -41,18 +53,27 @@ module.exports = {
           },
         }
       );
-
       res.status(200).send({
         result,
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   },
   proceedMutation: async (req, res) => {
     try {
       const { id, warehouse_sender_id, warehouse_receive_id, qty, id_product } =
         req.body;
+      const dataToken = req.dataToken;
+
+      const findAdmin = await user.findOne({
+        where: { id: dataToken.id },
+      });
+
+      if (!findAdmin)
+        return res.status(400).send({
+          message: "Your account is not found!",
+          title: "Error!",
+          icon: "error",
+        });
 
       const cekWarehouseReceive = await warehouse.findOne({
         where: {
@@ -132,14 +153,11 @@ module.exports = {
           current_stock: stockInWarehouseReceive,
         });
       }
-
       const stockInWarehouseSender = WarehouseSender.stock - qty;
-
       const stockInWarehouseSenderUpdate = await stocks.update(
         { stock: stockInWarehouseSender },
         { where: { id_warehouse: warehouse_sender_id, id_product } }
       );
-
       const updateStockMovement = await stockmovement.update(
         {
           status: "approved",
@@ -150,7 +168,6 @@ module.exports = {
           },
         }
       );
-
       const stockHistoryAddedOut = await stockhistory.create({
         quantity: qty,
         status: "out",
@@ -166,7 +183,6 @@ module.exports = {
         getStockmovementData,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send({
         message: error.message,
       });
@@ -176,6 +192,13 @@ module.exports = {
     try {
       const { id, warehouse_sender_id, warehouse_receive_id, qty, status } =
         req.body;
+      const dataToken = req.dataToken;
+
+      const findAdmin = await user.findOne({
+        where: { id: dataToken.id },
+      });
+
+      if (!findAdmin) throw new Error("Your account has deleted!");
 
       if (!warehouse_sender_id)
         throw new Error("Please input warehouse Sender!");
@@ -242,7 +265,6 @@ module.exports = {
         getStockMovement,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send({
         message: error.message,
       });
@@ -258,7 +280,6 @@ module.exports = {
       let arrange = req.query.arrange || "DESC";
       const search = req.query.search || "";
       const request = req.query.request || "in";
-      console.log(idUser);
       let request_number;
       let product_name;
       if (search && search.lenght > 0) {
@@ -286,10 +307,8 @@ module.exports = {
         };
 
       if (site === "mutationList") limit = 10;
-      console.log(sort, role, idUser);
       let idWarehouse = null;
-      console.log(req.query);
-
+      let dataAdmin = null;
       if (role == "adminWarehouse") {
         const dataUser = await user.findOne({
           where: {
@@ -298,8 +317,9 @@ module.exports = {
           },
           include: [warehouse],
         });
-
+        if (!dataUser) throw new Error("your account not found!");
         sort = dataUser.Warehouse.id;
+        dataAdmin = dataUser;
       }
       let result;
       result = await stockmovement.findAndCountAll({
@@ -362,7 +382,6 @@ module.exports = {
       const totalPage = Math.ceil(allCount / limit);
       if (parseInt(page) >= totalPage && totalPage > 0) {
         page = totalPage - 1;
-        console.log("hai");
         result = await stockmovement.findAndCountAll({
           where: {
             status,
@@ -423,9 +442,12 @@ module.exports = {
         totalPage,
         search,
         page,
+        dataAdmin,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "somethine went wrong!",
+      });
     }
   },
 };

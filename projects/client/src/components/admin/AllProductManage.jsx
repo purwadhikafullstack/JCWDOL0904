@@ -21,7 +21,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
 
   const changePic = async (file, id) => {
     try {
-      console.log(id);
       const formData = new FormData();
       formData.append("file", file);
       formData.append("id", id);
@@ -31,10 +30,8 @@ const AllProductManage = ({ products, runFunction, category }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(response);
       runFunction();
     } catch (error) {
-      console.log(error);
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
@@ -70,7 +67,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
             icon: "warning",
             confirmButtonText: "Ok",
           });
-          console.log(error);
         }
       }
     });
@@ -90,7 +86,7 @@ const AllProductManage = ({ products, runFunction, category }) => {
               objectFit="cover"
               width="40px"
               height="40px"
-              src={`${el.product_image}`}
+              src={`${process.env.REACT_APP_API_BASE}${el.product_image}`}
               alt="Caffe Latte"
               marginLeft="10px"
               cursor="pointer"

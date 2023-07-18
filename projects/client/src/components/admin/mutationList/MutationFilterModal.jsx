@@ -14,15 +14,20 @@ const MutationFilterModal = (props) => {
           <Select
             borderRadius="50px"
             {...(props.isAdmin ? {} : { disabled: true })}
-            defaultValue={props.sort}
+            {...(!props.isAdmin &&
+            props.adminWarehouse &&
+            props.adminWarehouse.Warehouse &&
+            props.adminWarehouse.Warehouse.warehouse
+              ? { placeholder: props.adminWarehouse.Warehouse.warehouse }
+              : null)}
             onChange={(e) => props.handleSorting(e.target.value)}
           >
             {props.warehouse?.map((el) => {
-              return (
+              return props.isAdmin ? (
                 <option key={el.id} value={el.id}>
                   {el.warehouse}
                 </option>
-              );
+              ) : null;
             })}
           </Select>
           <Select

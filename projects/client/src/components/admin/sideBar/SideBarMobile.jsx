@@ -62,7 +62,7 @@ const SideBarMobile = (props) => {
                 <div className="flex flex-shrink-0 items-center px-4">
                   <img
                     className="h-8 w-auto"
-                    src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_white.png`}
+                    src={`${process.env.REACT_APP_API_BASE}logo_galaxy_white.png`}
                     alt="Your Company"
                   />
                 </div>

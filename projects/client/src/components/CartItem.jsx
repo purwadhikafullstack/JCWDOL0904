@@ -1,14 +1,13 @@
-import React, {useState} from "react";
-import {XMarkIcon, CreditCardIcon} from "@heroicons/react/20/solid";
+import React, { useState } from "react";
+import { XMarkIcon, CreditCardIcon } from "@heroicons/react/20/solid";
 import Alert from "./SwallAlert";
 
-export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
+export const CartItem = ({ item, updateCartProduct, deleteCartItem }) => {
   const subtotal = item?.quantity * item?.Product?.price;
   const [inputQuantity, setInputQuantity] = useState(item?.quantity);
   const stock = item?.Product?.Stocks.reduce((totalStock, stockItem) => {
     return totalStock + stockItem.stock;
   }, 0);
-  console.log(item);
 
   const handleDecrease = () => {
     if (inputQuantity > 1) {
@@ -59,8 +58,8 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
         <li key={item?.id} className="flex py-6 sm:py-10">
           <div className="flex-shrink-0">
             <img
-              src={item?.Product?.product_image}
-              alt={item?.name}
+              src={`${process.env.REACT_APP_API_BASE}${item?.Product?.product_image}`}
+              alt={`${process.env.REACT_APP_API_BASE}${item?.Product?.product_image}`}
               className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
             />
           </div>
@@ -72,7 +71,8 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
                   <h3 className="text-sm">
                     <a
                       href={item?.href}
-                      className="font-medium text-gray-700 hover:text-gray-800">
+                      className="font-medium text-gray-700 hover:text-gray-800"
+                    >
                       {item?.Product?.product_name}
                     </a>
                   </h3>
@@ -96,7 +96,8 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
                   <button
                     type="button"
                     className="px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none"
-                    onClick={handleDecrease}>
+                    onClick={handleDecrease}
+                  >
                     -
                   </button>
                   <input
@@ -111,7 +112,8 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
                   <button
                     type="button"
                     className="px-4 py-2 bg-gray-200 hover:bg-gray-300 focus:outline-none"
-                    onClick={handleIncrease}>
+                    onClick={handleIncrease}
+                  >
                     +
                   </button>
                 </div>
@@ -120,7 +122,8 @@ export const CartItem = ({item, updateCartProduct, deleteCartItem}) => {
                   <button
                     type="button"
                     className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
-                    onClick={handleDelete}>
+                    onClick={handleDelete}
+                  >
                     <span className="sr-only">Remove</span>
                     <XMarkIcon className="h-5 w-5" aria-hidden="true" />
                   </button>

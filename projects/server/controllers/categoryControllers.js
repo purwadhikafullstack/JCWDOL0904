@@ -48,13 +48,14 @@ module.exports = {
         totalpage,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "Something went wrong",
+      });
     }
   },
   addCategory: async (req, res) => {
     try {
       const { cate } = req.body;
-      // console.log(categor);
       const allCate = await categor.findAll();
 
       let isSame = [];
@@ -78,7 +79,9 @@ module.exports = {
         message: "success add new category",
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
   deleteCategory: async (req, res) => {
@@ -113,7 +116,9 @@ module.exports = {
         productData,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "Something went wrong",
+      });
     }
   },
   editeCategory: async (req, res) => {
@@ -146,15 +151,6 @@ module.exports = {
       res.status(200).send({
         result,
       });
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  getCategoryforEdite: async (req, res) => {
-    try {
-      const { category } = req.params;
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   },
 };

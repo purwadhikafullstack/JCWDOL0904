@@ -127,9 +127,8 @@ export default function Sidebar(props) {
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notificationAdminRead", (updatedNotifications) => {
-      console.log("This is an update from the socket", updatedNotifications);
       const unreadAdmin = updatedNotifications.filter((notification) => {
         return (
           notification.UserNotifications.length === 0 ||

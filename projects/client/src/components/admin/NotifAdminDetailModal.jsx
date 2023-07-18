@@ -1,7 +1,7 @@
-import {EnvelopeIcon} from "@heroicons/react/24/outline";
-import {useState} from "react";
-import {useEffect} from "react";
-import {api} from "../../API/api";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import { useEffect } from "react";
+import { api } from "../../API/api";
 
 export default function NotifAdminDetailModal({
   fetchNotification,
@@ -14,11 +14,14 @@ export default function NotifAdminDetailModal({
   const fetchNotificationDetail = async (id) => {
     try {
       const response = await api.get(`/notification/${id}/detail`);
-      const {notify} = response.data;
+      const { notify } = response.data;
       setNotification(notify);
-      console.log(response);
     } catch (error) {
-      console.error(error);
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 
@@ -28,9 +31,12 @@ export default function NotifAdminDetailModal({
         notificationId: selectedNotification,
       });
       fetchNotification();
-      console.log(response);
     } catch (error) {
-      console.error(error);
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 

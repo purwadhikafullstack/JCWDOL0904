@@ -1,14 +1,6 @@
-export default function Example() {
+export default function ErrorPage() {
   return (
     <>
-      {/*
-          This example requires updating your template:
-  
-          ```
-          <html class="h-full">
-          <body class="h-full">
-          ```
-        */}
       <div className="flex min-h-full flex-col bg-white pt-16 pb-12">
         <main className="mx-auto flex w-full max-w-7xl flex-grow flex-col justify-center px-6 lg:px-8">
           <div className="flex flex-shrink-0 justify-center">
@@ -16,7 +8,7 @@ export default function Example() {
               <span className="sr-only">Galaxy</span>
               <img
                 className="h-12 w-auto"
-                src="http://localhost:8000/logo_galaxy_2.png"
+                src={`${process.env.REACT_APP_API_BASE}logo_galaxy_2.png`}
                 alt=""
               />
             </a>

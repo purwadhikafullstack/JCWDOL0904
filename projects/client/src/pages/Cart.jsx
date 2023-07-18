@@ -1,16 +1,15 @@
-import {useState, useEffect} from "react";
-import {api} from "../API/api";
+import { useState, useEffect } from "react";
+import { api } from "../API/api";
 import Swal from "sweetalert2";
-import {useDispatch} from "react-redux";
-import {cart, subtotal} from "../features/cartSlice";
-import {useNavigate} from "react-router-dom";
-import {CartItem} from "../components/CartItem";
+import { useDispatch } from "react-redux";
+import { cart, subtotal } from "../features/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { CartItem } from "../components/CartItem";
 import Alert from "../components/SwallAlert";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  console.log(cartItems);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -79,7 +78,6 @@ const Cart = () => {
         text: error.response.data.message,
         icon: "error",
       });
-      console.error(error);
     }
   };
   const removeDeletedCarts = async () => {
@@ -87,13 +85,16 @@ const Cart = () => {
       const deletedCarts = cartItems.filter((item) => item.Product === null);
       if (deletedCarts.length > 0) {
         const cartItemIds = deletedCarts.map((item) => item.id);
-        console.log(cartItemIds);
-        await api.put(`/cart/item`, {cartItemIds});
+        await api.put(`/cart/item`, { cartItemIds });
         localStorage.removeItem("cartItems");
         fetchCartItems();
       }
     } catch (error) {
-      console.error(error);
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   const deleteCartItem = async (cartItemId) => {
@@ -134,7 +135,8 @@ const Cart = () => {
             </h2>
             <ul
               role="list"
-              className="divide-y divide-gray-200 border-t border-b border-gray-200">
+              className="divide-y divide-gray-200 border-t border-b border-gray-200"
+            >
               {cartItems?.map((item) => {
                 return (
                   <div>
@@ -155,10 +157,12 @@ const Cart = () => {
 
           <section
             aria-labelledby="summary-heading"
-            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
+            className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
+          >
             <h2
               id="summary-heading"
-              className="text-lg font-medium text-gray-900">
+              className="text-lg font-medium text-gray-900"
+            >
               Order summary
             </h2>
 
@@ -177,7 +181,8 @@ const Cart = () => {
               <button
                 onClick={handleContinueToCheckout}
                 type="submit"
-                className="w-full transition duration-300 ease-in-out  rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                className="w-full transition duration-300 ease-in-out  rounded-full border border-transparent bg-gray-950 py-2 px-4 text-base font-medium text-white shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
                 Continue to Checkout
               </button>
             </div>

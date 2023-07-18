@@ -37,7 +37,6 @@ export default function OrderList() {
             status: selectedStatus,
           },
         });
-        console.log(response);
       } else {
         response = await api.get(`/order`, {
           params: {
@@ -66,7 +65,6 @@ export default function OrderList() {
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
-      console.log(response);
       setWarehouses(response.data.result);
     } catch (error) {
       console.error(error);
@@ -78,7 +76,6 @@ export default function OrderList() {
       setSelectedWarehouse(user.id_warehouse);
     } else {
       setSelectedWarehouse(selectedValue);
-      console.log(setSelectedWarehouse);
     }
   };
   const handleViewPaymentProof = (idtrans) => {
@@ -124,22 +121,28 @@ export default function OrderList() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log(dataTransaction);
           const result = await api.post("/order/order-cancel", {
             dataTransaction,
           });
           fetchTransactions();
-          console.log(result);
+          Swal.fire(
+            "Canceled!",
+            "User transaction has been deleted.",
+            "success"
+          );
         } catch (error) {
-          console.log(error);
+          Alert({
+            title: "Failed!",
+            text: "Something went wrong",
+            icon: "error",
+          });
         }
-        Swal.fire("Canceled!", "User transaction has been deleted.", "success");
       }
     });
   };
 
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("transaction-update", (updatedTransaction) => {
       setTransactionByWarehouse((prevTransactions) => {
         const updatedTransactions = prevTransactions.map((transaction) => {
@@ -157,9 +160,8 @@ export default function OrderList() {
   }, []);
 
   useEffect(() => {
-    const socket = io("http://localhost:8000");
+    const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("orderConfirmed", (updatedOrder) => {
-      console.log(updatedOrder);
       setTransactionByWarehouse((prevTransactions) => {
         const updatedTransactions = prevTransactions.map((transaction) => {
           if (transaction.id === updatedOrder.id) {
