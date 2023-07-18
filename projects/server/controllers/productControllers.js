@@ -65,7 +65,9 @@ module.exports = {
       };
       res.status(200).send({ message: "success", ...result });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -137,8 +139,6 @@ module.exports = {
         result,
       });
     } catch (error) {
-      console.log(error);
-
       res.status(400).send({
         message: error.message,
       });
@@ -186,7 +186,9 @@ module.exports = {
         idWarehouse,
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
   updateImageProduct: async (req, res) => {
@@ -198,7 +200,7 @@ module.exports = {
         throw new Error("Error, your format picture is not png!");
       }
       const filePath = req.file.path;
-      const fileName = process.env.IMAGE_URL + filePath.split("\\")[2];
+      const fileName = filePath.split("\\")[2];
 
       const productData = await product.update(
         {
@@ -378,7 +380,7 @@ module.exports = {
       }
 
       const filePath = req.file.path;
-      const fileName = process.env.IMAGE_URL + filePath.split("\\")[2];
+      const fileName = filePath.split("\\")[2];
 
       const result = await product.create({
         product_name,

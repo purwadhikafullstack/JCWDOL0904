@@ -7,7 +7,7 @@ module.exports = {
       const { id } = req.dataToken;
 
       const { file } = req;
-      const filepath = file ? "http://localhost:8000/" + file.filename : null;
+      const filepath = file ? file.filename : null;
 
       const result = await db.User.update(
         { user_image: filepath },

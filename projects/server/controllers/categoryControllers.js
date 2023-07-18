@@ -79,7 +79,9 @@ module.exports = {
         message: "success add new category",
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
   deleteCategory: async (req, res) => {

@@ -131,7 +131,11 @@ export default function OrderList() {
             "success"
           );
         } catch (error) {
-          console.log({ message: "Something went wrong" });
+          Alert({
+            title: "Failed!",
+            text: "Something went wrong",
+            icon: "error",
+          });
         }
       }
     });

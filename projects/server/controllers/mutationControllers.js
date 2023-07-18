@@ -183,7 +183,6 @@ module.exports = {
         getStockmovementData,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send({
         message: error.message,
       });
@@ -383,7 +382,6 @@ module.exports = {
       const totalPage = Math.ceil(allCount / limit);
       if (parseInt(page) >= totalPage && totalPage > 0) {
         page = totalPage - 1;
-        console.log("hai");
         result = await stockmovement.findAndCountAll({
           where: {
             status,

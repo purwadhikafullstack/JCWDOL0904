@@ -235,7 +235,9 @@ module.exports = {
       );
       res.status(200).send({ message: "Transaction confirmed successfully" });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 };

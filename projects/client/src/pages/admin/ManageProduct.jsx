@@ -46,7 +46,11 @@ const ManageProduct = () => {
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
-        console.log({ message: "Something went wrong" });
+        Alert({
+          title: "Failed!",
+          text: "Something went wrong",
+          icon: "error",
+        });
       });
   };
   const handleSorting = (value) => {

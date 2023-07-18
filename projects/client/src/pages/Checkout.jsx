@@ -75,7 +75,11 @@ export default function Checkout() {
         }
       } catch (error) {
         navigate("/404");
-        console.log({ message: "Something went wrong" });
+        Alert({
+          title: "Failed!",
+          text: "Something went wrong",
+          icon: "error",
+        });
         setOngkirIsLoading(false);
       } finally {
         setOngkirIsLoading(false);
@@ -128,7 +132,11 @@ export default function Checkout() {
         let response = await api.get(`nearest-warehouse/${addressId}`);
         setWarehouseOrigin(response.data);
       } catch (error) {
-        console.log({ message: "Something went wrong" });
+        Alert({
+          title: "Failed!",
+          text: "Something went wrong",
+          icon: "error",
+        });
       }
     };
     fetchNearestWarehouse();
@@ -202,7 +210,11 @@ export default function Checkout() {
       });
       dispatch(updateCart({ cart: [] }));
       navigate("/");
-      console.log("Error creating order");
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     } finally {
       setOngkirIsLoading(false);
     }

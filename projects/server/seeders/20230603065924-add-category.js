@@ -15,7 +15,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        category: "table",
+        category: "tablet",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

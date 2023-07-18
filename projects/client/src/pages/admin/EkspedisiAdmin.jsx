@@ -23,7 +23,11 @@ export const EkspedisiAdmin = () => {
       setEkspedisi(response.data.data);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   useEffect(() => {
@@ -56,7 +60,6 @@ export const EkspedisiAdmin = () => {
         icon: "success",
       });
     } catch (error) {
-      console.log({ message: "Something went wrong" });
       Alert({
         title: "Failed!",
         text: error.response.data.message,

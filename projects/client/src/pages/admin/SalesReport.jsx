@@ -56,7 +56,11 @@ const SalesReport = () => {
       setTransactionByMonth(response.data.totalPriceFiltered);
       setTotalPrice(response.data.total_price);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 

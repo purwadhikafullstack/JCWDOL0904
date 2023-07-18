@@ -35,10 +35,13 @@ export const Transaction = () => {
         },
       });
       setTransactions(response.data.orders);
-      console.log(response);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error(error);
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   const handleSearch = (e) => {

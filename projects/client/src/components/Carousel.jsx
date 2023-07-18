@@ -19,7 +19,13 @@ export default function Carousel() {
         setPromotionImgSmall(result.data.smallSc);
       })
       .catch((err) => {
-        console.log(err);
+        Swal.fire({
+          title: "error",
+          text: "Something went wrong",
+          icon: "error",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "black",
+        });
       });
   };
 

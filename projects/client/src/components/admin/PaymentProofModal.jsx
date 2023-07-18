@@ -18,7 +18,11 @@ export const PaymentProofModal = ({
       setPaymentProof(payment_proof);
       setExpired(expired);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 
@@ -76,7 +80,7 @@ export const PaymentProofModal = ({
               </div>
               <div className="modal-body p-6 overflow-y-auto max-h-[500px]">
                 <img
-                  src={paymentProof}
+                  src={`${process.env.REACT_APP_API_BASE}${paymentProof}`}
                   alt="Payment Proof"
                   className="w-full rounded-lg"
                 />

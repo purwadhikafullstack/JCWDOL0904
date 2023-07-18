@@ -11,7 +11,7 @@ const ProfileDropDown = (props) => {
             <span className="sr-only">Open user menu</span>
             <img
               className="h-8 w-8 rounded-full"
-              src={props.user_image}
+              src={`${process.env.REACT_APP_API_BASE}${props.user_image}`}
               alt=""
             />
           </Menu.Button>

@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       user_image: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "http://localhost:8000/avatar_default.jpg",
+        defaultValue: "avatar_default.jpg",
       },
       role: {
         type: DataTypes.ENUM,
@@ -88,11 +88,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      // is_deleted: {
-      //   type: DataTypes.BOOLEAN,
-      //   allowNull: false,
-      //   defaultValue: false,
-      // },
     },
     {
       sequelize,

@@ -32,7 +32,11 @@ const EditWarehouse = (props) => {
       let response = await api.get(url);
       setWarehouses(response.data.result);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 

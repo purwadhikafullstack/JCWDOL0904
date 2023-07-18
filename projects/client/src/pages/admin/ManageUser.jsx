@@ -32,7 +32,11 @@ const ManageUser = () => {
         dispatch(allUserData(result.data));
       });
     } catch (err) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 

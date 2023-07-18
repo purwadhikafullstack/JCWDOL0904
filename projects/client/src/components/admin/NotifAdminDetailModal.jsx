@@ -17,7 +17,11 @@ export default function NotifAdminDetailModal({
       const { notify } = response.data;
       setNotification(notify);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 
@@ -28,7 +32,11 @@ export default function NotifAdminDetailModal({
       });
       fetchNotification();
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 

@@ -40,7 +40,11 @@ const ProductDetail = () => {
       setStock(result.data.stock);
       setProduct(result.data.productById);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 
@@ -143,7 +147,7 @@ const ProductDetail = () => {
           </div>
           <Image
             width="200px"
-            src={product.product_image}
+            src={`${process.env.REACT_APP_API_BASE}${product.product_image}`}
             alt={product.product_image}
           />
         </div>

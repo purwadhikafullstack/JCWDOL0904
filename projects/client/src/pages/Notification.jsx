@@ -42,7 +42,11 @@ export default function Notification() {
       setNotifications(response.data.notif);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 
@@ -69,7 +73,6 @@ export default function Notification() {
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notification", (updatedNotifications) => {
-      console.log("ini update from socet Admin Notif", updatedNotifications);
       setNotifications(updatedNotifications);
     });
     return () => {

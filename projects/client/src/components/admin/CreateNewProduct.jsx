@@ -70,7 +70,7 @@ const CreateNewProduct = (props) => {
     } catch (error) {
       Alert({
         title: "Failed!",
-        text: error.response.data.message,
+        text: "Something went wrong",
         icon: "error",
       });
     }
@@ -83,14 +83,22 @@ const CreateNewProduct = (props) => {
         setCategory(response.data.result[0].id);
       }
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   const initialStock = async (id) => {
     try {
       const response = await api.post("/product/stock-init", { id });
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   useEffect(() => {

@@ -14,6 +14,7 @@ import { api } from "../../API/api";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import ModalAddWarehouse from "./manageWarehouse/ModalAddWarehouse";
+import Alert from "../SwallAlert";
 
 const AddWarehouse = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,7 +34,11 @@ const AddWarehouse = (props) => {
       const response = await apiro.get("/rajaongkir/province");
       setProvinces(response.data.data);
     } catch (error) {
-      console.log({ message: "Server Error" });
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
     }
   };
   const fetchAddressesCity = async () => {
@@ -43,7 +48,13 @@ const AddWarehouse = (props) => {
       );
       setCities(response.data.data.results);
     } catch (error) {
-      console.log({ message: "Server Error" });
+      Swal.fire({
+        title: "error",
+        text: "Something went wrong",
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
     }
   };
 
@@ -91,7 +102,13 @@ const AddWarehouse = (props) => {
         id_warehouse,
       });
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "error",
+        text: "Something went wrong",
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
     }
   };
 

@@ -10,6 +10,7 @@ import { unreadAdminCount } from "../../features/adminNotificationSlice";
 import NotifAdminDetailModal from "../../components/admin/NotifAdminDetailModal";
 import Pagination from "../../components/admin/Pagination";
 import OrderSearch from "../../components/admin/OrderSearch";
+import Alert from "../../components/SwallAlert";
 
 export default function AdminNotification() {
   const [notifications, setNotifications] = useState([]);
@@ -24,7 +25,6 @@ export default function AdminNotification() {
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notificationAdmin", (updatedNotifications) => {
-      console.log("ini update from socet Admin Notif", updatedNotifications);
       setNotifications(updatedNotifications);
     });
     return () => {
@@ -62,7 +62,11 @@ export default function AdminNotification() {
       setNotifications(response.data.notif);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   const handleSearch = (e) => {

@@ -6,6 +6,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import { Button, Center } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import Alert from "./SwallAlert";
 
 function DeleteAddressModal({
   selectedAddress,
@@ -66,7 +67,11 @@ function DeleteAddressModal({
       });
       onSelectAddress(response.data);
     } catch (error) {
-      console.log(error);
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
     }
   };
 

@@ -76,14 +76,15 @@ module.exports = {
         html: tempResult,
       };
       let response = nodemailer.sendMail(mail);
-      console.log(response);
 
       res.status(200).send({
         message: "Register success, please check your email",
         result,
       });
     } catch (err) {
-      console.log(err);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -136,7 +137,9 @@ module.exports = {
         message: "Register new Admin Success",
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -250,7 +253,9 @@ module.exports = {
         message: "Delete User data Success",
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -309,14 +314,15 @@ module.exports = {
       };
 
       let response = nodemailer.sendMail(mail);
-      console.log(response);
 
       res.status(200).send({
         message: "Please check your email",
         user,
       });
     } catch (err) {
-      console.log(err);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 
@@ -361,7 +367,9 @@ module.exports = {
         result,
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        message: "internal server error",
+      });
     }
   },
 

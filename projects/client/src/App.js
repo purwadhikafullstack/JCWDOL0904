@@ -44,7 +44,13 @@ function App() {
       const response = await api.get("/category");
       dispatch(AllCategory(response.data.result));
     } catch (error) {
-      console.log(error);
+      Swal.fire({
+        title: "error",
+        text: "Something went wrong",
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
     }
   };
 
@@ -135,7 +141,7 @@ function App() {
           }}
         >
           <img
-            src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_2.png`}
+            src={`${process.env.REACT_APP_API_BASE}logo_galaxy_2.png`}
             className="w-32 h-28 align-middle rounded-full animate-bounce"
           />
         </div>

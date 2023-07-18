@@ -35,7 +35,6 @@ const MigrationModal = (props) => {
             warehouse_sender_id: parseInt(warehouseId),
             warehouse_receive_id: parseInt(warehouseIdReceive),
           });
-          console.log(response);
           props.runFunction();
           Swal.fire("Confirmed!", "Mutation has been confirmed.", "success");
         } catch (error) {

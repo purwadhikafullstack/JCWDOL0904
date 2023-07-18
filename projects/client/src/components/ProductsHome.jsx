@@ -43,8 +43,8 @@ const ProductsHome = ({ products }) => {
               >
                 <CardBody>
                   <Image
-                    src={`${el.product_image}`}
-                    alt={`${el.product_name}`}
+                    src={process.env.REACT_APP_API_BASE + el.product_image}
+                    alt={process.env.REACT_APP_API_BASE + el.product_image}
                     borderRadius="lg"
                     width="150px"
                     height="150px"

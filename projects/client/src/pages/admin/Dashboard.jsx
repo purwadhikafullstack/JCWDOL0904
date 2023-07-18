@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { api } from "../../API/api";
 import DashboardContent from "../../components/admin/dashboard/dashboardContent";
+import Alert from "../../components/SwallAlert";
 
 const Dashboard = () => {
   const [warehousePlace, setWarehousePlace] = useState("All Warehouse");
@@ -37,7 +38,11 @@ const Dashboard = () => {
       );
       setPCount(response.data.userPrice);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
 
@@ -56,7 +61,11 @@ const Dashboard = () => {
       });
       setProduct(response.data.productFavoriteData);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   const getCountTransactionOngoing = async () => {
@@ -71,7 +80,11 @@ const Dashboard = () => {
       });
       setTCount(response.data.result);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   const getCountMutatioinOngoing = async () => {
@@ -86,7 +99,11 @@ const Dashboard = () => {
       });
       setMCount(response.data.result);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: "Something went wrong",
+        icon: "error",
+      });
     }
   };
   useEffect(() => {

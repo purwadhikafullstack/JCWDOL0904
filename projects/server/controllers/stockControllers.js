@@ -104,7 +104,9 @@ module.exports = {
         adminWarehouse,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   updateStock: async (req, res) => {

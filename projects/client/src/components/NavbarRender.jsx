@@ -34,12 +34,12 @@ const NavbarRender = ({
                 >
                   <img
                     className="block h-8 w-auto  lg:hidden "
-                    src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
+                    src={`${process.env.REACT_APP_API_BASE}logo_galaxy.png`}
                     alt="Your Company"
                   />
                   <img
                     className="hidden h-8 w-auto lg:block"
-                    src={`${process.env.REACT_APP_API_BASE}/logo_galaxy.png`}
+                    src={`${process.env.REACT_APP_API_BASE}logo_galaxy.png`}
                     alt="Your Company"
                   />
                   <div className="flex sm:hidden ml-40 justify-end md:hidden">
@@ -118,7 +118,7 @@ const NavbarRender = ({
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={user_image}
+                    src={`${process.env.REACT_APP_API_BASE}${user_image}`}
                     alt=""
                   />
                 </div>

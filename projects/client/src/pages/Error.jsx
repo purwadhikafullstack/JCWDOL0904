@@ -8,7 +8,7 @@ export default function ErrorPage() {
               <span className="sr-only">Galaxy</span>
               <img
                 className="h-12 w-auto"
-                src="http://localhost:8000/logo_galaxy_2.png"
+                src={`${process.env.REACT_APP_API_BASE}logo_galaxy_2.png`}
                 alt=""
               />
             </a>

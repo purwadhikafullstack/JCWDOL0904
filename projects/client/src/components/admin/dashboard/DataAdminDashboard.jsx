@@ -21,7 +21,7 @@ const DataAdminDashboard = (props) => {
             <Box backgroundColor="white" padding="5px" borderRadius="50px">
               <Image
                 width="70px"
-                src={`${props.props.adminData.user_image}`}
+                src={`${process.env.REACT_APP_API_BASE}${props.props.adminData.user_image}`}
                 borderRadius="50px"
               />
             </Box>
