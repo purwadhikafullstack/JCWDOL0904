@@ -256,6 +256,7 @@ export default function Profile() {
                         selectedAddress={isSelectedDeleteAddress}
                         onSelectAddress={handleSelectDeleteAddress}
                         closeModal={closeDeleteAdressModal}
+                        setSelectedDeletedAddress={setSelectedDeletedAddress}
                       />
                     )}
                   </div>

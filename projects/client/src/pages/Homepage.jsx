@@ -3,7 +3,6 @@ import { Box } from "@chakra-ui/react";
 import Carousel from "../components/Carousel";
 import "./style/Homepage.css";
 import { api } from "../API/api";
-import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { AllCategory } from "../features/categorySlice";
 import Pagination from "../components/admin/Pagination";

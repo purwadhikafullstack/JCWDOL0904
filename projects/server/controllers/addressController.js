@@ -31,8 +31,6 @@ module.exports = {
     }
   },
 
-  // Create a new address
-  // e115d475b4d64403bef4b85a159facaf
   createAddress: async (req, res) => {
     try {
       const { id } = req.dataToken;
@@ -56,7 +54,10 @@ module.exports = {
       ) {
         return res.status(400).send({ message: "Please complete your data" });
       }
-
+      const zipRegex = /^\d{5}$/;
+      if (!zipRegex.test(zip)) {
+        return res.status(400).send({ message: "ZIP code should be 5 digits" });
+      }
       const query = `${subdistrict}%20${city}%20${province}%20${zip}`;
       const response = await axios.get(
         `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=e115d475b4d64403bef4b85a159facaf`

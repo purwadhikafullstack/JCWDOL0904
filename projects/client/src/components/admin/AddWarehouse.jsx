@@ -61,15 +61,9 @@ const AddWarehouse = (props) => {
         zip: parseInt(zip),
       });
       let result;
-      if (response && response.length > 0) {
-        result = await api.post("/stock/initial", {
-          id: response.data.newWarehouse.id,
-        });
-      }
-
-      props.runFunction();
+      inititalStock(response.data.newWarehouse.id);
       console.log(response);
-      console.log(result);
+      props.runFunction();
       onClose();
       setLoad(false);
       Swal.fire({
@@ -91,6 +85,17 @@ const AddWarehouse = (props) => {
         icon: "warning",
         confirmButtonText: "Ok",
       });
+      console.log(error);
+    }
+  };
+
+  const inititalStock = async (id_warehouse) => {
+    try {
+      const response = await api.post("/warehouses/initial-stock", {
+        id_warehouse,
+      });
+      console.log(response);
+    } catch (error) {
       console.log(error);
     }
   };

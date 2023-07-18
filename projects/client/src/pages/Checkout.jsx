@@ -1,9 +1,9 @@
-import {useState, useEffect} from "react";
-import {api} from "../API/api";
-import {apiro} from "../API/apiro";
-import {useNavigate} from "react-router-dom";
-import {updateCart} from "../features/cartSlice";
-import {useDispatch} from "react-redux";
+import { useState, useEffect } from "react";
+import { api } from "../API/api";
+import { apiro } from "../API/apiro";
+import { useNavigate } from "react-router-dom";
+import { updateCart } from "../features/cartSlice";
+import { useDispatch } from "react-redux";
 import Alert from "../components/SwallAlert";
 import CheckoutRender from "../components/CheckoutRender";
 
@@ -155,7 +155,7 @@ export default function Checkout() {
       if (deletedCarts.length > 0) {
         const cartItemIds = deletedCarts.map((item) => item.id);
         console.log(cartItemIds);
-        await api.put(`/cart/item`, {cartItemIds});
+        await api.put(`/cart/item`, { cartItemIds });
         localStorage.removeItem("cartItems");
         fetchCartItems();
       }
@@ -189,7 +189,7 @@ export default function Checkout() {
         }
       );
       setCartItems([]);
-      dispatch(updateCart({cart: []}));
+      dispatch(updateCart({ cart: [] }));
       localStorage.removeItem("cartItems");
       localStorage.removeItem("selectedAddress");
       localStorage.removeItem("subTotal");
@@ -200,6 +200,7 @@ export default function Checkout() {
         text: error.response.data.error,
         icon: "error",
       });
+      dispatch(updateCart({ cart: [] }));
       console.log("Error creating order:", error);
     } finally {
       setOngkirIsLoading(false);

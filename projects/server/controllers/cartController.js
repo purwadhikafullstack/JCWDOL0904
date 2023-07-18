@@ -8,6 +8,15 @@ module.exports = {
       const { id } = req.dataToken;
       const { productId, quantity } = req.body;
 
+      const cekProduct = await Products.findOne({
+        where: { id: productId },
+      });
+
+      if (!cekProduct || cekProduct.length > 0) {
+        return res
+          .status(400)
+          .send({ message: "This product was recently deleted!" });
+      }
       if (!productId) {
         return res.status(404).send({ message: "Product not found" });
       }
@@ -57,12 +66,14 @@ module.exports = {
 
       if (cartItem) {
         const product = await Products.findByPk(cartItem.id_product);
-        const totalStock = await Stocks.sum('stock', {
-          include: [{
-            model: Warehouse,
-            attributes: []
-          }],
-          where: { id_product: cartItem.id_product }
+        const totalStock = await Stocks.sum("stock", {
+          include: [
+            {
+              model: Warehouse,
+              attributes: [],
+            },
+          ],
+          where: { id_product: cartItem.id_product },
         });
 
         if (!product || !totalStock) {
@@ -113,19 +124,19 @@ module.exports = {
 
       const cartItems = await Carts.findAndCountAll({
         where: {
-          id_user: id
+          id_user: id,
         },
         include: [
           {
             model: Products,
             include: [
               {
-                model: Category
+                model: Category,
               },
               {
-                model: Stocks
-              }
-            ]
+                model: Stocks,
+              },
+            ],
           },
           { model: User },
         ],
@@ -134,7 +145,7 @@ module.exports = {
       return res.status(200).send({ cartItems: cartItems.rows });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ error: 'Unable to fetch cart items' });
+      return res.status(500).send({ error: "Unable to fetch cart items" });
     }
   },
   deleteCart: async (req, res) => {
@@ -143,7 +154,9 @@ module.exports = {
       const cartItem = await Carts.findByPk(cartItemId);
       if (cartItem) {
         await Carts.destroy({ where: { id: cartItemId } });
-        return res.status(200).send({ message: "Cart item deleted successfully" });
+        return res
+          .status(200)
+          .send({ message: "Cart item deleted successfully" });
       }
 
       return res.status(404).send({ message: "Cart item not found" });
@@ -157,17 +170,19 @@ module.exports = {
       const { cartItemIds } = req.body;
       const cartItems = await Carts.findAll({
         where: {
-          id: cartItemIds
-        }
+          id: cartItemIds,
+        },
       });
 
       if (cartItems.length > 0) {
         await Carts.destroy({
           where: {
-            id: cartItemIds
-          }
+            id: cartItemIds,
+          },
         });
-        return res.status(200).send({ message: "Cart items deleted successfully" });
+        return res
+          .status(200)
+          .send({ message: "Cart items deleted successfully" });
       }
 
       return res.status(400).send({ message: "Cart items not found" });
@@ -175,5 +190,5 @@ module.exports = {
       console.error(error);
       return res.status(500).send({ error: "Unable to remove cart items" });
     }
-  }
+  },
 };

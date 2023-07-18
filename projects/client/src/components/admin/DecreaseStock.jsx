@@ -54,6 +54,12 @@ const DecreaseStock = (props) => {
           props.runFunction();
           setStock(0);
         } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: error.response.data.message,
+            confirmButtonText: "Ok",
+          });
           console.log(error);
         }
       }

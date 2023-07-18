@@ -19,6 +19,7 @@ const stockRouter = require("./stockRouters");
 const migrationRouter = require("./migrationRouter");
 const transactionRouter = require("./transactionsRouter");
 const stockHistoryRouter = require("./stockHistoryRouter");
+const dashboardRouter = require("./dashboardRouter");
 
 module.exports = {
   userRouter,
@@ -42,4 +43,5 @@ module.exports = {
   migrationRouter,
   transactionRouter,
   stockHistoryRouter,
+  dashboardRouter,
 };

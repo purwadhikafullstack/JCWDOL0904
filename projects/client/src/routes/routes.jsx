@@ -1,13 +1,13 @@
-import {Route} from "react-router-dom";
+import { Route } from "react-router-dom";
 import Homepage from "../pages/Homepage";
-import {Register} from "../pages/register";
-import {Verification} from "../pages/verification";
-import {Login} from "../pages/Login";
-import {ResetPassword} from "../pages/resetPassword";
-import {InputPassword} from "../pages/inputPassword";
+import { Register } from "../pages/register";
+import { Verification } from "../pages/verification";
+import { Login } from "../pages/Login";
+import { ResetPassword } from "../pages/resetPassword";
+import { InputPassword } from "../pages/inputPassword";
 import ProductDetail from "../pages/ProductDetail";
 
-import {Transaction} from "../pages/Transactions";
+import { Transaction } from "../pages/Transactions";
 
 import ProtectedPage from "./protectedPage";
 import Cart from "../pages/Cart";
@@ -22,18 +22,18 @@ import ManageCategory from "../pages/admin/ManageCategory";
 import MutationList from "../pages/admin/MutationList";
 import ManageProduct from "../pages/admin/ManageProduct";
 import ManageUser from "../pages/admin/ManageUser";
-import {PaymentProofModal} from "../components/admin/PaymentProofModal";
+import { PaymentProofModal } from "../components/admin/PaymentProofModal";
 import OrderList from "../pages/admin/OrderList";
 import Notification from "../pages/Notification";
 import NotificationDetailModal from "../components/NotificationDetailModal";
 import AdminNotification from "../pages/admin/AdminNotification";
 import ManageStock from "../pages/admin/ManageStock";
 import SalesReport from "../pages/admin/SalesReport";
-import {EkspedisiAdmin} from "../pages/admin/EkspedisiAdmin";
+import { EkspedisiAdmin } from "../pages/admin/EkspedisiAdmin";
 import StockHistory from "../pages/admin/StockHistory";
+import Dashboard from "../pages/admin/Dashboard";
 
 const routes = [
-  //home
   <Route
     key="home"
     path="/"
@@ -313,6 +313,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <StockHistory />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="dashboard"
+    path="/dashboard"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <Dashboard />
       </ProtectedPage>
     }
   />,

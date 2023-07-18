@@ -1,12 +1,12 @@
-import {useEffect, useState, useRef} from "react";
-import {api} from "../API/api";
-import {MdError, MdCheckCircle} from "react-icons/md";
+import { useEffect, useState, useRef } from "react";
+import { api } from "../API/api";
+import { MdError, MdCheckCircle } from "react-icons/md";
 import NotificationDetailModal from "../components/NotificationDetailModal";
 import moment from "moment";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import Pagination from "../components/admin/Pagination";
 import OrderSearch from "../components/admin/OrderSearch";
-import {unreadCount} from "../features/notificationSlice";
+import { unreadCount } from "../features/notificationSlice";
 import io from "socket.io-client";
 
 export default function Notification() {
@@ -16,6 +16,7 @@ export default function Notification() {
   const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
   const [totalPages, setTotalPages] = useState(0);
   const [invoiceNumber, setInvoiceNumber] = useState("");
+  // const userData = useSelector((state) => state.userSlice);
 
   const dispatch = useDispatch();
 
@@ -85,7 +86,7 @@ export default function Notification() {
           !notification.UserNotifications[0].read
         );
       });
-      dispatch(unreadCount({unread: unread.length}));
+      dispatch(unreadCount({ unread: unread.length }));
     });
     return () => {
       socket.off("notificationRead");
@@ -106,7 +107,8 @@ export default function Notification() {
       <div className="flex pt-6 min-h-[650px] justify-center">
         <ul
           role="list"
-          className="flex flex-col gap-3 w-full sm:max-w-[605px] mx-auto">
+          className="flex flex-col gap-3 w-full sm:max-w-[605px] mx-auto"
+        >
           {notifications.map((notification) => {
             const readStatus =
               notification.UserNotifications.length > 0
@@ -118,13 +120,15 @@ export default function Notification() {
                 onClick={(event) => openModal(notification.id, event)}
                 className={`relative py-4 px-4 transition duration-300 ease-in-out rounded-full w-full focus-within:ring-2 focus-within:ring-inset focus-within:ring-gray-600 ${
                   readStatus ? "bg-gray-50" : "bg-gray-200"
-                } hover:bg-gray-100 hover:shadow-md`}>
+                } hover:bg-gray-100 hover:shadow-md`}
+              >
                 <div className="flex gap-10 items-center space-x-3">
                   <div className="min-w-0 flex-1">
                     <a href="#" className="block focus:outline-none">
                       <span
                         className="absolute inset-0"
-                        aria-hidden="true"></span>
+                        aria-hidden="true"
+                      ></span>
                       <p className="truncate text-sm font-medium text-gray-900">
                         {notification.title}
                       </p>
@@ -132,7 +136,8 @@ export default function Notification() {
                   </div>
                   <time
                     dateTime={notification.createdAt}
-                    className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500 pr-14">
+                    className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500 pr-14"
+                  >
                     {moment(notification.createdAt).format(
                       "MMMM Do YYYY, h:mm:ss a"
                     )}

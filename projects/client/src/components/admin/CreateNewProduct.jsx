@@ -1,21 +1,10 @@
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Select,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { api } from "../../API/api";
 import { useSelector } from "react-redux";
+import Alert from "../SwallAlert";
+import CreateProductModal from "./manageProduct/CreateProductModal";
+import Swal from "sweetalert2";
 
 const CreateNewProduct = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,62 +23,76 @@ const CreateNewProduct = (props) => {
   const [description, setDescription] = useState("");
   const [Allcategory, setAllCategory] = useState([]);
   const [category, setCategory] = useState("Select category");
-
   const { role } = useSelector((state) => state.userSlice);
-
   const handleSubmit = async () => {
+    console.log(file);
     try {
-      const formData = new FormData();
-      formData.append("product_name", product_name);
-      formData.append("price", price);
-      formData.append("file", file);
-      formData.append("category", category);
-      formData.append("cpu_speed", cpu_speed);
-      formData.append("cpu_type", cpu_type);
-      formData.append("size", size);
-      formData.append("resolution", resolution);
-      formData.append("colorDept", colorDept);
-      formData.append("ram", ram);
-      formData.append("storage", storage);
-      formData.append("weight_g", weight_g);
-      formData.append("battery", battery);
-      formData.append("description", description);
-
-      const response = await api.post("/product/add", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      console.log(response.data.result.id);
-      initialStock(response.data.result.id);
-      props.getProducts();
+      if (!file) {
+        return Alert({
+          title: "Failed!",
+          text: "Please insert product image",
+          icon: "error",
+        });
+      } else if (price.length > 10) {
+        return Alert({
+          title: "Failed!",
+          text: "price is too",
+          icon: "error",
+        });
+      } else {
+        const formData = new FormData();
+        formData.append("product_name", product_name);
+        formData.append("price", price);
+        formData.append("file", file);
+        formData.append("category", category);
+        formData.append("cpu_speed", cpu_speed);
+        formData.append("cpu_type", cpu_type);
+        formData.append("size", size);
+        formData.append("resolution", resolution);
+        formData.append("colorDept", colorDept);
+        formData.append("ram", ram);
+        formData.append("storage", storage);
+        formData.append("weight_g", weight_g);
+        formData.append("battery", battery);
+        formData.append("description", description);
+        const response = await api.post("/product/add", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        Swal.fire({
+          title: "Success",
+          text: "Product has been created!",
+          icon: "success",
+          confirmButtonText: "Ok",
+        });
+        setProduct_image(null);
+        initialStock(response.data.result.id);
+        props.getProducts();
+      }
     } catch (error) {
-      console.log(error);
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
     }
   };
-
   const getAllCategory = async () => {
     try {
       const response = await api.get("/category/");
-      // console.log(response.data.result);
-
-      console.log(response.data.result);
       setAllCategory(response.data.result);
-    } catch (error) {
-      console.log(error);
-    }
+      if (response.data.result[0].id) {
+        setCategory(response.data.result[0].id);
+      }
+    } catch (error) {}
   };
-
   const initialStock = async (id) => {
     try {
       const response = await api.post("/product/stock-init", { id });
       console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
-
   useEffect(() => {
     getAllCategory();
-    // console.log(role);
   }, []);
 
   return (
@@ -103,132 +106,43 @@ const CreateNewProduct = (props) => {
         </button>
       ) : null}
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create New Product</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody margin="10px">
-            <FormControl>
-              <FormLabel>Product Name</FormLabel>
-              <Input
-                type="email"
-                value={product_name}
-                onChange={(e) => setProduct_name(e.target.value)}
-              />
-              <FormLabel>Price (Rp)</FormLabel>
-              <Input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-              <FormLabel>Image (png)</FormLabel>
-              <Input
-                type="file"
-                onChange={(e) => setProduct_image(e.target.files[0])}
-              />
-              <FormLabel>Category</FormLabel>
-              <Select
-                placeholder={category}
-                defaultValue={category}
-                onChange={(e) => {
-                  setCategory(e.target.value);
-                  console.log(e.target.value);
-                }}
-              >
-                {Allcategory?.map((el) => {
-                  return (
-                    <option
-                      // hidden={el.category === categor.category}
-                      key={el.id}
-                      value={el.id}
-                    >
-                      {el.category}
-                    </option>
-                  );
-                })}
-              </Select>
-
-              <FormLabel>Cpu Speed</FormLabel>
-              <Input
-                type="text"
-                value={cpu_speed}
-                onChange={(e) => setCpu_speed(e.target.value)}
-              />
-              <FormLabel>Cpu Type</FormLabel>
-              <Input
-                type="text"
-                value={cpu_type}
-                onChange={(e) => setCpu_type(e.target.value)}
-              />
-              <FormLabel>Size</FormLabel>
-              <Input
-                type="text"
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
-              />
-              <FormLabel>Resolution</FormLabel>
-              <Input
-                type="text"
-                value={resolution}
-                onChange={(e) => setResolution(e.target.value)}
-              />
-              <FormLabel>Color Dept</FormLabel>
-              <Input
-                type="text"
-                value={colorDept}
-                onChange={(e) => setColorDept(e.target.value)}
-              />
-              <FormLabel>Ram</FormLabel>
-              <Input
-                type="text"
-                value={ram}
-                onChange={(e) => setRam(e.target.value)}
-              />
-              <FormLabel>Storage</FormLabel>
-              <Input
-                type="text"
-                value={storage}
-                onChange={(e) => setStorage(e.target.value)}
-              />
-              <FormLabel>Weight (g)</FormLabel>
-              <Input
-                type="number"
-                value={weight_g}
-                onChange={(e) => setWeight_g(e.target.value)}
-              />
-              <FormLabel>Battery</FormLabel>
-              <Input
-                type="text"
-                value={battery}
-                onChange={(e) => setbattery(e.target.value)}
-              />
-              <FormLabel>Description</FormLabel>
-              <Input
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={() => {
-                onClose();
-                handleSubmit();
-              }}
-            >
-              Create
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CreateProductModal
+        isOpen={isOpen}
+        onClose={onClose}
+        price={price}
+        setPrice={setPrice}
+        product_name={product_name}
+        setProduct_name={setProduct_name}
+        file={file}
+        setProduct_image={setProduct_image}
+        cpu_speed={cpu_speed}
+        setCpu_speed={setCpu_speed}
+        cpu_type={cpu_type}
+        setCpu_type={setCpu_type}
+        size={size}
+        setSize={setSize}
+        resolution={resolution}
+        setResolution={setResolution}
+        colorDept={colorDept}
+        setColorDept={setColorDept}
+        ram={ram}
+        setRam={setRam}
+        storage={storage}
+        setStorage={setStorage}
+        weight_g={weight_g}
+        setWeight_g={setWeight_g}
+        description={description}
+        setDescription={setDescription}
+        Allcategory={Allcategory}
+        setAllCategory={setAllCategory}
+        category={category}
+        setCategory={setCategory}
+        role={role}
+        battery={battery}
+        setbattery={setbattery}
+        handleSubmit={handleSubmit}
+      />
     </div>
   );
 };
-
 export default CreateNewProduct;

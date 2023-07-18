@@ -1,7 +1,7 @@
 import React from "react";
-import {useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
-import {api} from "../API/api";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../API/api";
 import {
   Button,
   Image,
@@ -10,11 +10,13 @@ import {
   Tr,
   Td,
   TableContainer,
+  Text,
 } from "@chakra-ui/react";
-import {BeatLoader} from "react-spinners";
+import { BeatLoader } from "react-spinners";
 import "./style/ProductDetail.css";
 import Swal from "sweetalert2";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
+import Alert from "../components/SwallAlert";
 
 const ProductDetail = () => {
   const navigation = useNavigate();
@@ -34,7 +36,7 @@ const ProductDetail = () => {
 
   const getOneProduct = async (idP) => {
     try {
-      const result = await api.post("/product/detail", {idP});
+      const result = await api.post("/product/detail", { idP });
       console.log(result.data);
       setStock(result.data.stock);
       setProduct(result.data.productById);
@@ -44,7 +46,6 @@ const ProductDetail = () => {
   let productId = JSON.parse(localStorage.getItem("idProduct"));
   let addToCart = async (e) => {
     const token = JSON.parse(localStorage.getItem("auth"));
-    console.log(token);
     e.preventDefault();
     if (!localStorage.getItem("auth")) {
       Swal.fire({
@@ -72,26 +73,38 @@ const ProductDetail = () => {
           }
         );
         navigation("/cart");
-      } catch (error) {}
+      } catch (error) {
+        Alert({
+          title: "Failed!",
+          text: error.response.data.message,
+          icon: "error",
+        });
+      }
     }
   };
 
   return (
-    <div style={{paddingTop: "68px"}}>
+    <div style={{ paddingTop: "68px" }}>
       <div
         className="con-product-detail"
-        style={{display: "flex", flexDirection: "column"}}>
+        style={{ display: "flex", flexDirection: "column" }}
+      >
         <div className="wrap-product-detail">
           <div className="con-info">
             <div className="flex w-full items-center justify-center p-2">
-              <h1
+              <Text
+                maxWidth="500px"
+                noOfLines={2}
+                overflow="hidden"
+                textOverflow="ellipsis"
                 style={{
                   padding: "10px",
                   fontSize: "30px",
                   fontWeight: "bold",
-                }}>
+                }}
+              >
                 {product.product_name}
-              </h1>
+              </Text>
             </div>
             <section aria-labelledby="information-heading">
               <div className="flex items-center">
@@ -114,21 +127,23 @@ const ProductDetail = () => {
                 <button
                   onClick={(e) => addToCart(e)}
                   type="submit"
-                  className="flex w-full transition duration-300 ease-in-out items-center justify-center rounded-md border border-transparent bg-black py-3 px-8 text-base font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+                  className="flex w-full transition duration-300 ease-in-out items-center justify-center rounded-md border border-transparent bg-black py-3 px-8 text-base font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                >
                   Add to cart
                 </button>
               ) : (
                 <Button
                   isLoading
                   className="button-add"
-                  spinner={<BeatLoader size={8} color="black" />}></Button>
+                  spinner={<BeatLoader size={8} color="black" />}
+                ></Button>
               )}
             </div>
           </div>
           <Image
+            width="200px"
             src={product.product_image}
             alt={product.product_image}
-            className=""
           />
         </div>
         <div>
@@ -137,7 +152,8 @@ const ProductDetail = () => {
             padding="20px"
             backgroundColor="#F9FAFB"
             marginTop="20px"
-            borderRadius="20px">
+            borderRadius="20px"
+          >
             <Table variant="striped" colorScheme="gray">
               <Tbody>
                 <Tr>

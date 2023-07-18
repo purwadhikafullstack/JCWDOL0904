@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       Products.hasMany(models.Carts, {
         foreignKey: {
           name: "id_product",
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE',
+          onDelete: "CASCADE",
+          onUpdate: "CASCADE",
         },
       });
       Products.belongsTo(models.Category, {
@@ -48,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       product_name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       product_image: {
         type: DataTypes.STRING,

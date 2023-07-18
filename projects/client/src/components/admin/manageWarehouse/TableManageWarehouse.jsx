@@ -10,6 +10,9 @@ const TableManageWarehouse = (props) => {
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
           {el.warehouse}
         </td>
+        <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+          {el.status}
+        </td>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
           {el.province}
         </td>
@@ -64,6 +67,12 @@ const TableManageWarehouse = (props) => {
                       className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
                       Warehouse Name
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Status
                     </th>
                     <th
                       scope="col"
