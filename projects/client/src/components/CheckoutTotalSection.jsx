@@ -22,6 +22,7 @@ export const CheckoutTotalSection = ({
     animation: spin 1s linear infinite;
     margin-left: 5px;
   `;
+
   return (
     <div>
       <div className="relative mt-8">
@@ -40,13 +41,13 @@ export const CheckoutTotalSection = ({
           <div className="flex justify-between">
             <dt>Subtotal</dt>
             <dd className="text-gray-900">
-              Rp. {subTotal.toLocaleString("id-ID")}
+              Rp. {subTotal?.toLocaleString("id-ID")}
             </dd>
           </div>
           <div className="flex justify-between">
             <dt>Shipping</dt>
             <dd className="text-gray-900">
-              Rp. {ongkir ? ongkir.toLocaleString("id-ID") : 0}
+              Rp. {ongkir ? ongkir?.toLocaleString("id-ID") : 0}
             </dd>
           </div>
           <div className="flex justify-between border-t border-gray-200 pt-6 text-gray-900">
@@ -54,8 +55,8 @@ export const CheckoutTotalSection = ({
             <dd className="text-base">
               Rp.{" "}
               {ongkir
-                ? totalAmount.toLocaleString("id-ID")
-                : subTotal.toLocaleString("id-ID")}
+                ? totalAmount?.toLocaleString("id-ID")
+                : subTotal?.toLocaleString("id-ID")}
             </dd>
           </div>
         </dl>

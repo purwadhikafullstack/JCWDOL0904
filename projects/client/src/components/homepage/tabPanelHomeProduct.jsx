@@ -18,8 +18,13 @@ import ProductsHome from "../ProductsHome";
 const TabPanelHomeProduct = (props) => {
   return (
     <>
-      <Tabs colorScheme="black" isLazy variant="enclosed">
+      <Tabs colorScheme="black" isLazy>
         <TabList
+          css={{
+            overflowX: "auto",
+            scrollbarWidth: "thin",
+            scrollbarColor: "#CBD5E0 #EDF2F7",
+          }}
           justifyContent="center"
           className="tab-list-home"
           overflowX="scroll"
@@ -28,7 +33,10 @@ const TabPanelHomeProduct = (props) => {
         >
           {props.allCategory?.map((el) => {
             return (
-              <Tab onClick={() => props.fetchProducts(el.id)}>
+              <Tab
+                _selected={{ color: "white", bg: "black" }}
+                onClick={() => props.fetchProducts(el.id)}
+              >
                 {el.category}
               </Tab>
             );
@@ -43,7 +51,7 @@ const TabPanelHomeProduct = (props) => {
         >
           <Stack
             flexDirection="column"
-            alignItems="center"
+            alignItems="end"
             className="con-category"
           >
             <InputGroup>
@@ -65,26 +73,22 @@ const TabPanelHomeProduct = (props) => {
                 alignItems: "center",
               }}
             >
-              <Text fontSize="12px" width="50px">
-                Sort By:
-              </Text>
               <Select
-                placeholder="By name A~Z"
+                placeholder=" Name A-Z"
                 width="120px"
                 display="flex"
                 justifyContent="center"
-                borderRadius="50px"
                 style={{ fontSize: "11px" }}
                 onChange={(e) => props.handleSorting(e.target.value)}
               >
                 <option value="1" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By name Z~A
+                  Name Z-A
                 </option>
                 <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By price low~high
+                  Price low-high
                 </option>
                 <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By price high~low
+                  Price high-low
                 </option>
               </Select>
             </div>

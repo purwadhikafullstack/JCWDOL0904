@@ -1,9 +1,10 @@
-import {useEffect, useState} from "react";
-import {api} from "../../API/api";
-import {useSelector} from "react-redux";
+import { useEffect, useState } from "react";
+import { api } from "../../API/api";
+import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import Alert from "../../components/SwallAlert";
 import OrderListRender from "../../components/admin/OrderListRender";
+import Swal from "sweetalert2";
 
 export default function OrderList() {
   const [transactionByWarehouse, setTransactionByWarehouse] = useState([]);
@@ -47,7 +48,7 @@ export default function OrderList() {
           },
         });
       }
-      const {orders, totalPages} = response.data;
+      const { orders, totalPages } = response.data;
       setTransactionByWarehouse(orders);
       setTotalPages(totalPages);
     } catch (error) {
@@ -111,6 +112,31 @@ export default function OrderList() {
       });
     }
   };
+  const handleCantelOrder = async (dataTransaction) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "black",
+      cancelButtonColor: "gray",
+      confirmButtonText: "Yes, cancel it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          console.log(dataTransaction);
+          const result = await api.post("/order/order-cancel", {
+            dataTransaction,
+          });
+          fetchTransactions();
+          console.log(result);
+        } catch (error) {
+          console.log(error);
+        }
+        Swal.fire("Canceled!", "User transaction has been deleted.", "success");
+      }
+    });
+  };
 
   useEffect(() => {
     const socket = io("http://localhost:8000");
@@ -171,6 +197,7 @@ export default function OrderList() {
       selectedTransaction={selectedTransaction}
       isDetailModalOpen={isDetailModalOpen}
       closeDetailModal={closeDetailModal}
+      handleCantelOrder={handleCantelOrder}
     />
   );
 }

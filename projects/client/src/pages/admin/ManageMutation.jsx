@@ -1,33 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Text,
-  Image,
-  Input,
-  Select,
-  Stack,
-  Button,
-  InputGroup,
-  InputRightElement,
-  Box,
-} from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
-import ProductsHome from "../../components/ProductsHome";
-import ReactPaginate from "react-paginate";
-// import "./style/Homepage.css";
+import { Input } from "@chakra-ui/react";
 import { api } from "../../API/api";
-import ProductsAdmin from "../../components/admin/ProductsAdmin";
 import { useNavigate } from "react-router-dom";
-import { useMediaQuery } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import Pagination from "../../components/admin/Pagination";
+import TabManageMutation from "../../components/admin/manageMutation/TabManageMutation";
+import Swal from "sweetalert2";
 
 const ManageMutation = () => {
-  const [coba, setCoba] = useState("hallo");
   const [page, setPage] = useState(0);
   const [sort, setSort] = useState("ASC");
   const [search, setSearch] = useState("");
@@ -35,7 +15,6 @@ const ManageMutation = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState("product_name");
   const [products, setProducts] = useState([]);
-  const [isSmallerThan401] = useMediaQuery("(max-width: 767px)");
 
   const navigation = useNavigate();
   const ReduxCategory = useSelector((state) => state.categorySlice.value);
@@ -59,7 +38,12 @@ const ManageMutation = () => {
         setTotalPage(res.data.totalPage);
       })
       .catch((err) => {
-        console.log(err);
+        Swal.fire({
+          title: "Error!",
+          text: "Oops, something went wrong!",
+          icon: "error",
+        });
+        navigation("/dashboard");
       });
   };
 
@@ -84,14 +68,8 @@ const ManageMutation = () => {
   };
 
   useEffect(() => {
-    // getUserData();
     fetchProducts(category);
-    // console.log(isLogin);
   }, [page, search, sort, order]);
-
-  useEffect(() => {
-    console.log(coba);
-  }, [coba]);
 
   return (
     <div className="px-4 mt-5 sm:px-6 lg:px-8">
@@ -102,123 +80,16 @@ const ManageMutation = () => {
         Back To Mutation List
       </button>
 
-      <Tabs colorScheme="black" isLazy variant="enclosed">
-        <TabList
-          className="tab-list-home"
-          paddingTop="10px"
-          overflowX="scroll"
-          overflowY="clip"
-        >
-          {ReduxCategory.map((el) => {
-            return el.category !== "no category" ? (
-              <Tab
-                key={el.id}
-                onClick={() => fetchProducts(el.id)}
-                fontSize="12px"
-              >
-                {el.category}
-              </Tab>
-            ) : null;
-          })}
-          {ReduxCategory.map((el) => {
-            return el.category === "no category" ? (
-              <Tab
-                key={el.id}
-                onClick={() => fetchProducts(el.id)}
-                fontSize="12px"
-              >
-                {el.category}
-              </Tab>
-            ) : null;
-          })}
-        </TabList>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "10px",
-          }}
-        >
-          <Stack
-            flexDirection="column"
-            alignItems="center"
-            className="con-category"
-          >
-            <InputGroup>
-              <InputRightElement
-                pointerEvents="none"
-                children={<SearchIcon color="#B9BAC4" />}
-              />
-              <Input
-                placeholder="Search here....."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                borderRadius="50px"
-              />
-            </InputGroup>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Text fontSize="12px" width="50px">
-                Sort By:
-              </Text>
-              <Select
-                placeholder="By name A~Z"
-                width="120px"
-                display="flex"
-                justifyContent="center"
-                borderRadius="50px"
-                style={{ fontSize: "11px" }}
-                onChange={(e) => handleSorting(e.target.value)}
-              >
-                <option value="1" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By name Z~A
-                </option>
-                <option value="2" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By price low~high
-                </option>
-                <option value="3" style={{ fontSize: "10px", borderRadius: 0 }}>
-                  By price high~low
-                </option>
-              </Select>
-            </div>
-          </Stack>
-        </div>
+      <TabManageMutation
+        Input={Input}
+        ReduxCategory={ReduxCategory}
+        products={products}
+        search={search}
+        setSearch={setSearch}
+        fetchProducts={fetchProducts}
+        handleSorting={handleSorting}
+      />
 
-        <TabPanels
-          className="card-con"
-          style={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
-          {ReduxCategory?.map((el) => {
-            return el.category !== "no catagory" ? (
-              <TabPanel
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                maxWidth="100%"
-              >
-                <ProductsAdmin products={products} category={el.id} />
-              </TabPanel>
-            ) : null;
-          })}
-          {ReduxCategory?.map((el) => {
-            return el.category === "no catagory" ? (
-              <TabPanel
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                maxWidth="100%"
-              >
-                <ProductsAdmin products={products} category={el.id} />
-              </TabPanel>
-            ) : null;
-          })}
-        </TabPanels>
-      </Tabs>
       <Pagination totalPages={totalPage} handlePageChange={handlePageClick} />
     </div>
   );

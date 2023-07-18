@@ -53,7 +53,12 @@ const DecreaseStock = (props) => {
           props.runFunction();
           setStock(0);
         } catch (error) {
-          console.log({ message: "Something went wrong" });
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: error.response.data.message,
+            confirmButtonText: "Ok",
+          });
         }
       }
     });
@@ -99,7 +104,6 @@ const DecreaseStock = (props) => {
             ) : (
               <Button
                 variant="ghost"
-                // leftIcon={<EditIcon />}
                 backgroundColor="black"
                 color="white"
                 _hover={{ backgroundColor: "#3c3c3c" }}

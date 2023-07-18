@@ -10,6 +10,20 @@ module.exports = {
     try {
       const { id_warehouse_sender, id_warehouse_receive, id } = req.body;
 
+      const cekWarehouseReceive = await warehous.findOne({
+        where: {
+          id: id_warehouse_receive,
+        },
+      });
+      const cekWarehouseSender = await warehous.findOne({
+        where: {
+          id: id_warehouse_sender,
+        },
+      });
+
+      if (!cekWarehouseReceive || !cekWarehouseSender) {
+        throw new Error("Someone has deleted the warehouse!");
+      }
       const result = await stockMovement.findOne({
         where: { id },
       });
@@ -43,61 +57,6 @@ module.exports = {
           )
       );
 
-      // if (allSimilarProduct.length > 0) {
-      //   allSimilarProduct.forEach(async (el) => {
-      //     await stoc.update(
-      //       { stock: el.stock },
-      //       { where: { id_product: el.id_product } }
-      //     );
-      //     await stockHistory.create({
-      //       quantity: el.stock,
-      //       status: "in",
-      //       id_product: el.id_product,
-      //       id_warehouse: id_warehouse_receive,
-      //     });
-      //     await stockHistory.create({
-      //       quantity: el.stock,
-      //       status: "out",
-      //       id_product: el.id_product,
-      //       id_warehouse: id_warehouse_sender,
-      //     });
-      //   });
-      // }
-      // if (allDifferentproduct.length > 0) {
-      //   allDifferentproduct.forEach(async (el) => {
-      //     await stoc.create({
-      //       stock: el.stock,
-      //       id_product: el.id_product,
-      //       id_warehouse: el.id_warehouse,
-      //     });
-      //     await stockHistory.create({
-      //       quantity: el.stock,
-      //       status: "in",
-      //       id_product: el.id_product,
-      //       id_warehouse: result.warehouse_receive_id,
-      //     });
-      //     await stockHistory.create({
-      //       quantity: el.stock,
-      //       status: "out",
-      //       id_product: el.id_product,
-      //       id_warehouse: result.warehouse_sender_id,
-      //     });
-      //   });
-      // }
-
-      // getAllStockReceive.forEach((receive) => {
-      //   const sameproduct = getAllStockSender.find((sender) => {
-      //     return receive.id_product === sender.id_product;
-      //   });
-      //   allSimilarProduct.push(sameproduct);
-      // });
-      // getAllStockReceive.forEach((receive) => {
-      //   const sameproduct = getAllStockSender.find((sender) => {
-      //     return receive.id_product !== sender.id_product;
-      //   });
-      //   allDifferentproduct.push(sameproduct);
-      // });
-
       res.status(200).send({
         allSimilarProduct,
         allDifferentproduct,
@@ -109,6 +68,20 @@ module.exports = {
   createMigration: async (req, res) => {
     try {
       const { warehouse_receive_id, warehouse_sender_id } = req.body;
+      const cekWarehouseReceive = await warehous.findOne({
+        where: {
+          id: warehouse_receive_id,
+        },
+      });
+      const cekWarehouseSender = await warehous.findOne({
+        where: {
+          id: warehouse_sender_id,
+        },
+      });
+
+      if (!cekWarehouseReceive || !cekWarehouseSender) {
+        throw new Error("Someone has deleted the warehouse!");
+      }
       const allproduct = await stoc.findAll({
         where: { id_warehouse: warehouse_sender_id },
       });
@@ -124,7 +97,6 @@ module.exports = {
           });
         }
       });
-      // const result = stockMovement.create({});
 
       res.status(200).send({
         allproduct,

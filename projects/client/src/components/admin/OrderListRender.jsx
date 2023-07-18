@@ -5,7 +5,7 @@ import OrderWarehouseDropdown from "../../components/admin/OrderWarehouseDropdow
 import OrderSearch from "../../components/admin/OrderSearch";
 import Pagination from "../../components/admin/Pagination";
 import OrderDetailModal from "../../components/admin/OrderDetailModal";
-import {PaymentProofModal} from "./PaymentProofModal";
+import { PaymentProofModal } from "./PaymentProofModal";
 
 export default function OrderListRender({
   transactionByWarehouse,
@@ -28,6 +28,7 @@ export default function OrderListRender({
   selectedTransaction,
   isDetailModalOpen,
   closeDetailModal,
+  handleCantelOrder,
 }) {
   return (
     <>
@@ -71,6 +72,7 @@ export default function OrderListRender({
                   handleRejectTransaction={handleRejectTransaction}
                   fetchTransactions={fetchTransactions}
                   user={user}
+                  handleCantelOrder={handleCantelOrder}
                 />
               </div>
             </div>

@@ -12,6 +12,7 @@ const db = require("../models");
 const moment = require("moment");
 const { io } = require("../src/index");
 const { createNotification } = require("./notificationController");
+const { Op } = require("sequelize");
 
 module.exports = {
   confirmOrder: async (req, res) => {
@@ -26,6 +27,13 @@ module.exports = {
             model: TransactionItem,
             include: {
               model: Products,
+              paranoid: false,
+              where: {
+                [Op.or]: [
+                  { deletedAt: { [Op.ne]: null } },
+                  { deletedAt: null },
+                ],
+              },
             },
           },
         ],
@@ -108,7 +116,7 @@ module.exports = {
       await transaction.update({ payment_proof: null });
 
       await createNotification(
-        `Invoice ${transaction.invoice_number}`,
+        `Invoice ${transaction.invoice_number} `,
         "Your order is rejected, please update proof of payment",
         transaction.id_user,
         "admin"
@@ -202,13 +210,13 @@ module.exports = {
           await order.update({ status: "Order Confirmed" });
           io.emit("orderConfirmed", order.toJSON());
           await createNotification(
-            `Invoice ${order.invoice_number}`,
+            `Invoice ${order.invoice_number} `,
             "Order has been received",
             order.id_user,
             "admin"
           );
           await createNotification(
-            `Invoice ${order.invoice_number}`,
+            `Invoice ${order.invoice_number} `,
             "Order has been received",
             order.id_user,
             "user"

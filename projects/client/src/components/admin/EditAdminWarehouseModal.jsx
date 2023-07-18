@@ -27,14 +27,12 @@ const EditWarehouse = (props) => {
   const [warehouses, setWarehouses] = useState([]);
 
   const url = "/warehouses/data";
-  console.log(props.uId);
-
   const getWarehouseData = async () => {
     try {
       let response = await api.get(url);
       setWarehouses(response.data.result);
     } catch (error) {
-      console.log(error);
+      console.log({ message: "Something went wrong" });
     }
   };
 

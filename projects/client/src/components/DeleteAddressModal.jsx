@@ -7,7 +7,12 @@ import { Button, Center } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
-function DeleteAddressModal({ selectedAddress, onSelectAddress, closeModal }) {
+function DeleteAddressModal({
+  selectedAddress,
+  onSelectAddress,
+  closeModal,
+  setSelectedDeletedAddress,
+}) {
   const [addressList, setAddressList] = useState([]);
   const dispatch = useDispatch();
 

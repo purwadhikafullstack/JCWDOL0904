@@ -58,7 +58,7 @@ export default function Checkout() {
         if (warehouseOrigin && selectedAddress) {
           let totalWeight = 0;
           cartItems.forEach((cartItem) => {
-            const productWeight = cartItem.Product.weight_g;
+            const productWeight = cartItem?.Product?.weight_g;
             const quantity = cartItem.quantity;
             const productTotalWeight = productWeight * quantity;
             totalWeight += productTotalWeight;
@@ -120,12 +120,6 @@ export default function Checkout() {
     fetchShippingAddress();
   }, []);
   useEffect(() => {
-    const fetchLocalStorageCartItems = () => {
-      const storedCartItems = localStorage.getItem("cartItems");
-      if (storedCartItems) {
-        setCartItems(JSON.parse(storedCartItems));
-      }
-    };
     const subTotal = JSON.parse(localStorage.getItem("subTotal"));
     setSubtotal(subTotal);
     const fetchNearestWarehouse = async () => {
@@ -137,8 +131,39 @@ export default function Checkout() {
       }
     };
     fetchNearestWarehouse();
-    fetchLocalStorageCartItems();
+    fetchCartItems();
+    removeDeletedCarts();
   }, [selectedAddress, addressId]);
+  const fetchCartItems = async () => {
+    try {
+      const token = JSON.parse(localStorage.getItem("auth"));
+      const response = await api.get(`/cart`, {
+        headers: {
+          Authorization: token,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      setCartItems(response.data.cartItems);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const removeDeletedCarts = async () => {
+    try {
+      const deletedCarts = cartItems.filter((item) => item.Product === null);
+      if (deletedCarts.length > 0) {
+        const cartItemIds = deletedCarts.map((item) => item.id);
+        console.log(cartItemIds);
+        await api.put(`/cart/item`, { cartItemIds });
+        localStorage.removeItem("cartItems");
+        fetchCartItems();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCheckout = async (e) => {
     const token = JSON.parse(localStorage.getItem("auth"));
     e.preventDefault();
@@ -175,6 +200,7 @@ export default function Checkout() {
         text: error.response.data.error,
         icon: "error",
       });
+      dispatch(updateCart({ cart: [] }));
       console.log("Error creating order:", error);
     } finally {
       setOngkirIsLoading(false);
@@ -184,12 +210,13 @@ export default function Checkout() {
     const calculateTotalAmount = () => {
       let subtotal = 0;
       for (const item of cartItems) {
-        subtotal += item.Product.price * item.quantity;
+        subtotal += item.Product?.price * item?.quantity;
       }
       setTotalAmount(subtotal + ongkir);
     };
     calculateTotalAmount();
   }, [cartItems, ongkir]);
+
   return (
     <CheckoutRender
       cartItems={cartItems}

@@ -1,17 +1,17 @@
 import "../App.css";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/admin/Sidebar";
-import {Navbar} from "../components/Navbar";
-import {Footer} from "../components/Footer";
-import {useSelector} from "react-redux";
-import {Spinner} from "@chakra-ui/react";
+import { Navbar } from "../components/Navbar";
+import { Footer } from "../components/Footer";
+import { useSelector } from "react-redux";
+import { Spinner } from "@chakra-ui/react";
 
 export default function ProtectedPage({
   needLogin = false,
-  guestOnly = false, //true
+  guestOnly = false,
   children,
-  adminOnly = false, //true
+  adminOnly = false,
 }) {
   const user = useSelector((state) => state.userSlice);
   const nav = useNavigate();
@@ -20,16 +20,15 @@ export default function ProtectedPage({
 
   useEffect(() => {
     if (needLogin && !user.email) {
-      // console.log();
       nav("/");
     } else if (guestOnly && user.email) {
       if (user.role == "admin" || user.role === "adminWarehouse") {
-        nav("/order");
+        nav("/dashboard");
       } else {
         nav("/");
       }
     } else if (needLogin && !adminOnly && user.role !== "user") {
-      nav("/order");
+      nav("/dashboard");
     } else if (
       needLogin &&
       user.role !== "admin" &&
@@ -42,7 +41,6 @@ export default function ProtectedPage({
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
-    // login => role="user" => routes khusus admin =>
   }, [user, needLogin]);
 
   return isLoading ? (
@@ -63,7 +61,6 @@ export default function ProtectedPage({
   ) : user.role == "admin" || user.role === "adminWarehouse" ? (
     <>
       <Sidebar mainPage={children} />
-      {/* {children} */}
     </>
   ) : (
     <div className="App">

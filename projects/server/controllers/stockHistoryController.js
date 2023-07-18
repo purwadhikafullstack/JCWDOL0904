@@ -43,7 +43,13 @@ module.exports = {
               product_name: { [db.Sequelize.Op.like]: `%${productSearch}%` },
             },
           },
-          { model: Warehouse },
+          {
+            model: Warehouse,
+            paranoid: false,
+            where: {
+              [Op.or]: [{ deletedAt: { [Op.ne]: null } }, { deletedAt: null }],
+            },
+          },
         ],
         order: [[orderFilter, sortFilter]],
         offset: page * limit,
@@ -78,7 +84,16 @@ module.exports = {
                 product_name: { [db.Sequelize.Op.like]: `%${productSearch}%` },
               },
             },
-            { model: Warehouse },
+            {
+              model: Warehouse,
+              paranoid: false,
+              where: {
+                [Op.or]: [
+                  { deletedAt: { [Op.ne]: null } },
+                  { deletedAt: null },
+                ],
+              },
+            },
           ],
           order: [[orderFilter, sortFilter]],
           offset: page * limit,

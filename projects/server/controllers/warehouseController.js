@@ -1,10 +1,9 @@
 const db = require("../models");
 const User = db.User;
-const { Warehouse, Stocks } = db;
+const { Warehouse, Stocks, Products } = db;
 const axios = require("axios");
 
 module.exports = {
-  // Get All Warehouse
   getAllWarehouses: async (req, res) => {
     try {
       const search = req.query.search || "";
@@ -62,7 +61,6 @@ module.exports = {
     }
   },
 
-  // Create Warehouse
   createWarehouse: async (req, res) => {
     try {
       const { warehouse, province, city, warehouse_city_id, subdistrict, zip } =
@@ -105,8 +103,6 @@ module.exports = {
 
         res.status(200).send({ newWarehouse });
       } else {
-        // console.error("No results found");
-        // res.status(500).send({ message: "Geocoding error" });
         throw new Error("Geocoding error");
       }
     } catch (error) {
@@ -114,11 +110,9 @@ module.exports = {
       res.status(400).send({
         message: error.message,
       });
-      // res.status(500).json({ error: "Internal server error" });
     }
   },
 
-  // Edit Warehouse
   editeWareHouse: async (req, res) => {
     try {
       const {
@@ -150,7 +144,6 @@ module.exports = {
       const response = await axios.get(
         `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=e115d475b4d64403bef4b85a159facaf`
       );
-      console.log(response);
       if (response.status === 200 && response.data.results.length > 0) {
         const { geometry } = response.data.results[0];
         const { lat: latitude, lng: longitude } = geometry;
@@ -184,10 +177,15 @@ module.exports = {
     }
   },
 
-  // Delete Warehouse
   deleteWareHouse: async (req, res) => {
     try {
       const { id } = req.params;
+      const cekAdmin = await User.findAll({
+        where: { id_warehouse: id },
+      });
+
+      if (cekAdmin && cekAdmin.length > 0)
+        throw new Error("There is still admin warehouse in this warehouse!");
       const stockIsAvailable = await Stocks.findOne({
         where: {
           id_warehouse: id,
@@ -220,8 +218,6 @@ module.exports = {
       });
     }
   },
-
-  // Change Admin Warehouse
 
   changeWarehouse: async (req, res) => {
     try {

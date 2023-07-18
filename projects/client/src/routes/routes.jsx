@@ -5,7 +5,9 @@ import { Verification } from "../pages/verification";
 import { ResetPassword } from "../pages/resetPassword";
 import { InputPassword } from "../pages/inputPassword";
 import ProductDetail from "../pages/ProductDetail";
+
 import { Transaction } from "../pages/Transactions";
+
 import ProtectedPage from "./protectedPage";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
@@ -28,9 +30,9 @@ import ManageStock from "../pages/admin/ManageStock";
 import SalesReport from "../pages/admin/SalesReport";
 import { EkspedisiAdmin } from "../pages/admin/EkspedisiAdmin";
 import StockHistory from "../pages/admin/StockHistory";
+import Dashboard from "../pages/admin/Dashboard";
 
 const routes = [
-  //home
   <Route
     key="home"
     path="/"
@@ -300,6 +302,15 @@ const routes = [
     element={
       <ProtectedPage needLogin={true} adminOnly={true}>
         <StockHistory />
+      </ProtectedPage>
+    }
+  />,
+  <Route
+    key="dashboard"
+    path="/dashboard"
+    element={
+      <ProtectedPage needLogin={true} adminOnly={true}>
+        <Dashboard />
       </ProtectedPage>
     }
   />,

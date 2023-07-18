@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -11,26 +11,17 @@ import {
   useDisclosure,
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   Input,
   IconButton,
 } from "@chakra-ui/react";
-import { SettingsIcon, DeleteIcon, AddIcon, EditIcon } from "@chakra-ui/icons";
-import { apiro } from "../../API/apiro";
+import { SettingsIcon } from "@chakra-ui/icons";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 
 const EditeCategory = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [provinces, setProvinces] = useState([]);
-  const [provincess, setProvincess] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [city, setCity] = useState([]);
   const [categor, setCategor] = useState(props.categoryName);
-  const [subdistrict, setSubsdistrict] = useState("");
-  const [zip, setZip] = useState("");
   const [isLoad, setLoad] = useState(false);
 
   const { role } = useSelector((state) => state.userSlice);
@@ -51,10 +42,6 @@ const EditeCategory = (props) => {
         icon: "success",
         confirmButtonText: "Ok",
       });
-      setProvincess([]);
-      setCity([]);
-      setSubsdistrict("");
-      setZip("");
     } catch (error) {
       onClose();
       setLoad(false);
@@ -66,10 +53,6 @@ const EditeCategory = (props) => {
       });
     }
   };
-
-  useEffect(() => {
-    console.log(props);
-  });
 
   return (
     <div className="flex align-middle">
@@ -106,7 +89,6 @@ const EditeCategory = (props) => {
             ) : (
               <Button
                 variant="ghost"
-                // leftIcon={<EditIcon />}
                 backgroundColor="black"
                 color="white"
                 _hover={{ backgroundColor: "#3c3c3c" }}

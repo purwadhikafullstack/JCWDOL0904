@@ -22,10 +22,12 @@ import EditWarehouse from "../../components/admin/EditAdminWarehouseModal";
 
 const ManageUser = () => {
   const value = useSelector((state) => state.allUserSlice.value);
+  console.log(value);
   const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const url = "user/data/all";
   const getUserData = async () => {
+    const id = JSON.parse(localStorage.getItem("auth"));
     try {
       await api.get(url).then((result) => {
         dispatch(allUserData(result.data));

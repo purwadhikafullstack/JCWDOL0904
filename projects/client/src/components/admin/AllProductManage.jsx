@@ -1,12 +1,12 @@
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Stack, Image, Button, Input, Tooltip } from "@chakra-ui/react";
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState } from "react";
 import EditeProduct from "./EditeProduct";
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
 import DetailProductAdmin from "./DetailProductAdmin";
 import { useSelector } from "react-redux";
+import TableManageProduct from "./manageProduct/TableManageProduct";
 
 const AllProductManage = ({ products, runFunction, category }) => {
   const fileInputRef = useRef(null);
@@ -32,7 +32,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
       });
       runFunction();
     } catch (error) {
-      console.log(error);
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
@@ -73,11 +72,7 @@ const AllProductManage = ({ products, runFunction, category }) => {
     });
   };
 
-  const navigation = useNavigate();
-
-  let count = 0;
   const allProduct = products?.map((el) => {
-    count++;
     return (
       <tr key={el.id}>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
@@ -154,7 +149,8 @@ const AllProductManage = ({ products, runFunction, category }) => {
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
+              <TableManageProduct allProduct={allProduct} />
+              {/* <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
                     <th
@@ -192,7 +188,7 @@ const AllProductManage = ({ products, runFunction, category }) => {
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {allProduct}
                 </tbody>
-              </table>
+              </table> */}
             </div>
           </div>
         </div>

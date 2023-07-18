@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { api } from "../../API/api";
 import Alert from "../SwallAlert";
 import Swal from "sweetalert2";
@@ -13,7 +13,9 @@ const OrderTable = ({
   handleRejectTransaction,
   fetchTransactions,
   user,
+  handleCantelOrder,
 }) => {
+  const [isConfirmLoading, setIsConfirmLoading] = useState(false);
   const handleSendTransaction = async (transactionId) => {
     try {
       let response = await api.post(`/order/send/${transactionId}`);
@@ -29,7 +31,6 @@ const OrderTable = ({
         text: error.response.data.message,
         icon: "error",
       });
-      console.log({ message: "Something went wrong" });
     }
   };
 
@@ -46,13 +47,13 @@ const OrderTable = ({
         dangerMode: true,
       });
       if (shouldConfirm.isConfirmed) {
+        setIsConfirmLoading(true);
         await api.post(`/mutation/auto-mutation`, {
           id: transactionId,
         });
         let response = await api.patch(`/order/confirm`, {
           id: transactionId,
         });
-        console.log(response);
         Alert({
           title: "Success!",
           text: response.data.message,
@@ -66,7 +67,8 @@ const OrderTable = ({
         text: error.response.data.message,
         icon: "error",
       });
-      console.log(error);
+    } finally {
+      setIsConfirmLoading(false);
     }
   };
   return (
@@ -79,6 +81,8 @@ const OrderTable = ({
       user={user}
       handleConfirmTransaction={handleConfirmTransaction}
       handleSendTransaction={handleSendTransaction}
+      handleCantelOrder={handleCantelOrder}
+      isConfirmLoading={isConfirmLoading}
     />
   );
 };

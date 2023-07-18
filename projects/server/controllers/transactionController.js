@@ -53,7 +53,16 @@ module.exports = {
             ...(idWarehouse
               ? { where: { id_warehouse: parseInt(idWarehouse) } }
               : {}),
-            include: [Warehouse],
+            include: {
+              model: Warehouse,
+              paranoid: false,
+              where: {
+                [Op.or]: [
+                  { deletedAt: { [Op.ne]: null } },
+                  { deletedAt: null },
+                ],
+              },
+            },
           },
           {
             model: Products,
@@ -91,7 +100,16 @@ module.exports = {
               ...(idWarehouse
                 ? { where: { id_warehouse: parseInt(idWarehouse) } }
                 : {}),
-              include: [Warehouse],
+              include: {
+                model: Warehouse,
+                paranoid: false,
+                where: {
+                  [Op.or]: [
+                    { deletedAt: { [Op.ne]: null } },
+                    { deletedAt: null },
+                  ],
+                },
+              },
             },
             {
               model: Products,

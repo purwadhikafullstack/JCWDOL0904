@@ -63,6 +63,7 @@ const {
   migrationRouter,
   transactionRouter,
   stockHistoryRouter,
+  dashboardRouter,
 } = require("../routers");
 
 app.use(authorize);
@@ -86,6 +87,7 @@ app.use("/api/stock", stockRouter);
 app.use("/api/migration", migrationRouter);
 app.use("/api/transaction", transactionRouter);
 app.use("/api/stock-history", stockHistoryRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_SIZE") {

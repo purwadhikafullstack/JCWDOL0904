@@ -47,9 +47,6 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
-      // res.status(400).send({
-      //   message: error.message,
-      // });
     }
   },
   proceedMutation: async (req, res) => {
@@ -57,6 +54,23 @@ module.exports = {
       const { id, warehouse_sender_id, warehouse_receive_id, qty, id_product } =
         req.body;
 
+      const cekWarehouseReceive = await warehouse.findOne({
+        where: {
+          id: warehouse_receive_id,
+        },
+      });
+      const cekWarehouseSender = await warehouse.findOne({
+        where: {
+          id: warehouse_sender_id,
+        },
+      });
+      const cekProduct = await product.findOne({
+        where: { id: id_product },
+      });
+
+      if (!cekProduct) throw new Error("Someone has deleted the product!");
+      if (!cekWarehouseReceive || !cekWarehouseSender)
+        throw new Error("Someone has deleted the warehouse!");
       const getStockmovementData = await stockmovement.findOne({
         where: {
           id,
@@ -91,7 +105,6 @@ module.exports = {
       }
 
       let stockInWarehouseReceiveUpdate;
-      // let stockInWarehouseReceive;
       if (!WarehouseReceive || WarehouseReceive.lenght < 0) {
         stockInWarehouseReceiveUpdate = await stocks.create({
           stock: qty,
@@ -154,15 +167,48 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
-      // res.status(400).send({
-      //   message: error.message,
-      // });
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
   manualMutation: async (req, res) => {
     try {
       const { id, warehouse_sender_id, warehouse_receive_id, qty, status } =
         req.body;
+
+      if (!warehouse_sender_id)
+        throw new Error("Please input warehouse Sender!");
+      const cekProduct = await product.findOne({
+        where: { id: id },
+      });
+      const cekWarehouseReceive = await warehouse.findOne({
+        where: {
+          id: warehouse_receive_id,
+        },
+      });
+      const cekWarehouseSender = await warehouse.findOne({
+        where: {
+          id: warehouse_sender_id,
+        },
+      });
+      const cekStock = await stocks.findAll({
+        where: {
+          id_product: id,
+          id_warehouse: warehouse_sender_id,
+        },
+      });
+
+      cekStock.forEach((el) => {
+        if (el.stock === 0 || !el.stock)
+          throw new Error("someone has deleted the stock!");
+      });
+
+      if (!cekProduct) throw new Error("someone has deleteed the product!");
+
+      if (!cekWarehouseReceive || !cekWarehouseSender) {
+        throw new Error("Someone has deleted the warehouse!");
+      }
       if (!warehouse_sender_id)
         throw new Error("Please enter warehouse sender");
 
@@ -173,18 +219,15 @@ module.exports = {
           id_product: id,
         },
       });
-
-      if (getStockMovement.dataValues.stock < qty)
-        throw new Error("Your request is too many!");
-
-      if (getStockMovement.dataValues.stock < 1)
+      if (
+        !getStockMovement ||
+        !getStockMovement.stock ||
+        getStockMovement.stock <= 0
+      )
         throw new Error("Stock is unavailable!");
 
-      // const currentTime = new Date();
-      // let request_number = currentTime.getTime();
-      // request_number = request_number.toString();
-      // request_number = request_number.substring(0, 5);
-      // request_number = parseInt(request_number);
+      if (getStockMovement.stock < qty)
+        throw new Error("Your request is too many!");
 
       const result = await stockmovement.create({
         id_product: parseInt(id),
@@ -192,15 +235,14 @@ module.exports = {
         warehouse_receive_id,
         quantity: qty,
         status,
-        // request_number,
       });
 
       res.status(200).send({
         result,
+        getStockMovement,
       });
     } catch (error) {
       console.log(error);
-
       res.status(400).send({
         message: error.message,
       });
@@ -264,27 +306,43 @@ module.exports = {
         where: {
           status,
         },
+        where: {
+          status,
+        },
         order: [["createdAt", arrange]],
         include: [
           {
             model: warehouse,
             as: "senderWarehouse",
+            paranoid: false,
             where: {
+              [db.Sequelize.Op.or]: [
+                { deletedAt: { [db.Sequelize.Op.ne]: null } },
+                { deletedAt: null },
+              ],
               ...(request === "out" ? { id: parseInt(sort) } : {}),
             },
-
-            // where: { id: parseInt(sort) },
           },
           {
             model: warehouse,
             as: "receiverWarehouse",
+            paranoid: false,
             where: {
+              [db.Sequelize.Op.or]: [
+                { deletedAt: { [db.Sequelize.Op.ne]: null } },
+                { deletedAt: null },
+              ],
               ...(request === "in" ? { id: parseInt(sort) } : {}),
             },
           },
           {
             model: product,
+            paranoid: false,
             where: {
+              [db.Sequelize.Op.or]: [
+                { deletedAt: { [db.Sequelize.Op.ne]: null } },
+                { deletedAt: null },
+              ],
               ...(search
                 ? {
                     product_name: {
@@ -314,22 +372,35 @@ module.exports = {
             {
               model: warehouse,
               as: "senderWarehouse",
+              paranoid: false,
               where: {
+                [db.Sequelize.Op.or]: [
+                  { deletedAt: { [db.Sequelize.Op.ne]: null } },
+                  { deletedAt: null },
+                ],
                 ...(request === "out" ? { id: parseInt(sort) } : {}),
               },
-
-              // where: { id: parseInt(sort) },
             },
             {
               model: warehouse,
               as: "receiverWarehouse",
+              paranoid: false,
               where: {
+                [Op.or]: [
+                  { deletedAt: { [db.Sequelize.Op.ne]: null } },
+                  { deletedAt: null },
+                ],
                 ...(request === "in" ? { id: parseInt(sort) } : {}),
               },
             },
             {
               model: product,
+              paranoid: false,
               where: {
+                [db.Sequelize.Op.or]: [
+                  { deletedAt: { [db.Sequelize.Op.ne]: null } },
+                  { deletedAt: null },
+                ],
                 ...(search
                   ? {
                       product_name: {

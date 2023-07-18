@@ -15,6 +15,7 @@ const ModalEditeWarehouse = (props) => {
           <FormLabel>Province</FormLabel>
           <div className="mt-1">
             <select
+              disabled
               id="province"
               name="province"
               value={props.provincess}
@@ -49,6 +50,7 @@ const ModalEditeWarehouse = (props) => {
           <FormLabel>City</FormLabel>
           <div className="mt-1">
             <select
+              disabled
               id="province"
               name="province"
               value={props.city}

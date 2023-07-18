@@ -14,8 +14,8 @@ router.get("/user", tokenVerify, orderGetController.getAllOrderByUser);
 
 router.post("/", tokenVerify, orderControllers.createOrder);
 router.get("/:warehouseId", orderGetController.getOrdersByWarehouse);
-router.patch("/:id/cancel", orderControllers.cancelOrder)
-router.put("/:id/accept", orderControllers.acceptOrder)
+router.patch("/:id/cancel", orderControllers.cancelOrder);
+router.put("/:id/accept", orderControllers.acceptOrder);
 
 // Admin
 router.get("/detail/:id", orderGetController.getOrderById);

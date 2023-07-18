@@ -27,10 +27,8 @@ const ManageProduct = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [order, setOrder] = useState("product_name");
   const [products, setProducts] = useState([]);
-
   const ReduxCategory = useSelector((state) => state.categorySlice.value);
   const dispatch = useDispatch();
-
   const fetchProducts = async (category) => {
     setCategory(category);
     await api
@@ -52,7 +50,6 @@ const ManageProduct = () => {
         console.log(err);
       });
   };
-
   const handleSorting = (value) => {
     if (value === "1") {
       setOrder("product_name");
@@ -68,19 +65,14 @@ const ManageProduct = () => {
       setSort("ASC");
     }
   };
-
   const handlePageClick = (event) => {
     setPage(event.selected);
   };
-
   const getAllCategory = async () => {
     try {
       const response = await api.get("/category");
-      console.log(response);
       dispatch(AllCategory(response.data.result));
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -96,17 +88,21 @@ const ManageProduct = () => {
       <div className="sm:flex-auto mb-5">
         <h1 className="text-xl font-semibold text-gray-900">Manage product</h1>
       </div>
-      <Tabs colorScheme="black" isLazy variant="enclosed">
+      <Tabs colorScheme="black" isLazy>
         <TabList
-          // className="tab-list-home"
           paddingTop="10px"
-          overflowX="scroll"
+          css={{
+            overflowX: "auto",
+            scrollbarWidth: "thin",
+            scrollbarColor: "#CBD5E0 #EDF2F7",
+          }}
           overflowY="clip"
           whiteSpace="nowrap"
         >
           {ReduxCategory.map((el) => {
             return el.category !== "no category" ? (
               <Tab
+                _selected={{ color: "white", bg: "black" }}
                 key={el.id}
                 onClick={() => fetchProducts(el.id)}
                 fontSize="12px"
@@ -118,6 +114,7 @@ const ManageProduct = () => {
           {ReduxCategory.map((el) => {
             return el.category === "no category" ? (
               <Tab
+                _selected={{ color: "white", bg: "black" }}
                 key={el.id}
                 onClick={() => fetchProducts(el.id)}
                 fontSize="12px"

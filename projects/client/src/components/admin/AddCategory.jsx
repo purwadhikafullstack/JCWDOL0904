@@ -60,7 +60,6 @@ const AddCategory = (props) => {
     <div className="mt-5">
       {role === "admin" ? (
         <Button
-          // leftIcon={<AddIcon />}
           backgroundColor="black"
           color="white"
           onClick={onOpen}
