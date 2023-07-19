@@ -6,7 +6,7 @@ module.exports = {
     return queryInterface.bulkInsert("Products", [
       {
         product_name: "Galaxy A54 5G",
-        product_image: "http://localhost:8000/Galaxy_A54_5G.png",
+        product_image: "Galaxy_A54_5G.png",
         price: 6399000,
         description:
           "Dengan VDIS dan angle OIS yang lebih lebar, Galaxy A54 5G akan membantu Anda merekam video-video berkualitas tinggi dengan mudah melalui reframing dan autofokus otomatis.",
@@ -25,7 +25,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy S23 Ultra",
-        product_image: "http://localhost:8000/Galaxy_S23_Ultra.png",
+        product_image: "Galaxy_S23_Ultra.png",
         price: 21999000,
         description: "Epic night shots that beg to be shared",
         cpu_speed: "3.36GHz, 2.8GHz, 2GHz",
@@ -43,7 +43,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy S23+",
-        product_image: "http://localhost:8000/Galaxy_S23+.png",
+        product_image: "Galaxy_S23+.png",
         price: 17999000,
         description: "Snap your best night selfies yet",
         cpu_speed: "3.36GHz, 2.8GHz, 2GHz",
@@ -61,7 +61,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy S23",
-        product_image: "http://localhost:8000/Galaxy_S23.png",
+        product_image: "Galaxy_S23.png",
         price: 13999000,
         description: "Snap your best night selfies yet",
         cpu_speed: "3.36GHz, 2.8GHz, 2GHz",
@@ -79,7 +79,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy S22+",
-        product_image: "http://localhost:8000/Galaxy_S22+.png",
+        product_image: "Galaxy_S22+.png",
         price: 13749000,
         description: "The biggest leap in our video technology",
         cpu_speed: "2.99GHz, 2.4GHz, 1.7GHz",
@@ -97,7 +97,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy S22 Ultra",
-        product_image: "http://localhost:8000/Galaxy_S22_Ultra.png",
+        product_image: "Galaxy_S22_Ultra.png",
         price: 15999000,
         description: "The biggest leap in our video technology",
         cpu_speed: "2.99GHz, 2.4GHz, 1.7GHz",
@@ -115,7 +115,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy S21 FE 5G",
-        product_image: "http://localhost:8000/Galaxy_S21_FE_5G.png",
+        product_image: "Galaxy_S21_FE_5G.png",
         price: 7999000,
         description: "Our smoothest scrolling screen with Super Smooth 120 Hz",
         cpu_speed: "2.9GHz, 2.8GHz, 2.2GHz",
@@ -133,7 +133,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy A24",
-        product_image: "http://localhost:8000/Galaxy_A24.png",
+        product_image: "Galaxy_A24.png",
         price: 3499000,
         description:
           "Layar 6,5 inci Full HD+, Main Camera 50MP, Baterai tahan hingga 2 hari",
@@ -152,7 +152,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy A34 5G",
-        product_image: "http://localhost:8000/Galaxy_A34_5G.png",
+        product_image: "Galaxy_A34_5G.png",
         price: 5399000,
         description: "Layar FHD+ Super AMOLED berukuran 6,6 inci",
         cpu_speed: "2.6GHz, 2GHz",
@@ -170,7 +170,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy A14",
-        product_image: "http://localhost:8000/Galaxy_A14.png",
+        product_image: "Galaxy_A14.png",
         price: 2399000,
         description: "Layar 6,6 inci, Kamera 50MP, Prosesor Octa-core",
         cpu_speed: "2GHz",
@@ -188,8 +188,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy Watch5 Bluetooth (40mm)",
-        product_image:
-          "http://localhost:8000/Galaxy_Watch5_Bluetooth_(40mm).png",
+        product_image: "Galaxy_Watch5_Bluetooth_(40mm).png",
         price: 3499000,
         description: "Monitor your health around the clock even at night",
         cpu_speed: "1.18GHz",
@@ -207,8 +206,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy Watch5 Bluetooth (44mm)",
-        product_image:
-          "http://localhost:8000/Galaxy_Watch5_Bluetooth_(44mm).png",
+        product_image: "Galaxy_Watch5_Bluetooth_(44mm).png",
         price: 3999000,
         description: "Monitor your health around the clock even at night",
         cpu_speed: "1.18GHz",
@@ -226,7 +224,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy Tab S6 Lite (SM-P619)",
-        product_image: "http://localhost:8000/Galaxy_Tab_S6_Lite_(SM-P619).png",
+        product_image: "Galaxy_Tab_S6_Lite_(SM-P619).png",
         price: 6299000,
         description: "Write, draw and play with our ingenious S-Pen",
         cpu_speed: "2.3GHz, 1.8GHz",
@@ -244,7 +242,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy Tab A (2019, 8)",
-        product_image: "http://localhost:8000/Galaxy_Tab_A_(2019,_8).png",
+        product_image: "Galaxy_Tab_A_(2019,_8).png",
         price: 2600000,
         description: "Dual speaker, 8-inch display, Samsung Kids Home",
         cpu_speed: "2GHz",
@@ -262,7 +260,7 @@ module.exports = {
       },
       {
         product_name: "Galaxy Tab A7 Lite LTE",
-        product_image: "http://localhost:8000/Galaxy_Tab_A7_Lite_LTE.png",
+        product_image: "Galaxy_Tab_A7_Lite_LTE.png",
         price: 2499000,
         description:
           "Immersive Display 8.7 inch, Portable Design 8.0mm, 371g weight, 15W Fast Charging",
