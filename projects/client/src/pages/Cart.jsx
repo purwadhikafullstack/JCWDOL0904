@@ -135,7 +135,7 @@ const Cart = () => {
             >
               {cartItems?.map((item) => {
                 return (
-                  <div>
+                  <div key={item.id}>
                     {cartItems && (
                       <CartItem
                         key={item.id}

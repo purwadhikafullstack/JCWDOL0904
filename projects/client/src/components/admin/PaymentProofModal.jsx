@@ -7,7 +7,7 @@ export const PaymentProofModal = ({
   closeModal,
   selectedTransaction,
 }) => {
-  const [paymentProof, setPaymentProof] = useState("");
+  const [paymentProof, setPaymentProof] = useState("avatar_default.jpg");
   const [expired, setExpired] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,7 +35,6 @@ export const PaymentProofModal = ({
       closeModal();
     }
   };
-
   return (
     <>
       {isOpen && (
@@ -76,7 +75,7 @@ export const PaymentProofModal = ({
               </div>
               <div className="modal-body p-6 overflow-y-auto max-h-[500px]">
                 <img
-                  src={paymentProof}
+                  src={`${process.env.REACT_APP_API_BASE}/${paymentProof}`}
                   alt="Payment Proof"
                   className="w-full rounded-lg"
                 />

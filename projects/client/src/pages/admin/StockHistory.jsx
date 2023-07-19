@@ -71,7 +71,14 @@ const StockHistory = () => {
       console.error(error);
     }
   };
-
+  const handleWarehouseChange = (event) => {
+    const selectedValue = event.target.value;
+    if (user.role === "adminWarehouse") {
+      setSelectedWarehouse(user.id_warehouse);
+    } else {
+      setSelectedWarehouse(selectedValue);
+    }
+  };
   const handlePage = (event) => {
     setCurrentPage(event.selected);
   };
@@ -165,7 +172,7 @@ const StockHistory = () => {
         setProductSearch={setProductSearch}
         productSearch={productSearch}
         user={user}
-        setSelectedWarehouse={setSelectedWarehouse}
+        setSelectedWarehouse={handleWarehouseChange}
         warehouses={warehouses}
         handleSorting={handleSorting}
         selectedDateRange={selectedDateRange}

@@ -74,8 +74,6 @@ export default function Checkout() {
           setOngkir(ongkirValue);
         }
       } catch (error) {
-        navigate("/404");
-        console.log({ message: "Something went wrong" });
         setOngkirIsLoading(false);
       } finally {
         setOngkirIsLoading(false);
@@ -127,9 +125,7 @@ export default function Checkout() {
       try {
         let response = await api.get(`nearest-warehouse/${addressId}`);
         setWarehouseOrigin(response.data);
-      } catch (error) {
-        console.log({ message: "Something went wrong" });
-      }
+      } catch (error) {}
     };
     fetchNearestWarehouse();
     fetchCartItems();
@@ -202,7 +198,6 @@ export default function Checkout() {
       });
       dispatch(updateCart({ cart: [] }));
       navigate("/");
-      console.log("Error creating order");
     } finally {
       setOngkirIsLoading(false);
     }

@@ -22,6 +22,7 @@ const ProductDetail = () => {
   const navigation = useNavigate();
   const [product, setProduct] = useState({});
   const [stock, setStock] = useState(0);
+  const [productImage, setProductImage] = useState("avatar_default.jpg");
   const userLogin = useSelector((state) => state.userSlice);
 
   useEffect(() => {
@@ -39,8 +40,9 @@ const ProductDetail = () => {
       const result = await api.post("/product/detail", { idP });
       setStock(result.data.stock);
       setProduct(result.data.productById);
+      setProductImage(result.data.productById.product_image);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      console.log(error);
     }
   };
 
@@ -143,8 +145,8 @@ const ProductDetail = () => {
           </div>
           <Image
             width="200px"
-            src={product.product_image}
-            alt={product.product_image}
+            src={`${process.env.REACT_APP_API_BASE}/${productImage}`}
+            alt={productImage}
           />
         </div>
         <div>

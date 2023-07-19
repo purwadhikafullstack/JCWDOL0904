@@ -76,8 +76,6 @@ module.exports = {
         html: tempResult,
       };
       let response = nodemailer.sendMail(mail);
-      console.log(response);
-
       res.status(200).send({
         message: "Register success, please check your email",
         result,
@@ -309,8 +307,6 @@ module.exports = {
       };
 
       let response = nodemailer.sendMail(mail);
-      console.log(response);
-
       res.status(200).send({
         message: "Please check your email",
         user,

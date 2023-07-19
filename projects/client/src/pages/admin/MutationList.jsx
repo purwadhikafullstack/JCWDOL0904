@@ -57,7 +57,6 @@ const MutationList = () => {
               },
             }
           );
-          console.log(response);
           getMutationData();
           Swal.fire("Rejected!", "Mutation has been rejected.", "success");
         }

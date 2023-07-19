@@ -34,7 +34,6 @@ const ManageStock = () => {
   const getProducts = async () => {
     try {
       const token = JSON.parse(localStorage.getItem("auth"));
-      console.log(stockFilter);
       const response = await api.get(
         "/stock/all",
 
@@ -62,7 +61,6 @@ const ManageStock = () => {
   const getAllCategory = async () => {
     try {
       const response = await api.get("/category");
-      console.log(response);
       dispatch(AllCategory(response.data.result));
     } catch (error) {
       console.log(error);
@@ -81,7 +79,10 @@ const ManageStock = () => {
     return (
       <tr key={el.id}>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-          <Image src={`${el.product_image}`} height="40px" />
+          <Image
+            src={`${process.env.REACT_APP_API_BASE}/${el.product_image}`}
+            height="40px"
+          />
         </td>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
           {el.product_name}
