@@ -11,6 +11,7 @@ import { ChangeUsernameModal } from "../components/changeUsernameModal";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import UserTransactionData from "../components/userTransaction";
 import ProfileRender from "../components/profile/profileRender";
+import Alert from "../components/SwallAlert";
 
 export default function Profile() {
   const [isAddAddressModalOpen, setAddAddressModalOpen] = useState(false);
@@ -37,10 +38,13 @@ export default function Profile() {
       });
       userData();
     } catch (error) {
-      console.error(error);
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
     }
   };
-
   const userData = async () => {
     try {
       let token = JSON.parse(localStorage.getItem("auth"));
@@ -51,10 +55,13 @@ export default function Profile() {
           "Content-Type": "application/json",
         },
       });
-
       dispatch(login(response.data.user));
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: error.result.data.message,
+        icon: "error",
+      });
     }
   };
 

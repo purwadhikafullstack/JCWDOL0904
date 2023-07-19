@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { transactionData } from "../features/transactionSlice";
 import moment from "moment";
 import OrderDetailModal from "../components/admin/OrderDetailModal";
+import Alert from "./SwallAlert";
 
 const UserTransactionData = () => {
   const userData = useSelector((state) => state.userSlice);
@@ -26,7 +27,11 @@ const UserTransactionData = () => {
       });
       dispatch(transactionData(response.data.result));
     } catch (error) {
-      console.log(error);
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
     }
   };
 

@@ -35,7 +35,7 @@ const ProfileRender = (props) => {
                       <div className="flex items-center">
                         <img
                           className="h-16 w-16 rounded-full sm:hidden"
-                          src={`${process.env.REACT_APP_API_BASE}${props.user_image}`}
+                          src={`${process.env.REACT_APP_API_BASE}/${props.user_image}`}
                           alt={`${process.env.REACT_APP_API_BASE}${props.user_image}`}
                         />
                         <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">

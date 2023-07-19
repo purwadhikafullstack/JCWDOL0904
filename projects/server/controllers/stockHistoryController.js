@@ -108,7 +108,7 @@ module.exports = {
       });
     } catch (error) {
       res.status(400).send({
-        message: "Error!",
+        message: "Fail to get Stock History",
       });
     }
   },

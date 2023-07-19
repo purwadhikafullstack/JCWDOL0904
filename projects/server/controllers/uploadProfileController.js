@@ -20,7 +20,7 @@ module.exports = {
         id,
       });
     } catch (err) {
-      res.status(500).send({ message: "Error updating profile picture" });
+      res.status(400).send({ message: "Error updating profile picture" });
     }
   },
 };

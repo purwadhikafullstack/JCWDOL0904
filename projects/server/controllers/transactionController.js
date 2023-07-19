@@ -135,16 +135,15 @@ module.exports = {
       const total_price = await TransactionItem.sum("price");
       res.status(200).send({
         result: productLimited,
-        idWarehouse,
-        adminWarehouse,
         totalPage,
         page,
         totalPriceFiltered,
         total_price,
+        message: "Success get data",
       });
     } catch (error) {
       res.status(400).send({
-        message: "Error!",
+        message: "Fail to get data",
       });
     }
   },
@@ -165,9 +164,10 @@ module.exports = {
 
       res.status(200).send({
         result: result.length > 0 ? result : [],
+        message: "Success get data",
       });
     } catch (error) {
-      res.status(500).send({ error: "Server error" });
+      res.status(400).send({ message: "Fail to get data" });
     }
   },
 };

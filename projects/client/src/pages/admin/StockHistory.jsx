@@ -6,6 +6,7 @@ import Pagination from "../../components/admin/Pagination";
 import OrderDetailModal from "../../components/admin/OrderDetailModal";
 import { stockHistoryData } from "../../features/stockHistorySlice";
 import StockHistoryRender from "../../components/StockHistory/stockhistoryrender";
+import Alert from "../../components/SwallAlert";
 
 const StockHistory = () => {
   const itemValue = useSelector((state) => state.transactionItemSlice.value);
@@ -25,9 +26,7 @@ const StockHistory = () => {
   const [productSearch, setProductSearch] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedDateRange, setSelectedDateRange] = useState(null);
-
   const dispatch = useDispatch();
-
   const urlHistory = "stock-history/history";
   const getHistoryData = async () => {
     try {
@@ -59,10 +58,13 @@ const StockHistory = () => {
       setTotalPage(response.data.totalPage);
       dispatch(stockHistoryData(response.data.result.rows));
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
     }
   };
-
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");
@@ -82,11 +84,9 @@ const StockHistory = () => {
   const handlePage = (event) => {
     setCurrentPage(event.selected);
   };
-
   useEffect(() => {
     fetchWarehouses();
   }, []);
-
   useEffect(() => {
     getHistoryData();
   }, [
@@ -98,19 +98,15 @@ const StockHistory = () => {
     order,
     selectedDateRange,
   ]);
-
   useEffect(() => {
     getHistoryData();
   }, []);
-
   useEffect(() => {
     setPage(0);
   }, [selectedWarehouse, selectedMonth]);
-
   const closeDetailModal = () => {
     setIsDetailModalOpen(false);
   };
-
   const handleSorting = (value) => {
     if (value === "1") {
       setOrder("createdAt");
@@ -120,7 +116,6 @@ const StockHistory = () => {
       setSort("ASC");
     }
   };
-
   const handleDateRangeChange = (dates) => {
     setSelectedDateRange({
       startDate: dates[0],
@@ -128,12 +123,10 @@ const StockHistory = () => {
     });
     setSelectedMonth("");
   };
-
   const handleDateRangeReset = () => {
     setSelectedDateRange(null);
     setSelectedMonth("");
   };
-
   const HistoryDataMap = stockHistoryValue?.map((historyValue) => {
     const date = historyValue.createdAt;
     const formattedDate = moment(date).format("DD MMMM YYYY");
@@ -190,5 +183,4 @@ const StockHistory = () => {
     </>
   );
 };
-
 export default StockHistory;
