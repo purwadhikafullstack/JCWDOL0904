@@ -70,7 +70,7 @@ export default function Carousel() {
                 backgroundRepeat="no-repeat"
                 backgroundSize="cover"
                 h="500px"
-                backgroundImage={`url('${el.promotion_image}')`}
+                backgroundImage={`url('${process.env.REACT_APP_API_BASE}/${el.promotion_image}')`}
               />
             ))
           : null}

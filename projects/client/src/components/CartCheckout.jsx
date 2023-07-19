@@ -1,6 +1,6 @@
 import React from "react";
 
-const CartCheckout = ({cartItems}) => {
+const CartCheckout = ({ cartItems }) => {
   return (
     <>
       {cartItems?.map((item) => (
@@ -8,10 +8,11 @@ const CartCheckout = ({cartItems}) => {
           <h2 className="sr-only">Order summary</h2>
           <ul
             role="list"
-            className="divide-y divide-gray-200 border-t border-b border-gray-200">
+            className="divide-y divide-gray-200 border-t border-b border-gray-200"
+          >
             <li key={item.Product?.id} className="flex py-6 sm:py-10">
               <img
-                src={item.Product?.product_image}
+                src={`${process.env.REACT_APP_API_BASE}/${item.Product?.product_image}`}
                 alt={item.Product?.product_name}
                 className="h-24 w-24 flex-none rounded-md bg-gray-100 object-cover object-center"
               />

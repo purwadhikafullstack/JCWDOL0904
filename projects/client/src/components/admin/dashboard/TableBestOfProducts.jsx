@@ -24,7 +24,7 @@ const TableBestOfProducts = (props) => {
                       <Image
                         minWidth="40px"
                         maxWidth="80px"
-                        src={`${el.product_image}`}
+                        src={`${process.env.REACT_APP_API_BASE}/${el.product_image}`}
                       />
                     </Td>
                     <Td width="500px">

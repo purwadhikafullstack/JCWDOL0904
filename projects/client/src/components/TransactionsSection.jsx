@@ -50,7 +50,7 @@ const TransactionSections = ({
                     <td className="py-5">
                       <div className="flex items-center">
                         <img
-                          src={transactionItem?.Product?.product_image}
+                          src={`${process.env.REACT_APP_API_BASE}/${transactionItem?.Product?.product_image}`}
                           alt={transactionItem?.Product?.product_name}
                           className="mr-6 h-16 w-16 rounded object-cover object-center"
                         />

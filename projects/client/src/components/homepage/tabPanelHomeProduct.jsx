@@ -34,6 +34,7 @@ const TabPanelHomeProduct = (props) => {
           {props.allCategory?.map((el) => {
             return (
               <Tab
+                key={el.id}
                 _selected={{ color: "white", bg: "black" }}
                 onClick={() => props.fetchProducts(el.id)}
               >
@@ -102,6 +103,7 @@ const TabPanelHomeProduct = (props) => {
           {props.allCategory?.map((el) => {
             return el.category !== "no category" ? (
               <TabPanel
+                key={el.id}
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"

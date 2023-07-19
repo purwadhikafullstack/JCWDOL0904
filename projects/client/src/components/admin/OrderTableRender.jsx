@@ -99,7 +99,7 @@ export const OrderTableRender = ({
                 </td>
                 {transaction.status === "Waiting For Payment" ||
                 transaction.status === "Waiting For Payment Confirmation" ? (
-                  <td className="whitespace-nowrap text-xs px-2 py-2 text-sm text-gray-500">
+                  <td className="whitespace-nowrap text-xs px-2 py-2 text-gray-500">
                     {transaction.expired ? (
                       moment(transaction.expired).format("YYYY-MM-DD HH:mm:ss")
                     ) : (
@@ -117,15 +117,11 @@ export const OrderTableRender = ({
                 <td className="whitespace-nowrap py-2 text-right text-sm font-medium sm:pr-6">
                   {transaction.status === "Waiting For Payment Confirmation" ? (
                     <button
-                      disabled={adminWarehouse || isConfirmLoading}
+                      disabled={isConfirmLoading}
                       onClick={() => handleConfirmTransaction(transaction.id)}
                       className={`text-white rounded-md transition duration-300 ease-in-out bg-black w-14 h-6 text-[10px] mr-[9px] hover:bg-gray-800 ${
                         isConfirmLoading ? "opacity-50 cursor-not-allowed" : ""
-                      } ${
-                        adminWarehouse || isConfirmLoading
-                          ? "disabled-button"
-                          : ""
-                      }`}
+                      } ${isConfirmLoading ? "disabled-button" : ""}`}
                     >
                       {isConfirmLoading ? "Confirming..." : "Confirm"}
                     </button>
@@ -134,7 +130,6 @@ export const OrderTableRender = ({
                   )}
                   {transaction.status === "On Process" ? (
                     <button
-                      disabled={adminWarehouse}
                       onClick={() => handleSendTransaction(transaction.id)}
                       className="text-white rounded-md transition duration-300 ease-in-out bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800"
                     >
@@ -150,7 +145,6 @@ export const OrderTableRender = ({
                   )}
                   {transaction.status === "Waiting For Payment Confirmation" ? (
                     <button
-                      disabled={adminWarehouse}
                       onClick={() => handleRejectTransaction(transaction.id)}
                       className="text-white w-14 h-6 text-[10px] transition duration-300 ease-in-out rounded-md bg-black hover:bg-gray-800 mr-1"
                     >
@@ -168,7 +162,6 @@ export const OrderTableRender = ({
                   transaction.status === "Waiting For Payment" ||
                   transaction.status === "On Process" ? (
                     <button
-                      disabled={adminWarehouse}
                       className="text-white -mr-2 transition duration-300 ease-in-out rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800"
                       onClick={() => handleCantelOrder(transaction)}
                     >

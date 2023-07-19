@@ -118,7 +118,7 @@ const NavbarRender = ({
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={user_image}
+                    src={`${process.env.REACT_APP_API_BASE}/${user_image}`}
                     alt=""
                   />
                 </div>

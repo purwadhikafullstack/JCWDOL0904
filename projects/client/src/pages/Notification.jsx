@@ -69,7 +69,6 @@ export default function Notification() {
   useEffect(() => {
     const socket = io(`${process.env.REACT_APP_API_BASE}`);
     socket.on("notification", (updatedNotifications) => {
-      console.log("ini update from socet Admin Notif", updatedNotifications);
       setNotifications(updatedNotifications);
     });
     return () => {

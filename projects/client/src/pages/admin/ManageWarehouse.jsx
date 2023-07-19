@@ -141,7 +141,7 @@ const ManageWarehouse = () => {
           }}
         >
           <img
-            src={`${process.env.REACT_APP_API_BASE}/logo_galaxy_2.png`}
+            src={`${process.env.REACT_APP_API_BASE}/${process.env.REACT_APP_API_BASE}/logo_galaxy_2.png`}
             className="w-32 h-28 align-middle rounded-full animate-bounce"
           />
         </div>

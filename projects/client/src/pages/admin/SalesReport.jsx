@@ -130,6 +130,14 @@ const SalesReport = () => {
     setSelectedDateRange(null);
     setSelectedMonth("");
   };
+  const handleWarehouseChange = (event) => {
+    const selectedValue = event.target.value;
+    if (user.role === "adminWarehouse") {
+      setSelectedWarehouse(user.id_warehouse);
+    } else {
+      setSelectedWarehouse(selectedValue);
+    }
+  };
   const ProductMap = itemValue?.map((pEl) => {
     const date = pEl.Transaction.transaction_date;
     const formattedDate = moment(date).format("DD MMMM YYYY");
@@ -163,7 +171,7 @@ const SalesReport = () => {
         productSearch={productSearch}
         OrderWarehouseDropdown={OrderWarehouseDropdown}
         user={user}
-        setSelectedWarehouse={setSelectedWarehouse}
+        setSelectedWarehouse={handleWarehouseChange}
         selectedWarehouse={selectedWarehouse}
         warehouses={warehouses}
         handleCategoryChange={handleCategoryChange}
@@ -185,5 +193,4 @@ const SalesReport = () => {
     </>
   );
 };
-
 export default SalesReport;

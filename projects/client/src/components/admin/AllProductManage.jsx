@@ -86,7 +86,7 @@ const AllProductManage = ({ products, runFunction, category }) => {
               objectFit="cover"
               width="40px"
               height="40px"
-              src={`${el.product_image}`}
+              src={`${process.env.REACT_APP_API_BASE}/${el.product_image}`}
               alt="Caffe Latte"
               marginLeft="10px"
               cursor="pointer"

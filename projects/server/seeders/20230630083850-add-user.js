@@ -11,7 +11,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: "http://localhost:8000/avatar_default.jpg",
+        user_image: "avatar_default.jpg",
         role: "user",
         verify_token: null,
         id_warehouse: null,
@@ -25,7 +25,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: "http://localhost:8000/avatar_default.jpg",
+        user_image: "avatar_default.jpg",
         role: "user",
         verify_token: null,
         id_warehouse: null,
@@ -38,7 +38,7 @@ module.exports = {
         email: "adi@gmail.com",
         password: "123",
         is_verified: true,
-        user_image: "http://localhost:8000/avatar_default.jpg",
+        user_image: "avatar_default.jpg",
         role: "user",
         verify_token: null,
         id_warehouse: null,
@@ -52,7 +52,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: "http://localhost:8000/avatar_default.jpg",
+        user_image: "avatar_default.jpg",
         role: "admin",
         verify_token: null,
         id_warehouse: null,
@@ -66,7 +66,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: "http://localhost:8000/avatar_default.jpg",
+        user_image: "avatar_default.jpg",
         role: "adminWarehouse",
         verify_token: null,
         id_warehouse: 1,
@@ -81,7 +81,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: "http://localhost:8000/avatar_default.jpg",
+        user_image: "avatar_default.jpg",
         role: "adminWarehouse",
         verify_token: null,
         id_warehouse: 2,
@@ -96,7 +96,7 @@ module.exports = {
         password:
           "$2b$10$IErJfvcG2fEJ33lbVPP2HOomu//t9JiiiUuBh9m6hStQFS5NpWAlu",
         is_verified: true,
-        user_image: "http://localhost:8000/avatar_default.jpg",
+        user_image: "avatar_default.jpg",
         role: "adminWarehouse",
         verify_token: null,
         id_warehouse: 3,
