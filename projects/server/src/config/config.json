@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": "root",
-    "database": "final_project",
-    "host": "127.0.0.1",
+    "username": "jcwdol0904",
+    "password": "group04",
+    "database": "jcwdol0904",
+    "host": "purwadhikabootcamp.com",
     "dialect": "mysql"
   },
   "test": {
