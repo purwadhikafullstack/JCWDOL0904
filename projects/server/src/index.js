@@ -17,6 +17,7 @@ const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: { origin: "*" },
 });
+
 global.io = io;
 
 module.exports = { io };
@@ -34,7 +35,7 @@ module.exports = { io };
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public/images"));
+app.use(express.static(join(__dirname, "public/images")));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
