@@ -63,6 +63,7 @@ module.exports = {
         totalPage,
         coba: allSort,
       };
+
       res.status(200).send({ message: "success", ...result });
     } catch (error) {
       console.log(error);
