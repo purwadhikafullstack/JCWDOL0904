@@ -1,6 +1,4 @@
 const access = process.env.KEY_ACCESS;
-const dotenv = require("dotenv");
-dotenv.config();
 
 module.exports = {
   authorize: async (req, res, next) => {

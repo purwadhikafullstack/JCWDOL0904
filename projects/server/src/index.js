@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
-const dotenv = require("dotenv").config({ override: true });
+const dotenv = require("dotenv").config({ path: join(__dirname, "./.env") });
 const db = require("./models");
 const bodyParser = require("body-parser");
 
@@ -66,7 +66,7 @@ const {
   dashboardRouter,
 } = require("./routers");
 
-app.use(authorize);
+app.use("/api", authorize);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/addresses", addressRouter);
@@ -112,6 +112,17 @@ app.use(function (err, req, res, next) {
 
 // ===========================
 
+//#region CLIENT
+const clientPath = "../../client/build";
+app.use(express.static(join(__dirname, clientPath)));
+
+// Serve the HTML page
+app.get("*", (req, res) => {
+  res.sendFile(join(__dirname, clientPath, "index.html"));
+});
+
+//#endregion
+
 // not found
 app.use((req, res, next) => {
   if (req.path.includes("/api/")) {
@@ -129,17 +140,6 @@ app.use((err, req, res, next) => {
   } else {
     next();
   }
-});
-
-//#endregion
-
-//#region CLIENT
-const clientPath = "../client/build";
-app.use(express.static(join(__dirname, clientPath)));
-
-// Serve the HTML page
-app.get("*", (req, res) => {
-  res.sendFile(join(__dirname, clientPath, "index.html"));
 });
 
 //#endregion
