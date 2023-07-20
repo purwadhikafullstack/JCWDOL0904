@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { allUserData } from "../../features/allUserSlice";
 import AddAdmin from "../../components/admin/AddAdmin";
 import EditWarehouse from "../../components/admin/EditAdminWarehouseModal";
+import Alert from "../../components/SwallAlert";
 
 const ManageUser = () => {
   const value = useSelector((state) => state.allUserSlice.value);
@@ -29,13 +30,16 @@ const ManageUser = () => {
   const getUserData = async () => {
     try {
       await api.get(url).then((result) => {
-        dispatch(allUserData(result.data));
+        dispatch(allUserData(result.data.result));
       });
     } catch (err) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: err.result.data.message,
+        icon: "error",
+      });
     }
   };
-
   const deleteUser = async (id) => {
     Swal.fire({
       title: "Are you sure?",

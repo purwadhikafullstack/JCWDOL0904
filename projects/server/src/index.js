@@ -3,10 +3,10 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const dotenv = require("dotenv").config({ override: true });
-const db = require("../models");
+const db = require("./models");
 const bodyParser = require("body-parser");
 
-const { authorize } = require("../middleware/validator");
+const { authorize } = require("./middleware/validator");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -64,7 +64,7 @@ const {
   transactionRouter,
   stockHistoryRouter,
   dashboardRouter,
-} = require("../routers");
+} = require("./routers");
 
 app.use(authorize);
 app.use("/api/user", userRouter);
@@ -134,7 +134,7 @@ app.use((err, req, res, next) => {
 //#endregion
 
 //#region CLIENT
-const clientPath = "../../client/build";
+const clientPath = "../client/build";
 app.use(express.static(join(__dirname, clientPath)));
 
 // Serve the HTML page

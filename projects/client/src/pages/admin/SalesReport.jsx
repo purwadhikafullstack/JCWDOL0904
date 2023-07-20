@@ -6,6 +6,7 @@ import moment from "moment";
 import OrderWarehouseDropdown from "../../components/admin/OrderWarehouseDropdown";
 import ProductSearch from "../../components/admin/ProductSearch";
 import SalesReportRender from "../../components/SalesReport/SalesReportRender";
+import Alert from "../../components/SwallAlert";
 
 const SalesReport = () => {
   const userData = useSelector((state) => state.userSlice);
@@ -56,7 +57,11 @@ const SalesReport = () => {
       setTransactionByMonth(response.data.totalPriceFiltered);
       setTotalPrice(response.data.total_price);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
     }
   };
 

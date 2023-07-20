@@ -72,7 +72,6 @@ const ManageStock = () => {
   useEffect(() => {
     getProducts();
     getAllCategory();
-    console.log(AdminLogin);
   }, [ware, page, stockFilter, search, categoryFilter, sort]);
   const stockValue = useSelector((state) => state.stockSlice.value);
   const product = stockValue?.map((el) => {
