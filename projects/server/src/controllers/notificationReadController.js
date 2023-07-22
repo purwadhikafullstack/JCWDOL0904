@@ -5,7 +5,7 @@ module.exports = {
     try {
       const { notificationId } = req.body;
       const { id } = req.dataToken;
-      console.log(id);
+
       const existingUserNotification = await UserNotification.findOne({
         where: {
           read: true,
