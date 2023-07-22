@@ -68,6 +68,7 @@ const AddWarehouse = (props) => {
         text: response.data.message,
         icon: "success",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       setProvincess([]);
       setCity([]);
@@ -79,8 +80,9 @@ const AddWarehouse = (props) => {
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
-        icon: "warning",
+        icon: "error",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
     }
   };

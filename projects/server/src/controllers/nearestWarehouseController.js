@@ -29,7 +29,9 @@ module.exports = {
 
       res.json(nearestWarehouse);
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed get nearest warehouse!",
+      });
     }
   },
 };

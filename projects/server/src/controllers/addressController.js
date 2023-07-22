@@ -11,11 +11,12 @@ module.exports = {
       const addresses = await address.findAll({ where: { id_user: id } });
       res.status(200).send(addresses);
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "get address by user fail!",
+      });
     }
   },
 
-  // Get an address by ID
   getAddressById: async (req, res) => {
     try {
       const id = req.params.id;
@@ -23,11 +24,10 @@ module.exports = {
       if (addressResult) {
         res.json(addressResult);
       } else {
-        res.status(404).json({ error: "Address not found" });
+        res.status(404).json({ message: "Address not found" });
       }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ message: "Address not found" });
     }
   },
 
@@ -87,15 +87,13 @@ module.exports = {
         });
       } else {
         console.error("No results found");
-        res.status(500).json({ error: "Geocoding error" });
+        res.status(500).json({ message: "Geocoding error" });
       }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ message: "create address fail!" });
     }
   },
 
-  // Delete an address
   deleteAddress: async (req, res) => {
     try {
       const id = req.params.id;
@@ -108,7 +106,7 @@ module.exports = {
       }
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ message: "delete address fail!" });
     }
   },
 
@@ -133,7 +131,7 @@ module.exports = {
     } catch (error) {
       console.error(error);
       await transaction.rollback();
-      res.status(400).send({ message: "cacacac" });
+      res.status(400).send({ message: "change address default fail!" });
     }
   },
 };

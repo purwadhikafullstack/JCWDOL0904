@@ -1,5 +1,6 @@
 const db = require("..//models");
-const { Op, Transaction } = require("sequelize");
+const { Op } = require("sequelize");
+const { sequelize } = require("..//models");
 const User = db.User;
 const transaction = db.Transaction;
 const Warehouse = db.Warehouse;
@@ -11,8 +12,8 @@ const { error } = require("console");
 const bcrypt = require("bcrypt");
 
 module.exports = {
-  // user register
   userRegister: async (req, res) => {
+    const trans = await sequelize.transaction();
     try {
       const { email } = req.body;
       if (!email) {
@@ -20,14 +21,17 @@ module.exports = {
           message: "Please input your email address",
         });
       }
+
       if (!email.includes("@") || !email.endsWith(".com")) {
         return res.status(400).send({
           message: "Please enter a valid email address",
         });
       }
       const userAlreadyExist = await User.findOne({
+        paranoid: true,
         where: { email },
       });
+
       if (userAlreadyExist) {
         if (userAlreadyExist.is_verified) {
           return res.status(400).send({
@@ -40,9 +44,12 @@ module.exports = {
           });
         }
       }
+
       const result = await User.create({
+        paranoid: true,
         email,
       });
+
       let payload = { id: result.id };
       let token = jwt.sign(payload, "galaxy");
       await User.update(
@@ -53,9 +60,11 @@ module.exports = {
           },
         }
       );
-      const verificationLink = `http://localhost:3000/verification/${token}`;
+
+      const verificationLink = `${process.env.IMAGE_URL}verification/${token}`;
+
       const tempEmail = fs.readFileSync(
-        require.resolve("./templates/verification.html"),
+        require.resolve("../templates/verification.html"),
         { encoding: "utf8" }
       );
       const tempCompile = handlebars.compile(tempEmail);
@@ -67,22 +76,47 @@ module.exports = {
         html: tempResult,
       };
       let response = nodemailer.sendMail(mail);
+
+      await trans.commit();
       res.status(200).send({
         message: "Register success, please check your email",
         result,
       });
     } catch (err) {
+      await trans.rollback();
       return res.status(400).send({
         message: "Fail to register",
       });
     }
   },
-  // Add Admin
+
   addAdmin: async (req, res) => {
     try {
       const { email, fullname, username, password } = req.body;
       const { id } = req.dataToken;
 
+      const cekUsername = await User.findAll({
+        paranoid: true,
+        where: {
+          username,
+        },
+      });
+
+      if (cekUsername.length > 0)
+        return res.status(400).send({
+          message: "username already exist!",
+        });
+
+      const cekEmail = await User.findAll({
+        paranoid: true,
+        where: {
+          email,
+        },
+      });
+      if (cekEmail.length > 0)
+        return res.status(400).send({
+          message: "email already exist!",
+        });
       const dataRole = await User.findOne({
         where: { id },
       });
@@ -92,6 +126,7 @@ module.exports = {
           message: "Registration is not allowed for admin warehouse role",
         });
       }
+
       if (dataRole.role === "admin") {
         if (!email || !fullname || !username || !password) {
           return res.status(400).send({
@@ -125,7 +160,7 @@ module.exports = {
       });
     }
   },
-  // get user data
+
   getUserData: async (req, res) => {
     try {
       const { id } = req.body;
@@ -146,7 +181,7 @@ module.exports = {
       res.status(400).send({ message: "Fail to get user data" });
     }
   },
-  // get all user data
+
   getAllUserData: async (req, res) => {
     try {
       const result = await User.findAll({
@@ -164,7 +199,7 @@ module.exports = {
       res.status(404).send({ message: "Fail to get user data" });
     }
   },
-  // get user by id
+
   getUserById: async (req, res) => {
     try {
       const { id } = req.dataToken;
@@ -195,7 +230,6 @@ module.exports = {
     }
   },
 
-  // delete user by id
   deleteUser: async (req, res) => {
     try {
       const { id } = req.body;
@@ -242,7 +276,7 @@ module.exports = {
       });
     }
   },
-  // user forgot password request
+
   userRequest: async (req, res) => {
     try {
       const { email } = req.body;
@@ -274,9 +308,9 @@ module.exports = {
           },
         }
       );
-      const resetLink = `http://localhost:3000/inputpassword/${token}`;
+      const resetLink = `${process.env.IMAGE_URL}inputpassword/${token}`;
       const tempEmail = fs.readFileSync(
-        require.resolve("./templates/reset.html"),
+        require.resolve("../templates/reset.html"),
         { encoding: "utf8" }
       );
       const tempCompile = handlebars.compile(tempEmail);
@@ -298,7 +332,7 @@ module.exports = {
       });
     }
   },
-  // Edit data
+
   updateUserData: async (req, res) => {
     try {
       const { id, username, fullname, password, role } = req.body;
@@ -341,7 +375,7 @@ module.exports = {
       });
     }
   },
-  //ChangeUsername
+
   changeUsername: async (req, res) => {
     try {
       let username = req.body.username;

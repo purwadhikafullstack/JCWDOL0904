@@ -17,11 +17,11 @@ const StockHistory = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState("");
-  const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
+  const [currentPage, setCurrentPage] = useState(0);
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouses, setWarehouses] = useState([]);
   const [order, setOrder] = useState("createdAt");
-  const [sort, setSort] = useState("ASC");
+  const [sort, setSort] = useState("DESC");
   const user = useSelector((state) => state.userSlice);
   const [productSearch, setProductSearch] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -55,6 +55,7 @@ const StockHistory = () => {
           endDate,
         },
       });
+
       setTotalPage(response.data.totalPage);
       dispatch(stockHistoryData(response.data.result.rows));
     } catch (error) {
@@ -112,7 +113,7 @@ const StockHistory = () => {
       setOrder("createdAt");
       setSort("DESC");
     } else {
-      setOrder("CreatedAt");
+      setOrder("createdAt");
       setSort("ASC");
     }
   };

@@ -22,7 +22,7 @@ module.exports = {
       const sort = req.query.sort || "ASC";
       const category = req.query.category || 1;
       const site = req.query.site;
-      let limit = 10;
+      let limit = 8;
       let where = {
         product_name: {
           [db.Sequelize.Op.like]: `%${search}%`,
@@ -66,7 +66,9 @@ module.exports = {
 
       res.status(200).send({ message: "success", ...result });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "failed get all product!",
+      });
     }
   },
 
@@ -138,8 +140,6 @@ module.exports = {
         result,
       });
     } catch (error) {
-      console.log(error);
-
       res.status(400).send({
         message: error.message,
       });
@@ -187,7 +187,9 @@ module.exports = {
         idWarehouse,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "failed get all mutation!",
+      });
     }
   },
   updateImageProduct: async (req, res) => {
@@ -199,7 +201,7 @@ module.exports = {
         throw new Error("Error, your format picture is not png!");
       }
       const filePath = req.file.path;
-      const fileName = process.env.IMAGE_URL + filePath.split("\\")[2];
+      const fileName = filePath.split("\\")[2];
 
       const productData = await product.update(
         {
@@ -300,6 +302,22 @@ module.exports = {
     try {
       const { id } = req.params;
 
+      const cekTransaction = await transactionItem.findAll({
+        where: { id_product: id },
+        include: [
+          {
+            model: transaction,
+            where: {
+              status: {
+                [Op.notIn]: ["Order Confirmed", "Canceled"],
+              },
+            },
+          },
+        ],
+      });
+      if (cekTransaction.length > 0)
+        throw new Error("This product is still on transaction!");
+
       const cekStock = await stocks.findAll({
         where: {
           id_product: id,
@@ -368,6 +386,7 @@ module.exports = {
       }
 
       const cekProduct = await product.findOne({
+        paranoid: true,
         where: { product_name },
       });
       if (cekProduct) throw new Error("Name already exist!");
@@ -379,7 +398,7 @@ module.exports = {
       }
 
       const filePath = req.file.path;
-      const fileName = process.env.IMAGE_URL + filePath.split("\\")[2];
+      const fileName = filePath.split("\\")[2];
 
       const result = await product.create({
         product_name,
@@ -399,7 +418,7 @@ module.exports = {
       });
 
       if (!result && result.lenght < 1) {
-        throw new Error("something went wrong!");
+        throw new Error("failed create product!");
       }
       res.status(200).send({
         result,
@@ -446,7 +465,7 @@ module.exports = {
       });
     } catch (error) {
       res.status(400).send({
-        message: error.message,
+        message: "failed to add initial stock!",
       });
     }
   },

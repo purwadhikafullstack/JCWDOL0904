@@ -15,36 +15,36 @@ export default function AdminNotification() {
   const [notifications, setNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0); // Starting page is 0
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [invoiceNumber, setInvoiceNumber] = useState("");
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const socket = io(`${process.env.REACT_APP_API_BASE}`);
-    socket.on("notificationAdmin", (updatedNotifications) => {
-      setNotifications(updatedNotifications);
-    });
-    return () => {
-      socket.off("notificationAdmin");
-    };
-  }, []);
-  useEffect(() => {
-    const socket = io(`${process.env.REACT_APP_API_BASE}`);
-    socket.on("notificationAdminRead", (updatedNotifications) => {
-      const unreadAdmin = updatedNotifications.filter((notification) => {
-        return (
-          notification.UserNotifications.length === 0 ||
-          !notification.UserNotifications[0].read
-        );
-      });
-      dispatch(unreadAdminCount({ unreadAdmin: unreadAdmin.length }));
-    });
-    return () => {
-      socket.off("notificationAdminRead");
-    };
-  }, []);
+  // useEffect(() => {
+  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
+  //   socket.on("notificationAdmin", (updatedNotifications) => {
+  //     setNotifications(updatedNotifications);
+  //   });
+  //   return () => {
+  //     socket.off("notificationAdmin");
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
+  //   socket.on("notificationAdminRead", (updatedNotifications) => {
+  //     const unreadAdmin = updatedNotifications.filter((notification) => {
+  //       return (
+  //         notification.UserNotifications.length === 0 ||
+  //         !notification.UserNotifications[0].read
+  //       );
+  //     });
+  //     dispatch(unreadAdminCount({ unreadAdmin: unreadAdmin.length }));
+  //   });
+  //   return () => {
+  //     socket.off("notificationAdminRead");
+  //   };
+  // }, []);
 
   useEffect(() => {
     fetchNotification();

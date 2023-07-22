@@ -110,7 +110,7 @@ module.exports = {
       await transaction.update({ status: "Waiting For Payment" });
 
       const expirationDate = new Date();
-      expirationDate.setSeconds(expirationDate.getSeconds() + 30);
+      expirationDate.setTime(expirationDate.getTime() + 3600 * 1000);
       await transaction.update({ expired: expirationDate });
       await transaction.update({ payment_proof: null });
 
@@ -123,7 +123,6 @@ module.exports = {
 
       res.status(200).send({ message: "Transaction rejected successfully" });
     } catch (error) {
-      console.error(error);
       res.status(500).send({ message: "Error rejecting transaction" });
     }
   },
@@ -157,30 +156,20 @@ module.exports = {
           .send({ message: "The transaction is not eligible to be sent" });
       }
 
-      for (const item of order.TransactionItems) {
-        const product = await Products.findByPk(item.id_product);
-        if (!product) {
-          return res
-            .status(404)
-            .send({ error: `Product with ID ${item.id_product} not found` });
-        }
-      }
-
       const expirationDate = new Date();
-      expirationDate.setSeconds(expirationDate.getSeconds() + 30);
+      expirationDate.setSeconds(expirationDate.getSeconds() + 604800);
       await order.update({
         status: "Shipped",
         expired_confirmed: expirationDate,
       });
 
-      // Create a notification for the user
       let notification = await createNotification(
         `Invoice ${order.invoice_number}`,
         "Your order has been shipped",
         order.id_user,
         "admin"
       );
-      io.emit("notification", notification);
+      // io.emit("notification", notification);
 
       const timeoutDuration = order.expired_confirmed - new Date();
       setTimeout(async () => {
@@ -207,7 +196,7 @@ module.exports = {
         });
         for (const order of updatedOrder) {
           await order.update({ status: "Order Confirmed" });
-          io.emit("orderConfirmed", order.toJSON());
+          // io.emit("orderConfirmed", order.toJSON());
           await createNotification(
             `Invoice ${order.invoice_number} `,
             "Order has been received",
@@ -224,7 +213,6 @@ module.exports = {
       }, timeoutDuration);
       res.status(200).send({ message: "Order sent successfully" });
     } catch (error) {
-      console.error(error);
       res.status(500).send({ message: "Error sending order" });
     }
   },

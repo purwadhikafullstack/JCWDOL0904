@@ -27,12 +27,20 @@ const SRMPcScreen = () => {
         text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
+        confirmButtonColor: "black",
         confirmButtonText: "Yes, Send Request!",
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            Swal.fire({
+              title: "Loading...",
+              text: "Please wait a sec...",
+              allowOutsideClick: false,
+              showConfirmButton: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
             const token = JSON.parse(localStorage.getItem("auth"));
             const id = product.id;
             const warehouse_sender_id = wSender.id;
@@ -56,18 +64,24 @@ const SRMPcScreen = () => {
                 },
               }
             );
-            Swal.fire(
-              "Sended!",
-              "Your request has been sended.",
-              "success"
-            ).then(() => {
+            Swal.close();
+            Swal.fire({
+              title: "Success!",
+              text: "Request Sended!",
+              icon: "success",
+              confirmButtonColor: "black",
+              confirmButtonText: "Ok",
+            }).then(() => {
               navigation("/mutation-list");
             });
           } catch (error) {
+            Swal.close();
             Swal.fire({
               title: "Error!",
               text: error.response.data.message,
               icon: "error",
+              confirmButtonColor: "black",
+              confirmButtonText: "Ok",
             });
           }
         }

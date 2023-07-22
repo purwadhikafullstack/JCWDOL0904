@@ -36,6 +36,7 @@ const EditeProduct = ({ runFunction, category, productData, idProduct }) => {
           text: "price too long!",
           icon: "error",
           confirmButtonText: "Ok",
+          confirmButtonColor: "black",
         });
         onClose();
       } else {
@@ -65,6 +66,7 @@ const EditeProduct = ({ runFunction, category, productData, idProduct }) => {
           text: "Data has been updated!",
           icon: "success",
           confirmButtonText: "Ok",
+          confirmButtonColor: "black",
         });
       }
       setLoad(false);
@@ -76,6 +78,7 @@ const EditeProduct = ({ runFunction, category, productData, idProduct }) => {
         text: error.response.data.message,
         icon: "error",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
     }
   };

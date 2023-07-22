@@ -1,12 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import { TransactionSectionShipping } from "./TransactionSectionShipping";
+import { api } from "../API/api";
+import Alert from "./SwallAlert";
+import TransactionsUploadModal from "./TransactionUploadModal";
 
 const TransactionSections = ({
   transactions,
-  handleFileUpload,
+  fetchTransactions,
   cancelOrder,
   acceptOrder,
+  isCancelLoading,
+  isAcceptLoading,
 }) => {
+  const [isUploadLoading, setIsUploadLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [currentTransaction, setCurrentTransaction] = useState(null);
+
+  const handleFileSelect = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleFormSubmit = async () => {
+    if (selectedFile && currentTransaction) {
+      const transactionId = currentTransaction?.id;
+      const file = selectedFile;
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        setIsUploadLoading(true);
+        let response = await api.patch(
+          `/order/upload-payment-proof/${transactionId}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        Alert({
+          title: "Success!",
+          text: response.data.message,
+          icon: "success",
+        });
+        fetchTransactions();
+        setIsModalOpen(false);
+        setSelectedFile(null);
+      } catch (error) {
+        Alert({
+          title: "Failed!",
+          text: error.response.data.message,
+          icon: "error",
+        });
+        console.error(error);
+      } finally {
+        setIsUploadLoading(false);
+      }
+    }
+  };
   return (
     <div>
       {transactions &&
@@ -120,35 +169,44 @@ const TransactionSections = ({
                     <div className="flex items-center">
                       {transaction?.status === "Shipped" && (
                         <button
+                          disabled={isAcceptLoading}
                           onClick={() => acceptOrder(transaction?.id)}
-                          className="px-4 py-2 transition ease-in-out duration-300 text-xs font-medium text-white bg-black rounded-full hover:bg-gray-800"
+                          className={`px-4 py-2 transition ease-in-out duration-300 text-xs font-medium text-white bg-black rounded-full hover:bg-gray-800 ${
+                            isAcceptLoading
+                              ? "opacity-50 pointer-events-none"
+                              : ""
+                          }`}
                         >
                           Accept Order
                         </button>
                       )}
                       {transaction?.status === "Waiting For Payment" && (
-                        <label className="px-4 py-2 text-xs font-medium text-white bg-black rounded-full hover:bg-gray-800 transition ease-in-out duration-300">
-                          <input
-                            type="file"
-                            className="hidden"
-                            disabled={
-                              transaction?.status === "Canceled" ||
-                              transaction?.payment_proof
-                            }
-                            onChange={(e) =>
-                              handleFileUpload(e, transaction?.id)
-                            }
-                          />
-                          Upload Payment Proof
-                        </label>
-                      )}
-                      {transaction?.status === "Waiting For Payment" && (
-                        <button
-                          onClick={() => cancelOrder(transaction?.id)}
-                          className="transition ease-in-out duration-300 px-5 py-2 ml-4 text-xs font-medium text-black hover:bg-red-600 hover:text-white  rounded-full bg-slate-100"
-                        >
-                          Cancel Order
-                        </button>
+                        <div className="flex items-center">
+                          <button
+                            onClick={() => {
+                              setIsModalOpen(true);
+                              setCurrentTransaction(transaction);
+                            }}
+                            className={`px-4 py-2 text-xs font-medium text-white bg-black rounded-full hover:bg-gray-800 transition ease-in-out duration-300 ${
+                              isUploadLoading
+                                ? "opacity-50 pointer-events-none"
+                                : ""
+                            }`}
+                          >
+                            Upload Payment Proof
+                          </button>
+                          <button
+                            disabled={isCancelLoading}
+                            onClick={() => cancelOrder(transaction?.id)}
+                            className={`transition ease-in-out duration-300 px-5 py-2 ml-4 text-xs font-medium text-black hover:bg-red-600 hover:text-white rounded-full bg-slate-100 ${
+                              isCancelLoading
+                                ? "opacity-50 pointer-events-none"
+                                : ""
+                            }`}
+                          >
+                            Cancel Order
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -157,6 +215,15 @@ const TransactionSections = ({
             </section>
           </table>
         ))}
+
+      <TransactionsUploadModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        selectedFile={selectedFile}
+        handleFileSelect={handleFileSelect}
+        handleFormSubmit={handleFormSubmit}
+        isUploadLoading={isUploadLoading}
+      />
     </div>
   );
 };

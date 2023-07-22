@@ -26,7 +26,9 @@ module.exports = {
       );
       res.status(200).send({ message: "Payment proof uploaded successfully" });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "Upload payment fail!",
+      });
     }
   },
   getPaymentProof: async (req, res) => {
@@ -46,8 +48,7 @@ module.exports = {
         expired: transaction.updatedAt,
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: "Internal server error" });
+      res.status(500).send({ message: "failed get payment proof!" });
     }
   },
 };

@@ -22,7 +22,6 @@ const SearchAndAddMi = (props) => {
             allWarehouse={props.warehouse}
           />
         ) : null}
-
         <InputGroup>
           <InputRightElement
             pointerEvents="none"

@@ -40,6 +40,7 @@ const EditWarehouse = (props) => {
   const token = JSON.parse(localStorage.getItem("auth"));
   const handleSubmit = async () => {
     try {
+      setLoad(true);
       let response = await api.post(
         urlUpdate,
         {
@@ -55,20 +56,24 @@ const EditWarehouse = (props) => {
           },
         }
       );
+      setLoad(false);
       Swal.fire({
         title: "Success",
         text: response.data.message,
         icon: "success",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       setCurrentWarehouse(selectedWarehouse);
       onClose();
     } catch (error) {
+      setLoad(false);
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
-        icon: "warning",
+        icon: "error",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       onClose();
     }

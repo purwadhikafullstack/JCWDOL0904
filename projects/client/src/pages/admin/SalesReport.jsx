@@ -7,6 +7,7 @@ import OrderWarehouseDropdown from "../../components/admin/OrderWarehouseDropdow
 import ProductSearch from "../../components/admin/ProductSearch";
 import SalesReportRender from "../../components/SalesReport/SalesReportRender";
 import Alert from "../../components/SwallAlert";
+import Swal from "sweetalert2";
 
 const SalesReport = () => {
   const userData = useSelector((state) => state.userSlice);
@@ -20,7 +21,7 @@ const SalesReport = () => {
   const [selectedWarehouse, setSelectedWarehouse] = useState("");
   const [warehouses, setWarehouses] = useState([]);
   const [order, setOrder] = useState("createdAt");
-  const [sort, setSort] = useState("ASC");
+  const [sort, setSort] = useState("DESC");
   const user = useSelector((state) => state.userSlice);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [category, setCategory] = useState([]);
@@ -78,7 +79,13 @@ const SalesReport = () => {
       const response = await api.get("/category");
       setCategory(response.data.result);
     } catch (error) {
-      console.error(error);
+      Swal.fire({
+        title: "Error!",
+        text: "fail to get category!",
+        icon: "warning",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
     }
   };
   const handlePage = (event) => {

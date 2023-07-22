@@ -1,18 +1,50 @@
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
+import Alert from "../SwallAlert";
+import Swal from "sweetalert2";
+import { api } from "../../API/api";
 
 export const OrderTableRender = ({
   transactionByWarehouse,
   handleViewPaymentProof,
   handleViewOrderDetail,
-  handleRejectTransaction,
-  user,
   handleConfirmTransaction,
   handleSendTransaction,
   handleCantelOrder,
   isConfirmLoading,
+  isLoad,
+  fetchTransactions,
 }) => {
-  const adminWarehouse = user.role === "adminWarehouse";
+  const [isRejectLoading, setIsRejectLoading] = useState(false);
+  const handleRejectTransaction = async (transactionId) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You are about to reject this transaction.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, reject it!",
+        confirmButtonColor: "black",
+        cancelButtonText: "Cancel",
+      });
+
+      if (result.isConfirmed) {
+        setIsRejectLoading(true);
+        await api.patch(`/order/${transactionId}/reject`);
+        fetchTransactions();
+        setIsRejectLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert({
+        title: "Failed!",
+        text: error.response.data.message,
+        icon: "error",
+      });
+      setIsRejectLoading(false);
+    }
+  };
+
   return (
     <div>
       <table className="min-w-full divide-y divide-gray-300">
@@ -123,21 +155,24 @@ export const OrderTableRender = ({
                         isConfirmLoading ? "opacity-50 cursor-not-allowed" : ""
                       } ${isConfirmLoading ? "disabled-button" : ""}`}
                     >
-                      {isConfirmLoading ? "Confirming..." : "Confirm"}
+                      {isConfirmLoading ? "loading..." : "Confirm"}
                     </button>
                   ) : (
                     <span style={{ visibility: "hidden" }}>Confirm</span>
                   )}
                   {transaction.status === "On Process" ? (
                     <button
+                      disabled={isLoad}
                       onClick={() => handleSendTransaction(transaction.id)}
-                      className="text-white rounded-md transition duration-300 ease-in-out bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800"
+                      className={`text-white rounded-md transition duration-300 ease-in-out bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800 ${
+                        isLoad ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                     >
-                      Send
+                      {isLoad ? "loading..." : "Send"}
                     </button>
                   ) : (
                     <span
-                      className="text-white rounded-md bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800"
+                      className={`text-white rounded-md bg-green-700 w-14 h-6 text-[10px] -mr-7 hover:bg-green-800`}
                       style={{ visibility: "hidden" }}
                     >
                       Send
@@ -145,10 +180,13 @@ export const OrderTableRender = ({
                   )}
                   {transaction.status === "Waiting For Payment Confirmation" ? (
                     <button
+                      disabled={isRejectLoading}
                       onClick={() => handleRejectTransaction(transaction.id)}
-                      className="text-white w-14 h-6 text-[10px] transition duration-300 ease-in-out rounded-md bg-black hover:bg-gray-800 mr-1"
+                      className={`text-white w-14 h-6 text-[10px] transition duration-300 ease-in-out rounded-md bg-black hover:bg-gray-800 mr-1 ${
+                        isRejectLoading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                     >
-                      Reject
+                      {isRejectLoading ? "loading..." : "Reject"}
                     </button>
                   ) : (
                     <span
@@ -162,10 +200,13 @@ export const OrderTableRender = ({
                   transaction.status === "Waiting For Payment" ||
                   transaction.status === "On Process" ? (
                     <button
-                      className="text-white -mr-2 transition duration-300 ease-in-out rounded-md w-14 h-6 text-[10px] bg-red-700 hover:bg-red-800"
+                      disabled={isLoad}
+                      className={`text-white w-14 h-6 text-[10px] transition duration-300 ease-in-out rounded-md bg-red-600 hover:bg-red-800 mr-1 ${
+                        isLoad ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                       onClick={() => handleCantelOrder(transaction)}
                     >
-                      Cancel
+                      {isLoad ? "loading..." : "Cancel"}
                     </button>
                   ) : (
                     <span

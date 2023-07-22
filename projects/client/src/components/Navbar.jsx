@@ -36,21 +36,21 @@ export const Navbar = () => {
     else if (localStorage.getItem("auth")) SetIsLogin(true);
   }, [localStorage.getItem("auth")]);
 
-  useEffect(() => {
-    const socket = io(`${process.env.REACT_APP_API_BASE}`);
-    socket.on("notificationRead", (updatedNotifications) => {
-      const unread = updatedNotifications.filter((notification) => {
-        return (
-          notification.UserNotifications.length === 0 ||
-          !notification.UserNotifications[0].read
-        );
-      });
-      setUnreads(unread.length);
-    });
-    return () => {
-      socket.off("notificationRead");
-    };
-  }, []);
+  // useEffect(() => {
+  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
+  //   socket.on("notificationRead", (updatedNotifications) => {
+  //     const unread = updatedNotifications.filter((notification) => {
+  //       return (
+  //         notification.UserNotifications.length === 0 ||
+  //         !notification.UserNotifications[0].read
+  //       );
+  //     });
+  //     setUnreads(unread.length);
+  //   });
+  //   return () => {
+  //     socket.off("notificationRead");
+  //   };
+  // }, []);
 
   const handleLogOut = () => {
     localStorage.removeItem("selectedAddress");

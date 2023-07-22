@@ -9,7 +9,6 @@ const {
 const db = require("..//models");
 
 module.exports = {
-  // User
   getAllOrderByUser: async (req, res) => {
     try {
       const { id } = req.dataToken;
@@ -71,10 +70,12 @@ module.exports = {
       const totalPages = Math.ceil(totalOrders / limit);
       res.status(200).send({ orders: orders.rows, totalPages });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed get order by user!",
+      });
     }
   },
-  // Admin
+
   getAllOrders: async (req, res) => {
     try {
       let page = Number(req.query.page);
@@ -139,10 +140,12 @@ module.exports = {
       const totalPages = Math.ceil(totalOrders / limit);
       res.status(200).send({ orders: orders.rows, totalPages });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed get all order!",
+      });
     }
   },
-  // Admin
+
   getOrdersByWarehouse: async (req, res) => {
     try {
       const { warehouseId } = req.params;
@@ -208,10 +211,10 @@ module.exports = {
       res.status(200).send({ orders, totalPages });
     } catch (error) {
       console.error(error);
-      res.status(500).send({ error: "Internal server error" });
+      res.status(500).send({ error: "failed get order by warehouse!" });
     }
   },
-  // Admin (Order Detail)
+
   getOrderById: async (req, res) => {
     try {
       const { id } = req.params;
@@ -249,7 +252,9 @@ module.exports = {
 
       res.status(200).send({ orders });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed get order!",
+      });
     }
   },
 };

@@ -39,6 +39,7 @@ const AddCategory = (props) => {
         text: response.data.message,
         icon: "success",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       setCategor("");
     } catch (error) {
@@ -49,6 +50,7 @@ const AddCategory = (props) => {
         text: error.response.data.message,
         icon: "warning",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
     }
   };

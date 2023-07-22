@@ -7,7 +7,9 @@ module.exports = {
       const data = await Ekspedisi.findAll();
       res.status(200).send(data);
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed get user ekspedisi!",
+      });
     }
   },
   getAllEkspedisi: async (req, res) => {
@@ -25,7 +27,9 @@ module.exports = {
       });
       res.status(200).send({ data, totalPages });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed get all ekspedisi!",
+      });
     }
   },
   createEkspedisi: async (req, res) => {
@@ -38,7 +42,6 @@ module.exports = {
         data: ekspedisi,
       });
     } catch (error) {
-      console.error(error);
       res.status(500).send({
         message: "Failed to create Ekspedisi",
       });

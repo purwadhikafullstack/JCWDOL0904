@@ -109,6 +109,7 @@ const TabManageMutation = (props) => {
           {props.ReduxCategory?.map((el) => {
             return el.category !== "no catagory" ? (
               <TabPanel
+                key={el.id}
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
@@ -121,6 +122,7 @@ const TabManageMutation = (props) => {
           {props.ReduxCategory?.map((el) => {
             return el.category === "no catagory" ? (
               <TabPanel
+                key={el.id}
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"

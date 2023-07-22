@@ -7,7 +7,6 @@ const bcrypt = require("bcrypt");
 const { createToken } = require("..//lib/jwt");
 
 module.exports = {
-  // user verification
   userVerification: async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
@@ -61,11 +60,11 @@ module.exports = {
     } catch (err) {
       await transaction.rollback();
       res.status(400).send({
-        message: "Server Error!",
+        message: "fail verification!",
       });
     }
   },
-  // user login
+
   userLogin: async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -128,11 +127,10 @@ module.exports = {
         });
       }
     } catch (err) {
-      res.status(400).send({ message: "Server error" });
+      res.status(400).send({ message: "failed login!" });
     }
   },
 
-  // user forgot password
   requestReset: async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
@@ -178,12 +176,11 @@ module.exports = {
     } catch (err) {
       await transaction.rollback();
       res.status(400).send({
-        message: "Server Error!",
+        message: "Request reset fail!",
       });
     }
   },
 
-  // user update password
   updatePassword: async (req, res) => {
     const transaction = await sequelize.transaction();
     try {
@@ -240,7 +237,7 @@ module.exports = {
     } catch (err) {
       await transaction.rollback();
       res.status(400).send({
-        message: "Server Error!",
+        message: "update passwrod fail!",
       });
     }
   },
