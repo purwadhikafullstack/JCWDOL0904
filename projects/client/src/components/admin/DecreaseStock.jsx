@@ -40,8 +40,7 @@ const DecreaseStock = (props) => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "black",
       confirmButtonText: "Yes!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -76,6 +75,7 @@ const DecreaseStock = (props) => {
             text: "Subtrack success!",
             icon: "success",
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
           props.runFunction();
           setStock(0);
@@ -86,6 +86,7 @@ const DecreaseStock = (props) => {
             title: "Error!",
             text: error.response.data.message,
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
         }
       }

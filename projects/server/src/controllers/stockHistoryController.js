@@ -10,7 +10,7 @@ module.exports = {
       let page = parseInt(req.query.page);
       const limit = 8;
       const productSearch = req.query.productSearch || "";
-      if (productSearch) page = 0;
+
       let warehouse = parseInt(req.query.warehouse);
       let orderFilter = req.query.order;
       let sortFilter = req.query.sort;
@@ -59,8 +59,8 @@ module.exports = {
       const totalRow = result.count;
 
       const totalPage = Math.ceil(totalRow / limit);
-      if (totalPage <= page) {
-        page = Math.abs(totalPage - 1);
+      if (totalPage <= page && totalPage > 0) {
+        page = 0;
         result = await StockHistory.findAndCountAll({
           where: {
             ...(startDate && endDate

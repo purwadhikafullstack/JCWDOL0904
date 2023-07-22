@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 const Pagination = ({ totalPages, handlePageChange }) => {
   const [isSmallerThan] = useMediaQuery("(max-width: 767px)");
   return (
-    <div className="mt-6 flex justify-center mb-10">
+    <div className="mt-6 flex justify-center mb-20">
       <ReactPaginate
         breakLabel="..."
         nextLabel=" >"
