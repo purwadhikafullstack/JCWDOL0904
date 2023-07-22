@@ -18,13 +18,14 @@ const ProfileRender = (props) => {
             <div className="px-4 sm:px-6 lg:mx-auto lg:px-8">
               <div className="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center">
+                  <div className="flex items-center ">
                     <img
-                      className="hidden h-16 w-16 rounded-full sm:block"
+                      className="hidden h-16 w-16 rounded-full sm:block  "
                       src={`${process.env.REACT_APP_API_BASE}/${props.user_image}`}
                       alt={props.user_image}
                       onClick={() => props.inputFileRef.current.click()}
                     />
+
                     <input
                       type="file"
                       onChange={props.handleSubmitProfile}
@@ -36,7 +37,14 @@ const ProfileRender = (props) => {
                         <img
                           className="h-16 w-16 rounded-full sm:hidden"
                           src={`${process.env.REACT_APP_API_BASE}/${props.user_image}`}
-                          alt={`${process.env.REACT_APP_API_BASE}${props.user_image}`}
+                          alt={props.user_image}
+                          onClick={() => props.inputFileRef.current.click()}
+                        />
+                        <input
+                          type="file"
+                          onChange={props.handleSubmitProfile}
+                          ref={props.inputFileRef}
+                          hidden
                         />
                         <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
                           Welcome, {props.username}

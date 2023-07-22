@@ -168,12 +168,10 @@ module.exports = {
       }
 
       const totalOrders = await Transaction.count({
-        where: {
-          id_warehouse: warehouseId,
-        },
+        where: whereCondition,
       });
 
-      const orders = await Transaction.findAll({
+      const orders = await Transaction.findAndCountAll({
         include: [
           {
             model: TransactionItem,
@@ -208,7 +206,7 @@ module.exports = {
       });
 
       const totalPages = Math.ceil(totalOrders / limit);
-      res.status(200).send({ orders, totalPages });
+      res.status(200).send({ orders: orders.rows, totalPages });
     } catch (error) {
       console.error(error);
       res.status(500).send({ error: "failed get order by warehouse!" });

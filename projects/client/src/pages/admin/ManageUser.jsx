@@ -198,10 +198,12 @@ const ManageUser = () => {
           </div>
         </div>
         <div className="mt-6 flex justify-center">
-          <Pagination
-            totalPages={totalPages}
-            handlePageChange={handlePageChange}
-          />
+          {user.role === "admin" ? (
+            <Pagination
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+            />
+          ) : null}
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>

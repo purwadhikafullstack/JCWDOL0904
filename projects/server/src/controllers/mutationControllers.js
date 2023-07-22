@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("..//models");
 const { sequelize } = require("..//models");
 const product = db.Products;
@@ -382,8 +383,8 @@ module.exports = {
 
       const totalPage = Math.ceil(allCount / limit);
       if (parseInt(page) >= totalPage && totalPage > 0) {
-        page = totalPage - 1;
-        console.log("hai");
+        page = 0;
+
         result = await stockmovement.findAndCountAll({
           where: {
             status,
@@ -448,7 +449,7 @@ module.exports = {
       });
     } catch (error) {
       res.status(400).send({
-        message: "somethine went wrong!",
+        message: error.message,
       });
     }
   },

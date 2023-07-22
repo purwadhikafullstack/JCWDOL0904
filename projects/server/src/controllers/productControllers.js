@@ -203,7 +203,7 @@ module.exports = {
 
       const productData = await product.update(
         {
-          product_image: req.file.fileName,
+          product_image: req.file.filename,
         },
         {
           where: {
@@ -213,7 +213,6 @@ module.exports = {
       );
       res.status(200).send({
         message: "success",
-        fileName,
         productData,
       });
     } catch (error) {
@@ -396,7 +395,7 @@ module.exports = {
       const result = await product.create({
         product_name,
         price: parseInt(price),
-        product_image: req.file.fileName,
+        product_image: req.file.filename,
         id_category: parseInt(category),
         cpu_speed,
         cpu_type,
