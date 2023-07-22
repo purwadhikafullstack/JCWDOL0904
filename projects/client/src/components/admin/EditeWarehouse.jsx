@@ -68,6 +68,7 @@ const EditeWarehouse = (props) => {
         text: response.data.message,
         icon: "success",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       setProvincess([]);
       setCity([]);
@@ -81,6 +82,7 @@ const EditeWarehouse = (props) => {
         text: error.response.data.message,
         icon: "warning",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
     }
   };

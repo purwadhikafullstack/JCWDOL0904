@@ -120,6 +120,7 @@ export default function OrderDetailModal({
               onClick={handleOverlayClick}
             ></div>
             <OrderDetailModalRender
+              closeDetailModal={closeDetailModal}
               isClosing={isClosing}
               transactions={transactions}
             />

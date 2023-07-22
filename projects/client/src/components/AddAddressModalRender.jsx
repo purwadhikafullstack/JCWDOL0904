@@ -51,11 +51,11 @@ const AddAddressModalRender = ({
   };
   return (
     <div
-      className={`fixed mt-10 px-5 inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 transition-opacity duration-300 ease-in-out ${
+      className={`fixed py-72 mt-10 px-5 inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 transition-opacity duration-300 ease-in-out ${
         isOpen ? "" : "opacity-0 pointer-events-none"
       }`}
     >
-      <div className="border-t relative pt-5 bg-white px-4 sm:px-6 md:px-8 py-16 rounded-xl max-w-lg w-full  ">
+      <div className="border-t relative pt-5 bg-white px-4 sm:px-6 md:px-8 py-16 rounded-xl max-w-lg w-full">
         <XMarkIcon
           className="top-2 absolute right-2 h-6 w-6 text-gray-500 hover:text-gray-700 transition-colors duration-300 ease-in-out cursor-pointer"
           aria-hidden="true"

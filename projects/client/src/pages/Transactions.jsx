@@ -60,7 +60,7 @@ export const Transaction = () => {
   const cancelOrder = async (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "You want to cancel this order.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "black",
@@ -174,8 +174,8 @@ export const Transaction = () => {
         </div>
       </div>
 
-      <div className="bg-white max-w-4xl flex justify-center items-center m-auto min-h-screen">
-        <main className="pt-5 mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="bg-white max-w-4xl flex justify-center items-start m-auto min-h-screen">
+        <main className="pt-5 mx-auto flex max-w-7xl items-start justify-between px-4 sm:px-6 lg:px-8">
           <div className="m-auto max-w-full">
             <TransactionSections
               isCancelLoading={isCancelLoading}

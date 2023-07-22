@@ -12,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import "../pages/style/Homepage.css";
 
 const ProductsAdmin = ({ products }) => {
   const navigation = useNavigate();
@@ -25,7 +24,6 @@ const ProductsAdmin = ({ products }) => {
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      {/* <Grid templateColumns={['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)']}> */}
       <Grid
         templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)", "repeat(3, 1fr)"]}
       >
@@ -36,7 +34,12 @@ const ProductsAdmin = ({ products }) => {
               onClick={() => handleToDetail(el.id)}
               className="con-cards"
             >
-              <Card cursor="pointer" width="200px" height="330px">
+              <Card
+                cursor="pointer"
+                width="200px"
+                height="330px"
+                className="bg-white hover:bg-gray-200"
+              >
                 <CardBody>
                   <Image
                     src={`${process.env.REACT_APP_API_BASE}/${el.product_image}`}

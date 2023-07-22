@@ -184,16 +184,31 @@ module.exports = {
 
   getAllUserData: async (req, res) => {
     try {
-      const result = await User.findAll({
+      let page = req.query.page;
+      let email = req.query.email;
+      const limit = 8;
+
+      const result = await User.findAndCountAll({
+        where: {
+          email: {
+            [db.Sequelize.Op.like]: `%${email}%`,
+          },
+        },
         include: [
           {
             model: Warehouse,
           },
         ],
+        limit,
+        offset: page * limit,
       });
+
+      const totalPages = Math.ceil(result.count / limit);
+
       res.status(200).send({
         result,
         message: "Get all user data success",
+        totalPages,
       });
     } catch (error) {
       res.status(404).send({ message: "Fail to get user data" });

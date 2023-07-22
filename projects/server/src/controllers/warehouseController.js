@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("..//models");
 const User = db.User;
 const { Warehouse, Stocks, Products } = db;
@@ -76,8 +77,12 @@ module.exports = {
       ) {
         throw new Error("Please input all data!");
       }
-      const sameWarehouse = await Warehouse.findOne({ where: { warehouse } });
+      const sameWarehouse = await Warehouse.findOne({
+        paranoid: true,
+        where: { warehouse },
+      });
       const sameData = await Warehouse.findOne({
+        paranoid: true,
         where: {
           province,
           city,
@@ -146,6 +151,30 @@ module.exports = {
         return res.status(400).send({
           message: "please insert your data",
         });
+      }
+
+      const cekWarehouse = await Warehouse.findAll({
+        paranoid: true,
+        where: { warehouse, id: { [Op.ne]: id } },
+      });
+      const sameData = await Warehouse.findOne({
+        paranoid: true,
+        where: {
+          province,
+          city,
+          warehouse_city_id,
+          subdistrict,
+          zip,
+        },
+      });
+
+      if (cekWarehouse.length > 0) {
+        res.status(400).send({ message: "warehouse name already exist!" });
+      }
+      if (sameData) {
+        res
+          .status(400)
+          .send({ message: "Warehouse with exact same place already exist!!" });
       }
 
       const query = `${subdistrict}%20${city}%20${province}%20${zip}`;

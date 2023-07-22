@@ -75,7 +75,7 @@ export const AddAddressModalForm = ({
                 id="province"
                 name="province"
                 value={provincess.province}
-                className="block w-full border border-gray-300 h-7 pl-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="block w-full border  h-7 pl-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 onChange={handleProvinceChange}
               >
                 <option
