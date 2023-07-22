@@ -25,6 +25,7 @@ import ProfileDropDown from "./sideBar/ProfileDropDown";
 import SideBarPc from "./sideBar/sideBarPc";
 import SideBarMobile from "./sideBar/SideBarMobile";
 import MainSideBar from "./sideBar/MainSideBar";
+import { socket } from "../../App";
 
 const navigation = [
   {
@@ -126,22 +127,21 @@ export default function Sidebar(props) {
     );
   };
 
-  // useEffect(() => {
-  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
-  //   socket.on("notificationAdminRead", (updatedNotifications) => {
-  //     const unreadAdmin = updatedNotifications.filter((notification) => {
-  //       return (
-  //         notification.UserNotifications.length === 0 ||
-  //         !notification.UserNotifications[0].read
-  //       );
-  //     });
-  //     setAdminUnreads(unreadAdmin.length);
-  //   });
+  useEffect(() => {
+    socket.on("notificationAdminRead", (updatedNotifications) => {
+      const unreadAdmin = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      setAdminUnreads(unreadAdmin.length);
+    });
 
-  //   return () => {
-  //     socket.off("notificationAdminRead");
-  //   };
-  // }, []);
+    return () => {
+      socket.off("notificationAdminRead");
+    };
+  }, []);
 
   const notificationAdminUnread = useSelector(
     (state) => state.adminNotificationSlice.value.unreadAdmin

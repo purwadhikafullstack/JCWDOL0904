@@ -66,6 +66,10 @@ const SalesReport = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(itemValue);
+  }, [itemValue]);
+
   const fetchWarehouses = async () => {
     try {
       const response = await api.get("/warehouses/data");

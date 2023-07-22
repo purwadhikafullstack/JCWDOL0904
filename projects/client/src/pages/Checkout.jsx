@@ -197,7 +197,12 @@ export default function Checkout() {
         icon: "error",
       });
       dispatch(updateCart({ cart: [] }));
-      navigate("/");
+      if (
+        error.response.data.error ===
+        "A few items in your cart are currently unavailable. Please update your order."
+      ) {
+        navigate("/");
+      }
     } finally {
       setOngkirIsLoading(false);
     }

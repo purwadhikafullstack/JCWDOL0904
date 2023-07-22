@@ -140,7 +140,7 @@ module.exports = {
         for (const order of expiredOrders) {
           await order.update({ status: "Canceled" });
 
-          // io.emit("transaction-update", order.toJSON());
+          io.emit("transaction-update", order.toJSON());
 
           await createNotification(
             `Invoice ${order.invoice_number}`,

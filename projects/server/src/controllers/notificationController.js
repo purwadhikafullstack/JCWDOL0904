@@ -42,10 +42,10 @@ module.exports = {
       order: [["createdAt", "DESC"]],
     });
 
-    // io.emit("notification", updatedNotifications);
-    // io.emit("notificationRead", updatedNotifications);
-    // io.emit("notificationAdmin", updatedAdminNotifications);
-    // io.emit("notificationAdminRead", updatedAdminNotifications);
+    io.emit("notification", updatedNotifications);
+    io.emit("notificationRead", updatedNotifications);
+    io.emit("notificationAdmin", updatedAdminNotifications);
+    io.emit("notificationAdminRead", updatedAdminNotifications);
 
     return notification;
   },
@@ -54,6 +54,7 @@ module.exports = {
       const { id } = req.dataToken;
       const { page, invoiceNumber } = req.query;
       const limit = 9;
+
       let whereCondition = {};
       if (id) {
         whereCondition.id_user = id;
@@ -90,8 +91,8 @@ module.exports = {
         order: [["createdAt", "DESC"]],
       });
 
-      // io.emit("notification", notif);
-      // io.emit("notificationRead", read);
+      io.emit("notification", notif);
+      io.emit("notificationRead", read);
       res.status(200).send({ notif, totalPages });
     } catch (error) {
       res.status(400).send({
@@ -138,8 +139,8 @@ module.exports = {
         order: [["createdAt", "DESC"]],
       });
 
-      // io.emit("notificationAdmin", notif);
-      // io.emit("notificationAdminRead", read);
+      io.emit("notificationAdmin", notif);
+      io.emit("notificationAdminRead", read);
       res.status(200).send({ notif, totalPages });
     } catch (error) {
       console.error(error);

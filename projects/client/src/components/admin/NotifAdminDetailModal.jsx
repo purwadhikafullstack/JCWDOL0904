@@ -17,7 +17,7 @@ export default function NotifAdminDetailModal({
       const { notify } = response.data;
       setNotification(notify);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      console.log({ message: "failed to get notif detal" });
     }
   };
 
@@ -28,7 +28,7 @@ export default function NotifAdminDetailModal({
       });
       fetchNotification();
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      console.log({ message: "failed to create notif" });
     }
   };
 

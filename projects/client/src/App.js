@@ -12,6 +12,8 @@ import { AllCategory } from "./features/categorySlice";
 import { unreadAdminCount } from "./features/adminNotificationSlice";
 import { io } from "socket.io-client";
 import { unreadCount } from "./features/notificationSlice";
+const socket = io(`${process.env.REACT_APP_API_BASE}`);
+export { socket };
 
 function App() {
   const dispatch = useDispatch();

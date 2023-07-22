@@ -200,12 +200,10 @@ module.exports = {
       if (formatData[0] != "png") {
         throw new Error("Error, your format picture is not png!");
       }
-      const filePath = req.file.path;
-      const fileName = filePath.split("\\")[2];
 
       const productData = await product.update(
         {
-          product_image: fileName,
+          product_image: req.file.fileName,
         },
         {
           where: {
@@ -393,17 +391,12 @@ module.exports = {
 
       const formatData = product_image.split(".").reverse();
 
-      if (formatData[0] !== "png") {
-        throw new Error("Your picture is not png!");
-      }
-
-      const filePath = req.file.path;
-      const fileName = filePath.split("\\")[2];
+      if (formatData[0] !== "png") throw new Error("Your picture is not png!");
 
       const result = await product.create({
         product_name,
         price: parseInt(price),
-        product_image: fileName,
+        product_image: req.file.fileName,
         id_category: parseInt(category),
         cpu_speed,
         cpu_type,

@@ -24,7 +24,7 @@ export const AddAddressModalForm = ({
     <div>
       {" "}
       <form onSubmit={handleSubmit}>
-        <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+        <div className="mt-4 grid grid-cols-1 gap-y-0 sm:grid-cols-2 sm:gap-x-4">
           <div>
             <label
               htmlFor="recipient-name"
