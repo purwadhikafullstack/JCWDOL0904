@@ -47,6 +47,8 @@ const AllProductManage = ({ products, runFunction, category }) => {
         title: "Error!",
         text: error.response.data.message,
         icon: "error",
+        confirmButtonColor: "black",
+        confirmButtonText: "ok",
       });
     }
   };
@@ -131,12 +133,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
             </>
           ) : (
             <>
-              {/* <Tooltip
-            hasArrow
-            label="Click to update image"
-            bg="gray.300"
-            color="black"
-          > */}
               <Image
                 objectFit="cover"
                 width="40px"
@@ -146,13 +142,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
                 marginLeft="10px"
                 cursor="pointer"
               />
-              {/* </Tooltip> */}
-              {/* <Input
-            type="file"
-            hidden
-            ref={fileInputRef}
-            onChange={(e) => changePic(e.target.files[0], idProduct)}
-          ></Input> */}
             </>
           )}
         </td>
@@ -203,45 +192,6 @@ const AllProductManage = ({ products, runFunction, category }) => {
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
               <TableManageProduct allProduct={allProduct} />
-              {/* <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Image
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900  w-64"
-                    >
-                      Product Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Price
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      More
-                    </th>
-                    <th
-                      scope="col"
-                      className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {allProduct}
-                </tbody>
-              </table> */}
             </div>
           </div>
         </div>

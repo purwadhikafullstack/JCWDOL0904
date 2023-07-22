@@ -169,7 +169,7 @@ module.exports = {
         order.id_user,
         "admin"
       );
-      // io.emit("notification", notification);
+      io.emit("notification", notification);
 
       const timeoutDuration = order.expired_confirmed - new Date();
       setTimeout(async () => {
@@ -196,7 +196,7 @@ module.exports = {
         });
         for (const order of updatedOrder) {
           await order.update({ status: "Order Confirmed" });
-          // io.emit("orderConfirmed", order.toJSON());
+          io.emit("orderConfirmed", order.toJSON());
           await createNotification(
             `Invoice ${order.invoice_number} `,
             "Order has been received",

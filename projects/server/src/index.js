@@ -145,19 +145,19 @@ app.use((err, req, res, next) => {
 
 //#endregion
 
-// io.on("connection", (socket) => {
-//   console.log("A client connected");
+io.on("connection", (socket) => {
+  console.log("A client connected");
 
-//   // Handle client disconnection
-//   socket.on("disconnect", () => {
-//     console.log("A client disconnected");
-//   });
+  //   // Handle client disconnection
+  socket.on("disconnect", () => {
+    console.log("A client disconnected");
+  });
 
-//   // Listen for transaction updates
-//   socket.on("transaction-update", (updatedTransaction) => {
-//     console.log("Received transaction update:", updatedTransaction);
-//   });
-// });
+  //   // Listen for transaction updates
+  socket.on("transaction-update", (updatedTransaction) => {
+    console.log("Received transaction update:", updatedTransaction);
+  });
+});
 
 server.listen(PORT, (err) => {
   if (err) {

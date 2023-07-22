@@ -20,8 +20,13 @@ import { allUserData } from "../../features/allUserSlice";
 import AddAdmin from "../../components/admin/AddAdmin";
 import EditWarehouse from "../../components/admin/EditAdminWarehouseModal";
 import Alert from "../../components/SwallAlert";
+import Pagination from "../../components/admin/Pagination";
+import EmailSearch from "../../components/admin/EmailSearch";
 
 const ManageUser = () => {
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [email, setEmailValue] = useState("");
   const value = useSelector((state) => state.allUserSlice.value);
   const user = useSelector((state) => state.userSlice);
   const dispatch = useDispatch();
@@ -29,9 +34,14 @@ const ManageUser = () => {
   const url = "user/data/all";
   const getUserData = async () => {
     try {
-      await api.get(url).then((result) => {
-        dispatch(allUserData(result.data.result));
+      const response = await api.get(url, {
+        params: {
+          page: currentPage,
+          email: email,
+        },
       });
+      dispatch(allUserData(response.data.result.rows));
+      setTotalPages(response.data.totalPages);
     } catch (err) {
       Alert({
         title: "Failed!",
@@ -95,18 +105,20 @@ const ManageUser = () => {
   };
   useEffect(() => {
     getUserData();
-  }, []);
-  let count = 0;
+  }, [currentPage, email]);
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+  const handleSearch = (e) => {
+    setEmailValue(e.target.value);
+    setCurrentPage(0);
+  };
   let allUser = null;
   if (user.role === "admin") {
     allUser = value.map((el) => {
       if (!el.is_deleted) {
-        count++;
         return (
           <tr key={el.id}>
-            <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
-              {count}
-            </td>
             <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
               {el.email}
             </td>
@@ -159,13 +171,11 @@ const ManageUser = () => {
       <div className="mt-6 flex flex-col justify-end xl">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            <EmailSearch handleSearch={handleSearch} invoiceNumber={email} />
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                      No
-                    </th>
                     <th className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Email
                     </th>
@@ -186,6 +196,12 @@ const ManageUser = () => {
               </table>
             </div>
           </div>
+        </div>
+        <div className="mt-6 flex justify-center">
+          <Pagination
+            totalPages={totalPages}
+            handlePageChange={handlePageChange}
+          />
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={onClose}>

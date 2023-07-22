@@ -10,6 +10,7 @@ import { unreadAdminCount } from "../../features/adminNotificationSlice";
 import NotifAdminDetailModal from "../../components/admin/NotifAdminDetailModal";
 import Pagination from "../../components/admin/Pagination";
 import OrderSearch from "../../components/admin/OrderSearch";
+import { socket } from "../../App";
 
 export default function AdminNotification() {
   const [notifications, setNotifications] = useState([]);
@@ -21,30 +22,28 @@ export default function AdminNotification() {
 
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
-  //   socket.on("notificationAdmin", (updatedNotifications) => {
-  //     setNotifications(updatedNotifications);
-  //   });
-  //   return () => {
-  //     socket.off("notificationAdmin");
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
-  //   socket.on("notificationAdminRead", (updatedNotifications) => {
-  //     const unreadAdmin = updatedNotifications.filter((notification) => {
-  //       return (
-  //         notification.UserNotifications.length === 0 ||
-  //         !notification.UserNotifications[0].read
-  //       );
-  //     });
-  //     dispatch(unreadAdminCount({ unreadAdmin: unreadAdmin.length }));
-  //   });
-  //   return () => {
-  //     socket.off("notificationAdminRead");
-  //   };
-  // }, []);
+  useEffect(() => {
+    socket.on("notificationAdmin", (updatedNotifications) => {
+      setNotifications(updatedNotifications);
+    });
+    return () => {
+      socket.off("notificationAdmin");
+    };
+  }, []);
+  useEffect(() => {
+    socket.on("notificationAdminRead", (updatedNotifications) => {
+      const unreadAdmin = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      dispatch(unreadAdminCount({ unreadAdmin: unreadAdmin.length }));
+    });
+    return () => {
+      socket.off("notificationAdminRead");
+    };
+  }, []);
 
   useEffect(() => {
     fetchNotification();
@@ -61,7 +60,7 @@ export default function AdminNotification() {
       setNotifications(response.data.notif);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      console.log({ message: "failed to get notification!" });
     }
   };
   const handleSearch = (e) => {

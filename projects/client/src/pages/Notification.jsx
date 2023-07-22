@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import Pagination from "../components/admin/Pagination";
 import OrderSearch from "../components/admin/OrderSearch";
 import { unreadCount } from "../features/notificationSlice";
-import io from "socket.io-client";
+import { socket } from "../App";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
@@ -66,30 +66,28 @@ export default function Notification() {
     setIsModalOpen(false);
   };
 
-  // useEffect(() => {
-  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
-  //   socket.on("notification", (updatedNotifications) => {
-  //     setNotifications(updatedNotifications);
-  //   });
-  //   return () => {
-  //     socket.off("notification");
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
-  //   socket.on("notificationRead", (updatedNotifications) => {
-  //     const unread = updatedNotifications.filter((notification) => {
-  //       return (
-  //         notification.UserNotifications.length === 0 ||
-  //         !notification.UserNotifications[0].read
-  //       );
-  //     });
-  //     dispatch(unreadCount({ unread: unread.length }));
-  //   });
-  //   return () => {
-  //     socket.off("notificationRead");
-  //   };
-  // }, []);
+  useEffect(() => {
+    socket.on("notification", (updatedNotifications) => {
+      setNotifications(updatedNotifications);
+    });
+    return () => {
+      socket.off("notification");
+    };
+  }, []);
+  useEffect(() => {
+    socket.on("notificationRead", (updatedNotifications) => {
+      const unread = updatedNotifications.filter((notification) => {
+        return (
+          notification.UserNotifications.length === 0 ||
+          !notification.UserNotifications[0].read
+        );
+      });
+      dispatch(unreadCount({ unread: unread.length }));
+    });
+    return () => {
+      socket.off("notificationRead");
+    };
+  }, []);
 
   return (
     <div className="pt-24 cursor-default">

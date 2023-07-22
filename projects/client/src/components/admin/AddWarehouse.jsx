@@ -77,6 +77,7 @@ const AddWarehouse = (props) => {
     } catch (error) {
       onClose();
       setLoad(false);
+      console.log(error);
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,

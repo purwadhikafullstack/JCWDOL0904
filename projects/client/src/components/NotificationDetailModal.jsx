@@ -27,10 +27,20 @@ export default function NotificationDetailModal({
 
   const createReadNotification = async () => {
     try {
-      const response = await api.post(`/notification/admin`, {
-        notificationId: selectedNotification,
-        userId: 2,
-      });
+      const token = JSON.parse(localStorage.getItem("auth"));
+      const response = await api.post(
+        `/notification/`,
+        {
+          notificationId: selectedNotification,
+        },
+        {
+          headers: {
+            Authorization: token,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
       fetchNotification();
     } catch (error) {
       console.error(error);

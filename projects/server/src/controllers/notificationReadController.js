@@ -3,12 +3,13 @@ const { UserNotification, Notification } = require("..//models");
 module.exports = {
   readUserNotification: async (req, res) => {
     try {
-      const { userId, notificationId } = req.body;
+      const { notificationId } = req.body;
+      const { id } = req.dataToken;
 
       const existingUserNotification = await UserNotification.findOne({
         where: {
           read: true,
-          id_user: userId,
+          id_user: id,
           id_notification: notificationId,
         },
         include: [
@@ -34,7 +35,7 @@ module.exports = {
         },
         {
           where: {
-            id_user: userId,
+            id_user: id,
             id_notification: notificationId,
           },
           include: [
@@ -49,7 +50,7 @@ module.exports = {
       );
 
       const whereCondition = {
-        id_user: userId,
+        id_user: id,
         from: "admin",
       };
       const notif = await Notification.findAll({
@@ -72,8 +73,8 @@ module.exports = {
         ],
         order: [["createdAt", "DESC"]],
       });
-      // io.emit("notification", notif);
-      // io.emit("notificationRead", read);
+      io.emit("notification", notif);
+      io.emit("notificationRead", read);
       res.status(200).send({ message: `Read Notification Success` });
     } catch (error) {
       res.status(400).send({
@@ -135,7 +136,7 @@ module.exports = {
         order: [["createdAt", "DESC"]],
       });
 
-      // io.emit("notificationAdminRead", read);
+      io.emit("notificationAdminRead", read);
       res.status(200).send({ message: `Read Notification Success` });
     } catch (error) {
       res.status(400).send({

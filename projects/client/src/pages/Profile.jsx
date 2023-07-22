@@ -36,8 +36,10 @@ export default function Profile() {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log(response);
       userData();
     } catch (error) {
+      console.log(error);
       Alert({
         title: "Failed!",
         text: error.response.data.message,

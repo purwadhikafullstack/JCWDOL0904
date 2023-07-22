@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import OrderListRender from "../../components/admin/OrderListRender";
 import Swal from "sweetalert2";
+import { socket } from "../../App";
 
 export default function OrderList() {
   const [transactionByWarehouse, setTransactionByWarehouse] = useState([]);
@@ -128,41 +129,39 @@ export default function OrderList() {
     });
   };
 
-  // useEffect(() => {
-  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
-  //   socket.on("transaction-update", (updatedTransaction) => {
-  //     setTransactionByWarehouse((prevTransactions) => {
-  //       const updatedTransactions = prevTransactions.map((transaction) => {
-  //         if (transaction.id === updatedTransaction.id) {
-  //           return updatedTransaction;
-  //         }
-  //         return transaction;
-  //       });
-  //       return updatedTransactions;
-  //     });
-  //   });
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
+  useEffect(() => {
+    socket.on("transaction-update", (updatedTransaction) => {
+      setTransactionByWarehouse((prevTransactions) => {
+        const updatedTransactions = prevTransactions.map((transaction) => {
+          if (transaction.id === updatedTransaction.id) {
+            return updatedTransaction;
+          }
+          return transaction;
+        });
+        return updatedTransactions;
+      });
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
-  // useEffect(() => {
-  //   const socket = io(`${process.env.REACT_APP_API_BASE}`);
-  //   socket.on("orderConfirmed", (updatedOrder) => {
-  //     setTransactionByWarehouse((prevTransactions) => {
-  //       const updatedTransactions = prevTransactions.map((transaction) => {
-  //         if (transaction.id === updatedOrder.id) {
-  //           return updatedOrder;
-  //         }
-  //         return transaction;
-  //       });
-  //       return updatedTransactions;
-  //     });
-  //   });
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
+  useEffect(() => {
+    socket.on("orderConfirmed", (updatedOrder) => {
+      setTransactionByWarehouse((prevTransactions) => {
+        const updatedTransactions = prevTransactions.map((transaction) => {
+          if (transaction.id === updatedOrder.id) {
+            return updatedOrder;
+          }
+          return transaction;
+        });
+        return updatedTransactions;
+      });
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <OrderListRender

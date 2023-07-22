@@ -51,7 +51,7 @@ const AddAddressModalRender = ({
   };
   return (
     <div
-      className={`absolute mt-10 px-5 inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 transition-opacity duration-300 ease-in-out ${
+      className={`fixed py-72 mt-10 px-5 inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 transition-opacity duration-300 ease-in-out ${
         isOpen ? "" : "opacity-0 pointer-events-none"
       }`}
     >

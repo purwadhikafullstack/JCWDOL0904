@@ -47,8 +47,7 @@ const ManageWarehouse = () => {
       text: "Did you already does a migration before deleting this warehouse!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "black",
       confirmButtonText: "Yes!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -78,6 +77,7 @@ const ManageWarehouse = () => {
             text: error.response.data.message,
             icon: "error",
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
         }
       }

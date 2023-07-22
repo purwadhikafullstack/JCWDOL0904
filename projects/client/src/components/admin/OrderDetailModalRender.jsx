@@ -1,15 +1,25 @@
-import {TruckIcon} from "@heroicons/react/20/solid";
+import { TruckIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import moment from "moment";
 
-export default function OrderDetailModalRender({isClosing, transactions}) {
+export default function OrderDetailModalRender({
+  isClosing,
+  transactions,
+  closeDetailModal,
+}) {
   return (
     <>
       <main
-        className={`modal-content bg-white max-h-[600px] overflow-y-auto rounded-xl w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl sm:p-6 md:p-8 ${
+        className={`modal-content bg-white max-h-[600px] px-5 py-5 overflow-y-auto rounded-xl w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl sm:p-6 md:p-8 ${
           isClosing ? "closing" : ""
-        }`}>
+        }`}
+      >
         {transactions.map((transaction) => (
           <div key={transaction?.id} className="space-y-4">
+            <XMarkIcon
+              className="top-2 absolute right-2 h-6 w-6 text-gray-500 hover:text-gray-700 transition-colors duration-300 ease-in-out cursor-pointer"
+              aria-hidden="true"
+              onClick={closeDetailModal}
+            />
             <div>
               <p className="mt-2 text-2xl font-bold tracking-tight">
                 Order detail
@@ -23,11 +33,13 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
 
             <section
               aria-labelledby="order-heading"
-              className="border-t border-gray-200">
+              className="border-t border-gray-200"
+            >
               {transaction.TransactionItems.map((transactionItem) => (
                 <div
                   key={transactionItem.id}
-                  className="flex flex-col border-b border-gray-200 py-5">
+                  className="flex flex-col border-b border-gray-200 py-5"
+                >
                   <div>
                     <h4 className="font-medium text-gray-900">
                       <a href={transactionItem.Product?.product_name}>
@@ -88,8 +100,7 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
                           {transaction.courier ? transaction?.courier : null}
                         </span>
                       </p>
-                      <p className="text-gray-600">2–5 business days</p>
-                      <dd className="text-gray-600">
+                      <dd className="text-gray-600 mt-1">
                         Rp. {transaction.ongkir?.toLocaleString("id-ID")}
                       </dd>
                     </dd>
@@ -108,6 +119,30 @@ export default function OrderDetailModalRender({isClosing, transactions}) {
           </div>
         ))}
       </main>
+
+      <style jsx>{`
+        /* CSS media queries for responsiveness */
+        @media (max-width: 640px) {
+          /* Mobile styles */
+          .modal-content {
+            /* Add your mobile-specific styles here */
+          }
+        }
+
+        @media (min-width: 641px) and (max-width: 1024px) {
+          /* Tablet styles */
+          .modal-content {
+            /* Add your tablet-specific styles here */
+          }
+        }
+
+        @media (min-width: 1025px) {
+          /* Notebook styles */
+          .modal-content {
+            /* Add your notebook-specific styles here */
+          }
+        }
+      `}</style>
     </>
   );
 }

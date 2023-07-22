@@ -35,24 +35,40 @@ module.exports = {
       if (adminWarehouse) {
         idWarehouse = adminWarehouse;
       }
+
       let result = null;
       result = await TransactionItem.findAndCountAll({
         where: {
           ...(selectedCategory ? { category: selectedCategory } : {}),
-          ...(startDate && endDate
-            ? {
-                createdAt: {
-                  [Op.between]: [startDate, endDate],
-                },
-              }
-            : {}),
         },
         include: [
           {
             model: Transaction,
+
             ...(idWarehouse
-              ? { where: { id_warehouse: parseInt(idWarehouse) } }
-              : {}),
+              ? {
+                  where: {
+                    ...(startDate && endDate
+                      ? {
+                          createdAt: {
+                            [Op.between]: [startDate, endDate],
+                          },
+                        }
+                      : {}),
+                    id_warehouse: parseInt(idWarehouse),
+                  },
+                }
+              : {
+                  where: {
+                    ...(startDate && endDate
+                      ? {
+                          createdAt: {
+                            [Op.between]: [startDate, endDate],
+                          },
+                        }
+                      : {}),
+                  },
+                }),
             include: {
               model: Warehouse,
               paranoid: false,
@@ -76,7 +92,7 @@ module.exports = {
         order: [[orderFilter, sortFilter]],
         offset: page * limit,
       });
-
+      console.log(startDate, endDate);
       const totalPage = Math.ceil(result.count / limit);
       if (parseInt(page) >= totalPage) {
         page = totalPage - 1;
@@ -86,20 +102,34 @@ module.exports = {
         result = await TransactionItem.findAndCountAll({
           where: {
             ...(selectedCategory ? { category: selectedCategory } : {}),
-            ...(startDate && endDate
-              ? {
-                  createdAt: {
-                    [Op.between]: [startDate, endDate],
-                  },
-                }
-              : {}),
           },
           include: [
             {
               model: Transaction,
               ...(idWarehouse
-                ? { where: { id_warehouse: parseInt(idWarehouse) } }
-                : {}),
+                ? {
+                    where: {
+                      ...(startDate && endDate
+                        ? {
+                            createdAt: {
+                              [Op.between]: [startDate, endDate],
+                            },
+                          }
+                        : {}),
+                      id_warehouse: parseInt(idWarehouse),
+                    },
+                  }
+                : {
+                    where: {
+                      ...(startDate && endDate
+                        ? {
+                            createdAt: {
+                              [Op.between]: [startDate, endDate],
+                            },
+                          }
+                        : {}),
+                    },
+                  }),
               include: {
                 model: Warehouse,
                 paranoid: false,

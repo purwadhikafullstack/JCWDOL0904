@@ -121,9 +121,18 @@ const Cart = () => {
       }
     });
   };
-  const handleContinueToCheckout = () => {
-    removeDeletedCarts();
-    navigate("/checkout");
+  const handleContinueToCheckout = (e) => {
+    e.preventDefault();
+    if (cartItems.length == 0) {
+      Alert({
+        title: "Cart is Empty",
+        text: "You cannot continue to checkout as your cart is empty.",
+        icon: "warning",
+      });
+    } else {
+      removeDeletedCarts();
+      navigate("/checkout");
+    }
   };
   return (
     <div className="bg-white min-h-[700px] pt-10">
