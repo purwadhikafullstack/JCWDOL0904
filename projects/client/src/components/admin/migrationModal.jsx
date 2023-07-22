@@ -31,17 +31,30 @@ const MigrationModal = (props) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           const response = await api.post("/migration/add", {
             warehouse_sender_id: parseInt(warehouseId),
             warehouse_receive_id: parseInt(warehouseIdReceive),
           });
           props.runFunction();
+          Swal.close();
           Swal.fire("Confirmed!", "Mutation has been confirmed.", "success");
         } catch (error) {
+          Swal.close();
           Swal.fire({
             title: "Error!",
             text: error.response.data.message,
             icon: "error",
+            confirmButtonColor: "black",
+            confirmButtonText: "Ok",
           });
         }
       }

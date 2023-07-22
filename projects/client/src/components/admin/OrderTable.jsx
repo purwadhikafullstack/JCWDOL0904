@@ -3,21 +3,21 @@ import { api } from "../../API/api";
 import Alert from "../SwallAlert";
 import Swal from "sweetalert2";
 import { OrderTableRender } from "./OrderTableRender";
-import moment from "moment";
-import CancelOrderButton from "./CancelOrderButton";
 
 const OrderTable = ({
   transactionByWarehouse,
   handleViewPaymentProof,
   handleViewOrderDetail,
-  handleRejectTransaction,
   fetchTransactions,
   user,
   handleCantelOrder,
+  isLoad,
+  setIsLoad,
 }) => {
   const [isConfirmLoading, setIsConfirmLoading] = useState(false);
   const handleSendTransaction = async (transactionId) => {
     try {
+      setIsLoad(true);
       let response = await api.post(`/order/send/${transactionId}`);
       Alert({
         title: "Success!",
@@ -25,7 +25,9 @@ const OrderTable = ({
         icon: "success",
       });
       fetchTransactions();
+      setIsLoad(false);
     } catch (error) {
+      setIsLoad(false);
       Alert({
         title: "Failed!",
         text: error.response.data.message,
@@ -76,13 +78,13 @@ const OrderTable = ({
       transactionByWarehouse={transactionByWarehouse}
       handleViewPaymentProof={handleViewPaymentProof}
       handleViewOrderDetail={handleViewOrderDetail}
-      handleRejectTransaction={handleRejectTransaction}
       fetchTransactions={fetchTransactions}
       user={user}
       handleConfirmTransaction={handleConfirmTransaction}
       handleSendTransaction={handleSendTransaction}
       handleCantelOrder={handleCantelOrder}
       isConfirmLoading={isConfirmLoading}
+      isLoad={isLoad}
     />
   );
 };

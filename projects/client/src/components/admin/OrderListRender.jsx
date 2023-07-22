@@ -18,7 +18,6 @@ export default function OrderListRender({
   handleStatusChange,
   handleViewPaymentProof,
   handleViewOrderDetail,
-  handleRejectTransaction,
   fetchTransactions,
   user,
   totalPages,
@@ -29,6 +28,8 @@ export default function OrderListRender({
   isDetailModalOpen,
   closeDetailModal,
   handleCantelOrder,
+  isLoad,
+  setIsLoad,
 }) {
   return (
     <>
@@ -69,10 +70,11 @@ export default function OrderListRender({
                   transactionByWarehouse={transactionByWarehouse}
                   handleViewPaymentProof={handleViewPaymentProof}
                   handleViewOrderDetail={handleViewOrderDetail}
-                  handleRejectTransaction={handleRejectTransaction}
                   fetchTransactions={fetchTransactions}
                   user={user}
                   handleCantelOrder={handleCantelOrder}
+                  isLoad={isLoad}
+                  setIsLoad={setIsLoad}
                 />
               </div>
             </div>

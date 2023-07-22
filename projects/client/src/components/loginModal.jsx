@@ -12,7 +12,7 @@ import {
   Input,
   InputRightElement,
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { api } from "../API/api";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -24,6 +24,7 @@ import { login } from "../features/userSlice";
 const LoginModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const url = "/auth/login";
   let navigate = useNavigate();
   let dispatch = useDispatch();
@@ -35,12 +36,16 @@ const LoginModal = () => {
   });
   const loginAccount = async (inputEmail, inputPassword) => {
     try {
+      setLoading(true);
       let response = await api.post(url, {
         email: inputEmail,
         password: inputPassword,
       });
       if (response.status === 200) {
         const authData = response.data.result;
+        dispatch(login(response.data.data));
+        localStorage.setItem("auth", JSON.stringify(authData));
+        onClose();
         Swal.fire({
           title: "Success",
           text: response.data.message,
@@ -48,10 +53,8 @@ const LoginModal = () => {
           confirmButtonText: "Ok",
           confirmButtonColor: "black",
         });
-        localStorage.setItem("auth", JSON.stringify(authData));
-        dispatch(login(response.data.data));
-        onClose();
       }
+      setLoading(false);
     } catch (err) {
       Swal.fire({
         title: "Error!",
@@ -61,6 +64,7 @@ const LoginModal = () => {
         confirmButtonColor: "black",
       });
       onClose();
+      setLoading(false);
     }
   };
   const togglePasswordVisibility = () => {
@@ -166,10 +170,11 @@ const LoginModal = () => {
                     </button>
                   </p>
                   <button
+                    disabled={loading}
                     type="submit"
                     className="w-full text-white bg-black hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 mt-2 mb-2 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                   >
-                    Log in
+                    {loading ? "Logging in..." : "Login"}
                   </button>
                 </Form>
               )}

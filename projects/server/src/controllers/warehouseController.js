@@ -66,6 +66,16 @@ module.exports = {
       const { warehouse, province, city, warehouse_city_id, subdistrict, zip } =
         req.body;
 
+      if (
+        !warehouse ||
+        !province ||
+        !city ||
+        !warehouse_city_id ||
+        !subdistrict ||
+        !zip
+      ) {
+        throw new Error("Please input all data!");
+      }
       const sameWarehouse = await Warehouse.findOne({ where: { warehouse } });
       const sameData = await Warehouse.findOne({
         where: {
@@ -105,7 +115,6 @@ module.exports = {
         throw new Error("Geocoding error");
       }
     } catch (error) {
-      console.error(error);
       res.status(400).send({
         message: error.message,
       });
@@ -165,14 +174,12 @@ module.exports = {
           }
         );
 
-        res.status(201).json(newWarehouse);
+        res.status(201).send({ newWarehouse });
       } else {
-        console.error("No results found");
-        res.status(500).json({ error: "Geocoding error" });
+        res.status(500).send({ message: "Geocoding error" });
       }
     } catch {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).send({ message: "failed edite warehouse" });
     }
   },
 
@@ -256,7 +263,9 @@ module.exports = {
         findUser,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "Update admin warehouse fail!",
+      });
     }
   },
 };

@@ -137,8 +137,9 @@ export const CartItem = ({ item, updateCartProduct, deleteCartItem }) => {
                 aria-hidden="true"
               />
               <span>
-                Subtotal: Rp{" "}
-                {subtotal == "NaN" ? null : subtotal.toLocaleString("id-ID")}
+                {isNaN(subtotal)
+                  ? null
+                  : `Subtotal: Rp ${subtotal.toLocaleString("id-ID")}`}
               </span>
             </p>
           </div>

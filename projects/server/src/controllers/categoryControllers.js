@@ -49,7 +49,7 @@ module.exports = {
       });
     } catch (error) {
       res.status(400).send({
-        message: "Something went wrong",
+        message: "failed get all category!",
       });
     }
   },
@@ -115,7 +115,7 @@ module.exports = {
       });
     } catch (error) {
       res.status(400).send({
-        message: "Something went wrong",
+        message: "failed delete category!",
       });
     }
   },
@@ -149,6 +149,10 @@ module.exports = {
       res.status(200).send({
         result,
       });
-    } catch (error) {}
+    } catch (error) {
+      res.status(400).send({
+        message: "failed edite category!",
+      });
+    }
   },
 };

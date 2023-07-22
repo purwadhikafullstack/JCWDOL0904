@@ -28,7 +28,9 @@ module.exports = {
         id_warehouse,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "failed initial stock!",
+      });
     }
   },
 };

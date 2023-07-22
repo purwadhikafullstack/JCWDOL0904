@@ -1,4 +1,4 @@
-import { React, useRef } from "react";
+import { React } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { api } from "../API/api";
@@ -23,6 +23,7 @@ export const Register = () => {
         confirmButtonText: "Ok",
       });
     } catch (err) {
+      console.log(err);
       Swal.fire({
         title: "Error!",
         text: err.response.data.message,

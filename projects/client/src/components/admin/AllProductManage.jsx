@@ -21,6 +21,15 @@ const AllProductManage = ({ products, runFunction, category }) => {
 
   const changePic = async (file, id) => {
     try {
+      Swal.fire({
+        title: "Loading...",
+        text: "Please wait a sec...",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       const formData = new FormData();
       formData.append("file", file);
       formData.append("id", id);
@@ -30,8 +39,10 @@ const AllProductManage = ({ products, runFunction, category }) => {
           "Content-Type": "multipart/form-data",
         },
       });
+      Swal.close();
       runFunction();
     } catch (error) {
+      Swal.close();
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
@@ -52,20 +63,33 @@ const AllProductManage = ({ products, runFunction, category }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           const response = await api.delete(`/product/delete/${id}`);
+          Swal.close();
           runFunction();
           Swal.fire({
             title: "Success",
             text: response.data.message,
             icon: "success",
             confirmButtonText: "Ok",
+            cancelButtonColor: "black",
           });
         } catch (error) {
+          Swal.close();
           Swal.fire({
             title: "Error!",
             text: error.response.data.message,
             icon: "warning",
             confirmButtonText: "Ok",
+            cancelButtonColor: "black",
           });
         }
       }
@@ -76,32 +100,61 @@ const AllProductManage = ({ products, runFunction, category }) => {
     return (
       <tr key={el.id}>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-          <Tooltip
+          {role === "admin" ? (
+            <>
+              <Tooltip
+                hasArrow
+                label="Click to update image"
+                bg="gray.300"
+                color="black"
+              >
+                <Image
+                  objectFit="cover"
+                  width="40px"
+                  height="40px"
+                  src={`${process.env.REACT_APP_API_BASE}/${el.product_image}`}
+                  alt="Caffe Latte"
+                  marginLeft="10px"
+                  cursor="pointer"
+                  onClick={() => {
+                    imageIsCLicked();
+                    setIdPorduct(el.id);
+                  }}
+                />
+              </Tooltip>
+              <Input
+                type="file"
+                hidden
+                ref={fileInputRef}
+                onChange={(e) => changePic(e.target.files[0], idProduct)}
+              ></Input>
+            </>
+          ) : (
+            <>
+              {/* <Tooltip
             hasArrow
             label="Click to update image"
             bg="gray.300"
             color="black"
-          >
-            <Image
-              objectFit="cover"
-              width="40px"
-              height="40px"
-              src={`${process.env.REACT_APP_API_BASE}/${el.product_image}`}
-              alt="Caffe Latte"
-              marginLeft="10px"
-              cursor="pointer"
-              onClick={() => {
-                imageIsCLicked();
-                setIdPorduct(el.id);
-              }}
-            />
-          </Tooltip>
-          <Input
+          > */}
+              <Image
+                objectFit="cover"
+                width="40px"
+                height="40px"
+                src={`${process.env.REACT_APP_API_BASE}/${el.product_image}`}
+                alt="Caffe Latte"
+                marginLeft="10px"
+                cursor="pointer"
+              />
+              {/* </Tooltip> */}
+              {/* <Input
             type="file"
             hidden
             ref={fileInputRef}
             onChange={(e) => changePic(e.target.files[0], idProduct)}
-          ></Input>
+          ></Input> */}
+            </>
+          )}
         </td>
         <td className="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
           {el.product_name}

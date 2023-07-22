@@ -18,12 +18,13 @@ import {
 import { api } from "../../API/api";
 import Swal from "sweetalert2";
 
-const AddAdmin = () => {
+const AddAdmin = (props) => {
   const [email, setEmail] = useState("");
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isLoad, setLoad] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -32,6 +33,7 @@ const AddAdmin = () => {
   const handleSubmit = async () => {
     const token = JSON.parse(localStorage.getItem("auth"));
     try {
+      setIsLoading(true);
       let response = await api.post(
         url,
         {
@@ -48,6 +50,8 @@ const AddAdmin = () => {
           },
         }
       );
+      props.getUserData();
+      setIsLoading(false);
       onClose();
       setLoad(false);
       Swal.fire({
@@ -55,19 +59,22 @@ const AddAdmin = () => {
         text: response.data.message,
         icon: "success",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
       setEmail("");
       setFullname("");
       setUsername("");
       setPassword("");
     } catch (error) {
+      setIsLoading(false);
       onClose();
       setLoad(false);
       Swal.fire({
         title: "Error!",
         text: error.response.data.message,
-        icon: "warning",
+        icon: "error",
         confirmButtonText: "Ok",
+        confirmButtonColor: "black",
       });
     }
   };
@@ -134,6 +141,7 @@ const AddAdmin = () => {
               <Button variant="ghost" isLoading />
             ) : (
               <Button
+                isLoading={isLoading}
                 variant="ghost"
                 backgroundColor="black"
                 color="white"

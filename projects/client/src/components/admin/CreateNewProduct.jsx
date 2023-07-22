@@ -26,6 +26,15 @@ const CreateNewProduct = (props) => {
   const { role } = useSelector((state) => state.userSlice);
   const handleSubmit = async () => {
     try {
+      Swal.fire({
+        title: "Loading...",
+        text: "Please wait a sec...",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       if (!file) {
         return Alert({
           title: "Failed!",
@@ -57,17 +66,20 @@ const CreateNewProduct = (props) => {
         const response = await api.post("/product/add", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        Swal.close();
         Swal.fire({
           title: "Success",
           text: "Product has been created!",
           icon: "success",
           confirmButtonText: "Ok",
+          confirmButtonColor: "black",
         });
         setProduct_image(null);
         initialStock(response.data.result.id);
         props.getProducts();
       }
     } catch (error) {
+      Swal.close();
       Alert({
         title: "Failed!",
         text: error.response.data.message,

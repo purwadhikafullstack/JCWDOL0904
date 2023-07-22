@@ -54,7 +54,6 @@ module.exports = {
         .status(200)
         .send({ message: "Product added to cart successfully" });
     } catch (error) {
-      console.error(error);
       return res.status(500).send({ error: "Unable to add product to cart" });
     }
   },
@@ -114,7 +113,6 @@ module.exports = {
 
       return res.status(404).send({ message: "Cart item not found" });
     } catch (error) {
-      console.error(error);
       return res.status(500).send({ error: "Unable to update cart item" });
     }
   },
@@ -161,7 +159,6 @@ module.exports = {
 
       return res.status(404).send({ message: "Cart item not found" });
     } catch (error) {
-      console.error(error);
       return res.status(500).send({ error: "Unable to delete cart item" });
     }
   },
@@ -187,7 +184,6 @@ module.exports = {
 
       return res.status(400).send({ message: "Cart items not found" });
     } catch (error) {
-      console.error(error);
       return res.status(500).send({ error: "Unable to remove cart items" });
     }
   },

@@ -60,24 +60,36 @@ const ManageCategory = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           const response = await api.delete(`category/delete/${id}`, {
             id,
           });
+          Swal.close();
           Swal.fire({
             title: "Success",
             text: response.data.message,
             icon: "success",
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
           getAllCategory();
         } catch (error) {
+          Swal.close();
           Swal.fire({
             title: "Error!",
             text: "something went wrong!",
             icon: "warning",
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
-          console.log({ message: "Something went wrong" });
         }
       }
     });

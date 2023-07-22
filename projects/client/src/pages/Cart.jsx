@@ -6,13 +6,11 @@ import { cart, subtotal } from "../features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { CartItem } from "../components/CartItem";
 import Alert from "../components/SwallAlert";
-
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const fetchCartItems = async () => {
     try {
       const token = JSON.parse(localStorage.getItem("auth"));
@@ -48,12 +46,10 @@ const Cart = () => {
       console.error(error);
     }
   };
-
   useEffect(() => {
     fetchCartItems();
     removeDeletedCarts();
   }, []);
-
   const updateCartProduct = async (cartItemId, action, quantity) => {
     try {
       const response = await api.patch(`/cart`, {
@@ -106,9 +102,20 @@ const Cart = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           await api.delete(`/cart/${cartItemId}`);
           fetchCartItems();
+          Swal.close();
         } catch (error) {
+          Swal.close();
           console.error(error);
         }
       }
@@ -150,7 +157,6 @@ const Cart = () => {
               })}
             </ul>
           </section>
-
           <section
             aria-labelledby="summary-heading"
             className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
@@ -161,7 +167,6 @@ const Cart = () => {
             >
               Order summary
             </h2>
-
             <dl className="mt-6 space-y-4">
               <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                 <dt className="text-base font-medium text-gray-900">
@@ -172,7 +177,6 @@ const Cart = () => {
                 </dd>
               </div>
             </dl>
-
             <div className="mt-6">
               <button
                 onClick={handleContinueToCheckout}
@@ -188,5 +192,4 @@ const Cart = () => {
     </div>
   );
 };
-
 export default Cart;

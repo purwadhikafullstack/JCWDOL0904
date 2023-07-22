@@ -34,6 +34,15 @@ const SRMPMobileSreen = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
+            Swal.fire({
+              title: "Loading...",
+              text: "Please wait a sec...",
+              allowOutsideClick: false,
+              showConfirmButton: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
             const token = JSON.parse(localStorage.getItem("auth"));
             const id = product.id;
             const warehouse_sender_id = wSender.id;
@@ -57,6 +66,7 @@ const SRMPMobileSreen = () => {
                 },
               }
             );
+            Swal.close();
             Swal.fire(
               "Sended!",
               "Your request has been sended.",
@@ -65,10 +75,13 @@ const SRMPMobileSreen = () => {
               navigation("/mutation-list");
             });
           } catch (error) {
+            Swal.close();
             Swal.fire({
               title: "Error!",
               text: error.response.data.message,
               icon: "error",
+              confirmButtonColor: "black",
+              confirmButtonText: "Ok",
             });
           }
         }

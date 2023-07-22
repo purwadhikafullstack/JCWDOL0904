@@ -19,7 +19,7 @@ module.exports = {
       id_user: userId,
       from: "admin",
     };
-    // Kirim notifikasi melalui Socket.IO
+
     const updatedNotifications = await Notification.findAll({
       where: whereCondition,
       include: [
@@ -42,10 +42,10 @@ module.exports = {
       order: [["createdAt", "DESC"]],
     });
 
-    io.emit("notification", updatedNotifications);
-    io.emit("notificationRead", updatedNotifications);
-    io.emit("notificationAdmin", updatedAdminNotifications);
-    io.emit("notificationAdminRead", updatedAdminNotifications);
+    // io.emit("notification", updatedNotifications);
+    // io.emit("notificationRead", updatedNotifications);
+    // io.emit("notificationAdmin", updatedAdminNotifications);
+    // io.emit("notificationAdminRead", updatedAdminNotifications);
 
     return notification;
   },
@@ -90,11 +90,13 @@ module.exports = {
         order: [["createdAt", "DESC"]],
       });
 
-      io.emit("notification", notif);
-      io.emit("notificationRead", read);
+      // io.emit("notification", notif);
+      // io.emit("notificationRead", read);
       res.status(200).send({ notif, totalPages });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed get notification by user!",
+      });
     }
   },
   getAllNotificationByAdmin: async (req, res) => {
@@ -136,8 +138,8 @@ module.exports = {
         order: [["createdAt", "DESC"]],
       });
 
-      io.emit("notificationAdmin", notif);
-      io.emit("notificationAdminRead", read);
+      // io.emit("notificationAdmin", notif);
+      // io.emit("notificationAdminRead", read);
       res.status(200).send({ notif, totalPages });
     } catch (error) {
       console.error(error);
@@ -158,7 +160,9 @@ module.exports = {
 
       res.status(200).send({ notify });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed get notification!",
+      });
     }
   },
 };

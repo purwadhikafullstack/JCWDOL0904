@@ -37,20 +37,6 @@ function SalesReportRender(props) {
               />
             </Stack>
             <Stack direction="row" mt={2} alignItems="center">
-              <Select
-                placeholder=""
-                width="160px"
-                display="flex"
-                justifyContent="center"
-                borderRadius="50px"
-                className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-full shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                onChange={(e) => props.handleSorting(e.target.value)}
-              >
-                <option value="1">Newest Date</option>
-                <option value="2">Oldest Date</option>
-                <option value="3">Price low - high</option>
-                <option value="4">Price high - low</option>
-              </Select>
               <ReactDatePicker
                 selected={
                   props.selectedDateRange
@@ -82,6 +68,20 @@ function SalesReportRender(props) {
                 Reset date
               </Button>
             </Stack>
+            <Select
+              placeholder=""
+              width="160px"
+              display="flex"
+              justifyContent="center"
+              borderRadius="50px"
+              className="block w-36 py-2 px-3 border border-gray-300 bg-white rounded-full shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              onChange={(e) => props.handleSorting(e.target.value)}
+            >
+              <option value="1">Newest Date</option>
+              <option value="2">Oldest Date</option>
+              <option value="3">Price low - high</option>
+              <option value="4">Price high - low</option>
+            </Select>
           </div>
           <div className="mt-6 flex flex-col justify-end xl">
             <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">

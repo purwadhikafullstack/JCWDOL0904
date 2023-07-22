@@ -14,47 +14,6 @@ const moment = require("moment");
 const { io } = require("..//index");
 const { createNotification } = require("./notificationController");
 
-const checkExpiredOrders = async () => {
-  try {
-    const expiredOrders = await Transaction.findAll({
-      where: {
-        status: "Waiting For Payment",
-        expired: {
-          [db.Sequelize.Op.lte]: moment().toDate(),
-        },
-      },
-      include: [
-        {
-          model: TransactionItem,
-          include: [Products],
-        },
-        {
-          model: Address,
-        },
-        {
-          model: Ekspedisi,
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
-    for (const order of expiredOrders) {
-      await order.update({ status: "Canceled" });
-      io.emit("transaction-update", order.toJSON());
-
-      await createNotification(
-        `Invoice ${order.invoice_number}`,
-        "Your order is canceled, the payment time is expired.",
-        order.id_user,
-        "admin"
-      );
-    }
-    // Create a notification for the user
-  } catch (error) {
-    console.error("Error checking expired orders:", error);
-  }
-};
-setInterval(checkExpiredOrders, 11000);
-
 module.exports = {
   createOrder: async (req, res) => {
     try {
@@ -96,7 +55,7 @@ module.exports = {
       });
 
       const expirationDate = new Date();
-      expirationDate.setSeconds(expirationDate.getSeconds() + 30);
+      expirationDate.setTime(expirationDate.getTime() + 60 * 60 * 1000);
       const transaction = await Transaction.create({
         total_price: totalAmount,
         ongkir: ongkir,
@@ -157,6 +116,40 @@ module.exports = {
           id_user: id,
         },
       });
+      const timeoutDuration = 3600000;
+      setTimeout(async () => {
+        const expiredOrders = await Transaction.findAll({
+          where: {
+            status: "Waiting For Payment",
+          },
+          include: [
+            {
+              model: TransactionItem,
+              include: [Products],
+            },
+            {
+              model: Address,
+            },
+            {
+              model: Ekspedisi,
+            },
+          ],
+          order: [["createdAt", "DESC"]],
+        });
+
+        for (const order of expiredOrders) {
+          await order.update({ status: "Canceled" });
+
+          // io.emit("transaction-update", order.toJSON());
+
+          await createNotification(
+            `Invoice ${order.invoice_number}`,
+            "Your order is canceled, the payment time is expired.",
+            order.id_user,
+            "admin"
+          );
+        }
+      }, timeoutDuration);
       await createNotification(
         `Invoice ${transaction.invoice_number}`,
         "New order",
@@ -165,7 +158,9 @@ module.exports = {
       );
       return res.status(201).send({ transaction, transactionItems });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed create order!",
+      });
     }
   },
   cancelOrder: async (req, res) => {
@@ -235,7 +230,9 @@ module.exports = {
       );
       res.status(200).send({ message: "Transaction confirmed successfully" });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "failed accept order user!",
+      });
     }
   },
 };

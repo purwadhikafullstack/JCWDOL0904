@@ -38,7 +38,7 @@ module.exports = {
       } else if (stockFilter === "1") {
         sto = 0;
       } else if (stockFilter === "2") {
-        sto = { [Op.and]: { [Op.gt]: 0, [Op.lt]: 100 } };
+        sto = { [Op.and]: { [Op.gt]: 0, [Op.lte]: 100 } };
       } else if (stockFilter === "3") {
         sto = { [Op.gt]: 100 };
       }
@@ -104,7 +104,9 @@ module.exports = {
         adminWarehouse,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "failed get all product stock!",
+      });
     }
   },
   updateStock: async (req, res) => {
@@ -207,7 +209,7 @@ module.exports = {
       res.status(200).send({ allProduct });
     } catch (error) {
       res.status(400).send({
-        message: "Something went wrong",
+        message: "failed initial data stock stock",
       });
     }
   },

@@ -144,7 +144,7 @@ const ManageStock = () => {
         >
           <option value={null}>All stock</option>
           <option value="1">stock = 0</option>
-          <option value="2">0 &lt; stock &lt; 100</option>
+          <option value="2">0 &lt; stock &le; 100</option>
           <option value="3">100 &lt; stock</option>
         </Select>
       </Stack>

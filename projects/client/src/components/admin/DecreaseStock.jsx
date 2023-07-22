@@ -46,6 +46,15 @@ const DecreaseStock = (props) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           const token = JSON.parse(localStorage.getItem("auth"));
           const response = await api.patch(
             "/stock/decrease",
@@ -61,9 +70,17 @@ const DecreaseStock = (props) => {
               },
             }
           );
+          Swal.close();
+          Swal.fire({
+            title: "Success",
+            text: "Subtrack success!",
+            icon: "success",
+            confirmButtonText: "Ok",
+          });
           props.runFunction();
           setStock(0);
         } catch (error) {
+          Swal.close();
           Swal.fire({
             icon: "error",
             title: "Error!",

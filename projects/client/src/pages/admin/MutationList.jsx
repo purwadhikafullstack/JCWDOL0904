@@ -31,19 +31,32 @@ const MutationList = () => {
     text: "You won't be able to revert this!",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
+    confirmButtonText: "Ok",
+    confirmButtonColor: "black",
     confirmButtonText: "Yes!",
   };
   const swalErrorCatch = (error) => {
-    Swal.fire({ title: "Error!", text: error, icon: "error" });
+    Swal.fire({
+      title: "Error!",
+      text: error,
+      icon: "error",
+      confirmButtonColor: "black",
+    });
   };
-
   const rejectMutation = async (id) => {
     const token = JSON.parse(localStorage.getItem("auth"));
     Swal.fire(swalCheckingObject).then(async (result) => {
       try {
         if (result.isConfirmed) {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           const response = await api.patch(
             "/mutation/rejected",
             {
@@ -57,10 +70,19 @@ const MutationList = () => {
               },
             }
           );
+          Swal.close();
           getMutationData();
-          Swal.fire("Rejected!", "Mutation has been rejected.", "success");
+          Swal.fire({
+            title: "Success",
+            text: "Success, Reject mutation!",
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonColor: "black",
+            confirmButtonText: "Ok",
+          });
         }
       } catch (error) {
+        Swal.close();
         swalErrorCatch(error.response.data.message);
         getMutationData();
       }
@@ -78,6 +100,15 @@ const MutationList = () => {
       try {
         const token = JSON.parse(localStorage.getItem("auth"));
         if (result.isConfirmed) {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           const response = await api.patch(
             "/mutation/proceed",
             {
@@ -95,11 +126,19 @@ const MutationList = () => {
               },
             }
           );
+          Swal.close();
           getMutationData();
-          Swal.fire("Confirmed!", "Mutation has been confirmed.", "success");
+          Swal.fire({
+            title: "Success",
+            text: "Success, Confirm mutation!",
+            icon: "success",
+            showConfirmButton: true,
+            confirmButtonColor: "black",
+            confirmButtonText: "Ok",
+          });
         }
       } catch (error) {
-        console.log(error);
+        Swal.close();
         swalErrorCatch(error.response.data.message);
         getMutationData();
       }

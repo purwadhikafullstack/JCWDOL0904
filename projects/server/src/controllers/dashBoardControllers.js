@@ -1,11 +1,8 @@
 const db = require("..//models");
-const product = db.Products;
 const transactionItem = db.TransactionItem;
-const stoc = db.Stocks;
 const transaksi = db.Transaction;
 const stockmovement = db.StockMovement;
 const user = db.User;
-const warehouse = db.Warehouse;
 const { Op } = require("sequelize");
 const moment = require("moment");
 
@@ -36,7 +33,7 @@ module.exports = {
       res.status(200).send({ result: result.count });
     } catch (error) {
       res.status(400).send({
-        message: "Something went wrong",
+        message: "failed got transaction ongoing!",
       });
     }
   },
@@ -81,7 +78,7 @@ module.exports = {
       res.status(200).send({ result });
     } catch (error) {
       res.status(400).send({
-        message: "Something went wrong",
+        message: "failed get mutation ongoing!",
       });
     }
   },
@@ -143,7 +140,7 @@ module.exports = {
       res.status(200).send({ result, userPrice });
     } catch (error) {
       res.status(400).send({
-        message: "Something went wrong",
+        message: "Failed get user buy!",
       });
     }
   },

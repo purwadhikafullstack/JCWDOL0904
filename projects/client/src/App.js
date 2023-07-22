@@ -1,14 +1,13 @@
 import "./App.css";
 import { useDispatch } from "react-redux";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import routes from "./routes/routes";
 import { api } from "./API/api";
 import { login } from "./features/userSlice";
 import { data } from "./features/warehouseSlice";
-import { Flex, Spinner } from "@chakra-ui/react";
 import { AllCategory } from "./features/categorySlice";
 import { unreadAdminCount } from "./features/adminNotificationSlice";
 import { io } from "socket.io-client";
@@ -81,37 +80,6 @@ function App() {
     if (unreadCount) {
       updateUnreadAdminCount(JSON.parse(unreadCount));
     }
-  }, []);
-
-  useEffect(() => {
-    const socket = io(`${process.env.REACT_APP_API_BASE}`);
-    socket.on("notificationRead", (updatedNotifications) => {
-      const unread = updatedNotifications.filter((notification) => {
-        return (
-          notification.UserNotifications.length === 0 ||
-          !notification.UserNotifications[0].read
-        );
-      });
-      dispatch(unreadCount({ unread: unread.length }));
-    });
-    return () => {
-      socket.off("notificationRead");
-    };
-  }, []);
-  useEffect(() => {
-    const socket = io(`${process.env.REACT_APP_API_BASE}`);
-    socket.on("notificationAdminRead", (updatedNotifications) => {
-      const unreadAdmin = updatedNotifications.filter((notification) => {
-        return (
-          notification.UserNotifications.length === 0 ||
-          !notification.UserNotifications[0].read
-        );
-      });
-      dispatch(unreadAdminCount({ unreadAdmin: unreadAdmin.length }));
-    });
-    return () => {
-      socket.off("notificationAdminRead");
-    };
   }, []);
 
   // useEffect(() => {

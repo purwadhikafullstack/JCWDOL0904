@@ -37,7 +37,7 @@ const Dashboard = () => {
       );
       setPCount(response.data.userPrice);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      console.log(error);
     }
   };
 
@@ -54,9 +54,10 @@ const Dashboard = () => {
           "Content-Type": "application/json",
         },
       });
+
       setProduct(response.data.productFavoriteData);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      console.log({ message: "failed to get favorite product!" });
     }
   };
   const getCountTransactionOngoing = async () => {
@@ -71,7 +72,7 @@ const Dashboard = () => {
       });
       setTCount(response.data.result);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      console.log(error);
     }
   };
   const getCountMutatioinOngoing = async () => {
@@ -86,7 +87,7 @@ const Dashboard = () => {
       });
       setMCount(response.data.result);
     } catch (error) {
-      console.log({ message: "Something went wrong" });
+      console.log(error);
     }
   };
   useEffect(() => {

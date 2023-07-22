@@ -48,7 +48,6 @@ module.exports = {
         }
       );
 
-      //read
       const whereCondition = {
         id_user: userId,
         from: "admin",
@@ -73,11 +72,13 @@ module.exports = {
         ],
         order: [["createdAt", "DESC"]],
       });
-      io.emit("notification", notif);
-      io.emit("notificationRead", read);
+      // io.emit("notification", notif);
+      // io.emit("notificationRead", read);
       res.status(200).send({ message: `Read Notification Success` });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed read notification!",
+      });
     }
   },
   readAdminNotification: async (req, res) => {
@@ -134,10 +135,12 @@ module.exports = {
         order: [["createdAt", "DESC"]],
       });
 
-      io.emit("notificationAdminRead", read);
+      // io.emit("notificationAdminRead", read);
       res.status(200).send({ message: `Read Notification Success` });
     } catch (error) {
-      console.error(error);
+      res.status(400).send({
+        message: "failed read notification admin!",
+      });
     }
   },
 };

@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  InputGroup,
-  InputRightElement,
-  Input,
-  Select,
-  Stack,
-} from "@chakra-ui/react";
+import { InputGroup, InputRightElement, Input, Select } from "@chakra-ui/react";
 import { api } from "../../API/api";
 import { SearchIcon } from "@chakra-ui/icons";
 import AddWarehouse from "../../components/admin/AddWarehouse";
@@ -59,8 +53,18 @@ const ManageWarehouse = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           const response = await api.delete(`/warehouses/delete/${id}`);
           getWarehouseData();
+          Swal.close();
           Swal.fire({
             title: "Success",
             text: response.data.message,
@@ -68,10 +72,11 @@ const ManageWarehouse = () => {
             confirmButtonText: "Ok",
           });
         } catch (error) {
+          Swal.close();
           Swal.fire({
             title: "Error!",
             text: error.response.data.message,
-            icon: "warning",
+            icon: "error",
             confirmButtonText: "Ok",
           });
         }

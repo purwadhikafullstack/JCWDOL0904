@@ -52,6 +52,15 @@ const ManageUser = () => {
       dangerMode: true,
     }).then(async (result) => {
       if (result.isConfirmed) {
+        Swal.fire({
+          title: "Loading...",
+          text: "Please wait a sec...",
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
         const token = JSON.parse(localStorage.getItem("auth"));
         try {
           const response = await api.delete("/user/data/delete", {
@@ -63,6 +72,7 @@ const ManageUser = () => {
             data: { id },
           });
           getUserData();
+          Swal.close();
           Swal.fire({
             title: "Success",
             text: response.data.message,
@@ -71,6 +81,7 @@ const ManageUser = () => {
             confirmButtonColor: "black",
           });
         } catch (error) {
+          Swal.close();
           Swal.fire({
             title: "Error!",
             text: error.response.data.message,
@@ -143,7 +154,7 @@ const ManageUser = () => {
     <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <h1 className="text-xl font-semibold text-gray-900 mb-2 ">Manage User</h1>
       <div>
-        <AddAdmin />
+        <AddAdmin getUserData={getUserData} />
       </div>
       <div className="mt-6 flex flex-col justify-end xl">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">

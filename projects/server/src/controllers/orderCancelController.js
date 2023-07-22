@@ -93,7 +93,9 @@ module.exports = {
         halo,
       });
     } catch (error) {
-      console.log(error);
+      res.status(400).send({
+        message: "failed cancel order admin!",
+      });
     }
   },
 };

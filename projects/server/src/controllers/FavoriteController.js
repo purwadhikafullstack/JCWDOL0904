@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("..//models");
 const product = db.Products;
 const transactionItem = db.TransactionItem;
@@ -29,9 +30,19 @@ module.exports = {
             model: transaksi,
             ...(idWarehouse === "All Warehouse"
               ? {}
-              : { where: { id_warehouse: parseInt(idWarehouse) } }),
+              : {
+                  where: {
+                    id_warehouse: parseInt(idWarehouse),
+                  },
+                }),
           },
-          { model: product },
+          {
+            model: product,
+            paranoid: false,
+            where: {
+              [Op.or]: [{ deletedAt: null }, { deletedAt: { [Op.not]: null } }],
+            },
+          },
         ],
       });
 
@@ -78,18 +89,19 @@ module.exports = {
           totalStock: el.totalStock,
         };
       });
+      const newData = different.slice(0, 3);
       res.status(200).send({
         results,
         productMostSeld,
         totalStock,
         AllStocks,
-        productFavoriteData: different,
+        productFavoriteData: newData,
         startDate,
         endDate,
       });
     } catch (error) {
       res.status(400).send({
-        message: "Something went wrong",
+        message: "failed got favorite product!",
       });
     }
   },

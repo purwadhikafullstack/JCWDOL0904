@@ -45,7 +45,6 @@ const ManageMutation = () => {
         navigation("/dashboard");
       });
   };
-
   const handleSorting = (value) => {
     if (value === "1") {
       setOrder("product_name");
@@ -61,15 +60,12 @@ const ManageMutation = () => {
       setSort("ASC");
     }
   };
-
   const handlePageClick = (event) => {
     setPage(event.selected);
   };
-
   useEffect(() => {
     fetchProducts(category);
   }, [page, search, sort, order]);
-
   return (
     <div className="px-4 mt-5 sm:px-6 lg:px-8">
       <button

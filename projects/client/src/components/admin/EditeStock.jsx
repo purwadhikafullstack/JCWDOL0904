@@ -31,6 +31,7 @@ const EditeStock = (props) => {
 
   const handleSubmit = async () => {
     onClose();
+
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -42,6 +43,15 @@ const EditeStock = (props) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          Swal.fire({
+            title: "Loading...",
+            text: "Please wait a sec...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
           const token = JSON.parse(localStorage.getItem("auth"));
           const response = await api.patch(
             "/stock/update",
@@ -57,20 +67,24 @@ const EditeStock = (props) => {
               },
             }
           );
+          Swal.close();
           Swal.fire({
             title: "Success",
-            text: "Edite success!",
+            text: "Increase success!",
             icon: "success",
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
           props.runFunction();
           setStock(0);
         } catch (error) {
+          Swal.close();
           Swal.fire({
             title: "Error!",
             text: error.response.data.message,
             icon: "warning",
             confirmButtonText: "Ok",
+            confirmButtonColor: "black",
           });
         }
       }
