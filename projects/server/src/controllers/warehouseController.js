@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 const db = require("..//models");
 const User = db.User;
-const { Warehouse, Stocks, Products } = db;
+const { Warehouse, Stocks, Products, Transaction } = db;
 const axios = require("axios");
 
 module.exports = {
@@ -57,7 +57,6 @@ module.exports = {
       }
       res.status(200).send({ result: allRows, totalPage, search });
     } catch (error) {
-      console.error(error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
@@ -148,9 +147,7 @@ module.exports = {
         !id ||
         warehouse.length < 1
       ) {
-        return res.status(400).send({
-          message: "please insert your data",
-        });
+        throw new Error("please insert your data");
       }
 
       const cekWarehouse = await Warehouse.findAll({
@@ -169,12 +166,10 @@ module.exports = {
       });
 
       if (cekWarehouse.length > 0) {
-        res.status(400).send({ message: "warehouse name already exist!" });
+        throw new Error("Warehouse name already exist!!");
       }
       if (sameData) {
-        res
-          .status(400)
-          .send({ message: "Warehouse with exact same place already exist!!" });
+        throw new Error("Warehouse with exact same place already exist!!");
       }
 
       const query = `${subdistrict}%20${city}%20${province}%20${zip}`;
@@ -203,12 +198,14 @@ module.exports = {
           }
         );
 
-        res.status(201).send({ newWarehouse });
+        res.status(200).send({ newWarehouse });
       } else {
-        res.status(500).send({ message: "Geocoding error" });
+        throw new Error("Geocoding error");
       }
     } catch {
-      res.status(500).send({ message: "failed edite warehouse" });
+      res.status(400).send({
+        message: error.message,
+      });
     }
   },
 
@@ -218,6 +215,18 @@ module.exports = {
       const cekAdmin = await User.findAll({
         where: { id_warehouse: id },
       });
+
+      const cekTransactionOngoing = await Transaction.findAll({
+        where: {
+          id_warehouse: id,
+          status: {
+            [Op.notIn]: ["Order Confirmed", "Canceled"],
+          },
+        },
+      });
+
+      if (cekTransactionOngoing.length > 0)
+        throw new Error("failed, this warehouse is still has a transaction!");
 
       if (cekAdmin && cekAdmin.length > 0)
         throw new Error("There is still admin warehouse in this warehouse!");
@@ -267,15 +276,11 @@ module.exports = {
       });
 
       if (findUser.role === "adminWarehouse" || findUser.role === "user") {
-        return res.status(400).send({
-          message: "You don't have permission!",
-        });
+        throw new Error("You don't have permission!");
       }
 
       if (currentWarehouse === id_warehouse) {
-        res.status(400).send({
-          message: "You select the same warehouse, please select another",
-        });
+        throw new Error("You select the same warehouse, please select another");
       }
 
       const result = await User.update(

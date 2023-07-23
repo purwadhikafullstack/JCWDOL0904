@@ -12,12 +12,14 @@ module.exports = {
     try {
       const { fullname, username, password, confirmPassword } = req.body;
       if (!fullname || !username || !password || !confirmPassword) {
+        await transaction.rollback();
         return res.status(400).send({
           message: "Please complete your data",
         });
       }
 
       if (password !== confirmPassword) {
+        await transaction.rollback();
         return res.status(400).send({
           message: "Passwords does not match",
         });
@@ -27,6 +29,7 @@ module.exports = {
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
 
       if (!passwordRegex.test(password)) {
+        await transaction.rollback();
         return res.status(400).send({
           message:
             "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number",
@@ -37,9 +40,32 @@ module.exports = {
       token = token.split(" ")[1];
       const data = jwt.verify(token, "galaxy");
 
-      const user = await User.findOne({ where: { id: data.id } });
+      const user = await User.findOne({
+        paranoid: true,
+        where: { id: data.id },
+      });
+
+      const cekUsername = await User.findOne({
+        paranoid: true,
+        where: { username },
+      });
+
+      if (cekUsername) {
+        await transaction.rollback();
+        return res.status(400).send({
+          message: "Username already exist, please change another username",
+        });
+      }
+
+      if (user.username) {
+        await transaction.rollback();
+        return res.status(400).send({
+          message: "Username already exist, please change another username",
+        });
+      }
 
       if (user.is_verified) {
+        await transaction.rollback();
         return res.status(400).send({
           message: "Your account has already been verified",
         });
@@ -137,11 +163,13 @@ module.exports = {
       const { password, confirmPassword } = req.body;
 
       if (!password || !confirmPassword) {
+        await transaction.rollback();
         return res.status(400).send({
           message: "Please complete your data",
         });
       }
       if (password !== confirmPassword) {
+        await transaction.rollback();
         return res.status(400).send({
           message: "Passwords does not match",
         });
@@ -151,6 +179,7 @@ module.exports = {
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
 
       if (!passwordRegex.test(password)) {
+        await transaction.rollback();
         return res.status(400).send({
           message:
             "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number",
@@ -194,18 +223,21 @@ module.exports = {
       const isValid = await bcrypt.compare(password, userExist.password);
 
       if (!isValid) {
+        await transaction.rollback();
         return res.status(400).send({
           message: "Your password does not match!",
         });
       }
 
       if (!newPassword || !confirmPassword) {
+        await transaction.rollback();
         return res.status(400).send({
           message: "Please input your new password and confirm password",
         });
       }
 
       if (newPassword !== confirmPassword) {
+        await transaction.rollback();
         return res.status(400).send({
           message: "New password and confirm password do not match",
         });
@@ -215,6 +247,7 @@ module.exports = {
         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[0-9a-zA-Z!@#$%^&*()_+]{8,}$/;
 
       if (!passwordRegex.test(newPassword, confirmPassword)) {
+        await transaction.rollback();
         return res.status(400).send({
           message:
             "Password must contain at least 8 characters including an uppercase letter, a symbol, and a number",

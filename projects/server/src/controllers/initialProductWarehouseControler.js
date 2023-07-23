@@ -7,29 +7,34 @@ module.exports = {
     try {
       const { id_warehouse } = req.body;
       const cekStock = await stoc.findAll({
-        id_warehouse,
+        paranoid: true,
+        where: {
+          id_warehouse: id_warehouse,
+        },
       });
+
       if (cekStock && cekStock.length > 0)
-        res.status(200).send({ message: "stock already added" });
+        throw new Error("stock already exist!");
 
       const getProducts = await product.findAll();
 
       await Promise.all(
-        getProducts.forEach(async (el) => {
-          const initialStock = await stoc.create({
+        getProducts.map(async (el) => {
+          await stoc.create({
             stock: 0,
             id_warehouse,
             id_product: el.id,
           });
         })
       );
+
       res.status(200).send({
         getProducts,
         id_warehouse,
       });
     } catch (error) {
       res.status(400).send({
-        message: "failed initial stock!",
+        message: error.message,
       });
     }
   },

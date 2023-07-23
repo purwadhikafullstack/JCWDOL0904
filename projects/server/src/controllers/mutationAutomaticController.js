@@ -111,8 +111,9 @@ module.exports = {
             },
           };
           let stockInWarehouseSeller = [el.qty_origin];
+          let count = 0;
           const startSearch = async () => {
-            if (warehouseIgnore >= allWarehouse.length) {
+            if (warehouseIgnore.length >= allWarehouse.length) {
               throw new Error(
                 "One of this product stock in this transaction or all product is empty at all warehouse!"
               );
@@ -123,8 +124,11 @@ module.exports = {
               include: includeWarehouseAvailable,
               limit: 1,
             });
+
             let stockBefore;
+
             if (nearestWarehouse.length > 0) {
+              count += 1;
               let stockAfterSend;
               let stockGot;
               if (nearestWarehouse[0].Stocks[0].stock > stockNeeded) {
@@ -153,13 +157,19 @@ module.exports = {
                 stockMove: stockBefore,
                 stockIncrease: stockGot,
               });
+
               if (stockAfterSend === 0) {
                 warehouseIgnore.push(
                   nearestWarehouse[0].Stocks[0].id_warehouse
                 );
+
                 stockNeeded = stockNeeded - nearestWarehouse[0].Stocks[0].stock;
                 await startSearch();
               }
+            } else if (count < 1) {
+              throw new Error(
+                "One of this product stock in this transaction or all product is empty at all warehouse!"
+              );
             }
           };
           await startSearch();

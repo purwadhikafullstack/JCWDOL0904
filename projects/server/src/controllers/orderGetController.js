@@ -208,7 +208,6 @@ module.exports = {
       const totalPages = Math.ceil(totalOrders / limit);
       res.status(200).send({ orders: orders.rows, totalPages });
     } catch (error) {
-      console.error(error);
       res.status(500).send({ error: "failed get order by warehouse!" });
     }
   },

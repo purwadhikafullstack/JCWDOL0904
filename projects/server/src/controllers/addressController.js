@@ -86,7 +86,6 @@ module.exports = {
           newAddress,
         });
       } else {
-        console.error("No results found");
         res.status(500).json({ message: "Geocoding error" });
       }
     } catch (error) {
@@ -105,7 +104,6 @@ module.exports = {
         res.status(404).json({ error: "Address not found" });
       }
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: "delete address fail!" });
     }
   },
@@ -129,7 +127,6 @@ module.exports = {
 
       res.status(200).send(addressResult, id, id_user);
     } catch (error) {
-      console.error(error);
       await transaction.rollback();
       res.status(400).send({ message: "change address default fail!" });
     }

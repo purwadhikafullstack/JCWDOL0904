@@ -17,12 +17,14 @@ module.exports = {
     try {
       const { email } = req.body;
       if (!email) {
+        await trans.rollback();
         return res.status(400).send({
           message: "Please input your email address",
         });
       }
 
       if (!email.includes("@") || !email.endsWith(".com")) {
+        await trans.rollback();
         return res.status(400).send({
           message: "Please enter a valid email address",
         });
@@ -34,10 +36,12 @@ module.exports = {
 
       if (userAlreadyExist) {
         if (userAlreadyExist.is_verified) {
+          await trans.rollback();
           return res.status(400).send({
             message: "Your email address is already verified, please login",
           });
         } else {
+          await trans.rollback();
           return res.status(400).send({
             message:
               "Your email address already exists, but it is not verified. Please verify your email!",
@@ -376,7 +380,7 @@ module.exports = {
       if (isValid) {
         result = await User.update({ username, fullname }, { where: { id } });
       } else {
-        res.status(400).send({
+        return res.status(400).send({
           message: "Please input correct password",
         });
       }
