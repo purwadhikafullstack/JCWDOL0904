@@ -2,12 +2,28 @@ const db = require("..//models");
 const transaction = db.Transaction;
 const stoc = db.Stocks;
 const stockHistory = db.StockHistory;
+const ware = db.Warehouse;
 const { createNotification } = require("./notificationController");
 module.exports = {
   cancelOrder: async (req, res) => {
     try {
       const { dataTransaction } = req.body;
       const warehouseId = dataTransaction.id_warehouse;
+      const cekWarehouse = await ware.findOne({
+        where: { id: warehouseId },
+      });
+
+      if (!cekWarehouse) {
+        await transaction.update(
+          {
+            status: "Canceled",
+          },
+          {
+            where: { id: dataTransaction.id },
+          }
+        );
+        throw new Error("warehouse is gone!, transaction canceled");
+      }
       const result = await transaction.findOne({
         where: { id: dataTransaction.id },
       });
@@ -94,7 +110,7 @@ module.exports = {
       });
     } catch (error) {
       res.status(400).send({
-        message: "failed cancel order admin!",
+        message: error.message,
       });
     }
   },

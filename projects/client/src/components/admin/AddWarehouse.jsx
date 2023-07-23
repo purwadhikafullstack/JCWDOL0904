@@ -59,8 +59,9 @@ const AddWarehouse = (props) => {
         zip: parseInt(zip),
       });
       let result;
-      inititalStock(response.data.newWarehouse.id);
+
       props.runFunction();
+      inititalStock(response.data.newWarehouse.id);
       onClose();
       setLoad(false);
       Swal.fire({
@@ -95,6 +96,13 @@ const AddWarehouse = (props) => {
       });
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        title: "Error!",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "black",
+      });
     }
   };
 

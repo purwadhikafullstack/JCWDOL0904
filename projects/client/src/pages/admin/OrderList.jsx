@@ -5,6 +5,7 @@ import io from "socket.io-client";
 import OrderListRender from "../../components/admin/OrderListRender";
 import Swal from "sweetalert2";
 import { socket } from "../../App";
+import Alert from "../../components/SwallAlert";
 
 export default function OrderList() {
   const [transactionByWarehouse, setTransactionByWarehouse] = useState([]);
@@ -105,7 +106,7 @@ export default function OrderList() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "black",
-      cancelButtonColor: "gray",
+
       confirmButtonText: "Yes, cancel it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -114,15 +115,20 @@ export default function OrderList() {
             dataTransaction,
           });
           fetchTransactions();
-          Swal.fire(
-            "Canceled!",
-            "User transaction has been deleted.",
-            "success"
-          );
+          Alert({
+            title: "Success!",
+            text: "canceled",
+            icon: "success",
+          });
           setIsLoad(false);
         } catch (error) {
           setIsLoad(false);
-          console.log({ message: "Something went wrong" });
+          Alert({
+            title: "Failed!",
+            text: error.response.data.message,
+            icon: "error",
+          });
+          fetchTransactions();
         }
       }
       setIsLoad(false);

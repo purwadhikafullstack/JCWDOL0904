@@ -64,6 +64,18 @@ module.exports = {
       const { id, warehouse_sender_id, warehouse_receive_id, qty, id_product } =
         req.body;
       const dataToken = req.dataToken;
+      // const cekTransactionOngoing = await transaction.findAll({
+      //   where: {
+      //     id_warehouse: warehouse_sender_id,
+      //     status: {
+      //       [Op.notIn]: ["Order Confirmed", "Canceled"],
+      //     },
+      //   },
+      //   include: [{ model: transactionItem, where: { id_product } }],
+      // });
+
+      // if (cekTransactionOngoing.length > 0)
+      //   throw new Error("failed, this product is still on transaction!");
 
       const findAdmin = await user.findOne({
         where: { id: dataToken.id },
@@ -184,7 +196,6 @@ module.exports = {
         getStockmovementData,
       });
     } catch (error) {
-      console.log(error);
       res.status(400).send({
         message: error.message,
       });

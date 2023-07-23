@@ -37,7 +37,7 @@ const ManageWarehouse = () => {
         setTotalPage(result.data.totalPage);
       })
       .catch((err) => {
-        console.log({ message: "Something went wrong" });
+        console.log(err);
       });
   };
 
